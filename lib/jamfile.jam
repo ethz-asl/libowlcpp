@@ -1,0 +1,25 @@
+# owl_cpp/lib/jamfile.jam
+
+project lib
+	: build-dir $(OUT)/bin
+;
+
+lib lib_owl_cpp
+    : #sources
+        [ glob *.cpp ]
+    : #requirements
+		<include>.
+		<include>../include
+		<library>/boost//filesystem
+    	<library>..//raptor
+    	<library>..//factpp
+      <define>OWLCPP_RELEASE_VERSION_1=0
+      <define>OWLCPP_RELEASE_VERSION_2=0
+      <define>OWLCPP_RELEASE_VERSION_3=0
+      <define>OWLCPP_BUILD_VERSION=$(BUILD_VERSION)
+      <define>OWLCPP_CODE_REVISION=$(CODE_REVISION)
+    : #default build options
+    : #usage requirements
+		<include>../include
+;
+

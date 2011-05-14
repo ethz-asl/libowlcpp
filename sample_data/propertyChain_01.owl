@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+<!ENTITY base "http://owl.semanticweb.org/page/New-Feature-ObjectPropertyChain-001">
+<!ENTITY test "&base;#">
+<!ENTITY w3 "http://www.w3.org">
+<!ENTITY owl "&w3;/2002/07/owl#">
+<!ENTITY rdf "&w3;/1999/02/22-rdf-syntax-ns#">
+<!ENTITY rdfs "&w3;/2000/01/rdf-schema#">
+<!ENTITY xsd "&w3;/2001/XMLSchema#">
+]>
+<rdf:RDF 
+   xml:base="&base;"
+   xmlns="&test;"
+   xmlns:test="&test;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
+>
+   <owl:Ontology rdf:about=""/>
+
+    <owl:ObjectProperty rdf:about="#hasAunt">
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="#hasMother"/>
+            <rdf:Description rdf:about="#hasSister"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="#hasMother"/>
+
+    <owl:ObjectProperty rdf:about="#hasSister"/>
+    
+    <owl:NamedIndividual rdf:about="#Carol"/>
+    
+    <owl:NamedIndividual rdf:about="#Lois">
+        <test:hasSister rdf:resource="#Carol"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="#Stewie">
+        <test:hasMother rdf:resource="#Lois"/>
+    </owl:NamedIndividual>
+    
+</rdf:RDF>

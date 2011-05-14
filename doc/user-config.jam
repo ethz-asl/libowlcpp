@@ -1,0 +1,44 @@
+# file user-config.jam
+# Provides information about build tools and libraries on your system.  See also
+# http://www.boost.org/boost-build2/doc/html/bbv2/overview/configuration.html
+#
+# 1. If file "user-config.jam" does not already exist in your HOME folder, copy
+#    this file to that location.  On MS Windows HOME folder is usually
+#    "C:\Documents and Settings\your_user_name".
+#
+# 2. Uncomment "using" statements for the compilers you are going to use.
+#
+# 3. "path-constant" statements specify locations of the libraries required for 
+#    building the project.  Make sure that the libraries are installed on your
+#    system and enter their correct locations.
+
+# using msvc ;
+using gcc ;
+using doxygen ;
+#using doxygen : 1.7.1 : /path/to/doxygen ;
+
+local UTILS = utils/ ;
+
+# Boost library
+#http://www.boost.org/
+path-constant BOOST : "$(UTILS)boost/boost_1_46_1/" ;
+
+# FaCT++ library
+# http://code.google.com/p/factplusplus/
+path-constant FACT_PP_LIB : "$(UTILS)FaCT++-1.5.2/" ;
+
+# libxml library
+# ftp://xmlsoft.org/libxml2/
+# build commands:
+# ./configure --without-docbook --without-ftp --without-history --without-html --without-http --without-zlib
+# make
+path-constant LIBXML2_STATIC : $(UTILS)libxml2-2.7.7/.libs/libxml2.a ;
+
+# Raptor library
+# http://download.librdf.org/source/
+# build commands:
+# ./configure --enable-parsers="rdfxml ntriples turtle  guess" --enable-serializers=ntriples --with-www=none --with-xml2-config=enter_correct_path/libxml2-2.7.7
+# make
+path-constant LIB_RAPTOR_INCLUDE : $(UTILS)raptor/raptor2-1.9.0/src/ ;
+path-constant LIB_RAPTOR_SHARED :  $(UTILS)raptor/raptor2-1.9.0/src/.libs/libraptor2.so.0.0.0 ;
+path-constant LIB_RAPTOR_STATIC :  $(UTILS)raptor/raptor2-1.9.0/src/.libs/libraptor2.a ;

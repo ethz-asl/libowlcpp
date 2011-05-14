@@ -1,0 +1,7 @@
+# file "boost-build.jam"
+
+# File "boost-build.jam" should be present in the project directory or in any directory above it.
+# If does not already exist, copy this file to one of the locations, 
+# and adjust the path below to the location of Boost.Build.
+
+boost-build boost_1_44_0/tools/build/v2 ;

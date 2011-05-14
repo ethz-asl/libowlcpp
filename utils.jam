@@ -1,0 +1,44 @@
+# owl_cpp/utils.jam
+
+# construct build version from date and time numbers; n=[1-6]
+rule build_version ( n ? ) {
+   n ?= 3 ;
+   local re = "([0-9]+)-([0-9]+)-([0-9]+) ([0-9]+):([0-9]+):([0-9]+)" ;
+   local b = [ MATCH $(re) : [ modules.peek : JAMDATE ] ] ;
+   b = $(b[1-$(n)]) ;
+   return $(b:J) ;
+}
+
+# return file content as string (os specific)
+rule read_file ( file ) {
+   switch [ modules.peek : OS ] {
+      case NT : e = [ SHELL "TYPE $(file)" ] ;
+      case *  : e = [ SHELL "cat  $(file)" ] ;
+   }
+   return $(e) ;
+}
+
+# return current SVN revision number
+rule svn_revision ( dir ) {
+   local svn_e = [ GLOB $(dir)/.svn/ : entries* ] ;
+   local v ;
+   if $(svn_e) {
+      local e = [ read_file $(svn_e[1]) ] ;
+      v = [ MATCH "dir.([0-9]+)" : $(e) ] ;
+   }
+   v ?= 0 ;
+   return $(v) ;
+}
+
+# return git revision name
+rule git_revision {
+   local ref = [ MATCH "ref: ([0-9a-zA-Z/_\.\-]+)" : [ read_file "./.git/HEAD" ] ] ;
+   local rev ;
+   if $(ref) {
+      #exclude '\n'
+      rev = [ MATCH "([0-9a-f]+)" : [ read_file "./.git/$(ref[1])" ] ] ;
+   }
+   rev ?= 0 ;
+   return $(rev) ;
+}
+

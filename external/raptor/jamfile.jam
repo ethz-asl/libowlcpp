@@ -1,0 +1,29 @@
+# owl_cpp/external/raptor/jamfile.jam
+
+if ! $(LIB_RAPTOR_STATIC) { EXIT "install and set location for LIB_RAPTOR_STATIC; see doc/user-config.jam" ; }
+if ! $(LIB_RAPTOR_SHARED) { EXIT "install and set location for LIB_RAPTOR_SHARED; see doc/user-config.jam" ; }
+if ! $(LIB_RAPTOR_INCLUDE) { EXIT "install and set location for LIB_RAPTOR_INCLUDE; see doc/user-config.jam" ; }
+if ! $(LIBXML2_STATIC) { EXIT "install and set location for LIBXML2_STATIC; see doc/user-config.jam" ; }
+
+lib raptor
+   :  #sources
+   :  #requirements
+      <link>static
+      <file>$(LIB_RAPTOR_STATIC)
+      <file>$(LIBXML2_STATIC)
+   :  #default build options
+   
+   :  #usage requirements
+      <include>$(LIB_RAPTOR_INCLUDE)
+;
+
+lib raptor
+   :  #sources
+   :  #requirements
+      <link>shared
+      <file>$(LIB_RAPTOR_SHARED)
+   :  #default build options
+   :  #usage requirements
+      <include>$(LIB_RAPTOR_INCLUDE)
+;
+

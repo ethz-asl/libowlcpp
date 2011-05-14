@@ -1,0 +1,26 @@
+Instructions for building owl_cpp library and unit tests
+
+Libraries required by owl_cpp are listed in file "user-config.jam.txt".
+Build is managed by Boost.Build V2 (http://www.boost.org/boost-build2).
+
+1. Download a distribution of Boost (http://www.boost.org/).
+
+2. Build Boost.Jam by running $(BOOST)/tools/jam/build_dist.* script.  See also
+   http://www.boost.org/boost-build2/doc/html/index.html
+
+3. Make sure that "boost-build.jam" is present in the project directory 
+	or in a directory above it.  For details see "boost-build.jam" file.
+
+4. Make sure that "user-config.jam" is present in your HOME folder.  For details
+   see "user-config.jam" file.
+
+5. (optional) In Eclipse/CDT create build variable ${bjam_path} 
+	pointing to BOOST.Jam executable.  For example:
+        bjam_path=${BOOST}/tools/build/v2/engine/stage/bin.ntx86/bjam.exe
+
+6. Run BOOST.Jam in folder owl_cpp.  Examples:
+        $(bjam_path) release lib_owl_cpp
+        $(bjam_path) -j8 debug test
+        $(bjam_path) --toolset=msvc release lib_owl_cpp
+        $(bjam_path) autodoc
+        ohcount apps include lib

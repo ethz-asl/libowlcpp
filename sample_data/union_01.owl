@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+	
+<!DOCTYPE rdf:RDF [
+<!ENTITY base "http://www.ifomis.org/bfo/1.1">
+<!ENTITY bfo "&base;#">
+<!ENTITY snap "&base;/snap#">
+<!ENTITY span "&base;/span#">
+<!ENTITY w3 "http://www.w3.org">
+<!ENTITY owl "&w3;/2002/07/owl#">
+<!ENTITY rdf "&w3;/1999/02/22-rdf-syntax-ns#">
+<!ENTITY rdfs "&w3;/2000/01/rdf-schema#">
+<!ENTITY xsd "&w3;/2001/XMLSchema#">
+]>
+   
+<rdf:RDF 
+      xmlns:bfo="&bfo;"
+      xmlns:snap="&snap;"
+      xmlns:span="&span;"
+      xmlns:owl="&owl;"
+      xmlns:rdf="&rdf;"
+      xmlns:rdfs="&rdfs;"
+      xmlns:xsd="&xsd;"
+      xml:base="&base;">
+      
+   <owl:Ontology rdf:about="union" />
+
+	<owl:Class rdf:about="&snap;Continuant" />
+	<owl:Class rdf:about="&span;Occurrent" />
+
+   <owl:Class rdf:about="&bfo;Entity">
+      <rdfs:label rdf:datatype="&xsd;string">entity</rdfs:label>
+      <owl:unionOf rdf:parseType="Collection">
+         <owl:Class rdf:about="&snap;Continuant"/>
+         <owl:Class rdf:about="&span;Occurrent"/>
+      </owl:unionOf>
+   </owl:Class>
+</rdf:RDF>

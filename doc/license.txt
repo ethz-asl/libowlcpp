@@ -1,0 +1,15 @@
+owl_cpp is a C++ library for reading and querying OWL ontologies.
+
+Copyright (C) 2010-1 Mikhail K Levin
+
+owl_cpp is free software: you can redistribute it and/or modify it under the terms of the
+ GNU Lesser General Public License as published by the Free Software Foundation,
+ either version 3 of the License, or (at your option) any later version.
+
+owl_cpp is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+
+GNU Lesser General Public License can be found at http://www.gnu.org/licenses
+
+Contact: svarneticist (at) users.sourceforge.net

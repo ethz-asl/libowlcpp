@@ -1,0 +1,11 @@
+TODO
+
+- re-structure directories: terms, triple_store, parser, reasoner
+
+- support for OWL datatype terms
+
+- improve exception diagnostic info
+
+- run-time definition of custom IRIs
+
+- settings file: custom IRIs, OWL search paths

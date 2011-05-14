@@ -1,0 +1,38 @@
+# owl_cpp/lib/test/jamfile.jam
+
+project
+   : 
+   : requirements
+      <include>../
+      <library>/boost/test//boost_unit_test_framework
+      <link>shared
+      <library>..//lib_owl_cpp
+      <define>SAMPLE_DATA_DIR=$(SAMPLE_DATA_DIR:T)
+      <define>TEMPORARY_DIR=$(TEMPORARY_DIR:T)
+;
+
+import testing ;
+
+rule run-all ( sources * )
+{
+   for local source in $(sources)
+   {
+       return [ run $(source) ] ;
+   }
+}
+
+local auto_run_src = [ glob *_run.cpp ] ;
+
+test-suite simple_tests
+    :
+        [ run-all 
+            $(auto_run_src)
+#         factpp_05_run.cpp
+        ]
+;
+
+test-suite all_tests
+   :
+#     [ run test_01.cpp ]
+;
+
