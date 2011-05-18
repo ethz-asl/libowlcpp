@@ -207,7 +207,8 @@ void find_ontologies(Catalog& cat, const std::string& path) {
       }
    } else if( ba::iequals(extension(p), ".owl") ) {
       const b::tuple<std::string,std::string> ts = ontology_id(p.string());
-      cat.insert(p.string(), ts.get<0>(), ts.get<1>());
+      if( ! ts.get<0>().empty() )
+         cat.insert(p.string(), ts.get<0>(), ts.get<1>());
    }
 }
 
