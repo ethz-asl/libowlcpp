@@ -40,6 +40,8 @@ int main(int argc, char* argv[]) {
       oa::Triple_store store;
       load(argv[1], store, cat);
 
+      std::cout << "Loaded " << store.n_triples() << " triples" << '\n';
+
       std::cout << "NAMESPACES:\n";
       oa::print_namespaces(store, std::cout);
 
