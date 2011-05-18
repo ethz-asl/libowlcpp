@@ -15,9 +15,6 @@ void Catalog::insert(
       const std::string& iri,
       const std::string& version
 ) {
-   by_path_t& by_path = stor_.get<0>();
-   path_iter_t pi = by_path.find(path);
-
    if( path.empty() ) BOOST_THROW_EXCEPTION(
          Err() << Err::msg_t("empty ontology location")
    );
@@ -25,6 +22,9 @@ void Catalog::insert(
    if( iri.empty() ) BOOST_THROW_EXCEPTION(
          Err() << Err::msg_t("empty ontology IRI")
    );
+
+   by_path_t& by_path = stor_.get<0>();
+   path_iter_t pi = by_path.find(path);
 
    //check for duplicate locations
    if( pi != by_path.end() ) {

@@ -99,6 +99,7 @@ void Rdf_parser::parse(
                Err()
                << Err::msg_t("RDF error")
                << Err::line_num_t(ln)
+//               << Err::str1_t(str)
                << Err::nested_t(b::copy_exception(e))
          );
       }
