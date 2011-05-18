@@ -57,11 +57,11 @@ public:
    struct Not_found_err : public base_exception {};
 
    /**@brief Insert new ontology location.
-   @details Repeated insertion of same path/iri/version has no effect.
-   @throws Err if #path is empty
-   @throws Err if #iri is empty
-   @throws Err if duplicate #path, different #iri / #version
-   @throws Err if different #path, duplicate #iri and #version
+   @details Repeated insertion of same @a path, @a iri, or @a version has no effect.
+   @throws Err if @a path is empty
+   @throws Err if @a iri is empty
+   @throws Err if duplicate @a path, different @a iri / @a version
+   @throws Err if different @a path, @a duplicate @a iri and @a version
    */
    void insert(
          const std::string& path,/**< path to ontology file */
