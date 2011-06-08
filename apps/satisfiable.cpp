@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
       BOOST_FOREACH( const oa::Node_id nid, store.node_ids() ) {
          //find nodes declared as classes
          if(
-               oa::make_triples_query(
+               oa::find_triples(
                      nid,
                      ot::T_rdf_type::id(),
                      ot::T_owl_Class::id(),

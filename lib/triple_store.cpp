@@ -206,7 +206,7 @@ bool Triple_store::is_standard(const Ns_id id) const {
 *******************************************************************************/
 void Triple_store::check_id(const Node_id nid) const {
    if(
-         make_triples_query(
+         find_triples(
                nid,
                ot::T_rdf_type::id(),
                ot::T_owl_Ontology::id(),
@@ -219,7 +219,7 @@ void Triple_store::check_id(const Node_id nid) const {
    );
 
    if(
-         make_triples_query(
+         find_triples(
                blank(),
                ot::T_owl_versionIRI::id(),
                nid,

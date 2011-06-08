@@ -102,7 +102,7 @@ public:
 *******************************************************************************/
 template<class N1, class N2, class N3>
 inline typename Triples_query<N1,N2,N3>::q_range_t
-make_triples_query(const N1 nid1, const N2 nid2, const N3 nid3, const Triple_store& store) {
+find_triples(const N1 nid1, const N2 nid2, const N3 nid3, const Triple_store& store) {
    return Triples_query<N1,N2,N3>::make(nid1,nid2,nid3,store);
 }
 
@@ -133,7 +133,7 @@ std::vector<Node_id> rdf_collection(const Node_id node, const Triple_store& stor
 *******************************************************************************/
 inline std::string find_label(const Node_id id, const Triple_store& store) {
    Triples_query<Node_id,Node_id,blank>::q_range_t range =
-         make_triples_query(id, ot::T_rdfs_label::id(), blank(), store);
+         find_triples(id, ot::T_rdfs_label::id(), blank(), store);
    if( ! range ) return "";
    return store[range.front().object()].value_str();
 }

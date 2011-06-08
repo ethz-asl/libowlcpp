@@ -63,14 +63,14 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_AllDifferent>& tr) {
    assert(tr.predicate()() == ot::T_rdf_type::index);
    assert(tr.object()() == ot::T_owl_AllDifferent::index);
 
-   q_range_nnb_t range = make_triples_query(
+   q_range_nnb_t range = find_triples(
          tr.subject(),
          ot::T_owl_members::id(),
          blank(),
          store_
    );
 
-   if( ! range ) range = make_triples_query(
+   if( ! range ) range = find_triples(
          tr.subject(),
          ot::T_owl_distinctMembers::id(),
          blank(),
@@ -375,7 +375,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_NegativePropertyAssertion>
    Node_id property_id;
    BOOST_FOREACH(
          const Triple& t,
-         make_triples_query(tr.subject(), blank(), blank(), store_)
+         find_triples(tr.subject(), blank(), blank(), store_)
    ) {
       switch (t.predicate()()) {
          case ot::T_rdf_type::index :
@@ -523,7 +523,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_rdfs_Datatype>& tr) {
 *******************************************************************************/
 TDLIndividualExpression* Triple_to_fact::instance(const Node_id i, const Node_id c) {
    if(
-         make_triples_query(
+         find_triples(
                c,
                ot::T_rdf_type::id(),
                ot::T_owl_Class::id(),

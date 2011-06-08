@@ -33,29 +33,29 @@ BOOST_AUTO_TEST_CASE( query_triples_01_run_case01 ) {
 
    //owl:Class is never a subject
    BOOST_CHECK(
-         ! make_triples_query(ot::T_owl_Class::id(), blank(), blank(), store)
+         ! find_triples(ot::T_owl_Class::id(), blank(), blank(), store)
    );
 
    //owl:Class is never a predicate
    BOOST_CHECK(
-         ! make_triples_query(blank(), ot::T_owl_Class::id(), blank(), store)
+         ! find_triples(blank(), ot::T_owl_Class::id(), blank(), store)
    );
 
    //owl:Class is always object
    BOOST_CHECK(
-         make_triples_query(blank(), blank(), ot::T_owl_Class::id(), store)
+         find_triples(blank(), blank(), ot::T_owl_Class::id(), store)
    );
 
    BOOST_CHECK(
-         ! make_triples_query(ot::T_rdf_type::id(), blank(), ot::T_owl_Class::id(), store)
+         ! find_triples(ot::T_rdf_type::id(), blank(), ot::T_owl_Class::id(), store)
    );
 
    BOOST_CHECK(
-         make_triples_query(blank(), ot::T_rdf_type::id(), ot::T_owl_Class::id(), store)
+         find_triples(blank(), ot::T_rdf_type::id(), ot::T_owl_Class::id(), store)
    );
 
    BOOST_CHECK(
-         make_triples_query(
+         find_triples(
                find_node("http://purl.obolibrary.org/obo/ido/dev/test_01.owl", "C3", store),
                ot::T_rdf_type::id(),
                ot::T_owl_Class::id(),

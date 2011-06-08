@@ -54,7 +54,7 @@ bool have_ontology_id(const std::string& iri, const Triple_store& store) {
    const Node_id nid = r.front().second;
 
    if(
-         make_triples_query(
+         find_triples(
                nid,
                ot::T_rdf_type::id(),
                ot::T_owl_Ontology::id(),
@@ -63,7 +63,7 @@ bool have_ontology_id(const std::string& iri, const Triple_store& store) {
    ) return true;
 
    if(
-         make_triples_query(
+         find_triples(
                blank(),
                ot::T_owl_versionIRI::id(),
                nid,
@@ -77,7 +77,7 @@ bool have_ontology_id(const std::string& iri, const Triple_store& store) {
 *******************************************************************************/
 std::size_t num_ontologies(const Triple_store& store) {
    return distance(
-         make_triples_query(
+         find_triples(
                blank(),
                ot::T_rdf_type::id(),
                ot::T_owl_Ontology::id(),
