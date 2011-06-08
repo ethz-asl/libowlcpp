@@ -15,7 +15,7 @@ lib lib_owl_cpp
        <library>..//factpp
       <define>OWLCPP_RELEASE_VERSION_1=0
       <define>OWLCPP_RELEASE_VERSION_2=0
-      <define>OWLCPP_RELEASE_VERSION_3=0
+      <define>OWLCPP_RELEASE_VERSION_3=1
       <define>OWLCPP_BUILD_VERSION=$(BUILD_VERSION)
       <define>OWLCPP_CODE_REVISION=$(CODE_REVISION)
     : #default build options
