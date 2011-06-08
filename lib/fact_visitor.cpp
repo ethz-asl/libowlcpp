@@ -167,7 +167,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_cardinality>& tr) {
 *******************************************************************************/
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_complementOf>& tr) {
    const TDLConceptExpression* not_obj_e =
-		   e_manager().Not( concept( tr.object() ) );
+         e_manager().Not( concept( tr.object() ) );
    e_manager().newArgList();
    e_manager().addArg( concept( tr.subject() ) );
    e_manager().addArg( not_obj_e );

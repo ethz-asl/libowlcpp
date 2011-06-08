@@ -18,17 +18,17 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
 namespace owl_cpp{ namespace test{
 
 inline std::string sample_file_path(const std::string& name) {
-	std::string sf( BOOST_PP_STRINGIZE(SAMPLE_DATA_DIR) );
-	sf += '/';
-	sf += name;
-	return sf;
+   std::string sf( BOOST_PP_STRINGIZE(SAMPLE_DATA_DIR) );
+   sf += '/';
+   sf += name;
+   return sf;
 }
 
 inline std::string temp_file_path(const std::string& name) {
-	std::string sf( BOOST_PP_STRINGIZE(TEMPORARY_DIR) );
-	sf += '/';
-	sf += name;
-	return sf;
+   std::string sf( BOOST_PP_STRINGIZE(TEMPORARY_DIR) );
+   sf += '/';
+   sf += name;
+   return sf;
 }
 
 }//namespace test

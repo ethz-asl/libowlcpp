@@ -22,13 +22,13 @@
       <owl:versionIRI rdf:resource="http://purl.obolibrary.org/obo/ido/dev/test_01a.owl"/>
    </owl:Ontology>
 
-	<owl:Class rdf:about="&test;C1" />
-	<owl:Class rdf:about="&test;C2" >
-	  <rdfs:subClassOf rdf:resource="&test;C1" />
-	</owl:Class>
-	<owl:Class rdf:about="&test;C3" >
-	  <rdfs:subClassOf rdf:resource="&test;C1" />
-	</owl:Class>
+   <owl:Class rdf:about="&test;C1" />
+   <owl:Class rdf:about="&test;C2" >
+     <rdfs:subClassOf rdf:resource="&test;C1" />
+   </owl:Class>
+   <owl:Class rdf:about="&test;C3" >
+     <rdfs:subClassOf rdf:resource="&test;C1" />
+   </owl:Class>
    <owl:AllDisjointClasses>
       <owl:members rdf:parseType="Collection">
          <owl:Class rdf:about="&test;C2" />

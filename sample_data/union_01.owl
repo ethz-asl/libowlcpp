@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-	
+   
 <!DOCTYPE rdf:RDF [
 <!ENTITY base "http://www.ifomis.org/bfo/1.1">
 <!ENTITY bfo "&base;#">
@@ -24,8 +24,8 @@
       
    <owl:Ontology rdf:about="union" />
 
-	<owl:Class rdf:about="&snap;Continuant" />
-	<owl:Class rdf:about="&span;Occurrent" />
+   <owl:Class rdf:about="&snap;Continuant" />
+   <owl:Class rdf:about="&span;Occurrent" />
 
    <owl:Class rdf:about="&bfo;Entity">
       <rdfs:label rdf:datatype="&xsd;string">entity</rdfs:label>

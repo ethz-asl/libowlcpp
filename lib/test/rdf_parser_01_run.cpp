@@ -22,9 +22,9 @@ BOOST_FIXTURE_TEST_SUITE(suite, Fixture);
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( rdf_parser_01_union ) {
-	const char* f_name = "union_01.owl";
-//	std::cout << '\n' << f_name << std::endl;
-	const std::string f_path = sample_data_path(f_name);
+   const char* f_name = "union_01.owl";
+//   std::cout << '\n' << f_name << std::endl;
+   const std::string f_path = sample_data_path(f_name);
    Triple_store store;
    load(f_path, store);
    check(store);
@@ -34,9 +34,9 @@ BOOST_AUTO_TEST_CASE( rdf_parser_01_union ) {
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( rdf_parser_01_trans_property ) {
-	const char* f_name = "transitive_property.owl";
-//	std::cout << '\n' << f_name << std::endl;
-	const std::string f_path = sample_data_path(f_name);
+   const char* f_name = "transitive_property.owl";
+//   std::cout << '\n' << f_name << std::endl;
+   const std::string f_path = sample_data_path(f_name);
    Triple_store store;
    load(f_path, store);
 

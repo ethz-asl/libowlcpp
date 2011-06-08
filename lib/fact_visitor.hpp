@@ -36,8 +36,8 @@ template<class T> struct One_visit : public L::Visitor<Triple_std<T>, void, true
 /** Combine types for all visitable tags
 *******************************************************************************/
 typedef bmp::inherit_linearly<
-		ot::mpl_vector_terms_visitable_t,
-		bmp::inherit<One_visit<bmpp::_2>, bmpp::_1>
+      ot::mpl_vector_terms_visitable_t,
+      bmp::inherit<One_visit<bmpp::_2>, bmpp::_1>
 >::type visitor_t;
 
 }//namespace detail
@@ -243,20 +243,20 @@ private:
    /** */
    TDLConceptExpression* concept(const Node_id nid){
       return owl_cpp::concept(nid, store_, kernel_);
-	}
+   }
 
    /** */
    TDLIndividualExpression* instance(const Node_id nid){
-	   return owl_cpp::instance(nid, store_, kernel_);
-	}
+      return owl_cpp::instance(nid, store_, kernel_);
+   }
 
    /** make instance of a class */
    TDLIndividualExpression* instance(const Node_id i, const Node_id c);
 
    /** */
    TDLObjectRoleExpression* property(const Node_id nid){
-	   return owl_cpp::property(nid, store_, kernel_);
-	}
+      return owl_cpp::property(nid, store_, kernel_);
+   }
 };
 
 

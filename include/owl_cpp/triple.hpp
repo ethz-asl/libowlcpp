@@ -108,11 +108,11 @@ template<class T>struct Triple_std : public Triple {
    : Triple(subj, pred, obj) {
       //triple's type tag should be either same as predicate,
       //same as object if predicate is rdf:type, or generic
-	   assert(
-	         ( tag_t::index == pred() ) ||
-	         ( tag_t::index == obj() && ot::T_rdf_type::index == pred() ) ||
-	         ( tag_t::index == ot::T__generic::index )
-	   );
+      assert(
+            ( tag_t::index == pred() ) ||
+            ( tag_t::index == obj() && ot::T_rdf_type::index == pred() ) ||
+            ( tag_t::index == ot::T__generic::index )
+      );
    }
    LOKI_DEFINE_CONST_VISITABLE()
 };

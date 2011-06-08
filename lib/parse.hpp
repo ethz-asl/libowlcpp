@@ -38,7 +38,7 @@ public:
          Sink& sink,
          const unsigned base
    ) {
-	   parse(stream, &sink, handle_statement<Sink>, stop_parsing<Sink>, base);
+      parse(stream, &sink, handle_statement<Sink>, stop_parsing<Sink>, base);
    }
 
 private:
@@ -57,7 +57,7 @@ private:
 
    template<class Sink> static void handle_statement(void* sink, const void* rs) {
       const triple_t triple = convert_statement(rs);
-	   reinterpret_cast<Sink*>(sink)->insert(triple);
+      reinterpret_cast<Sink*>(sink)->insert(triple);
    }
 
    template<class Sink> static bool stop_parsing(const void* sink) {

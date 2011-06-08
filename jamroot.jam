@@ -12,10 +12,10 @@ constant BUILD_VERSION : [ utils.build_version 3 ] ; #YYYYMMDD
 constant CODE_REVISION : [ utils.git_revision ] ; #1234567890abcdef
 
 project owl_cpp
-	: 
-		build-dir $(OUT)
-	: 
-	: requirements
+   : 
+      build-dir $(OUT)
+   : 
+   : requirements
 ;
 
 make $(TEMP_DIR) : : @common.mkdir ;
@@ -24,20 +24,20 @@ if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc
 use-project boost : $(BOOST) ;
 
 alias test
-	: #sources
-		external/factpp
-		lib/test
-		apps
-	: #requirements
+   : #sources
+      external/factpp
+      lib/test
+      apps
+   : #requirements
 ;
 
 alias lib_owl_cpp
-	: #sources
-		lib//lib_owl_cpp
-	: #requirements
-	: #default build options
-	: #usage requirements
-		<include>include
+   : #sources
+      lib//lib_owl_cpp
+   : #requirements
+   : #default build options
+   : #usage requirements
+      <include>include
 ;
 
 alias applications : apps ;
@@ -51,28 +51,28 @@ local doc_public = [ path.glob-tree include : *.hpp : .svn ] ;
 local doc_all = [ path.glob-tree lib : *.cpp *.hpp : .svn ] $(doc_public) ;
 
 doxygen complete.html
-	:
-		$(doc_all)
-	:
-		<doxygen:param>EXTRACT_ALL=YES
-		<doxygen:param>EXTRACT_STATIC=YES
-		<doxygen:param>EXTRACT_PRIVATE=YES
-		<doxygen:param>EXTRACT_ANON_NSPACES=YES
-		<doxygen:param>QUIET=YES
-		<doxygen:param>SHOW_DIRECTORIES=YES
+   :
+      $(doc_all)
+   :
+      <doxygen:param>EXTRACT_ALL=YES
+      <doxygen:param>EXTRACT_STATIC=YES
+      <doxygen:param>EXTRACT_PRIVATE=YES
+      <doxygen:param>EXTRACT_ANON_NSPACES=YES
+      <doxygen:param>QUIET=YES
+      <doxygen:param>SHOW_DIRECTORIES=YES
 ;
 
 doxygen api.html
-	:
-		$(doc_public)
-	:
-		<doxygen:param>EXTRACT_ALL=NO
-		<doxygen:param>WARN_IF_UNDOCUMENTED=NO
-		<doxygen:param>EXTRACT_STATIC=YES
-		<doxygen:param>EXTRACT_PRIVATE=NO
-		<doxygen:param>EXTRACT_ANON_NSPACES=NO
-		<doxygen:param>QUIET=YES
-		<doxygen:param>SHOW_DIRECTORIES=YES
+   :
+      $(doc_public)
+   :
+      <doxygen:param>EXTRACT_ALL=NO
+      <doxygen:param>WARN_IF_UNDOCUMENTED=NO
+      <doxygen:param>EXTRACT_STATIC=YES
+      <doxygen:param>EXTRACT_PRIVATE=NO
+      <doxygen:param>EXTRACT_ANON_NSPACES=NO
+      <doxygen:param>QUIET=YES
+      <doxygen:param>SHOW_DIRECTORIES=YES
 ;
 
 alias autodoc : complete.html api.html ;
