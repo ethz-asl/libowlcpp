@@ -11,9 +11,11 @@ rule build_version ( n ? ) {
 
 # return file content as string (os specific)
 rule read_file ( file ) {
+   import path ;
+   local f = [ path.native $(file) ] ;
    switch [ modules.peek : OS ] {
-      case NT : e = [ SHELL "TYPE $(file)" ] ;
-      case *  : e = [ SHELL "cat  $(file)" ] ;
+      case NT : e = [ SHELL "TYPE $(f)" ] ;
+      case *  : e = [ SHELL "cat  $(f)" ] ;
    }
    return $(e) ;
 }
