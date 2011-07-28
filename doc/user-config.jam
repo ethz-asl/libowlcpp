@@ -1,9 +1,11 @@
-# file user-config.jam
-# Provides information about build tools and libraries on your system.  See also
+# File user-config.jam
+# provides information about build tools and libraries on your system.  
+# For more information see
 # http://www.boost.org/boost-build2/doc/html/bbv2/overview/configuration.html
 #
 # 1. If file "user-config.jam" does not already exist in your HOME folder, copy
-#    this file to that location.  On MS Windows HOME folder is usually
+#    "doc/user-config.jam" to that location.  
+#     On MS Windows, HOME folder is usually
 #    "C:\Documents and Settings\your_user_name".
 #
 # 2. Uncomment "using" statements for the compilers you are going to use.
@@ -12,10 +14,17 @@
 #    building the project.  Make sure that the libraries are installed on your
 #    system and enter their correct locations.
 
+## compilers:
+
+## Microsoft Visual C++
 # using msvc ;
-using gcc ;
-using doxygen ;
-constant USING_DOXYGEN : 1 ;
+
+## Linux gcc
+# using gcc ;
+
+## To use Doxygen, uncomment following two lines
+# using doxygen ;
+# constant USING_DOXYGEN : 1 ;
 
 local utils = utils/ ;
 

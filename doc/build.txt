@@ -1,26 +1,33 @@
-Instructions for building owl_cpp library and unit tests
+File owl_cpp/doc/build.txt
+provides instructions for building owl_cpp library and for running tests
 
 Libraries required by owl_cpp are listed in file "user-config.jam.txt".
 Build is managed by Boost.Build V2 (http://www.boost.org/boost-build2).
 
-1. Download a distribution of Boost (http://www.boost.org/).
+1. Download current distribution of Boost (http://www.boost.org/).
+   Expand the archive on your hard drive.
 
-2. Build Boost.Jam by running $(BOOST)/tools/jam/build_dist.* script.  See also
-   http://www.boost.org/boost-build2/doc/html/index.html
+2. Build Boost.Jam by running $(BOOST)/tools/build/v2/bootstrap.(bat or sh) script,
+   where $(BOOST) is the path to the Boost root directory, 
+   e.g., "C:\Program Files\boost\boost_1_46_1".
+   See also http://www.boost.org/boost-build2/doc/html/index.html
 
-3. Make sure that "boost-build.jam" is present in the project directory 
-	or in a directory above it.  For details see "boost-build.jam" file.
+3. If not already present, copy "doc/boost-build.jam" to owl_cpp/ 
+   or to any directory above it.  Adjust the path to Boost.Build.
+   For details see "doc/boost-build.jam" file.
 
-4. Make sure that "user-config.jam" is present in your HOME folder.  For details
-   see "user-config.jam" file.
+4. If not already present, copy file "doc/user-config.jam" to your HOME folder.
+   Edit it to specify compilers and locations of required libraries. 
+   For details see "doc/user-config.jam" file.
 
 5. (optional) In Eclipse/CDT create build variable ${bjam_path} 
 	pointing to BOOST.Jam executable.  For example:
-        bjam_path=${BOOST}/tools/build/v2/engine/stage/bin.ntx86/bjam.exe
+        bjam_path=$(BOOST)/tools/build/v2/bjam.exe
 
 6. Run BOOST.Jam in folder owl_cpp.  Examples:
         $(bjam_path) release lib_owl_cpp
         $(bjam_path) -j8 debug test
         $(bjam_path) --toolset=msvc release lib_owl_cpp
         $(bjam_path) autodoc
-        ohcount apps include lib
+   where $(bjam_path) is path to Boost.Jam executable.
+   For more info on using Boost.Jam see http://www.boost.org/boost-build2

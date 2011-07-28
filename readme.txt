@@ -9,5 +9,5 @@ owl_cpp is a C++ library for reading and querying OWL ontologies.
 
 For building, see doc/build.txt.
 For legal information see doc/license.txt.
-For HTML documentation see out/html/api.html
+Doxygen HTML documentation is generated in out/html/api.html
 Contact: svarneticist (at) users.sourceforge.net
