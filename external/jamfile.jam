@@ -17,12 +17,12 @@ alias factpp_kernel
     : #requirements
 ;
 
-if ! $(LIBXML2) { EXIT "please set LIBXML2 to location and  version of libxml2 library; see doc/user-config.jam" ; }
-using ext/libxml2 : $(LIBXML2[2]) : $(LIBXML2[1]) ;
+if ! $(LIBXML) { EXIT "please set LIBXML to location and  version of libxml library; see doc/user-config.jam" ; }
+using ext/libxml : $(LIBXML[2]) : $(LIBXML[1]) ;
 
 alias libxml2
     : #sources
-        /ext/libxml2
+        /ext/libxml
     : #requirements
 ;
 

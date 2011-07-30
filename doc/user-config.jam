@@ -26,29 +26,29 @@
 # using doxygen ;
 # constant USING_DOXYGEN : 1 ;
 
-local utils = utils/ ;
+local utils = utils ;
 
 # Boost library
 #http://www.boost.org/
-path-constant BOOST : "$(utils)boost/boost_1_46_1/" ;
+path-constant BOOST : "$(utils)/boost/boost_1_46_1/" ;
 
 # FaCT++ library
 # http://code.google.com/p/factplusplus/
-path-constant FACT_PP_LIB : "$(utils)FaCT++-1.5.2/" ;
+constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
 
 # libxml library
 # ftp://xmlsoft.org/libxml2/
 # build commands:
 # ./configure --without-docbook --without-ftp --without-history --without-html --without-http --without-zlib
 # make
-path-constant LIBXML2_STATIC : $(utils)libxml2-2.7.7/.libs/libxml2.a ;
+path-constant LIBXML2_STATIC : $(utils)/libxml2-2.7.7/.libs/libxml2.a ;
 
 # Raptor library
 # http://download.librdf.org/source/
 # build commands:
 # ./configure --enable-parsers="rdfxml ntriples turtle  guess" --enable-serializers=ntriples --with-www=none --with-xml2-config=enter_correct_path/libxml2-2.7.7
 # make
-local lib_raptor = $(utils)raptor/raptor2-2.0.2 ;
+local lib_raptor = $(utils)/raptor/raptor2-2.0.2 ;
 path-constant LIB_RAPTOR_INCLUDE : $(lib_raptor)/src/ ;
 path-constant LIB_RAPTOR_SHARED : $(lib_raptor)/src/.libs/libraptor2.so.0.0.0 ;
 path-constant LIB_RAPTOR_STATIC : $(lib_raptor)/src/.libs/libraptor2.a ;
