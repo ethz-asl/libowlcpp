@@ -10,9 +10,10 @@
 #
 # 2. Uncomment "using" statements for the compilers you are going to use.
 #
-# 3. "path-constant" statements specify locations of the libraries required for 
-#    building the project.  Make sure that the libraries are installed on your
-#    system and enter their correct locations.
+# 3. Statements "constant" and "path-constant" specify locations of 
+#    the libraries required for building the project.
+#    Make sure that the libraries are installed on your system and 
+#    enter their correct locations and versions.
 
 ## compilers:
 
@@ -26,29 +27,20 @@
 # using doxygen ;
 # constant USING_DOXYGEN : 1 ;
 
-local utils = utils/ ;
+local utils = utils ;
 
-# Boost library
-#http://www.boost.org/
-path-constant BOOST : "$(utils)boost/boost_1_46_1/" ;
+## Boost library
+## http://www.boost.org/
+path-constant BOOST : "$(utils)/boost/boost_1_47_0/" 1.47.0 ;
 
-# FaCT++ library
-# http://code.google.com/p/factplusplus/
-path-constant FACT_PP_LIB : "$(utils)FaCT++-1.5.2/" ;
+## FaCT++ library
+## http://code.google.com/p/factplusplus/
+constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
 
-# libxml library
-# ftp://xmlsoft.org/libxml2/
-# build commands:
-# ./configure --without-docbook --without-ftp --without-history --without-html --without-http --without-zlib
-# make
-path-constant LIBXML2_STATIC : $(utils)libxml2-2.7.7/.libs/libxml2.a ;
+## expat library
+## http://expat.sourceforge.net/
+constant EXPAT : "$(utils)/expat-2.0.1" 2.0.1 ;
 
-# Raptor library
-# http://download.librdf.org/source/
-# build commands:
-# ./configure --enable-parsers="rdfxml ntriples turtle  guess" --enable-serializers=ntriples --with-www=none --with-xml2-config=enter_correct_path/libxml2-2.7.7
-# make
-local lib_raptor = $(utils)raptor/raptor2-2.0.2 ;
-path-constant LIB_RAPTOR_INCLUDE : $(lib_raptor)/src/ ;
-path-constant LIB_RAPTOR_SHARED : $(lib_raptor)/src/.libs/libraptor2.so.0.0.0 ;
-path-constant LIB_RAPTOR_STATIC : $(lib_raptor)/src/.libs/libraptor2.a ;
+## Raptor library
+## http://librdf.org/raptor/
+constant RAPTOR : "$(utils)/raptor2-2.0.4" 2.0.4 ;

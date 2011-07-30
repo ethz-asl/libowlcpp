@@ -21,11 +21,10 @@ project owl_cpp
 make $(TEMP_DIR) : : @common.mkdir ;
 
 if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
-use-project boost : $(BOOST) ;
+use-project boost : $(BOOST[1]) ;
 
 alias test
    : #sources
-      external/factpp
       lib/test
       apps
    : #requirements
@@ -41,9 +40,10 @@ alias lib_owl_cpp
 ;
 
 alias applications : apps ;
-alias factpp : external/factpp//factpp ;
-alias raptor : external/raptor//raptor ;
-explicit test factpp raptor ;
+alias factpp_kernel : external//factpp_kernel ;
+alias expat : external//expat ;
+alias raptor : external//raptor ;
+explicit test factpp_kernel expat raptor ;
 
 if $(USING_DOXYGEN) {
 import path ;
