@@ -1,0 +1,35 @@
+# @file "owl_cpp/external/ext/factpp.jam"
+# part of owl_cpp project.
+# Distributed under GNU Lesser General Public License; see doc/license.txt.
+# @date 2011 @author Mikhail K Levin
+
+import extension ;
+
+import property ;
+import project ;
+import feature ;
+import common ;
+
+extension.declare factpp ;
+
+rule init ( version ? : location : options * )
+{
+    version ?= default ;
+    
+    local kernel_location = $(location)/src/Kernel ;
+    
+    local requirements = [ 
+        extension.define factpp $(version) 
+        : $(kernel_location) 
+        : $(options) 
+    ] ;
+    
+    local src = [ glob $(kernel_location)/*.cpp : parseTime.cpp ] ;
+    
+    lib factpp_kernel
+        :   $(src)
+        :   $(requirements)
+        :   
+        :   <include>$(kernel_location)
+        ;
+}

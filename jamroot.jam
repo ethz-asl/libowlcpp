@@ -41,9 +41,10 @@ alias lib_owl_cpp
 ;
 
 alias applications : apps ;
-alias factpp : external/factpp//factpp ;
+alias factpp_kernel : external//factpp_kernel ;
 alias raptor : external/raptor//raptor ;
-explicit test factpp raptor ;
+alias libxml2 : external//libxml2 ;
+explicit test factpp_kernel raptor ;
 
 if $(USING_DOXYGEN) {
 import path ;

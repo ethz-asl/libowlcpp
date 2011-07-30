@@ -1,0 +1,28 @@
+# @file "owl_cpp/external/jamfile.jam"
+# part of owl_cpp project.
+# Distributed under GNU Lesser General Public License; see doc/license.txt.
+# @date 2011 @author Mikhail K Levin
+
+project external
+    : build-dir $(OUT)/bin
+    : 
+;
+
+if ! $(FACTPP) { EXIT "please set FACTPP to location and  version of FaCT++ library; see doc/user-config.jam" ; }
+using ext/factpp : $(FACTPP[2]) : $(FACTPP[1]) ;
+
+alias factpp_kernel
+    : #sources
+        /ext/factpp//factpp_kernel
+    : #requirements
+;
+
+if ! $(LIBXML2) { EXIT "please set LIBXML2 to location and  version of libxml2 library; see doc/user-config.jam" ; }
+using ext/libxml2 : $(LIBXML2[2]) : $(LIBXML2[1]) ;
+
+alias libxml2
+    : #sources
+        /ext/libxml2
+    : #requirements
+;
+
