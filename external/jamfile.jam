@@ -8,7 +8,12 @@ project external
     : 
 ;
 
-if ! $(FACTPP) { EXIT "please set FACTPP to location and  version of FaCT++ library; see doc/user-config.jam" ; }
+if ! $(FACTPP) { 
+EXIT "
+Please set variable FACTPP to location and version of FaCT++ library.
+See doc/user-config.jam
+" ;
+}
 using ext/factpp : $(FACTPP[2]) : $(FACTPP[1]) ;
 
 alias factpp_kernel
@@ -17,12 +22,46 @@ alias factpp_kernel
     : #requirements
 ;
 
-if ! $(LIBXML) { EXIT "please set LIBXML to location and  version of libxml library; see doc/user-config.jam" ; }
+
+if ! $(LIBXML) { 
+EXIT "
+Please set variable LIBXML to location and version of libxml library.
+See doc/user-config.jam
+" ;
+}
 using ext/libxml : $(LIBXML[2]) : $(LIBXML[1]) ;
 
 alias libxml2
     : #sources
         /ext/libxml
+    : #requirements
+;
+
+if ! $(EXPAT) { 
+EXIT "
+Please set variable EXPAT to location and version of expat library.
+See doc/user-config.jam
+" ;
+}
+using ext/expat : $(EXPAT[2]) : $(EXPAT[1]) ;
+
+alias expat
+    : #sources
+        /ext/expat
+    : #requirements
+;
+
+if ! $(RAPTOR) { 
+EXIT "
+Please set variable RAPTOR to location and version of expat library.
+See doc/user-config.jam
+" ;
+}
+using ext/raptor : $(RAPTOR[2]) : $(RAPTOR[1]) ;
+
+alias raptor
+    : #sources
+        /ext/raptor
     : #requirements
 ;
 

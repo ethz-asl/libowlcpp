@@ -3,6 +3,9 @@
 # Distributed under GNU Lesser General Public License; see doc/license.txt.
 # @date 2011 @author Mikhail K Levin
 
+# Boost.build script for building FaCT++ library 
+# <http://code.google.com/p/factplusplus/>
+
 import extension ;
 
 import property ;
