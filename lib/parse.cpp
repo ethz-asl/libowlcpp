@@ -8,7 +8,7 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
 #include <iostream>
 #include "boost/lexical_cast.hpp"
 namespace b = boost;
-#include "raptor.h"
+#include "raptor2.h"
 
 namespace owl_cpp { namespace{
 /**@brief error message handler

@@ -15,27 +15,7 @@ See doc/user-config.jam
 " ;
 }
 using ext/factpp : $(FACTPP[2]) : $(FACTPP[1]) ;
-
-alias factpp_kernel
-    : #sources
-        /ext/factpp//factpp_kernel
-    : #requirements
-;
-
-
-if ! $(LIBXML) { 
-EXIT "
-Please set variable LIBXML to location and version of libxml library.
-See doc/user-config.jam
-" ;
-}
-using ext/libxml : $(LIBXML[2]) : $(LIBXML[1]) ;
-
-alias libxml2
-    : #sources
-        /ext/libxml
-    : #requirements
-;
+alias factpp_kernel : /ext/factpp//factpp_kernel ;
 
 if ! $(EXPAT) { 
 EXIT "
@@ -44,12 +24,7 @@ See doc/user-config.jam
 " ;
 }
 using ext/expat : $(EXPAT[2]) : $(EXPAT[1]) ;
-
-alias expat
-    : #sources
-        /ext/expat
-    : #requirements
-;
+alias expat : /ext/expat ;
 
 if ! $(RAPTOR) { 
 EXIT "
@@ -58,10 +33,5 @@ See doc/user-config.jam
 " ;
 }
 using ext/raptor : $(RAPTOR[2]) : $(RAPTOR[1]) ;
-
-alias raptor
-    : #sources
-        /ext/raptor
-    : #requirements
-;
+alias raptor : /ext/raptor ;
 

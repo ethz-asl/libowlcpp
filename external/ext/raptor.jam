@@ -6,7 +6,6 @@
 # Boost.build script for building Raptor library <http://librdf.org/raptor/>
 
 import extension ;
-
 import property ;
 import project ;
 import feature ;
@@ -15,48 +14,25 @@ import regex ;
 
 extension.declare raptor ;
 
+rule version_raptor ( properties * ) {
+   local v = [ property.select <raptor-version> : $(properties) ] ;
+   return $(v:G=) ;
+}
+
+rule version_split ( v ) {
+   return [ regex.split $(v) "\\." ] ;
+}
+
+rule version_calc ( v ) {
+   local vs = [ version_split $(v) ] ;
+   local vdmin = $(vs[1])0000 ;
+   local vd = [ CALC [ CALC $(vdmin) + $(vs[2])00 ] + $(vs[3]) ] ;
+   return $(vdmin) $(vd) ;
+}
+
 rule config_h ( targets * : sources * : properties * )
 {
-    local define ;
-    local undef ;
-    local v = [ property.select <raptor-version> : $(properties) ] ;
-    v  = $(v:G=) ;
-    local u = [ regex.split $(v) "\\." ] ;
-    local vdmin = $(u[1])0000 ;
-    local vd = [ CALC [ CALC $(vdmin) + $(u[2])00 ] + $(u[3]) ] ;
-    local other =
-         "#define PACKAGE \"raptor2\""
-         "#define PACKAGE_NAME \"Raptor RDF Parser and Serializer library\""
-         "#define PACKAGE_VERSION \"$(v)\""
-         "#define VERSION \"$(v)\""
-         "#define PACKAGE_STRING \"Raptor RDF Parser and Serializer library $(v)\""
-         "#define PACKAGE_BUGREPORT \"http://bugs.librdf.org/\""
-         "#define PACKAGE_TARNAME \"raptor2\""
-         "#define PACKAGE_URL \"\""
-         "#define RAPTOR_MIN_VERSION_DECIMAL $(vdmin)"
-         "#define RAPTOR_VERSION_DECIMAL $(vd)"
-         "#define RAPTOR_VERSION_MAJOR $(u[1])"
-         "#define RAPTOR_VERSION_MINOR $(u[2])"
-         "#define RAPTOR_VERSION_RELEASE $(u[3])"
-         "#define SIZEOF_UNSIGNED_CHAR 1"
-         "#define SIZEOF_UNSIGNED_INT 4"
-         "#define SIZEOF_UNSIGNED_LONG sizeof(unsigned long)"
-         "#define SIZEOF_UNSIGNED_SHORT 2"
-         "#if defined AC_APPLE_UNIVERSAL_BUILD"
-         "# if defined __BIG_ENDIAN__"
-         "#  define WORDS_BIGENDIAN 1"
-         "# endif"
-         "#else"
-         "# ifndef WORDS_BIGENDIAN"
-         "/* #  undef WORDS_BIGENDIAN */"
-         "# endif"
-         "#endif"
-    ;
-    
-    switch [ property.select <target-os> : $(properties) ]
-    {
-        case *linux* :
-        define +=
+    local define =
             HAVE_DLFCN_H
             HAVE_ERRNO_H
             HAVE_EXPAT_H
@@ -96,20 +72,55 @@ rule config_h ( targets * : sources * : properties * )
             RAPTOR_XML_EXPAT
             STDC_HEADERS
             TIME_WITH_SYS_TIME
+    ;
+    
+    local undef ;
+    
+    local v = [ version_raptor $(properties) ] ;
+    local vs = [ version_split $(v) ] ;
+    local vc = [ version_calc $(v) ] ;
+    
+    local other =
+         "#define PACKAGE \"raptor2\""
+         "#define PACKAGE_NAME \"Raptor RDF Parser and Serializer library\""
+         "#define PACKAGE_VERSION \"$(v)\""
+         "#define VERSION \"$(v)\""
+         "#define PACKAGE_STRING \"Raptor RDF Parser and Serializer library $(v)\""
+         "#define PACKAGE_BUGREPORT \"http://bugs.librdf.org/\""
+         "#define PACKAGE_TARNAME \"raptor2\""
+         "#define PACKAGE_URL \"\""
+         "#define RAPTOR_MIN_VERSION_DECIMAL $(vc[1])"
+         "#define RAPTOR_VERSION_DECIMAL $(vc[2])"
+         "#define RAPTOR_VERSION_MAJOR $(vs[1])"
+         "#define RAPTOR_VERSION_MINOR $(vs[2])"
+         "#define RAPTOR_VERSION_RELEASE $(vs[3])"
+         "#define SIZEOF_UNSIGNED_CHAR 1"
+         "#define SIZEOF_UNSIGNED_INT 4"
+         "#define SIZEOF_UNSIGNED_LONG sizeof(unsigned long)"
+         "#define SIZEOF_UNSIGNED_SHORT 2"
+         "#if defined AC_APPLE_UNIVERSAL_BUILD"
+         "# if defined __BIG_ENDIAN__"
+         "#  define WORDS_BIGENDIAN 1"
+         "# endif"
+         "#else"
+         "# ifndef WORDS_BIGENDIAN"
+         "/* #  undef WORDS_BIGENDIAN */"
+         "# endif"
+         "#endif"
+    ;
+    
+    switch [ property.select <target-os> : $(properties) ]
+    {
+        case *linux* :
+        define +=
             ;
         undef +=
             ;
-        BYTEORDER on $(<) = 1234 ;
         
         case *windows* :
         define +=
-            HAVE_DLFCN_H HAVE_FCNTL_H HAVE_INTTYPES_H
-            HAVE_MEMMOVE HAVE_MEMORY_H HAVE_STDINT_H HAVE_STDLIB_H
-            HAVE_STRINGS_H HAVE_STRING_H HAVE_SYS_STAT_H HAVE_SYS_TYPES_H
-            HAVE_UNISTD_H STDC_HEADERS XML_DTD XML_NS
             ;
         undef +=
-            HAVE_BCOPY HAVE_GETPAGESIZE HAVE_MMAP WORDS_BIGENDIAN const off_t size_t
             ;
     }
     CONFIG on $(<) =
@@ -128,18 +139,17 @@ actions config_h
 
 rule raptor2_h ( targets * : sources * : properties * )
 {
-   local v = [ property.select <raptor-version> : $(properties) ] ;
-   v  = $(v:G=) ;
-   local u = [ regex.split $(v) "\\." ] ;
-   local vdmin = $(u[1])0000 ;
-   local vd = [ CALC [ CALC $(vdmin) + $(u[2])00 ] + $(u[3]) ] ;
+   local v = [ version_raptor $(properties) ] ;
+   local vs = [ version_split $(v) ] ;
+   local vc = [ version_calc $(v) ] ;
+   
    import utils ;
    local src = [ utils.read_file $(sources:G=) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_DECIMAL@ $(vd) ] ;
+   src = [ regex.replace $(src) @RAPTOR_VERSION_DECIMAL@ $(vc[2]) ] ;
    src = [ regex.replace $(src) @VERSION@ $(v) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_MAJOR@ $(u[1]) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_MINOR@ $(u[2]) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_RELEASE@ $(u[3]) ] ;
+   src = [ regex.replace $(src) @RAPTOR_VERSION_MAJOR@ $(vs[1]) ] ;
+   src = [ regex.replace $(src) @RAPTOR_VERSION_MINOR@ $(vs[2]) ] ;
+   src = [ regex.replace $(src) @RAPTOR_VERSION_RELEASE@ $(vs[3]) ] ;
    
    STR on $(<) = $(src)
    ;
@@ -177,6 +187,16 @@ rule init ( version ? : location : options * )
    explicit raptor2.h ;
    
    src = 
+      raptor_parse.c raptor_serialize.c
+      raptor_rfc2396.c raptor_uri.c raptor_log.c raptor_locator.c
+      raptor_namespace.c raptor_qname.c raptor_option.c
+      raptor_general.c raptor_unicode.c raptor_www.c
+      raptor_statement.c raptor_term.c raptor_sequence.c
+      raptor_stringbuffer.c raptor_iostream.c raptor_xml.c
+      raptor_xml_writer.c raptor_set.c turtle_common.c
+      raptor_turtle_writer.c raptor_avltree.c snprintf.c
+      raptor_json_writer.c raptor_memstr.c raptor_concepts.c
+      raptor_syntax_description.c
       raptor_expat.c
       raptor_rdfxml.c raptor_sax2.c
       turtle_lexer.c turtle_parser.c
@@ -194,8 +214,6 @@ rule init ( version ? : location : options * )
             <raptor-location>$(location)
             <include>$(location)/src
             <location-prefix>raptor
-            <toolset>msvc:<define>_CRT_SECURE_NO_DEPRECATE
-            <toolset>msvc:<define>_SCL_SECURE_NO_DEPRECATE
             <define>HAVE_CONFIG_H
             <define>LIBRDFA_IN_RAPTOR
             <define>RAPTOR_INTERNAL
@@ -203,10 +221,6 @@ rule init ( version ? : location : options * )
             <dependency>raptor_config.h
             <implicit-dependency>raptor2.h
             <dependency>raptor2.h
-            #~ <link>shared:<define>EXPAT_EXPORTS
-            #~ <link>shared:<define>XML_BUILDING_EXPAT
-            <link>static
-            <link>static:<define>XML_STATIC
         :
         :
             <implicit-dependency>raptor2.h

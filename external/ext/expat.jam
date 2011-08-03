@@ -103,7 +103,6 @@ rule init ( version ? : location : options * )
             <dependency>expat_config.h
             #~ <link>shared:<define>EXPAT_EXPORTS
             #~ <link>shared:<define>XML_BUILDING_EXPAT
-            <link>static
             <link>static:<define>XML_STATIC
         :
         :   <include>$(location)/lib
