@@ -38,7 +38,6 @@ rule config_h ( targets * : sources * : properties * )
             HAVE_EXPAT_H
             HAVE_FCNTL_H
             HAVE_GETOPT
-            HAVE_GETOPT_H
             HAVE_GETOPT_LONG
             HAVE_GETTIMEOFDAY
             HAVE_INTTYPES_H
@@ -56,9 +55,7 @@ rule config_h ( targets * : sources * : properties * )
             HAVE_STRING_H
             HAVE_SYS_PARAM_H
             HAVE_SYS_STAT_H
-            HAVE_SYS_TIME_H
             HAVE_SYS_TYPES_H
-            HAVE_UNISTD_H
             HAVE_VSNPRINTF
             HAVE_XMLCTXTUSEOPTIONS
             HAVE_XMLSAX2INTERNALSUBSET
@@ -71,7 +68,6 @@ rule config_h ( targets * : sources * : properties * )
             RAPTOR_WWW_NONE
             RAPTOR_XML_EXPAT
             STDC_HEADERS
-            TIME_WITH_SYS_TIME
     ;
     
     local undef ;
@@ -96,7 +92,7 @@ rule config_h ( targets * : sources * : properties * )
          "#define RAPTOR_VERSION_RELEASE $(vs[3])"
          "#define SIZEOF_UNSIGNED_CHAR 1"
          "#define SIZEOF_UNSIGNED_INT 4"
-         "#define SIZEOF_UNSIGNED_LONG sizeof(unsigned long)"
+         "#define SIZEOF_UNSIGNED_LONG 4"
          "#define SIZEOF_UNSIGNED_SHORT 2"
          "#if defined AC_APPLE_UNIVERSAL_BUILD"
          "# if defined __BIG_ENDIAN__"
@@ -113,15 +109,34 @@ rule config_h ( targets * : sources * : properties * )
     {
         case *linux* :
         define +=
+            HAVE_GETOPT_H
+            HAVE_SYS_TIME_H
+            TIME_WITH_SYS_TIME
+            HAVE_UNISTD_H
             ;
         undef +=
             ;
         
         case *windows* :
         define +=
+            HAVE_STRICMP
+            WIN32_LEAN_AND_MEAN
+            YY_USE_CONST
             ;
         undef +=
             ;
+        other +=
+            "#define vsnprintf _vsnprintf"
+            "#define snprintf _snprintf"
+            "#define access _access"
+            "#define sscanf sscanf_s"
+            "#define stricmp _stricmp"
+            "#define strnicmp _strnicmp"
+            "#define __func__ \"\""
+            "#undef RAPTOR_INLINE"
+            "#define RAPTOR_INLINE __inline"
+            
+        ;
     }
     CONFIG on $(<) =
         $(other)
@@ -207,9 +222,14 @@ rule init ( version ? : location : options * )
       strcasecmp.c
       parsedate.c
       ;
+   
+   alias expat_lib : ../../external//expat : <link>static ;
+   alias expat_dll : ../../external//expat : <link>shared ;
    lib raptor
-        :   $(location)/src/$(src) $(PROJ_ROOT)//expat
+        :   $(location)/src/$(src)
         :   $(requirements)
+            <library>expat_lib
+            <library>expat_dll
             <raptor-version>$(version)
             <raptor-location>$(location)
             <include>$(location)/src
@@ -221,6 +241,7 @@ rule init ( version ? : location : options * )
             <dependency>raptor_config.h
             <implicit-dependency>raptor2.h
             <dependency>raptor2.h
+#            <toolset>msvc:<define>WIN32
         :
         :
             <implicit-dependency>raptor2.h

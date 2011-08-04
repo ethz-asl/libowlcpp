@@ -39,8 +39,8 @@ constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
 
 ## expat library
 ## http://expat.sourceforge.net/
-constant EXPAT : "$(utils)/expat-2.0.1 2.0.1 ;
+constant EXPAT : "$(utils)/expat-2.0.1" 2.0.1 ;
 
 ## Raptor library
-## http://download.librdf.org/source/
-constant RAPTOR : $(utils)/raptor2-2.0.4 2.0.4 ;
+## http://librdf.org/raptor/
+constant RAPTOR : "$(utils)/raptor2-2.0.4" 2.0.4 ;
