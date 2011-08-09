@@ -1,7 +1,7 @@
 /** @file "/owl_cpp/apps/common_prefixes.hpp" 
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+Copyright @author Mikhail K Levin @date 2010
 *******************************************************************************/
 #ifndef COMMON_PREFIXES_HPP_
 #define COMMON_PREFIXES_HPP_

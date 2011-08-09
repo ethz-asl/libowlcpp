@@ -1,4 +1,7 @@
 # owl_cpp/jamroot.jam
+# part of owl_cpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2010-1
 
 path-constant PROJ_ROOT : . ;
 path-constant OUT : out ;
@@ -47,8 +50,8 @@ explicit test factpp_kernel expat raptor ;
 
 if $(USING_DOXYGEN) {
 import path ;
-local doc_public = [ path.glob-tree include : *.hpp : .svn ] ;
-local doc_all = [ path.glob-tree lib : *.cpp *.hpp : .svn ] $(doc_public) ;
+local doc_public = [ path.glob-tree include apps : *.hpp *.cpp ] ;
+local doc_all = [ path.glob-tree lib : *.cpp *.hpp ] $(doc_public) ;
 
 doxygen complete.html
    :
@@ -60,6 +63,7 @@ doxygen complete.html
       <doxygen:param>EXTRACT_ANON_NSPACES=YES
       <doxygen:param>QUIET=YES
       <doxygen:param>SHOW_DIRECTORIES=YES
+      <doxygen:param>EXAMPLE_PATH=.
 ;
 
 doxygen api.html
@@ -73,6 +77,7 @@ doxygen api.html
       <doxygen:param>EXTRACT_ANON_NSPACES=NO
       <doxygen:param>QUIET=YES
       <doxygen:param>SHOW_DIRECTORIES=YES
+      <doxygen:param>EXAMPLE_PATH=.
 ;
 
 alias autodoc : complete.html api.html ;

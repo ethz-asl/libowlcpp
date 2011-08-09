@@ -1,7 +1,7 @@
-/** @file "/owl_cpp/include/owl_cpp/catalog.hpp" 
-part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+/** @file "/owl_cpp/include/owl_cpp/catalog.hpp"
+part of %owl_cpp project.
+@n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010-1
 *******************************************************************************/
 #ifndef CATALOG_HPP_
 #define CATALOG_HPP_

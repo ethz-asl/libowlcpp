@@ -1,7 +1,7 @@
 /** @file "/owl_cpp/lib/test/object_store_01_run.cpp"
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #define BOOST_TEST_MODULE object_store_01_run
 #include "boost/test/unit_test.hpp"

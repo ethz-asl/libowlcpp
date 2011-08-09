@@ -1,7 +1,7 @@
 /** @file "/owl_cpp/lib/test/rdf_parser_01_run.cpp"
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010-1 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010-1
 *******************************************************************************/
 //#include "pch.hpp"
 #define BOOST_TEST_MODULE rdf_parser_01_run

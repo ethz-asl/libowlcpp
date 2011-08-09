@@ -1,17 +1,15 @@
 /** @file "/owl_cpp/include/owl_cpp/lib_info.hpp" 
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef LIB_INFO_HPP_
 #define LIB_INFO_HPP_
 #include <string>
 /**
-@mainpage %owl_cpp -- library for working with OWL ontologies
-- parsing OWL files into triple store (using Raptor)
-- querying triple store
-- passing triples to FaCT++ reasoner
-- querying reasoner's logic
+@mainpage %owl_cpp library
+
+@verbinclude readme.txt
 
 @namespace owl_cpp
 @brief Main namespace of %owl_cpp library
