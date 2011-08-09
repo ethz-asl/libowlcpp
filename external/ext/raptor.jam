@@ -50,7 +50,6 @@ rule config_h ( targets * : sources * : properties * )
             HAVE_SETJMP_H
             HAVE_STDINT_H
             HAVE_STDLIB_H
-            HAVE_STRCASECMP
             HAVE_STRINGS_H
             HAVE_STRING_H
             HAVE_SYS_PARAM_H
@@ -110,6 +109,7 @@ rule config_h ( targets * : sources * : properties * )
         case *linux* :
         define +=
             HAVE_GETOPT_H
+            HAVE_STRCASECMP
             HAVE_SYS_TIME_H
             TIME_WITH_SYS_TIME
             HAVE_UNISTD_H
@@ -135,7 +135,7 @@ rule config_h ( targets * : sources * : properties * )
             "#define __func__ \"\""
             "#undef RAPTOR_INLINE"
             "#define RAPTOR_INLINE __inline"
-            
+            "#define lround(x) (((x) < 0) ? (long)((x)-0.5) : (long)((x)+0.5))"
         ;
     }
     CONFIG on $(<) =

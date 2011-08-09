@@ -27,7 +27,7 @@ rule init ( version ? : location : options * )
         : $(options) 
     ] ;
     
-    local src = [ glob $(kernel_location)/*.cpp : parseTime.cpp ] ;
+    local src = [ glob $(kernel_location)/*.cpp : $(kernel_location)/parseTime.cpp ] ;
     
     lib factpp_kernel
         :   $(src)

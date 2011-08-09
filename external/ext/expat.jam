@@ -98,6 +98,7 @@ rule init ( version ? : location : options * )
             <location-prefix>expat
             <toolset>msvc:<define>_CRT_SECURE_NO_DEPRECATE
             <toolset>msvc:<define>_SCL_SECURE_NO_DEPRECATE
+            <toolset>msvc:<def-file>$(location)/lib/libexpat.def
             <define>HAVE_EXPAT_CONFIG_H
             <implicit-dependency>expat_config.h
             <dependency>expat_config.h
