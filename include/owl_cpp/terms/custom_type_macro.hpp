@@ -48,8 +48,8 @@ BOOST_PP_EMPTY() \
 
 
 #define OWLCPP_NS_INIT(r, d, e) \
-const std::string OWLCPP_NAMESPACE_TYPE_NAME(e)::name = BOOST_PP_SEQ_ELEM(1,e); \
-const std::string OWLCPP_NAMESPACE_TYPE_NAME(e)::prefix = BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(0,e)); \
+const std::string OWLCPP_NAMESPACE_TYPE_NAME(e)::name(BOOST_PP_SEQ_ELEM(1,e)); \
+const std::string OWLCPP_NAMESPACE_TYPE_NAME(e)::prefix=std::string(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(0,e))); \
 BOOST_PP_EMPTY() \
 /* */
 
@@ -139,7 +139,7 @@ BOOST_PP_EMPTY() \
 @endcode
 *******************************************************************************/
 #define OWLCPP_TERM_INIT(r, d, e) \
-const std::string OWLCPP_TERM_TYPE_NAME(e)::name(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_REVERSE(e)))); \
+const std::string OWLCPP_TERM_TYPE_NAME(e)::name=std::string(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_REVERSE(e)))); \
 BOOST_PP_EMPTY() \
 /* */
 
