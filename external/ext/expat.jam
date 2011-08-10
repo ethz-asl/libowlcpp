@@ -8,9 +8,6 @@
 ###     /ext/expat//expat
 
 import extension ;
-
-
-
 import property ;
 import project ;
 import feature ;
@@ -20,40 +17,70 @@ extension.declare expat ;
 
 rule config_h ( targets * : sources * : properties * )
 {
-    local define ;
-    local undef ;
-    switch [ property.select <target-os> : $(properties) ]
-    {
+   local define =
+      HAVE_DLFCN_H
+      HAVE_FCNTL_H
+      HAVE_INTTYPES_H
+      HAVE_MEMMOVE
+      HAVE_MEMORY_H
+      HAVE_STDINT_H
+      HAVE_STDLIB_H
+      HAVE_STRINGS_H
+      HAVE_STRING_H
+      HAVE_SYS_STAT_H
+      HAVE_SYS_TYPES_H
+      HAVE_UNISTD_H
+      STDC_HEADERS
+      XML_DTD
+      XML_NS
+   ;
+   
+   local undef = WORDS_BIGENDIAN const off_t size_t ;
+
+   local v = [ property.select <expat-version> : $(properties) ] ;
+   v = $(v:G=) ;
+   
+   local other =
+      "#define PACKAGE_BUGREPORT \"expat-bugs@lists.sourceforge.net\""
+      "#define PACKAGE_NAME \"expat\""
+      "#define PACKAGE_STRING \"expat $(v)\""
+      "#define PACKAGE_TARNAME \"expat\""
+      "#define PACKAGE_VERSION \"$(v)\""
+      "#define XML_CONTEXT_BYTES 1024"
+      "#define BYTEORDER 1234"
+   ;
+
+   switch [ property.select <target-os> : $(properties) ]
+   {
         case *linux* :
         define +=
-            HAVE_BCOPY HAVE_DLFCN_H HAVE_FCNTL_H HAVE_GETPAGESIZE HAVE_INTTYPES_H
-            HAVE_MEMMOVE HAVE_MEMORY_H HAVE_MMAP HAVE_STDINT_H HAVE_STDLIB_H
-            HAVE_STRINGS_H HAVE_STRING_H HAVE_SYS_STAT_H HAVE_SYS_TYPES_H
-            HAVE_UNISTD_H STDC_HEADERS XML_DTD XML_NS
+         HAVE_BCOPY
+         HAVE_GETPAGESIZE
+         HAVE_MMAP
             ;
-        undef +=
-            WORDS_BIGENDIAN const off_t size_t
+        
+        case *darwin* :
+        define +=
+         HAVE_BCOPY
+         HAVE_GETPAGESIZE
+         HAVE_MMAP
             ;
-        BYTEORDER on $(<) = 1234 ;
         
         case *windows* :
         define +=
-            HAVE_DLFCN_H HAVE_FCNTL_H HAVE_INTTYPES_H
-            HAVE_MEMMOVE HAVE_MEMORY_H HAVE_STDINT_H HAVE_STDLIB_H
-            HAVE_STRINGS_H HAVE_STRING_H HAVE_SYS_STAT_H HAVE_SYS_TYPES_H
-            HAVE_UNISTD_H STDC_HEADERS XML_DTD XML_NS
             ;
         undef +=
-            HAVE_BCOPY HAVE_GETPAGESIZE HAVE_MMAP WORDS_BIGENDIAN const off_t size_t
+            HAVE_BCOPY HAVE_GETPAGESIZE HAVE_MMAP 
             ;
-        BYTEORDER on $(<) = 1234 ;
-    }
-    local version = [ property.select <expat-version> : $(properties) ] ;
-    VERSION on $(<) = $(version:G=) ;
-    CONFIG on $(<) =
-        "#define $(define) 1"
-        "#undef $(undef)" ;
-    NL on $(<) = "
+   }
+   
+   CONFIG on $(<) =
+      $(other)
+      "#define $(define) 1"
+      "#undef $(undef)"
+   ;
+
+   NL on $(<) = "
 " ;
 }
 actions config_h
@@ -62,13 +89,6 @@ actions config_h
 #ifndef EXPAT_CONFIG_H
 #define EXPAT_CONFIG_H
 
-#define PACKAGE_BUGREPORT "expat-bugs@lists.sourceforge.net"
-#define PACKAGE_NAME "expat"
-#define PACKAGE_STRING "expat $(VERSION)"
-#define PACKAGE_TARNAME "expat"
-#define PACKAGE_VERSION "$(VERSION)"
-#define XML_CONTEXT_BYTES 1024
-#define BYTEORDER $(BYTEORDER)
 $(CONFIG:J=$(NL))
 
 #endif // EXPAT_CONFIG_H
@@ -113,3 +133,4 @@ rule init ( version ? : location : options * )
             <link>static:<define>XML_STATIC
         ;
 }
+

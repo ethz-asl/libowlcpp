@@ -23,6 +23,9 @@
 ## Linux gcc
 # using gcc ;
 
+## Mac OS X
+# using darwin ;
+
 ## To use Doxygen, uncomment following two lines
 # using doxygen ;
 # constant USING_DOXYGEN : 1 ;

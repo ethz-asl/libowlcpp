@@ -7,8 +7,8 @@ project
    : 
    : requirements
       <include>../
-#      <library>/boost/test//boost_unit_test_framework
-      <link>static
+      <library>/boost/test//boost_unit_test_framework
+#      <link>static
       <library>..//lib_owl_cpp
       <define>SAMPLE_DATA_DIR=$(SAMPLE_DATA_DIR:T)
       <define>TEMPORARY_DIR=$(TEMPORARY_DIR:T)
