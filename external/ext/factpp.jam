@@ -32,6 +32,7 @@ rule init ( version ? : location : options * )
     lib factpp_kernel
         :   $(src)
         :   $(requirements)
+            <link>static
         :   
         :   <include>$(kernel_location)
         ;

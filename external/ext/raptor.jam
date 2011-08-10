@@ -165,6 +165,7 @@ rule raptor2_h ( targets * : sources * : properties * )
    src = [ regex.replace $(src) @RAPTOR_VERSION_MAJOR@ $(vs[1]) ] ;
    src = [ regex.replace $(src) @RAPTOR_VERSION_MINOR@ $(vs[2]) ] ;
    src = [ regex.replace $(src) @RAPTOR_VERSION_RELEASE@ $(vs[3]) ] ;
+   src = [ regex.replace $(src) WIN32 RAPTOR_WIN32 ] ;
    
    STR on $(<) = $(src)
    ;
@@ -223,13 +224,10 @@ rule init ( version ? : location : options * )
       parsedate.c
       ;
    
-   alias expat_lib : ../../external//expat : <link>static ;
-   alias expat_dll : ../../external//expat : <link>shared ;
    lib raptor
         :   $(location)/src/$(src)
         :   $(requirements)
-            <library>expat_lib
-            <library>expat_dll
+            <library>../../external//expat
             <raptor-version>$(version)
             <raptor-location>$(location)
             <include>$(location)/src
@@ -241,7 +239,8 @@ rule init ( version ? : location : options * )
             <dependency>raptor_config.h
             <implicit-dependency>raptor2.h
             <dependency>raptor2.h
-#            <toolset>msvc:<define>WIN32
+            <link>static:<define>RAPTOR_STATIC
+            <toolset>msvc:<define>RAPTOR_WIN32
         :
         :
             <implicit-dependency>raptor2.h
