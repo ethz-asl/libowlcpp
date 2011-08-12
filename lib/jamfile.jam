@@ -14,8 +14,8 @@ lib lib_owl_cpp
       <include>.
       <include>../include
       <library>/boost//filesystem
-       <library>..//raptor
-       <library>..//factpp_kernel
+      <library>..//raptor
+      <library>..//factpp_kernel
       <define>OWLCPP_RELEASE_VERSION_1=0
       <define>OWLCPP_RELEASE_VERSION_2=0
       <define>OWLCPP_RELEASE_VERSION_3=2

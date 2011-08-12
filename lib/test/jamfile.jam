@@ -8,6 +8,7 @@ project
    : requirements
       <include>../
       <library>/boost/test//boost_unit_test_framework
+      <library>/boost//filesystem
 #      <link>static
       <library>..//lib_owl_cpp
       <define>SAMPLE_DATA_DIR=$(SAMPLE_DATA_DIR:T)

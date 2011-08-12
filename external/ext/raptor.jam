@@ -145,10 +145,7 @@ rule config_h ( targets * : sources * : properties * ) {
    NL on $(<) = "
 " ;
 }
-actions config_h {
-   @($(STDOUT):E=$(CONFIG:J=$(NL))
-) > "$(<)"
-}
+actions config_h { @($(STDOUT):E=$(CONFIG:J=$(NL))$(NL)) > "$(<)" }
 
 rule raptor2_h ( targets * : sources * : properties * ) {
    local v = [ version_raptor $(properties) ] ;
@@ -169,10 +166,7 @@ rule raptor2_h ( targets * : sources * : properties * ) {
    NL on $(<) = "
 " ;
 }
-actions raptor2_h {
-   @($(STDOUT):E=$(STR)
-) > "$(<)"
-}
+actions raptor2_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 
 rule init ( version ? : location : options * ) {
    version ?= default ;

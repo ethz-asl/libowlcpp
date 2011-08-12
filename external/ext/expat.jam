@@ -74,24 +74,20 @@ rule config_h ( targets * : sources * : properties * ) {
    }
    
    CONFIG on $(<) =
+      "#ifndef EXPAT_CONFIG_H"
+      "#define EXPAT_CONFIG_H"
+      ""
       $(other)
       "#define $(define) 1"
       "#undef $(undef)"
+      ""
+      "#endif // EXPAT_CONFIG_H"
    ;
 
    NL on $(<) = "
 " ;
 }
-actions config_h {
-    @($(STDOUT):E=
-#ifndef EXPAT_CONFIG_H
-#define EXPAT_CONFIG_H
-
-$(CONFIG:J=$(NL))
-
-#endif // EXPAT_CONFIG_H
-) > "$(<)"
-}
+actions config_h { @($(STDOUT):E=$(CONFIG:J=$(NL))$(NL)) > "$(<)" }
 
 rule init ( version ? : location : options * ) {
     version ?= default ;
