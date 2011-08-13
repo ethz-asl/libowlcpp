@@ -162,9 +162,6 @@ rule raptor2_h ( targets * : sources * : properties * ) {
    src = [ regex.replace $(src) WIN32 RAPTOR_WIN32 ] ;
    
    STR on $(<) = $(src) ;
-
-   NL on $(<) = "
-" ;
 }
 actions raptor2_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 
