@@ -48,3 +48,8 @@ constant EXPAT : "$(utils)/expat-2.0.1" 2.0.1 ;
 ## Raptor library source
 ## http://librdf.org/raptor/
 constant RAPTOR : "$(utils)/raptor2-2.0.4" 2.0.4 ;
+
+## Path for GIT client executable (optional)
+## http://git-scm.com/
+# path-constant GIT_PATH : "c:/Program Files (x86)/Git/bin/git.exe" ;
+
