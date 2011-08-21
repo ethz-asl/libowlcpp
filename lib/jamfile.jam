@@ -5,22 +5,35 @@
 
 project lib
    : build-dir $(OUT)/bin
+   : requirements
+      <include>$(BOOST[1])
 ;
+
+obj lib_info
+   : #sources
+         lib_info.cpp
+   : #requirements
+      <include>../include
+      <define>OWLCPP_VERSION_1=$(CODE_REVISION[1])
+      <define>OWLCPP_VERSION_2=$(CODE_REVISION[2])
+      <define>OWLCPP_VERSION_3=$(CODE_REVISION[3])
+      <define>OWLCPP_VERSION_EXTRA=\"$(CODE_REVISION[4])\"
+      <define>OWLCPP_VERSION_STR=$(CODE_REVISION[5])
+      <define>OWLCPP_BUILD=$(BUILD_VERSION)
+   : #default build options
+   : #usage requirements
+;
+explicit lib_info ;
 
 lib lib_owl_cpp
     : #sources
-        [ glob *.cpp ]
+        [ glob *.cpp : lib_info.cpp ] lib_info
     : #requirements
       <include>.
       <include>../include
       <library>/boost//filesystem
       <library>..//raptor
       <library>..//factpp_kernel
-      <define>OWLCPP_RELEASE_VERSION_1=0
-      <define>OWLCPP_RELEASE_VERSION_2=0
-      <define>OWLCPP_RELEASE_VERSION_3=2
-      <define>OWLCPP_BUILD_VERSION=$(BUILD_VERSION)
-      <define>OWLCPP_CODE_REVISION=$(CODE_REVISION)
     : #default build options
     : #usage requirements
       <include>../include
