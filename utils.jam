@@ -71,6 +71,7 @@ rule split_git_tag ( tag ? : git_path ? ) {
    if $(rev[1]) = "" && $(rev[2]) = "" && $(rev[3]) = "" && $(rev[4]) = "" { 
       v4 = "unknown" ; 
       echo "WARNING: code revision unknown" ;
+      echo "Undefined GIT_PATH variable in user-config.jam?" ;
    }
    else { v4 = $(rev[4]) ; }
    return $(v1) $(v2) $(v3) $(v4) $(tag) ;
