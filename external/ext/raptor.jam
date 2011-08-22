@@ -12,6 +12,7 @@ import feature ;
 import common ;
 import regex ;
 import path ;
+import utils ; #local jam-file
 
 extension.declare raptor ;
 
@@ -125,10 +126,10 @@ rule config_h ( targets * : sources * : properties * ) {
       undef +=
          ;
       other +=
-         "#define vsnprintf _vsnprintf"
+#         "#define vsnprintf _vsnprintf"
          "#define snprintf _snprintf"
          "#define access _access"
-         "#define sscanf sscanf_s"
+#         "#define sscanf sscanf_s"
          "#define stricmp _stricmp"
          "#define strnicmp _strnicmp"
          "#define __func__ \"\""
@@ -152,7 +153,6 @@ rule raptor2_h ( targets * : sources * : properties * ) {
    local vs = [ version_split $(v) ] ;
    local vc = [ version_calc $(v) ] ;
    
-   import utils ;
    local src = [ utils.read_file $(sources:G=) ] ;
    src = [ regex.replace $(src) @RAPTOR_VERSION_DECIMAL@ $(vc[2]) ] ;
    src = [ regex.replace $(src) @VERSION@ $(v) ] ;
@@ -162,9 +162,6 @@ rule raptor2_h ( targets * : sources * : properties * ) {
    src = [ regex.replace $(src) WIN32 RAPTOR_WIN32 ] ;
    
    STR on $(<) = $(src) ;
-
-   NL on $(<) = "
-" ;
 }
 actions raptor2_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 

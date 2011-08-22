@@ -15,7 +15,10 @@ See doc/user-config.jam
 " ;
 }
 using ext/factpp : $(FACTPP[2]) : $(FACTPP[1]) ;
-alias factpp_kernel : /ext/factpp//factpp_kernel : <link>static ;
+alias factpp_kernel 
+   : /ext/factpp//factpp_kernel 
+   : #<link>static 
+;
 
 if ! $(EXPAT) { 
 EXIT "

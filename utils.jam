@@ -23,17 +23,15 @@ rule read_file ( file ) {
    return $(e) ;
 }
 
-# return current SVN revision number
-rule svn_revision ( dir ) {
-   local svn_e = [ GLOB $(dir)/.svn/ : entries* ] ;
-   local v ;
-   if $(svn_e) {
-      local e = [ read_file $(svn_e[1]) ] ;
-      v = [ MATCH "dir.([0-9]+)" : $(e) ] ;
-   }
-   v ?= 0 ;
-   return $(v) ;
-}
+# trim whitespace from ends
+rule trim_whitespace ( str ) {
+   import string ;
+   local ws = [ string.whitespace ] ;
+   local re = "^[ \n\t]*([^\n\t]*[^ \n\t])[ \n\t]*$" ;
+   local match = [ MATCH "$(re)" : $(str) ] ;
+   if $(match) { return $(match[1]) ; }
+   else { return $(str) ; }
+} 
 
 # return git revision name
 rule git_revision {
@@ -45,5 +43,37 @@ rule git_revision {
    }
    rev ?= 0 ;
    return $(rev) ;
+}
+
+# return version based on a git tag
+rule git_describe ( git_path ? ) {
+   git_path ?= git ;
+   return [ SHELL "\"$(git_path)\" describe --always --dirty=*" ] ;
+}
+
+# split tag "v1.2.5-8-gda17203*" into "1", "2", "5", "8-gda17203*"
+rule split_git_tag ( tag ? : git_path ? ) {
+   tag ?= [ git_describe $(git_path) ] ;
+   tag = [ trim_whitespace $(tag) ] ;
+   local re = "v?([0-9]*)[ \-\.]?([0-9]*)[ \-\.]?([0-9]*)-?(.*)" ;
+   local rev = [ MATCH $(re) : $(tag) ] ;
+   local v1 ;
+   if $(rev[1]) = "" { v1 = 0 ; }
+   else { v1 = $(rev[1]) ; }
+   local v2 ;
+   if $(rev[2]) = "" { v2 = 0 ; }
+   else { v2 = $(rev[2]) ; }
+   local v3 ;
+   if $(rev[3]) = "" { v3 = 0 ; }
+   else { v3 = $(rev[3]) ; }
+   local v4 ;
+   if $(tag) = "" { tag = "unknown" ; }
+   if $(rev[1]) = "" && $(rev[2]) = "" && $(rev[3]) = "" && $(rev[4]) = "" { 
+      v4 = "unknown" ; 
+      echo "WARNING: code revision unknown" ;
+      echo "Undefined GIT_PATH variable in user-config.jam?" ;
+   }
+   else { v4 = $(rev[4]) ; }
+   return $(v1) $(v2) $(v3) $(v4) $(tag) ;
 }
 

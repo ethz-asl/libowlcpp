@@ -6,24 +6,28 @@ part of owl_cpp project.
 #include "owl_cpp/lib_info.hpp"
 #include "boost/preprocessor/stringize.hpp"
 
-#ifndef OWLCPP_RELEASE_VERSION_1
-#error define OWLCPP_RELEASE_VERSION_1
+#ifndef OWLCPP_VERSION_1
+#error define OWLCPP_VERSION_1
 #endif
 
-#ifndef OWLCPP_RELEASE_VERSION_2
-#error define OWLCPP_RELEASE_VERSION_2
+#ifndef OWLCPP_VERSION_2
+#error define OWLCPP_VERSION_2
 #endif
 
-#ifndef OWLCPP_RELEASE_VERSION_3
-#error define OWLCPP_RELEASE_VERSION_3
+#ifndef OWLCPP_VERSION_3
+#error define OWLCPP_VERSION_3
 #endif
 
-#ifndef OWLCPP_BUILD_VERSION
-#error define OWLCPP_BUILD_VERSION
+#ifndef OWLCPP_VERSION_EXTRA
+#error define OWLCPP_VERSION_EXTRA
 #endif
 
-#ifndef OWLCPP_CODE_REVISION
-#error define OWLCPP_CODE_REVISION
+#ifndef OWLCPP_VERSION_STR
+#error define OWLCPP_VERSION_STR
+#endif
+
+#ifndef OWLCPP_BUILD
+#error define OWLCPP_BUILD
 #endif
 
 namespace owl_cpp {
@@ -38,23 +42,14 @@ const std::string& lib_name() {
 /*
 *******************************************************************************/
 const std::string& version_str() {
-   static const std::string v(
-         BOOST_PP_STRINGIZE( OWLCPP_RELEASE_VERSION_1.OWLCPP_RELEASE_VERSION_2.OWLCPP_RELEASE_VERSION_3 )
-   );
+   static const std::string v(BOOST_PP_STRINGIZE(OWLCPP_VERSION_STR));
    return v;
 }
 
 /*
 *******************************************************************************/
 const std::string& build_str() {
-   static const std::string str(BOOST_PP_STRINGIZE(OWLCPP_BUILD_VERSION));
-   return str;
-}
-
-/*
-*******************************************************************************/
-const std::string& revision_str() {
-   static const std::string str(BOOST_PP_STRINGIZE(OWLCPP_CODE_REVISION));
+   static const std::string str(BOOST_PP_STRINGIZE(OWLCPP_BUILD));
    return str;
 }
 
@@ -62,8 +57,7 @@ const std::string& revision_str() {
 *******************************************************************************/
 const std::string& lib_info_str() {
    static const std::string str(
-         lib_name() + " v" + version_str() + " rev:" + revision_str() +
-         " build:" + build_str()
+         lib_name() + " " + version_str() + " build:" + build_str()
    );
    return str;
 }
