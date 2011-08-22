@@ -126,10 +126,10 @@ rule config_h ( targets * : sources * : properties * ) {
       undef +=
          ;
       other +=
-         "#define vsnprintf _vsnprintf"
+#         "#define vsnprintf _vsnprintf"
          "#define snprintf _snprintf"
          "#define access _access"
-         "#define sscanf sscanf_s"
+#         "#define sscanf sscanf_s"
          "#define stricmp _stricmp"
          "#define strnicmp _strnicmp"
          "#define __func__ \"\""
