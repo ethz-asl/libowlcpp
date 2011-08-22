@@ -75,7 +75,7 @@ rule init ( version ? : location : options * )
       ]
 #      <dependency>factpp_kernel_config.hpp
 #      <implicit-dependency>factpp_kernel_config.hpp
-      <dependency>headers
+#      <dependency>headers
 #      <implicit-dependency>kernel_h
       <include>$(BOOST[0])
       <include>$(kernel_location)
@@ -97,7 +97,7 @@ rule init ( version ? : location : options * )
         <location-prefix>src
    ;
    
-   install headers : Kernel.h factpp_kernel_config.hpp : <location>$(OUT)/include ;
+#   install headers : Kernel.h factpp_kernel_config.hpp : <location>$(OUT)/include ;
    
    local src = 
       [ glob $(kernel_location)/*.cpp : $(kernel_location)/parseTime.cpp ] 
@@ -109,9 +109,9 @@ rule init ( version ? : location : options * )
       :   $(src)
       :   $(requirements)
          <toolset>msvc:<link>static
-         <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
-         <toolset>gcc:<linkflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
-         <toolset>gcc:<cflags>"-include\"$(OUT)/include/factpp_kernel_config.hpp\""
+#         <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
+#         <toolset>gcc:<linkflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
+#         <toolset>gcc:<cflags>"-include\"$(OUT)/include/factpp_kernel_config.hpp\""
       :   
       :   
          <include>$(kernel_location)
