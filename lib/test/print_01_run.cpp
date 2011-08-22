@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE( print_01_run_case03 ) {
    std::cout << std::endl;
    std::cout
    << "version:" << version_str() << ' '
-   << "code revision:" << revision_str() << ' '
+   << "code revision:" << version_str() << ' '
    << "build:" << build_str() << '\n';
    std::cout << lib_info_str();
 }

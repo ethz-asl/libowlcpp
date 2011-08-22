@@ -22,14 +22,13 @@ project owl_cpp
 ;
 
 make $(TEMP_DIR) : : @common.mkdir ;
-
 if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
 use-project boost : $(BOOST[1]) ;
 
 alias test
    : #sources
       lib/test
-      apps
+      apps/test
    : #requirements
 ;
 
