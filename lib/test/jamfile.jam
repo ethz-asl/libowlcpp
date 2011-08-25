@@ -3,6 +3,9 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
+import path ;
+local smpl_dir = [ path.make $(SMPL_DATA) ] ;
+local tmp_dir = [ path.make $(TEMP_DIR) ] ;
 project
    : 
    : requirements
@@ -11,8 +14,8 @@ project
       <library>/boost//filesystem
 #      <link>static
       <library>..//lib_owl_cpp
-      <define>SAMPLE_DATA_DIR=$(SAMPLE_DATA_DIR:T)
-      <define>TEMPORARY_DIR=$(TEMPORARY_DIR:T)
+      <define>SAMPLE_DATA_DIR="\"$(smpl_dir)\""
+      <define>TEMPORARY_DIR="\"$(tmp_dir)\""
 ;
 
 import testing ;

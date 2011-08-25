@@ -27,6 +27,8 @@
 # using darwin ;
 
 ## To use Doxygen, uncomment following two lines
+## Specifying Doxygen location may be required. For example
+## using doxygen : "c:/Program Files/Doxygen/doxygen.exe" ;
 # using doxygen ;
 # constant USING_DOXYGEN : 1 ;
 

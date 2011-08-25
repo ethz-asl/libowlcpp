@@ -9,22 +9,6 @@ project lib
       <include>$(BOOST[1])
 ;
 
-obj lib_info
-   : #sources
-         lib_info.cpp
-   : #requirements
-      <include>../include
-      <define>OWLCPP_VERSION_1=$(CODE_REVISION[1])
-      <define>OWLCPP_VERSION_2=$(CODE_REVISION[2])
-      <define>OWLCPP_VERSION_3=$(CODE_REVISION[3])
-      <define>OWLCPP_VERSION_EXTRA=\"$(CODE_REVISION[4])\"
-      <define>OWLCPP_VERSION_STR=$(CODE_REVISION[5])
-      <define>OWLCPP_BUILD=$(BUILD_VERSION)
-   : #default build options
-   : #usage requirements
-;
-explicit lib_info ;
-
 lib lib_owl_cpp
     : #sources
         [ glob *.cpp : lib_info.cpp ] lib_info
@@ -38,4 +22,43 @@ lib lib_owl_cpp
     : #usage requirements
       <include>../include
 ;
+
+# Generate version header
+make version.hpp 
+   : 
+   : @version_header 
+   : <link>shared <variant>release <location>$(GENERATED_INCLUDE)/owl_cpp
+;
+
+rule version_header ( targets * : sources * : properties * ) {
+   import utils ;
+   local tag = [ utils.git_describe $(GIT_PATH) ] ;
+   local v = [ utils.process_version_string $(tag) : 0 0 0 unknown ] ;
+   local build = [ utils.build_version 3 ] ; #YYYYMMDD
+   STR on $(<) =
+      "// Generated header.  Do not edit."
+      "#define OWLCPP_VERSION_1 $(v[1])"
+      "#define OWLCPP_VERSION_2 $(v[2])"
+      "#define OWLCPP_VERSION_3 $(v[3])"
+      "#define OWLCPP_VERSION_EXTRA $(v[4])"
+      "#define OWLCPP_BUILD $(build)"
+   ;
+   NL on $(<) = "
+" ;
+   v on $(<) = $(v) ;
+}
+actions version_header { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
+
+obj lib_info
+   : #sources
+         lib_info.cpp
+   : #requirements
+      <include>../include
+      <include>$(GENERATED_INCLUDE)
+      <implicit-dependency>version.hpp
+   : #default build options
+   : #usage requirements
+;
+explicit lib_info ;
+
 

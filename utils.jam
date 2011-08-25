@@ -26,7 +26,6 @@ rule read_file ( file ) {
 # trim whitespace from ends
 rule trim_whitespace ( str ) {
    import string ;
-   local ws = [ string.whitespace ] ;
    local re = "^[ \n\t]*([^\n\t]*[^ \n\t])[ \n\t]*$" ;
    local match = [ MATCH "$(re)" : $(str) ] ;
    if $(match) { return $(match[1]) ; }
@@ -48,32 +47,21 @@ rule git_revision {
 # return version based on a git tag
 rule git_describe ( git_path ? ) {
    git_path ?= git ;
-   return [ SHELL "\"$(git_path)\" describe --always --dirty=*" ] ;
+   local str = [ SHELL "\"$(git_path)\" describe --always --dirty=*" ] ;
+   return [ trim_whitespace $(str) ] ;
 }
 
 # split tag "v1.2.5-8-gda17203*" into "1", "2", "5", "8-gda17203*"
-rule split_git_tag ( tag ? : git_path ? ) {
-   tag ?= [ git_describe $(git_path) ] ;
-   tag = [ trim_whitespace $(tag) ] ;
+rule process_version_string ( v_str : v_def_1 v_def_2 v_def_3 v_def_e ) {
    local re = "v?([0-9]*)[ \-\.]?([0-9]*)[ \-\.]?([0-9]*)-?(.*)" ;
-   local rev = [ MATCH $(re) : $(tag) ] ;
-   local v1 ;
-   if $(rev[1]) = "" { v1 = 0 ; }
-   else { v1 = $(rev[1]) ; }
-   local v2 ;
-   if $(rev[2]) = "" { v2 = 0 ; }
-   else { v2 = $(rev[2]) ; }
-   local v3 ;
-   if $(rev[3]) = "" { v3 = 0 ; }
-   else { v3 = $(rev[3]) ; }
-   local v4 ;
-   if $(tag) = "" { tag = "unknown" ; }
-   if $(rev[1]) = "" && $(rev[2]) = "" && $(rev[3]) = "" && $(rev[4]) = "" { 
-      v4 = "unknown" ; 
-      echo "WARNING: code revision unknown" ;
+   local v = [ MATCH $(re) : $(v_str) ] ;
+   if $(v[1]) = "" || $(v[2]) = "" || $(v[3]) = "" {
+      echo "WARNING: Could not determine current code revision.  Using default." ;
       echo "Undefined GIT_PATH variable in user-config.jam?" ;
+      return $(v_def_1) $(v_def_2) $(v_def_3) $(v_def_e) ;
+   } else {
+      return $(v) ;
    }
-   else { v4 = $(rev[4]) ; }
-   return $(v1) $(v2) $(v3) $(v4) $(tag) ;
 }
+
 

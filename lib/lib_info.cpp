@@ -6,6 +6,8 @@ part of owl_cpp project.
 #include "owl_cpp/lib_info.hpp"
 #include "boost/preprocessor/stringize.hpp"
 
+#include "owl_cpp/version.hpp"
+
 #ifndef OWLCPP_VERSION_1
 #error define OWLCPP_VERSION_1
 #endif
@@ -20,10 +22,6 @@ part of owl_cpp project.
 
 #ifndef OWLCPP_VERSION_EXTRA
 #error define OWLCPP_VERSION_EXTRA
-#endif
-
-#ifndef OWLCPP_VERSION_STR
-#error define OWLCPP_VERSION_STR
 #endif
 
 #ifndef OWLCPP_BUILD
@@ -42,7 +40,12 @@ const std::string& lib_name() {
 /*
 *******************************************************************************/
 const std::string& version_str() {
-   static const std::string v(BOOST_PP_STRINGIZE(OWLCPP_VERSION_STR));
+   static const std::string v(
+         BOOST_PP_STRINGIZE(OWLCPP_VERSION_1) "."
+         BOOST_PP_STRINGIZE(OWLCPP_VERSION_2) "."
+         BOOST_PP_STRINGIZE(OWLCPP_VERSION_3) "-"
+         BOOST_PP_STRINGIZE(OWLCPP_VERSION_EXTRA)
+   );
    return v;
 }
 
@@ -57,7 +60,7 @@ const std::string& build_str() {
 *******************************************************************************/
 const std::string& lib_info_str() {
    static const std::string str(
-         lib_name() + " " + version_str() + " build:" + build_str()
+         lib_name() + " v" + version_str() + " build:" + build_str()
    );
    return str;
 }

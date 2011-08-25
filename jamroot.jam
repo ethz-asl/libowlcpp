@@ -5,14 +5,10 @@
 
 path-constant PROJ_ROOT : . ;
 path-constant OUT : out ;
-path-constant INCL : include ;
-path-constant SMPL_DATA : "./sample_data" ;
-path-constant TEMP_DIR : "./out/temp/" ;
-constant SAMPLE_DATA_DIR : $(SMPL_DATA) ;
-constant TEMPORARY_DIR : $(TEMP_DIR) ;
-import utils ;
-constant BUILD_VERSION : [ utils.build_version 3 ] ; #YYYYMMDD
-constant CODE_REVISION : [ utils.split_git_tag : $(GIT_PATH) ] ; #1 2 3 17-g123acf* v1.2.3-17-g123acf*
+path-constant SMPL_DATA : "sample_data" ;
+path-constant TEMP_DIR : "out/temp" ;
+make $(TEMP_DIR) : : @common.mkdir ;
+path-constant GENERATED_INCLUDE : out/include ;
 
 project owl_cpp
    : 
@@ -21,7 +17,6 @@ project owl_cpp
    : requirements
 ;
 
-make $(TEMP_DIR) : : @common.mkdir ;
 if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
 use-project boost : $(BOOST[1]) ;
 
