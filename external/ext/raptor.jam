@@ -212,22 +212,22 @@ rule init ( version ? : location : options * ) {
    ;
    
    lib raptor
-        :   $(location_src)/$(src)
-        :   $(requirements)
-            <library>../../external//expat
-            <raptor-version>$(version)
-            <raptor-location>$(location)
-            <include>$(location_src)
-            <location-prefix>raptor
-            <define>HAVE_CONFIG_H
-            <define>LIBRDFA_IN_RAPTOR
-            <define>RAPTOR_INTERNAL
-            <implicit-dependency>raptor_config.h
-            <dependency>raptor_config.h
-            <implicit-dependency>raptor2.h
-            <dependency>raptor2.h
-            <link>static:<define>RAPTOR_STATIC
-            <toolset>msvc:<define>RAPTOR_WIN32
+      :  $(location_src)/$(src)
+      :  $(requirements)
+         <library>../../external//expat
+         <raptor-version>$(version)
+         <raptor-location>$(location)
+         <include>$(location_src)
+         <location-prefix>raptor
+         <define>HAVE_CONFIG_H
+         <define>LIBRDFA_IN_RAPTOR
+         <define>RAPTOR_INTERNAL
+         <implicit-dependency>raptor_config.h
+         <dependency>raptor_config.h
+         <implicit-dependency>raptor2.h
+         <dependency>raptor2.h
+         <link>static:<define>RAPTOR_STATIC
+         <toolset>msvc:<define>RAPTOR_WIN32
         :
         :
             <implicit-dependency>raptor2.h

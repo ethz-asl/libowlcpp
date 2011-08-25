@@ -15,6 +15,7 @@ project owl_cpp
       build-dir $(OUT)
    : 
    : requirements
+         <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
 ;
 
 if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }

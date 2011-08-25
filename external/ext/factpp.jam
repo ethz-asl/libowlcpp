@@ -108,10 +108,7 @@ rule init ( version ? : location : options * )
    lib factpp_kernel
       :   $(src)
       :   $(requirements)
-         <toolset>msvc:<link>static
-#         <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
-#         <toolset>gcc:<linkflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
-#         <toolset>gcc:<cflags>"-include\"$(OUT)/include/factpp_kernel_config.hpp\""
+#         <toolset>msvc:<link>static
       :   
       :   
          <include>$(kernel_location)
