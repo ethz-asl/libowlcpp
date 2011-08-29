@@ -47,40 +47,47 @@ alias expat : external//expat ;
 alias raptor : external//raptor ;
 explicit test factpp_kernel expat raptor ;
 
-if $(USING_DOXYGEN) {
-import path ;
-local doc_public = [ path.glob-tree include apps : *.hpp *.cpp ] ;
-local doc_all = [ path.glob-tree lib : *.cpp *.hpp ] $(doc_public) ;
-
-doxygen complete.html
-   :
-      $(doc_all)
-   :
-      <doxygen:param>EXTRACT_ALL=YES
-      <doxygen:param>EXTRACT_STATIC=YES
-      <doxygen:param>EXTRACT_PRIVATE=YES
-      <doxygen:param>EXTRACT_ANON_NSPACES=YES
-      <doxygen:param>QUIET=YES
-      <doxygen:param>SHOW_DIRECTORIES=YES
-      <doxygen:param>EXAMPLE_PATH=.
-;
-
-doxygen api.html
-   :
-      $(doc_public)
-   :
-      <doxygen:param>EXTRACT_ALL=NO
-      <doxygen:param>WARN_IF_UNDOCUMENTED=NO
-      <doxygen:param>EXTRACT_STATIC=YES
-      <doxygen:param>EXTRACT_PRIVATE=NO
-      <doxygen:param>EXTRACT_ANON_NSPACES=NO
-      <doxygen:param>QUIET=YES
-      <doxygen:param>SHOW_DIRECTORIES=YES
-      <doxygen:param>EXAMPLE_PATH=.
-;
-
-alias autodoc : complete.html api.html ;
-explicit complete.html api.html autodoc ;
-} #if $(USING_DOXYGEN)
+if [ modules.peek doxygen : .initialized ] {
+   import path ;
+   local doc_public = [ path.glob-tree include apps : *.hpp *.cpp ] ;
+   local doc_all = [ path.glob-tree lib : *.cpp *.hpp ] $(doc_public) ;
+   
+   doxygen complete.html
+      :
+         $(doc_all)
+      :
+         <doxygen:param>EXTRACT_ALL=YES
+         <doxygen:param>EXTRACT_STATIC=YES
+         <doxygen:param>EXTRACT_PRIVATE=YES
+         <doxygen:param>EXTRACT_ANON_NSPACES=YES
+         <doxygen:param>QUIET=YES
+         <doxygen:param>SHOW_DIRECTORIES=YES
+         <doxygen:param>EXAMPLE_PATH=.
+   ;
+   
+   doxygen api.html
+      :
+         $(doc_public)
+      :
+         <doxygen:param>EXTRACT_ALL=NO
+         <doxygen:param>WARN_IF_UNDOCUMENTED=NO
+         <doxygen:param>EXTRACT_STATIC=YES
+         <doxygen:param>EXTRACT_PRIVATE=NO
+         <doxygen:param>EXTRACT_ANON_NSPACES=NO
+         <doxygen:param>QUIET=YES
+         <doxygen:param>SHOW_DIRECTORIES=YES
+         <doxygen:param>EXAMPLE_PATH=.
+   ;
+   
+   alias autodoc : complete.html api.html ;
+   explicit complete.html api.html ;
+} else {
+   import message ;
+   alias autodoc : [ message msg : "
+      To generate documentation with rule \"autodoc\","
+      "please configure Doxygen in user-config.jam file
+" ] ;
+}
+explicit autodoc ;
 
 
