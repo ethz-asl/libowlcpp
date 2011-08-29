@@ -8,7 +8,7 @@ owl_cpp is a C++ library for reading and querying OWL ontologies.
 - generate axioms for FaCT++ reasoner
 - run queries
 
-@n Distributed under the Boost Software License, Version 1.0; 
+Distributed under the Boost Software License, Version 1.0; 
 see doc/license.txt or http://www.boost.org/LICENSE_1_0.txt
 
 For building, see doc/build.txt.

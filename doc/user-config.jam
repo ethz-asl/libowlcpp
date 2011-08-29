@@ -1,10 +1,9 @@
-# File user-config.jam
-# provides information about build tools and libraries on your system.  
-# For more information see
+# File doc/user-config.jam
+# Availability and locations of build tools and libraries on your system.  
+# See also
 # http://www.boost.org/boost-build2/doc/html/bbv2/overview/configuration.html
 #
-# 1. If file "user-config.jam" does not already exist in your HOME folder, copy
-#    "doc/user-config.jam" to that location.  
+# 1. Copy this file, "doc/user-config.jam", to your HOME folder.
 #     On MS Windows, HOME folder is usually
 #    "C:\Documents and Settings\your_user_name".
 #
@@ -14,33 +13,44 @@
 #    the libraries required for building the project.
 #    Make sure that the libraries are installed on your system and 
 #    enter their correct locations and versions.
+#    IMPORTANT: Use forward slashes ('/').
 
-## compilers:
+################################################################################
+## Compilers and other tools
 
 ## Microsoft Visual C++
 # using msvc ;
 
-## Linux gcc
+## GCC (under Linux of MS Windows MinGW)
 # using gcc ;
 
 ## Mac OS X
 # using darwin ;
 
-## To use Doxygen, uncomment following two lines
+## Doxygen (generating documentation from source code, optional)
+## http://www.stack.nl/~dimitri/doxygen/
+## Specifying Doxygen location may be required. For example
+## using doxygen : "c:/Program Files/doxygen/bin/doxygen.exe" ;
 # using doxygen ;
-# constant USING_DOXYGEN : 1 ;
 
-local utils = utils ;
+## Path for GIT client executable (optional)
+## http://git-scm.com/
+# path-constant GIT_PATH : "c:/Program Files (x86)/Git/bin/git.exe" ;
+
+################################################################################
+## Libraries
+
+local utils = "c:/utils" ;
 
 ## Boost library source
 ## http://www.boost.org/
-constant BOOST : "$(utils)/boost/boost_1_47_0/" 1.47.0 ;
+constant BOOST : "$(utils)/boost_1_47_0/" 1.47.0 ;
 
 ## FaCT++ library source
 ## http://code.google.com/p/factplusplus/
 constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
 
-## expat library source
+## Expat library source
 ## http://expat.sourceforge.net/
 ## http://sourceforge.net/projects/expat/files/expat/2.0.1/
 constant EXPAT : "$(utils)/expat-2.0.1" 2.0.1 ;
@@ -48,8 +58,4 @@ constant EXPAT : "$(utils)/expat-2.0.1" 2.0.1 ;
 ## Raptor library source
 ## http://librdf.org/raptor/
 constant RAPTOR : "$(utils)/raptor2-2.0.4" 2.0.4 ;
-
-## Path for GIT client executable (optional)
-## http://git-scm.com/
-# path-constant GIT_PATH : "c:/Program Files (x86)/Git/bin/git.exe" ;
 
