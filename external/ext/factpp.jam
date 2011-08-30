@@ -18,10 +18,10 @@ import utils ; #local jam-file
 
 extension.declare factpp ;
 
-rule factpp_kernel_config_hpp ( targets * : sources * : properties * ) {
+rule config_hpp ( targets * : sources * : properties * ) {
    STR on $(<) =
-      "#ifndef FACT_KERNEL_CONFIG_HPP"
-      "#define FACT_KERNEL_CONFIG_HPP"
+      "#ifndef FACTPP_CONFIG_HPP"
+      "#define FACTPP_CONFIG_HPP"
       ""
       "#include \"boost/config.hpp\""
       "#ifndef BOOST_SYMBOL_EXPORT"
@@ -38,29 +38,36 @@ rule factpp_kernel_config_hpp ( targets * : sources * : properties * ) {
       "#  define FACTPP_KERNEL_DECL"
       "#endif"
       ""
-      "#endif /* FACT_KERNEL_CONFIG_HPP */"
+      "#endif /* FACTPP_CONFIG_HPP */"
    ;
    
    NL on $(<) = "
 " ;
 }
-actions factpp_kernel_config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
+actions config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 
-rule Kernel_h ( targets * : sources * : properties * ) {
-   ## insert symbol visibility declaration
-   local str = "#define KERNEL_H
-
-#include \"factpp_kernel_config.hpp\"
-class FACTPP_KERNEL_DECL ReasoningKernel;"
-;
-
-   local kern_h = [ utils.read_file $(sources:G=) ] ;
-   kern_h = [ regex.replace $(kern_h) "#define KERNEL_H" $(str) ] ;
-#   exit $(targets);
-#   exit [ path.native $(targets) ] ;
-   STR on $(<) = $(kern_h) ;
+rule kernel_config_hpp ( targets * : sources * : properties * ) {
+   STR on $(<) = 
+      "#ifndef FACTPP_KERNEL_CONFIG_HPP"
+      "#define FACTPP_KERNEL_CONFIG_HPP"
+      ""
+      "#include \"factpp/config.hpp\""
+      "class FACTPP_KERNEL_DECL ReasoningKernel;"
+      "#include \"Kernel.h\""
+      ""
+      "#endif /* FACTPP_KERNEL_CONFIG_HPP */"
+   ;
+   NL on $(<) = "
+" ;
 }
-actions Kernel_h { @($(STDOUT):E=$(STR)) > "$(<)" }
+actions kernel_config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
+
+rule kernel_cpp ( targets * : sources * : properties * ) {
+   local src = [ utils.read_file $(sources:G=) ] ;
+   src = [ regex.replace $(src) "Kernel.h" "factpp/kernel_config.hpp" ] ;
+   STR on $(<) = $(src) ;
+}
+actions kernel_cpp { @($(STDOUT):E=$(STR)) > "$(<)" }
 
 rule init ( version ? : location : options * )
 {
@@ -68,49 +75,53 @@ rule init ( version ? : location : options * )
    
    local kernel_location = [ path.join $(location) src/Kernel ] ;
    
-   local requirements = 
-      [ extension.define factpp $(version)
-         : $(kernel_location)
-         : $(options)
-      ]
-#      <dependency>factpp_kernel_config.hpp
-#      <implicit-dependency>factpp_kernel_config.hpp
-#      <dependency>headers
-#      <implicit-dependency>kernel_h
-      <include>$(BOOST[0])
-      <include>$(kernel_location)
-      <define>FACTPP_KERNEL_SOURCE
-      <link>shared:<define>FACTPP_KERNEL_DYN_LINK
-   ;
-   
-   make factpp_kernel_config.hpp 
+   make-singleton config.hpp 
       : 
-      : @factpp_kernel_config_hpp
-      : <factpp-version>$(version)
-        <location-prefix>src
+      :  @config_hpp
+      :  <factpp-version>$(version)
+         <location>$(GENERATED_INCLUDE)/factpp
    ;
 
-   make Kernel.h 
-      : $(kernel_location)/Kernel.h
-      : @Kernel_h
-      : <factpp-version>$(version)
-        <location-prefix>src
+   make-singleton kernel_config.hpp
+      : 
+      :  @kernel_config_hpp
+      :  <factpp-version>$(version)
+         <location>$(GENERATED_INCLUDE)/factpp
    ;
    
-#   install headers : Kernel.h factpp_kernel_config.hpp : <location>$(OUT)/include ;
+   make-singleton Kernel.cpp 
+      :  $(kernel_location)/Kernel.cpp
+      :  @kernel_cpp
+      :  <factpp-version>$(version)
+         <location>$(GENERATED_LIB)/factpp
+   ;
    
    local src = 
-      [ glob $(kernel_location)/*.cpp : $(kernel_location)/parseTime.cpp ] 
+      [ 
+         glob $(kernel_location)/*.cpp 
+         : #exclude:
+            $(kernel_location)/parseTime.cpp
+            $(kernel_location)/Kernel.cpp
+      ]
+      Kernel.cpp
    ;
-   src += 
-#      $(kernel_location)/Kernel.cpp 
-   ;
+   #src = Kernel.cpp ;
+   
    lib factpp_kernel
       :   $(src)
-      :   $(requirements)
-#         <toolset>msvc:<link>static
+      :   #requirements
+         [ extension.define factpp $(version) : $(kernel_location) : $(options) ]
+         <include>$(kernel_location)
+         <include>$(BOOST[1])
+         <include>$(GENERATED_INCLUDE)
+         <implicit-dependency>config.hpp
+         <implicit-dependency>kernel_config.hpp
+         <define>FACTPP_KERNEL_SOURCE
+         <link>shared:<define>FACTPP_KERNEL_DYN_LINK
+         <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
       :   
       :   
          <include>$(kernel_location)
+         <include>$(GENERATED_INCLUDE)
       ;
 }

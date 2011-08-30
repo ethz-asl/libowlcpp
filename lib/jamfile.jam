@@ -6,7 +6,7 @@
 project lib
    : build-dir $(OUT)/bin
    : requirements
-      <include>$(BOOST[1])
+      <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
 ;
 
 lib lib_owl_cpp
@@ -14,20 +14,34 @@ lib lib_owl_cpp
         [ glob *.cpp : lib_info.cpp ] lib_info
     : #requirements
       <include>.
-      <include>../include
+      <include>$(INCLUDE)
       <library>/boost//filesystem
       <library>..//raptor
       <library>..//factpp_kernel
     : #default build options
     : #usage requirements
-      <include>../include
+      <include>$(INCLUDE)
 ;
 
+obj lib_info
+   : #sources
+         lib_info.cpp
+   : #requirements
+      <include>$(BOOST[1])
+      <include>$(INCLUDE)
+      <include>$(GENERATED_INCLUDE)
+      <implicit-dependency>version.hpp
+   : #default build options
+   : #usage requirements
+;
+explicit lib_info ;
+
+import utils ;
 # Generate version header
-make version.hpp 
+make-singleton version.hpp 
    : 
    : @version_header 
-   : <link>shared <variant>release <location>$(GENERATED_INCLUDE)/owl_cpp
+   : <location>(GENERATED_INCLUDE)/owl_cpp
 ;
 
 rule version_header ( targets * : sources * : properties * ) {
@@ -45,20 +59,7 @@ rule version_header ( targets * : sources * : properties * ) {
    ;
    NL on $(<) = "
 " ;
-   v on $(<) = $(v) ;
 }
 actions version_header { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
-
-obj lib_info
-   : #sources
-         lib_info.cpp
-   : #requirements
-      <include>../include
-      <include>$(GENERATED_INCLUDE)
-      <implicit-dependency>version.hpp
-   : #default build options
-   : #usage requirements
-;
-explicit lib_info ;
 
 

@@ -4,8 +4,9 @@
 # Copyright Mikhail K Levin 2010-1
 
 project apps
-   : build-dir $(OUT)/apps
-   : requirements
+   :  build-dir $(OUT)/apps
+   :  requirements
+      <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
 ;
 
 exe print_triples

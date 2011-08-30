@@ -3,23 +3,26 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
+import build/singleton-target ;
+
 path-constant PROJ_ROOT : . ;
+path-constant INCLUDE : include ;
 path-constant OUT : out ;
 path-constant SMPL_DATA : "sample_data" ;
 path-constant TEMP_DIR : "out/temp" ;
 make $(TEMP_DIR) : : @common.mkdir ;
 path-constant GENERATED_INCLUDE : out/include ;
+path-constant GENERATED_LIB : out/lib ;
+
+if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
+use-project boost : $(BOOST[1]) ;
 
 project owl_cpp
    : 
       build-dir $(OUT)
    : 
    : requirements
-         <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
 ;
-
-if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
-use-project boost : $(BOOST[1]) ;
 
 alias test
    : #sources

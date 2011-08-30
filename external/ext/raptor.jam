@@ -72,7 +72,7 @@ rule config_h ( targets * : sources * : properties * ) {
    
    local undef ;
    
-   local v = [ version_raptor $(properties) ] ;
+   local v = 2.0.4 ; #[ version_raptor $(properties) ] ;
    local vs = [ version_split $(v) ] ;
    local vc = [ version_calc $(v) ] ;
    
@@ -149,7 +149,7 @@ rule config_h ( targets * : sources * : properties * ) {
 actions config_h { @($(STDOUT):E=$(CONFIG:J=$(NL))$(NL)) > "$(<)" }
 
 rule raptor2_h ( targets * : sources * : properties * ) {
-   local v = [ version_raptor $(properties) ] ;
+   local v = 2.0.4 ; #[ version_raptor $(properties) ] ;
    local vs = [ version_split $(v) ] ;
    local vc = [ version_calc $(v) ] ;
    
@@ -161,33 +161,49 @@ rule raptor2_h ( targets * : sources * : properties * ) {
    src = [ regex.replace $(src) @RAPTOR_VERSION_RELEASE@ $(vs[3]) ] ;
    src = [ regex.replace $(src) WIN32 RAPTOR_WIN32 ] ;
    
+   local str =
+      "#define RAPTOR_H"
+      "" 
+      "#include \"boost/config.hpp\""
+      "#ifndef BOOST_SYMBOL_EXPORT"
+      "  #define BOOST_SYMBOL_EXPORT"
+      "  #define BOOST_SYMBOL_IMPORT"
+      "#endif"
+      "#if defined(RAPTOR_DYN_LINK)"
+      "#  if defined(RAPTOR_INTERNAL)"
+      "#     define RAPTOR_API BOOST_SYMBOL_EXPORT"
+      "#  else"
+      "#     define RAPTOR_API BOOST_SYMBOL_IMPORT"
+      "#  endif"
+      "#else"
+      "#  define RAPTOR_API"
+      "#endif"
+   ;
+   src = [ regex.replace $(src) "#define RAPTOR_H" $(str:J="
+") ] ;
+   
    STR on $(<) = $(src) ;
 }
 actions raptor2_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 
 rule init ( version ? : location : options * ) {
    version ?= default ;
-   local requirements = [ 
-      extension.define raptor $(version) : $(location) : $(options) 
-   ] ;
    
-   make raptor_config.h 
+   make-singleton raptor_config.h 
       : 
       : @config_h
       : <raptor-version>$(version)
-        <location-prefix>src
+      <location>$(GENERATED_INCLUDE)/raptor
    ;
-   explicit raptor_config.h ;
    
    local location_src = [ path.join $(location) src ] ;
    
-   make raptor2.h 
+   make-singleton raptor2.h 
       : $(location_src)/raptor2.h.in
       : @raptor2_h 
       : <raptor-version>$(version)
-        <location-prefix>src
+         <location>$(GENERATED_INCLUDE)/raptor
    ;
-   explicit raptor2.h ;
    
    src = 
       raptor_parse.c raptor_serialize.c
@@ -213,12 +229,13 @@ rule init ( version ? : location : options * ) {
    
    lib raptor
       :  $(location_src)/$(src)
-      :  $(requirements)
+      :  #requirements
+         [ extension.define raptor $(version) : $(location) : $(options) ]
          <library>../../external//expat
          <raptor-version>$(version)
          <raptor-location>$(location)
          <include>$(location_src)
-         <location-prefix>raptor
+         <include>$(BOOST[1])
          <define>HAVE_CONFIG_H
          <define>LIBRDFA_IN_RAPTOR
          <define>RAPTOR_INTERNAL
@@ -226,8 +243,9 @@ rule init ( version ? : location : options * ) {
          <dependency>raptor_config.h
          <implicit-dependency>raptor2.h
          <dependency>raptor2.h
-         <link>static:<define>RAPTOR_STATIC
+         <link>shared:<define>RAPTOR_DYN_LINK
          <toolset>msvc:<define>RAPTOR_WIN32
+         <toolset>gcc:<cflags>"-fvisibility=hidden"
         :
         :
             <implicit-dependency>raptor2.h
