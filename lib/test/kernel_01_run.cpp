@@ -5,7 +5,7 @@ part of owl_cpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE kernel_01_run
 #include "boost/test/unit_test.hpp"
-#include "Kernel.h"
+#include "factpp/Kernel_config.hpp"
 #include "boost/exception/diagnostic_information.hpp"
 namespace b = boost;
 

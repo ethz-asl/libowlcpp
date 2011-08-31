@@ -14,7 +14,7 @@ namespace bmpp = boost::mpl::placeholders;
 
 #include "owl_cpp/Visitor.h"
 namespace L = Loki;
-#include "Kernel.h"
+#include "factpp/Kernel_config.hpp"
 
 #include "owl_cpp/triple.hpp"
 #include "owl_cpp/node_base.hpp"

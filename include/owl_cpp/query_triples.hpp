@@ -10,6 +10,7 @@ part of owl_cpp project.
 #include "boost/range.hpp"
 namespace b = boost;
 
+#include "owl_cpp/config.hpp"
 #include "owl_cpp/triple_store.hpp"
 #include "owl_cpp/triple.hpp"
 #include "owl_cpp/exception.hpp"
@@ -127,7 +128,7 @@ find_first_triple(const N1 nid1, const N2 nid2, const N3 nid3, const Triple_stor
 @param store ontology storage
 @return empty vector if node is not a collection
 *******************************************************************************/
-std::vector<Node_id> rdf_collection(const Node_id node, const Triple_store& store);
+OWLCPP_DECL std::vector<Node_id> rdf_collection(const Node_id node, const Triple_store& store);
 
 /** @return object of triple {x rdfs:label "some label"} or "" if none exists
 *******************************************************************************/
@@ -140,11 +141,11 @@ inline std::string find_label(const Node_id id, const Triple_store& store) {
 
 /**@return true if iri ontology IRI or version IRI is in triple store
 *******************************************************************************/
-bool have_ontology_id(const std::string& iri, const Triple_store& store);
+OWLCPP_DECL bool have_ontology_id(const std::string& iri, const Triple_store& store);
 
 /**@return number of loaded ontologies
 *******************************************************************************/
-std::size_t num_ontologies(const Triple_store& store);
+OWLCPP_DECL std::size_t num_ontologies(const Triple_store& store);
 
 }//namespace owl_cpp
 #endif /* QUERY_TRIPLES_HPP_ */

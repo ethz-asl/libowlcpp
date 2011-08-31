@@ -15,12 +15,16 @@ lib lib_owl_cpp
     : #requirements
       <include>.
       <include>$(INCLUDE)
+      <include>$(GENERATED_INCLUDE)
       <library>/boost//filesystem
       <library>..//raptor
       <library>..//factpp_kernel
+      <define>OWLCPP_SOURCE
+      <link>shared:<define>OWLCPP_DYN_LINK
     : #default build options
     : #usage requirements
       <include>$(INCLUDE)
+      <include>$(GENERATED_INCLUDE)
 ;
 
 obj lib_info
@@ -31,6 +35,8 @@ obj lib_info
       <include>$(INCLUDE)
       <include>$(GENERATED_INCLUDE)
       <implicit-dependency>version.hpp
+      <define>OWLCPP_SOURCE
+      <link>shared:<define>OWLCPP_DYN_LINK
    : #default build options
    : #usage requirements
 ;
@@ -41,7 +47,7 @@ import utils ;
 make-singleton version.hpp 
    : 
    : @version_header 
-   : <location>(GENERATED_INCLUDE)/owl_cpp
+   : <location>$(GENERATED_INCLUDE)/owl_cpp
 ;
 
 rule version_header ( targets * : sources * : properties * ) {

@@ -11,7 +11,7 @@ namespace b = boost;
 #include "boost/filesystem.hpp"
 namespace bf = boost::filesystem;
 #include "boost/foreach.hpp"
-#include "Kernel.h"
+#include "factpp/Kernel_config.hpp"
 
 #include "owl_cpp/triple_store.hpp"
 #include "owl_cpp/parse_to_triple_store.hpp"

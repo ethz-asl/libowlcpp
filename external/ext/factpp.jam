@@ -46,28 +46,68 @@ rule config_hpp ( targets * : sources * : properties * ) {
 }
 actions config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 
-rule kernel_config_hpp ( targets * : sources * : properties * ) {
+rule make_hpp_cpp ( original : symbols * : includes * ) {
+   make_hpp $(original) : $(symbols) ;
+   includes ?= $(original) ;
+   make_cpp $(original:S=.cpp) : $(includes) ;
+}
+
+## make header that includes config.h, exposes symbols, and includes original header
+rule make_hpp ( original : symbols * ) {
+   local base = $(original:B) ;
+   make-singleton $(base)_config.hpp 
+      : $(original)
+      : @config_header 
+      : <location>$(GENERATED_INCLUDE)/factpp <name>$(symbols)
+   ;
+}
+
+## copy cpp replacing includes.* with include_config.hpp
+rule make_cpp ( original : includes * ) {
+   make-singleton $(original:D=)
+      : $(original) $(includes)
+      : @src_config 
+      : <location>$(GENERATED_LIB)/factpp
+   ;
+}
+
+rule config_header ( targets* : sources * : properties * ) {
+   local re = "extern ([ 0-9A-Za-z*\,():&<]+;)" ;
+   local file = [ utils.read_file $(sources:G=) ] ;
+   file = [ SPLIT_BY_CHARACTERS $(file) : "\n" ] ;
+   local extern = [ MATCH "$(re)" : $(file) ] ;
+   #echo $(sources:G=) ;
+   #echo $(extern) ;
+   local name = [ property.select <name> : $(properties) ] ;
+   local class-name = $(name:G=) ;
+   local file-name = $(sources:G="":D=) ;
+   local file-base = $(file-name:B) ;
    STR on $(<) = 
-      "#ifndef FACTPP_KERNEL_CONFIG_HPP"
-      "#define FACTPP_KERNEL_CONFIG_HPP"
+      "#ifndef $(file-base:U)_CONFIG_HPP"
+      "#define $(file-base:U)_CONFIG_HPP"
       ""
       "#include \"factpp/config.hpp\""
-      "class FACTPP_KERNEL_DECL ReasoningKernel;"
-      "#include \"Kernel.h\""
+      "class FACTPP_KERNEL_DECL $(class-name);"
       ""
-      "#endif /* FACTPP_KERNEL_CONFIG_HPP */"
+      "#include \"$(file-name)\""
+      "FACTPP_KERNEL_DECL $(extern)"
+      ""
+      "#endif /* $(file-base:U)_CONFIG_HPP */"
    ;
    NL on $(<) = "
 " ;
 }
-actions kernel_config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
+actions config_header { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 
-rule kernel_cpp ( targets * : sources * : properties * ) {
-   local src = [ utils.read_file $(sources:G=) ] ;
-   src = [ regex.replace $(src) "Kernel.h" "factpp/kernel_config.hpp" ] ;
+rule src_config ( targets * : sources * : properties * ) {
+   local files = $(sources:G=) ;
+   local src = [ utils.read_file $(files[1]) ] ;
+   for local file in $(files[2-]) {
+      src = [ regex.replace $(src) $(file:D=) "factpp/$(file:B)_config.hpp" ] ;
+   }
    STR on $(<) = $(src) ;
 }
-actions kernel_cpp { @($(STDOUT):E=$(STR)) > "$(<)" }
+actions src_config { @($(STDOUT):E=$(STR)) > "$(<)" }
 
 rule init ( version ? : location : options * )
 {
@@ -81,31 +121,41 @@ rule init ( version ? : location : options * )
       :  <factpp-version>$(version)
          <location>$(GENERATED_INCLUDE)/factpp
    ;
-
-   make-singleton kernel_config.hpp
-      : 
-      :  @kernel_config_hpp
-      :  <factpp-version>$(version)
-         <location>$(GENERATED_INCLUDE)/factpp
+   
+   local convert_hpp_cpp = 
+      Kernel tExpressionManager dlTBox DLConceptTaxonomy Taxonomy Reasoner tRole
+      dltree
    ;
    
-   make-singleton Kernel.cpp 
-      :  $(kernel_location)/Kernel.cpp
-      :  @kernel_cpp
-      :  <factpp-version>$(version)
-         <location>$(GENERATED_LIB)/factpp
+   local convert_hpp = $(convert_hpp_cpp) #tNamedEntry
    ;
+   
+   local convert_cpp = $(convert_hpp_cpp) SaveLoad Tactic CascadedCache
+   ;
+   
+   make_hpp_cpp $(kernel_location)/Kernel.h : ReasoningKernel TNamedEntry TRole ;
+   make_hpp_cpp $(kernel_location)/tExpressionManager.h : TExpressionManager ;
+   make_hpp_cpp $(kernel_location)/dlTBox.h : TBox ;
+   make_hpp_cpp $(kernel_location)/DLConceptTaxonomy.h : DLConceptTaxonomy ;
+   make_hpp_cpp $(kernel_location)/Taxonomy.h : Taxonomy ;
+   make_hpp_cpp $(kernel_location)/Reasoner.h : DlSatTester ;
+   make_hpp_cpp $(kernel_location)/tRole.h : TRole ;
+   make_hpp_cpp $(kernel_location)/dltree.h : ;
+   
+   make_cpp $(kernel_location)/SaveLoad.cpp : $(kernel_location)/Kernel.h ;
+   make_cpp $(kernel_location)/Tactic.cpp : $(kernel_location)/Reasoner.h ;
+   make_cpp $(kernel_location)/CascadedCache.cpp : $(kernel_location)/Reasoner.h ;
    
    local src = 
       [ 
          glob $(kernel_location)/*.cpp 
          : #exclude:
             $(kernel_location)/parseTime.cpp
-            $(kernel_location)/Kernel.cpp
+            $(kernel_location)/$(convert_cpp).cpp
       ]
-      Kernel.cpp
+      $(convert_cpp).cpp
    ;
-   #src = Kernel.cpp ;
+   #src = Kernel.cpp tExpressionManager.cpp ;
    
    lib factpp_kernel
       :   $(src)
@@ -115,7 +165,7 @@ rule init ( version ? : location : options * )
          <include>$(BOOST[1])
          <include>$(GENERATED_INCLUDE)
          <implicit-dependency>config.hpp
-         <implicit-dependency>kernel_config.hpp
+         <implicit-dependency>$(convert_hpp)_config.hpp
          <define>FACTPP_KERNEL_SOURCE
          <link>shared:<define>FACTPP_KERNEL_DYN_LINK
          <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"

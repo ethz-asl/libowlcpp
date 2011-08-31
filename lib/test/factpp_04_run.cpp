@@ -10,7 +10,7 @@ part of owl_cpp project.
 #include "boost/exception/diagnostic_information.hpp"
 #include "sample_data.hpp"
 #include "triple_store_checks.hpp"
-#include "Kernel.h"
+#include "factpp/Kernel_config.hpp"
 #include "owl_cpp/triple_to_fact.hpp"
 #include "owl_cpp/parse_to_triple_store.hpp"
 #include "owl_cpp/triple_store.hpp"

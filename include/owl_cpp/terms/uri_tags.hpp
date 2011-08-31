@@ -6,7 +6,7 @@ part of owl_cpp project.
 #ifndef URI_TAGS_HPP_
 #define URI_TAGS_HPP_
 #include <string>
-#include "uri_macro.hpp"
+#include "owl_cpp/terms/uri_macro.hpp"
 #include "owl_cpp/ns_id.hpp"
 
 namespace owl_cpp{ namespace terms{
