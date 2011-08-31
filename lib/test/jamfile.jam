@@ -12,8 +12,8 @@ project
       <include>../
       <library>/boost/test//boost_unit_test_framework
       <library>/boost//filesystem
-#      <link>static
       <library>..//lib_owl_cpp
+      <library>../..//factpp_kernel
       <define>SAMPLE_DATA_DIR="\"$(smpl_dir)\""
       <define>TEMPORARY_DIR="\"$(tmp_dir)\""
 ;

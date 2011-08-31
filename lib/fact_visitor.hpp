@@ -13,7 +13,6 @@ namespace bmp = boost::mpl;
 namespace bmpp = boost::mpl::placeholders;
 
 #include "owl_cpp/Visitor.h"
-namespace L = Loki;
 #include "factpp/Kernel_config.hpp"
 
 #include "owl_cpp/triple.hpp"
@@ -31,7 +30,7 @@ namespace detail{
 
 /** Type with single pure virtual Visit method
 *******************************************************************************/
-template<class T> struct One_visit : public L::Visitor<Triple_std<T>, void, true> {};
+template<class T> struct One_visit : public Loki::Visitor<Triple_std<T>, void, true> {};
 
 /** Combine types for all visitable tags
 *******************************************************************************/
@@ -46,7 +45,7 @@ typedef bmp::inherit_linearly<
 /** Pass RDF triples to FaCT++ kernel.
 Visitor of triples.
 *******************************************************************************/
-class Triple_to_fact : public L::BaseVisitor, public detail::visitor_t {
+class Triple_to_fact : public Loki::BaseVisitor, public detail::visitor_t {
 public:
    struct Err : public base_exception {};
    struct Warn : public base_exception {};

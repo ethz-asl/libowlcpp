@@ -5,7 +5,6 @@ part of owl_cpp project.
 *******************************************************************************/
 #ifndef TRIPLE_TO_FACT_HPP_
 #define TRIPLE_TO_FACT_HPP_
-#include <memory>
 #include "owl_cpp/config.hpp"
 
 class OWLCPP_DECL ReasoningKernel;

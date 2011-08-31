@@ -122,7 +122,7 @@ rule init ( version ? : location : options * ) {
       :  $(location_src)/xmlparse.c
          $(location_src)/xmltok.c
          $(location_src)/xmlrole.c
-      : #requirements)
+      : #requirements
          [ extension.define expat $(version) : $(location) : $(options) ]
          <include>$(location_src)
          <include>$(BOOST[1])

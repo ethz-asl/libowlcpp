@@ -10,7 +10,6 @@ part of owl_cpp project.
 #include "boost/test/unit_test_monitor.hpp"
 #include "boost/preprocessor/stringize.hpp"
 #include "owl_cpp/catalog.hpp"
-#include "factpp/Kernel_config.hpp"
 #include "owl_cpp/triple_to_fact.hpp"
 #include "owl_cpp/parse_to_triple_store.hpp"
 #include "owl_cpp/triple_store.hpp"

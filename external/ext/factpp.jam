@@ -99,6 +99,20 @@ rule config_header ( targets* : sources * : properties * ) {
 }
 actions config_header { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 
+rule replace_extern_hpp ( targets* : sources * : properties * ) {
+   local incl = "
+#define DLTREE_H
+#include \"factpp/config.hpp\"" ;
+   local src = [ utils.read_file $(sources:G=) ] ;
+   src = [ regex.replace $(src) "extern" "FACTPP_KERNEL_DECL" ] ;
+   src = [ regex.replace $(src) "#define DLTREE_H" $(incl) ] ;
+   STR on $(<) = $(src)
+   ;
+   NL on $(<) = "
+" ;
+}
+actions replace_extern_hpp { @($(STDOUT):E=$(STR)) > "$(<)" }
+
 rule src_config ( targets * : sources * : properties * ) {
    local files = $(sources:G=) ;
    local src = [ utils.read_file $(files[1]) ] ;
@@ -140,11 +154,16 @@ rule init ( version ? : location : options * )
    make_hpp_cpp $(kernel_location)/Taxonomy.h : Taxonomy ;
    make_hpp_cpp $(kernel_location)/Reasoner.h : DlSatTester ;
    make_hpp_cpp $(kernel_location)/tRole.h : TRole ;
-   make_hpp_cpp $(kernel_location)/dltree.h : ;
-   
+   make-singleton dltree_config.hpp 
+      : $(kernel_location)/dltree.h
+      : @replace_extern_hpp 
+      : <location>$(GENERATED_INCLUDE)/factpp
+   ;
+
    make_cpp $(kernel_location)/SaveLoad.cpp : $(kernel_location)/Kernel.h ;
    make_cpp $(kernel_location)/Tactic.cpp : $(kernel_location)/Reasoner.h ;
    make_cpp $(kernel_location)/CascadedCache.cpp : $(kernel_location)/Reasoner.h ;
+   make_cpp $(kernel_location)/dltree.cpp : $(kernel_location)/dltree.h ;
    
    local src = 
       [ 
