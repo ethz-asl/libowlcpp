@@ -31,14 +31,7 @@ alias test
    : #requirements
 ;
 
-alias lib_owl_cpp
-   : #sources
-      lib//lib_owl_cpp
-   : #requirements
-   : #default build options
-   : #usage requirements
-      <include>include
-;
+alias lib_owl_cpp : lib//lib_owl_cpp ;
 
 alias applications : apps ;
 alias factpp_kernel : external//factpp_kernel ;
@@ -82,4 +75,9 @@ alias autodoc : complete.html api.html ;
 explicit complete.html api.html autodoc ;
 } #if $(USING_DOXYGEN)
 
+import feature : feature ;
+import toolset ;
+feature pic : off on : propagated ;
+toolset.flags gcc.compile.c USER_OPTIONS <pic>on : -fPIC : unchecked ;
+toolset.flags gcc.compile.c++ USER_OPTIONS <pic>on : -fPIC : unchecked ;
 

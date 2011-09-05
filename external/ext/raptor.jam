@@ -227,11 +227,8 @@ rule init ( version ? : location : options * ) {
       parsedate.c
    ;
    
-   lib raptor
-      :  $(location_src)/$(src)
-      :  #requirements
+   local requirements = 
          [ extension.define raptor $(version) : $(location) : $(options) ]
-         <library>../../external//expat
          <raptor-version>$(version)
          <raptor-location>$(location)
          <include>$(location_src)
@@ -240,15 +237,24 @@ rule init ( version ? : location : options * ) {
          <define>LIBRDFA_IN_RAPTOR
          <define>RAPTOR_INTERNAL
          <implicit-dependency>raptor_config.h
-         <dependency>raptor_config.h
+         #<dependency>raptor_config.h
          <implicit-dependency>raptor2.h
-         <dependency>raptor2.h
+         #<dependency>raptor2.h
          <link>shared:<define>RAPTOR_DYN_LINK
          <toolset>msvc:<define>RAPTOR_WIN32
          <toolset>gcc:<cflags>"-fvisibility=hidden"
-        :
-        :
-            <implicit-dependency>raptor2.h
-            <dependency>raptor2.h
    ;
+   
+   
+   lib raptor
+      :  $(location_src)/$(src)
+      :  $(requirements)
+         <link>static:<library>../../external//expat
+         <link>shared:<library>../../external//expat_pic
+      :  #default build options
+      :  #usage requirements
+         <implicit-dependency>raptor2.h
+         <dependency>raptor2.h
+   ;
+   
 }

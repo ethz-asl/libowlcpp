@@ -117,26 +117,29 @@ rule init ( version ? : location : options * ) {
    ;
 
    local location_src = [ path.join $(location) lib ] ;
-
+   local src = xmlparse.c xmltok.c xmlrole.c ;
+   
+   local requirements =
+      [ extension.define expat $(version) : $(location) : $(options) ]
+      <include>$(location_src)
+      <include>$(BOOST[1])
+      <toolset>gcc:<cflags>"-fvisibility=hidden"
+      <toolset>msvc:<define>_CRT_SECURE_NO_DEPRECATE
+      <toolset>msvc:<define>_SCL_SECURE_NO_DEPRECATE
+      <toolset>msvc:<define>XML_USE_MSC_EXTENSIONS
+      <define>HAVE_EXPAT_CONFIG_H
+      <define>EXPAT_SOURCE
+      <implicit-dependency>expat_config.h
+      <link>shared:<define>EXPAT_DYN_LINK
+      <link>static:<define>XML_STATIC
+   ;
+   
    lib expat
-      :  $(location_src)/xmlparse.c
-         $(location_src)/xmltok.c
-         $(location_src)/xmlrole.c
-      : #requirements
-         [ extension.define expat $(version) : $(location) : $(options) ]
-         <include>$(location_src)
-         <include>$(BOOST[1])
-         <toolset>gcc:<cflags>"-fvisibility=hidden"
-         <toolset>msvc:<define>_CRT_SECURE_NO_DEPRECATE
-         <toolset>msvc:<define>_SCL_SECURE_NO_DEPRECATE
-         <toolset>msvc:<define>XML_USE_MSC_EXTENSIONS
-         <define>HAVE_EXPAT_CONFIG_H
-         <define>EXPAT_SOURCE
-         <implicit-dependency>expat_config.h
-         <link>shared:<define>EXPAT_DYN_LINK
-         <link>static:<define>XML_STATIC
-      :
+      :  $(location_src)/$(src)
+      :  $(requirements)
+      : #default build options
       :  <include>$(location_src)
    ;
+   
 }
 
