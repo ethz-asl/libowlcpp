@@ -138,7 +138,7 @@ rule transform_hpp_action ( targets * : sources * : properties * ) {
       "/* Modified to control symbol export */"
       "#include \"$(incl_dir)/config.hpp\""
    ;
-   if tSignature.h = $(files[1]:B) { src += "#include <iterator>" ; }
+   if tSignature = $(files[1]:B) { src += "#include <iterator>" ; }
    src += "" ;
    local orig = [ utils.read_file $(files[1]) ] ;
    orig = [ replace_include $(orig) : $(files[2-]:B) ] ;
