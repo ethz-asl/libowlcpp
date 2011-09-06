@@ -13,7 +13,7 @@ namespace bmp = boost::mpl;
 namespace bmpp = boost::mpl::placeholders;
 
 #include "owl_cpp/Visitor.h"
-#include "factpp/Kernel_config.hpp"
+#include "factpp/Kernel.hpp"
 
 #include "owl_cpp/triple.hpp"
 #include "owl_cpp/node_base.hpp"

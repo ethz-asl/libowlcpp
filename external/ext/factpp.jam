@@ -8,16 +8,15 @@
 
 import extension ;
 
-import property ;
 import project ;
-import feature ;
-import common ;
 import regex ;
 import path ;
 import utils ; #local jam-file
 
 extension.declare factpp ;
 
+## generate header for symbol export macro
+################################################################################
 rule config_hpp ( targets * : sources * : properties * ) {
    STR on $(<) =
       "#ifndef FACTPP_CONFIG_HPP"
@@ -46,83 +45,148 @@ rule config_hpp ( targets * : sources * : properties * ) {
 }
 actions config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 
-rule make_hpp_cpp ( original : symbols * : includes * ) {
-   make_hpp $(original) : $(symbols) ;
-   includes ?= $(original) ;
-   make_cpp $(original:S=.cpp) : $(includes) ;
+## 
+################################################################################
+rule transform_hpp ( src_dir : version ) {
+   local files = [ glob $(src_dir)/*.h ] ;
+   local out_dir = factpp ;
+   for local file in $(files) {
+      make-singleton $(file:B).hpp
+      :  $(file) $(files)
+      :  @transform_hpp_action
+      :  <location>$(GENERATED_INCLUDE)/$(out_dir)
+      ;
+   }
+   return $(files) ;
 }
 
-## make header that includes config.h, exposes symbols, and includes original header
-rule make_hpp ( original : symbols * ) {
-   local base = $(original:B) ;
-   make-singleton $(base)_config.hpp 
-      : $(original)
-      : @config_header 
-      : <location>$(GENERATED_INCLUDE)/factpp <name>$(symbols)
-   ;
+## 
+################################################################################
+rule replace_include ( str : incl * ) {
+   local re = "^(.*) *#[ \t]*include *\"([0-9a-zA-Z_]+)\.h\"(.*)" ;
+   local result = "" ;
+   local parts = 1 ;
+   while $(parts) {
+      parts = [ MATCH $(re) : $(str) ] ;
+      if $(parts) {
+         parts += "" ;
+         if $(parts[2]) in $(incl) {
+            result = "#include \"factpp/$(parts[2]).hpp\"$(parts[3])$(result)" ;
+         } else {
+            result = "#include \"$(parts[2]).h\"$(parts[3])$(result)" ;
+         }
+         str = $(parts[1]) ;
+      }
+   }
+   str ?= "" ;
+   result = "$(str)$(result)" ;
+   return $(result) ;
 }
 
-## copy cpp replacing includes.* with include_config.hpp
-rule make_cpp ( original : includes * ) {
-   make-singleton $(original:D=)
-      : $(original) $(includes)
-      : @src_config 
-      : <location>$(GENERATED_LIB)/factpp
-   ;
+## 
+################################################################################
+rule add_class_export ( str : list * ) {
+   local re = "^(.*)class[ \t]+([0-9a-zA-Z_]+)([^;]*[{].*)" ;
+   local result = "" ;
+   local parts = 1 ;
+   while $(parts) {
+      parts = [ MATCH $(re) : $(str) ] ;
+      if $(parts) {
+         parts += "" ;
+         if $(parts[2]) in $(list) {
+            result = "class FACTPP_KERNEL_DECL $(parts[2])$(parts[3])$(result)" ;
+         } else {
+            result = "class $(parts[2])$(parts[3])$(result)" ;
+         }
+         str = $(parts[1]) ;
+      }
+   }
+   str ?= "" ;
+   result = "$(str)$(result)" ;
+   return $(result) ;
 }
 
-rule config_header ( targets* : sources * : properties * ) {
-   local re = "extern ([ 0-9A-Za-z*\,():&<]+;)" ;
-   local file = [ utils.read_file $(sources:G=) ] ;
-   file = [ SPLIT_BY_CHARACTERS $(file) : "\n" ] ;
-   local extern = [ MATCH "$(re)" : $(file) ] ;
-   #echo $(sources:G=) ;
-   #echo $(extern) ;
-   local name = [ property.select <name> : $(properties) ] ;
-   local class-name = $(name:G=) ;
-   local file-name = $(sources:G="":D=) ;
-   local file-base = $(file-name:B) ;
-   STR on $(<) = 
-      "#ifndef $(file-base:U)_CONFIG_HPP"
-      "#define $(file-base:U)_CONFIG_HPP"
-      ""
-      "#include \"factpp/config.hpp\""
-      "class FACTPP_KERNEL_DECL $(class-name);"
-      ""
-      "#include \"$(file-name)\""
-      "FACTPP_KERNEL_DECL $(extern)"
-      ""
-      "#endif /* $(file-base:U)_CONFIG_HPP */"
+## 
+################################################################################
+rule add_fun_export ( str : list * ) {
+   local re = "^(.*)extern[ \t\n]*([a-zA-Z_][ 0-9a-zA-Z_]+[ *&\t\n]+)([0-9a-zA-Z_]+)[ \t\n]*([(][^();]*[)];.*)" ;
+   local result = "" ;
+   local parts = 1 ;
+   while $(parts) {
+      parts = [ MATCH $(re) : $(str) ] ;
+      if $(parts) {
+         parts += "" ;
+         if $(parts[3]) in $(list) {
+            result = "extern FACTPP_KERNEL_DECL $(parts[2])$(parts[3])$(parts[4])$(result)" ;
+         } else {
+            result = "extern $(parts[2]) $(parts[3])$(parts[4])$(result)" ;
+         }
+         str = $(parts[1]) ;
+      }
+   }
+   str ?= "" ;
+   result = "$(str)$(result)" ;
+   return $(result) ;
+}
+
+## 
+################################################################################
+rule transform_hpp_action ( targets * : sources * : properties * ) {
+   local files = $(sources:G=) ;
+   local incl_dir = factpp ;
+   local src = 
+      "/* Modified to control symbol export */"
+      "#include \"$(incl_dir)/config.hpp\""
    ;
+   if tSignature.h = $(files[1]:B) { src += "#include <iterator>" ; }
+   src += "" ;
+   local orig = [ utils.read_file $(files[1]) ] ;
+   orig = [ replace_include $(orig) : $(files[2-]:B) ] ;
+   local export_classes = 
+      ReasoningKernel TNamedEntry TRole TExpressionManager TBox 
+      DLConceptTaxonomy Taxonomy DlSatTester TRole
+   ;
+   orig = [ add_class_export $(orig) : $(export_classes) ] ;
+   local export_funs = 
+      isSNF equalTrees isSubTree createInverse createSNFNot createSNFAnd
+      createSNFReducedAnd createSNFForall createSNFGE TokenName #"operator <<"
+   ;
+   orig = [ add_fun_export $(orig) : $(export_funs) ] ;
+   
+   STR on $(<) = $(src) $(orig) ;
    NL on $(<) = "
 " ;
 }
-actions config_header { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
+actions transform_hpp_action { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 
-rule replace_extern_hpp ( targets* : sources * : properties * ) {
-   local incl = "
-#define DLTREE_H
-#include \"factpp/config.hpp\"" ;
-   local src = [ utils.read_file $(sources:G=) ] ;
-   src = [ regex.replace $(src) "extern" "FACTPP_KERNEL_DECL" ] ;
-   src = [ regex.replace $(src) "#define DLTREE_H" $(incl) ] ;
-   STR on $(<) = $(src)
-   ;
-   NL on $(<) = "
-" ;
+## 
+################################################################################
+rule transform_cpp ( src_dir : version : headers * ) {
+   local files = [ glob $(src_dir)/*.cpp : $(src_dir)/parseTime.cpp ] ;
+   local out_dir = factpp ;
+   for local file in $(files) {
+      make-singleton $(file:D=$(GENERATED_LIB)/$(out_dir))
+      :  $(file) $(headers)
+      :  @transform_cpp_action
+      ;
+   }
+   return $(files:D=$(GENERATED_LIB)/$(out_dir)) ;
 }
-actions replace_extern_hpp { @($(STDOUT):E=$(STR)) > "$(<)" }
 
-rule src_config ( targets * : sources * : properties * ) {
+## 
+################################################################################
+rule transform_cpp_action ( targets * : sources * : properties * ) {
    local files = $(sources:G=) ;
    local src = [ utils.read_file $(files[1]) ] ;
-   for local file in $(files[2-]) {
-      src = [ regex.replace $(src) $(file:D=) "factpp/$(file:B)_config.hpp" ] ;
-   }
+   src = [ replace_include $(src) : $(files[2-]:B) ] ;
    STR on $(<) = $(src) ;
 }
-actions src_config { @($(STDOUT):E=$(STR)) > "$(<)" }
+actions transform_cpp_action { @($(STDOUT):E=$(STR)) > "$(<)" }
 
+
+
+## 
+################################################################################
 rule init ( version ? : location : options * )
 {
    version ?= default ;
@@ -136,61 +200,25 @@ rule init ( version ? : location : options * )
          <location>$(GENERATED_INCLUDE)/factpp
    ;
    
-   local convert_hpp_cpp = 
-      Kernel tExpressionManager dlTBox DLConceptTaxonomy Taxonomy Reasoner tRole
-      dltree
-   ;
+   local headers = [ transform_hpp $(kernel_location) : $(version) ] ;
+   local src = [ transform_cpp $(kernel_location) : $(version) : $(headers) ] ;
    
-   local convert_hpp = $(convert_hpp_cpp) #tNamedEntry
+   local requirements = 
+      [ extension.define factpp $(version) : $(kernel_location) : $(options) ]
+      <include>$(BOOST[1])
+      <include>$(GENERATED_INCLUDE)
+      <implicit-dependency>config.hpp
+      <implicit-dependency>$(headers:B).hpp
+      <define>FACTPP_KERNEL_SOURCE
+      <link>shared:<define>FACTPP_KERNEL_DYN_LINK
+      <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
    ;
-   
-   local convert_cpp = $(convert_hpp_cpp) SaveLoad Tactic CascadedCache
-   ;
-   
-   make_hpp_cpp $(kernel_location)/Kernel.h : ReasoningKernel TNamedEntry TRole ;
-   make_hpp_cpp $(kernel_location)/tExpressionManager.h : TExpressionManager ;
-   make_hpp_cpp $(kernel_location)/dlTBox.h : TBox ;
-   make_hpp_cpp $(kernel_location)/DLConceptTaxonomy.h : DLConceptTaxonomy ;
-   make_hpp_cpp $(kernel_location)/Taxonomy.h : Taxonomy ;
-   make_hpp_cpp $(kernel_location)/Reasoner.h : DlSatTester ;
-   make_hpp_cpp $(kernel_location)/tRole.h : TRole ;
-   make-singleton dltree_config.hpp 
-      : $(kernel_location)/dltree.h
-      : @replace_extern_hpp 
-      : <location>$(GENERATED_INCLUDE)/factpp
-   ;
-
-   make_cpp $(kernel_location)/SaveLoad.cpp : $(kernel_location)/Kernel.h ;
-   make_cpp $(kernel_location)/Tactic.cpp : $(kernel_location)/Reasoner.h ;
-   make_cpp $(kernel_location)/CascadedCache.cpp : $(kernel_location)/Reasoner.h ;
-   make_cpp $(kernel_location)/dltree.cpp : $(kernel_location)/dltree.h ;
-   
-   local src = 
-      [ 
-         glob $(kernel_location)/*.cpp 
-         : #exclude:
-            $(kernel_location)/parseTime.cpp
-            $(kernel_location)/$(convert_cpp).cpp
-      ]
-      $(convert_cpp).cpp
-   ;
-   #src = Kernel.cpp tExpressionManager.cpp ;
    
    lib factpp_kernel
       :   $(src)
-      :   #requirements
-         [ extension.define factpp $(version) : $(kernel_location) : $(options) ]
-         <include>$(kernel_location)
-         <include>$(BOOST[1])
-         <include>$(GENERATED_INCLUDE)
-         <implicit-dependency>config.hpp
-         <implicit-dependency>$(convert_hpp)_config.hpp
-         <define>FACTPP_KERNEL_SOURCE
-         <link>shared:<define>FACTPP_KERNEL_DYN_LINK
-         <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
-      :   
-      :   
-         <include>$(kernel_location)
+      :   $(requirements)
+      :   #default build properties
+      :   #usage requirements
          <include>$(GENERATED_INCLUDE)
       ;
 }

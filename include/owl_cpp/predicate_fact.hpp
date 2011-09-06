@@ -8,7 +8,7 @@ part of owl_cpp project.
 #include <string>
 #include <cstring>
 #include "predicate_fact_abstract.hpp"
-#include "factpp/Kernel_config.hpp"
+#include "factpp/Kernel.hpp"
 #include "owl_cpp/query_nodes.hpp"
 
 namespace owl_cpp{
