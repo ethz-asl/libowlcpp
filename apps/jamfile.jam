@@ -6,48 +6,31 @@
 project apps
    :  build-dir $(OUT)/apps
    :  requirements
-      <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
+      <link>static
+      <library>..//lib_owl_cpp
 ;
 
 exe print_triples
    : #sources
       print_triples.cpp
-   : #requirements
-      <link>static
-      <library>..//lib_owl_cpp
-   : #default build options
-   : #usage requirements
-      <link>static
 ;
 
 exe find_owl
    : #sources
       find_ontologies.cpp
-   : #requirements
-      <link>static
-      <library>..//lib_owl_cpp
 ;
 
 exe print_classes
    : #sources
       print_classes.cpp
-   : #requirements
-      <link>static
-      <library>..//lib_owl_cpp
 ;
 
 exe validate
    : #sources
       validate.cpp
-   : #requirements
-      <link>static
-      <library>..//lib_owl_cpp
 ;
 
 exe satisfiable
    : #sources
       satisfiable.cpp
-   : #requirements
-      <link>static
-      <library>..//lib_owl_cpp
 ;
