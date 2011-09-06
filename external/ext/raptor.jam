@@ -255,6 +255,7 @@ rule init ( version ? : location : options * ) {
       :  #usage requirements
          <implicit-dependency>raptor2.h
          <dependency>raptor2.h
+         <link>shared:<define>RAPTOR_DYN_LINK
    ;
    
 }

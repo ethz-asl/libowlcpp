@@ -25,6 +25,7 @@ lib lib_owl_cpp
     : #usage requirements
       <include>$(INCLUDE)
       <include>$(GENERATED_INCLUDE)
+      <link>shared:<define>OWLCPP_DYN_LINK
 ;
 
 obj lib_info
