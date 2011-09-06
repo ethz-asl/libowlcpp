@@ -21,4 +21,11 @@ Distributed under GNU General Public License; see doc/license.txt.
 #  define OWLCPP_DECL
 #endif
 
+#ifdef BOOST_MSVC
+   #pragma warning (push)
+   #pragma warning (disable : 4251) // class 'A<T>' needs to have dll-interface to be used by clients of class 'B'
+   #pragma warning (disable : 4290) // C++ exception specification ignored except to ...
+   #pragma warning (disable : 4355) // 'this' : used in base member initializer list
+#endif
+
 #endif /* CONFIG_HPP_ */
