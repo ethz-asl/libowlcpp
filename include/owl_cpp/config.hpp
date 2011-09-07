@@ -27,6 +27,7 @@ Distributed under GNU General Public License; see doc/license.txt.
    #pragma warning (disable : 4275) // non DLL-interface classkey "identifier" used as base for DLL-interface
    #pragma warning (disable : 4290) // C++ exception specification ignored except to ...
    #pragma warning (disable : 4355) // 'this' : used in base member initializer list
+   #pragma warning (disable : 4800) // forcing value to bool 'true' or 'false'
 #endif
 
 #endif /* CONFIG_HPP_ */
