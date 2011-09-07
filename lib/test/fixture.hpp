@@ -26,15 +26,15 @@ namespace b = boost;
 namespace but = boost::unit_test;
 namespace bfs = boost::filesystem;
 
+void translate(const b::exception &e) {
+    BOOST_FAIL(b::diagnostic_information(e));
+}
+
 /** Test fixture for printing exception info
 *******************************************************************************/
 struct Fixture {
    Fixture() {
       but::unit_test_monitor.register_exception_translator<b::exception>(&translate);
-   }
-
-   static void translate(const b::exception &e) {
-       BOOST_FAIL(b::diagnostic_information(e));
    }
 
    static std::string sample_data_path(const std::string& file = "") {
