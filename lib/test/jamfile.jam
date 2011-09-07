@@ -10,7 +10,7 @@ project
    : 
    : requirements
       <include>../
-      <library>/boost/test//boost_unit_test_framework
+      <library>/boost//unit_test_framework
       <library>/boost//filesystem
       <library>..//lib_owl_cpp
       <library>../..//factpp_kernel

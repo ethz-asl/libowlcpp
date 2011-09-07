@@ -26,9 +26,13 @@ BOOST_AUTO_TEST_CASE( rdf_parser_01_union ) {
 //   std::cout << '\n' << f_name << std::endl;
    const std::string f_path = sample_data_path(f_name);
    Triple_store store;
+   BOOST_CHECK_EQUAL( store.n_nodes(), 91U );
+   BOOST_CHECK_EQUAL( store.n_triples(), 0U );
    load(f_path, store);
-   check(store);
 //   print(store, std::cout);
+   BOOST_CHECK_EQUAL( store.n_nodes(), 98U );
+   BOOST_CHECK_EQUAL( store.n_triples(), 12U );
+   check(store);
 }
 
 /**
