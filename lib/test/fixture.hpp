@@ -42,7 +42,7 @@ struct Fixture {
       return (path / file).string();
    }
 
-   static const std::string& temp_path(const std::string& file = "") {
+   static const std::string temp_path(const std::string& file = "") {
       static const std::string str(BOOST_PP_STRINGIZE(TEMPORARY_DIR));
       return (bfs::path(str) / file).string();
    }

@@ -4,8 +4,8 @@
 # Copyright Mikhail K Levin 2010-1
 
 import path ;
-local smpl_dir = [ path.make $(SMPL_DATA) ] ;
-local tmp_dir = [ path.make $(TEMP_DIR) ] ;
+local smpl_dir = [ path.native $(SMPL_DATA) ] ;
+local tmp_dir = [ path.native $(TEMP_DIR) ] ;
 project
    : 
    : requirements
@@ -14,8 +14,8 @@ project
       <library>/boost//filesystem
       <library>..//lib_owl_cpp
       <library>../..//factpp_kernel
-      <define>SAMPLE_DATA_DIR="\"$(smpl_dir)\""
-      <define>TEMPORARY_DIR="\"$(tmp_dir)\""
+      <define>SAMPLE_DATA_DIR="\"$(smpl_dir:T)\""
+      <define>TEMPORARY_DIR="\"$(tmp_dir:T)\""
 ;
 
 import testing ;
