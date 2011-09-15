@@ -4,6 +4,7 @@
 # Copyright Mikhail K Levin 2010-1
 
 import build/singleton-target ;
+import build/version ;
 
 path-constant PROJ_ROOT : . ;
 path-constant INCLUDE : include ;

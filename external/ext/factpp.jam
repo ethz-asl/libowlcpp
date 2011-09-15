@@ -11,7 +11,6 @@ import extension ;
 import project ;
 import regex ;
 import path ;
-import utils ; #local jam-file
 
 extension.declare factpp ;
 
@@ -149,7 +148,7 @@ rule transform_hpp_action ( targets * : sources * : properties * ) {
    ;
    if tSignature = $(files[1]:B) { src += "#include <iterator>" ; }
    src += "" ;
-   local orig = [ utils.read_file $(files[1]) ] ;
+   local orig = [ read_file $(files[1]) ] ;
    orig = [ replace_include $(orig) : $(files[2-]:B) ] ;
    local export_classes = 
       ReasoningKernel TNamedEntry TRole TExpressionManager TBox 
@@ -194,7 +193,7 @@ rule transform_cpp ( src_dir : version : headers * ) {
 ################################################################################
 rule transform_cpp_action ( targets * : sources * : properties * ) {
    local files = $(sources:G=) ;
-   local src = [ utils.read_file $(files[1]) ] ;
+   local src = [ read_file $(files[1]) ] ;
    src = [ replace_include $(src) : $(files[2-]:B) ] ;
    
    #make getVersion definition in Kernel.cpp
