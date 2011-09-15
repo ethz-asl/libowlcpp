@@ -162,6 +162,14 @@ rule transform_hpp_action ( targets * : sources * : properties * ) {
    ;
    orig = [ add_fun_export $(orig) : $(export_funs) ] ;
    
+   #move getVersion definition to Kernel.cpp
+   if Kernel = $(files[1]:B) {
+      local re = "const[ \t\n]+char[ \t\n]*[*][ \t\n]*getVersion[ \t\n]*[(][a-z \t\n]*[)][ \t\n]*[{][^}]*[}]" ;
+      local decl = "//definition moved to Kernel.cpp to fix MSVC linking
+const char* getVersion();" ;
+      orig = [ regex.replace $(orig) $(re) $(decl) ] ;
+   }
+   
    STR on $(<) = $(src) $(orig) ;
    NL on $(<) = "
 " ;
@@ -188,6 +196,16 @@ rule transform_cpp_action ( targets * : sources * : properties * ) {
    local files = $(sources:G=) ;
    local src = [ utils.read_file $(files[1]) ] ;
    src = [ replace_include $(src) : $(files[2-]:B) ] ;
+   
+   #make getVersion definition in Kernel.cpp
+   if Kernel = $(files[1]:B) {
+      local re = "\"factpp/Kernel.hpp\"" ;
+      local def = "\"factpp/Kernel.hpp\"
+//definition moved from Kernel.hpp to fix MSVC linking
+const char* ReasoningKernel::getVersion() { return ReasoningKernel::Version; }" ;
+      src = [ regex.replace $(src) $(re) $(def) ] ;
+   }
+   
    STR on $(<) = $(src) ;
 }
 actions transform_cpp_action { @($(STDOUT):E=$(STR)) > "$(<)" }
