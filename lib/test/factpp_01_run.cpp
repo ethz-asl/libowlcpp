@@ -9,7 +9,7 @@ part of owl_cpp project.
 #include <cassert>
 #include <iostream>
 #include "sample_data.hpp"
-#include "Kernel.h"
+#include "factpp/Kernel.hpp"
 #include "owl_cpp/triple_to_fact.hpp"
 #include "owl_cpp/parse_to_triple_store.hpp"
 #include "owl_cpp/triple_store.hpp"

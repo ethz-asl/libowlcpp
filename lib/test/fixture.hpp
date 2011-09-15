@@ -10,7 +10,6 @@ part of owl_cpp project.
 #include "boost/test/unit_test_monitor.hpp"
 #include "boost/preprocessor/stringize.hpp"
 #include "owl_cpp/catalog.hpp"
-#include "Kernel.h"
 #include "owl_cpp/triple_to_fact.hpp"
 #include "owl_cpp/parse_to_triple_store.hpp"
 #include "owl_cpp/triple_store.hpp"
@@ -27,6 +26,10 @@ namespace b = boost;
 namespace but = boost::unit_test;
 namespace bfs = boost::filesystem;
 
+void translate(const b::exception &e) {
+    BOOST_FAIL(b::diagnostic_information(e));
+}
+
 /** Test fixture for printing exception info
 *******************************************************************************/
 struct Fixture {
@@ -34,16 +37,12 @@ struct Fixture {
       but::unit_test_monitor.register_exception_translator<b::exception>(&translate);
    }
 
-   static void translate(const b::exception &e) {
-       BOOST_FAIL(b::diagnostic_information(e));
-   }
-
    static std::string sample_data_path(const std::string& file = "") {
       static const bfs::path path(BOOST_PP_STRINGIZE(SAMPLE_DATA_DIR));
       return (path / file).string();
    }
 
-   static const std::string& temp_path(const std::string& file = "") {
+   static const std::string temp_path(const std::string& file = "") {
       static const std::string str(BOOST_PP_STRINGIZE(TEMPORARY_DIR));
       return (bfs::path(str) / file).string();
    }

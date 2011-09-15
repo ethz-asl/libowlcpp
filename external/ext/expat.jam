@@ -8,88 +8,76 @@
 ###     /ext/expat//expat
 
 import extension ;
+
+
+
 import property ;
 import project ;
 import feature ;
 import common ;
-import path ;
 
 extension.declare expat ;
 
-rule config_h ( targets * : sources * : properties * ) {
-   local define =
-      HAVE_DLFCN_H
-      HAVE_FCNTL_H
-      HAVE_INTTYPES_H
-      HAVE_MEMMOVE
-      HAVE_MEMORY_H
-      HAVE_STDINT_H
-      HAVE_STDLIB_H
-      HAVE_STRINGS_H
-      HAVE_STRING_H
-      HAVE_SYS_STAT_H
-      HAVE_SYS_TYPES_H
-      HAVE_UNISTD_H
-      STDC_HEADERS
-      XML_DTD
-      XML_NS
-   ;
-   
-   local undef = WORDS_BIGENDIAN const off_t size_t ;
-
-   local v = [ property.select <expat-version> : $(properties) ] ;
-   v = $(v:G=) ;
-   
-   local other =
-      "#define PACKAGE_BUGREPORT \"expat-bugs@lists.sourceforge.net\""
-      "#define PACKAGE_NAME \"expat\""
-      "#define PACKAGE_STRING \"expat $(v)\""
-      "#define PACKAGE_TARNAME \"expat\""
-      "#define PACKAGE_VERSION \"$(v)\""
-      "#define XML_CONTEXT_BYTES 1024"
-      "#define BYTEORDER 1234"
-   ;
-
-   switch [ property.select <target-os> : $(properties) ] {
+rule config_h ( targets * : sources * : properties * )
+{
+    local define ;
+    local undef ;
+    switch [ property.select <target-os> : $(properties) ]
+    {
         case *linux* :
         define +=
-         HAVE_BCOPY
-         HAVE_GETPAGESIZE
-         HAVE_MMAP
+            HAVE_BCOPY HAVE_DLFCN_H HAVE_FCNTL_H HAVE_GETPAGESIZE HAVE_INTTYPES_H
+            HAVE_MEMMOVE HAVE_MEMORY_H HAVE_MMAP HAVE_STDINT_H HAVE_STDLIB_H
+            HAVE_STRINGS_H HAVE_STRING_H HAVE_SYS_STAT_H HAVE_SYS_TYPES_H
+            HAVE_UNISTD_H STDC_HEADERS XML_DTD XML_NS
             ;
-        
-        case *darwin* :
-        define +=
-         HAVE_BCOPY
-         HAVE_GETPAGESIZE
-         HAVE_MMAP
+        undef +=
+            WORDS_BIGENDIAN const off_t size_t
             ;
+        BYTEORDER on $(<) = 1234 ;
         
         case *windows* :
         define +=
+            HAVE_DLFCN_H HAVE_FCNTL_H HAVE_INTTYPES_H
+            HAVE_MEMMOVE HAVE_MEMORY_H HAVE_STDINT_H HAVE_STDLIB_H
+            HAVE_STRINGS_H HAVE_STRING_H HAVE_SYS_STAT_H HAVE_SYS_TYPES_H
+            HAVE_UNISTD_H STDC_HEADERS XML_DTD XML_NS
             ;
         undef +=
-            HAVE_BCOPY HAVE_GETPAGESIZE HAVE_MMAP 
+            HAVE_BCOPY HAVE_GETPAGESIZE HAVE_MMAP WORDS_BIGENDIAN const off_t size_t
             ;
-   }
-   
-   CONFIG on $(<) =
-      "#ifndef EXPAT_CONFIG_H"
-      "#define EXPAT_CONFIG_H"
-      ""
-      $(other)
-      "#define $(define) 1"
-      "#undef $(undef)"
-      ""
-      "#endif // EXPAT_CONFIG_H"
-   ;
-
-   NL on $(<) = "
+        BYTEORDER on $(<) = 1234 ;
+    }
+    local version = [ property.select <expat-version> : $(properties) ] ;
+    VERSION on $(<) = $(version:G=) ;
+    CONFIG on $(<) =
+        "#define $(define) 1"
+        "#undef $(undef)" ;
+    NL on $(<) = "
 " ;
 }
-actions config_h { @($(STDOUT):E=$(CONFIG:J=$(NL))$(NL)) > "$(<)" }
+actions config_h
+{
+    @($(STDOUT):E=
+#ifndef EXPAT_CONFIG_H
+#define EXPAT_CONFIG_H
 
-rule init ( version ? : location : options * ) {
+#define PACKAGE_BUGREPORT "expat-bugs@lists.sourceforge.net"
+#define PACKAGE_NAME "expat"
+#define PACKAGE_STRING "expat $(VERSION)"
+#define PACKAGE_TARNAME "expat"
+#define PACKAGE_VERSION "$(VERSION)"
+#define XML_CONTEXT_BYTES 1024
+#define BYTEORDER $(BYTEORDER)
+$(CONFIG:J=$(NL))
+
+#endif // EXPAT_CONFIG_H
+) > "$(<)"
+}
+
+rule init ( version ? : location : options * )
+{
+
     version ?= default ;
     local requirements = [ extension.define expat $(version) : $(location) : $(options) ] ;
     
@@ -99,20 +87,17 @@ rule init ( version ? : location : options * ) {
         ;
         explicit expat_config.h ;
     
-   local location_src = [ path.join $(location) lib ] ;
-   
     lib expat
-        :   $(location_src)/xmlparse.c
-            $(location_src)/xmltok.c
-            $(location_src)/xmlrole.c
+        :   $(location)/lib/xmlparse.c
+            $(location)/lib/xmltok.c
+            $(location)/lib/xmlrole.c
         :   $(requirements)
             <expat-version>$(version)
             <expat-location>$(location)
-            <include>$(location_src)
+            <include>$(location)/lib
             <location-prefix>expat
             <toolset>msvc:<define>_CRT_SECURE_NO_DEPRECATE
             <toolset>msvc:<define>_SCL_SECURE_NO_DEPRECATE
-            <toolset>msvc:<def-file>$(location_src)/libexpat.def
             <define>HAVE_EXPAT_CONFIG_H
             <implicit-dependency>expat_config.h
             <dependency>expat_config.h
@@ -120,11 +105,10 @@ rule init ( version ? : location : options * ) {
             #~ <link>shared:<define>XML_BUILDING_EXPAT
             <link>static:<define>XML_STATIC
         :
-        :   <include>$(location_src)
+        :   <include>$(location)/lib
             <define>HAVE_EXPAT_CONFIG_H
             <implicit-dependency>expat_config.h
             <dependency>expat_config.h
             <link>static:<define>XML_STATIC
         ;
 }
-

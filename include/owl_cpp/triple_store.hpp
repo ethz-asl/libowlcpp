@@ -10,8 +10,8 @@ part of owl_cpp project.
 #include "boost/tuple/tuple.hpp"
 #include "boost/range.hpp"
 #include "boost/iterator/indirect_iterator.hpp"
-namespace b = boost;
 
+#include "owl_cpp/config.hpp"
 #include "owl_cpp/exception.hpp"
 #include "owl_cpp/object_store.hpp"
 #include "owl_cpp/ns_id.hpp"
@@ -38,24 +38,24 @@ Access objects through opaque object IDs
 result of fetching with invalid ID is undetermined.
 Fetching ID for a non-existing object produces exception.
 *******************************************************************************/
-class Triple_store {
+class OWLCPP_DECL Triple_store {
    typedef Obj_store<std::string> uri_store_t;
    typedef Obj_store<Node_base> term_store_t;
    typedef std::vector<Triple*> triple_store_t;
    typedef std::vector<triple_store_t> tid_store_t;
-   typedef b::indirect_iterator<triple_store_t::const_iterator, Triple>
+   typedef boost::indirect_iterator<triple_store_t::const_iterator, Triple>
       triple_iter_t;
 
 public:
    struct Err : public base_exception {};
-   typedef b::iterator_range<triple_iter_t> triple_range_t;
+   typedef boost::iterator_range<triple_iter_t> triple_range_t;
    typedef uri_store_t::find_range_t ns_search_range_t;
    typedef term_store_t::find_range_t node_search_range_t;
 
    /**@brief Split IRI into namespace IRI and term.
    Use only this splitting procedure for consistency.
    */
-   static b::tuple<std::string,std::string> split(const std::string&);
+   static boost::tuple<std::string,std::string> split(const std::string&);
 
    Triple_store();
    std::size_t n_uris() const {return uris_.size();}

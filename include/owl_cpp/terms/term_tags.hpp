@@ -6,9 +6,9 @@ part of owl_cpp project.
 #ifndef TERM_TAGS_HPP_
 #define TERM_TAGS_HPP_
 #include <string>
-#include "term_macro.hpp"
-#include "term_methods.hpp"
-#include "uri_tags.hpp"
+#include "owl_cpp/terms/term_macro.hpp"
+#include "owl_cpp/terms/term_methods.hpp"
+#include "owl_cpp/terms/uri_tags.hpp"
 #include "owl_cpp/ns_id.hpp"
 #include "owl_cpp/node_id.hpp"
 

@@ -5,8 +5,9 @@ part of owl_cpp project.
 *******************************************************************************/
 #ifndef URI_MACRO_HPP_
 #define URI_MACRO_HPP_
-#include "custom_type_macro.hpp"
-#include "uri_list.hpp"
+#include "owl_cpp/config.hpp"
+#include "owl_cpp/terms/custom_type_macro.hpp"
+#include "owl_cpp/terms/uri_list.hpp"
 
 #include "boost/preprocessor/facilities/empty.hpp"
 #include "boost/preprocessor/seq/for_each.hpp"
@@ -20,7 +21,8 @@ part of owl_cpp project.
    typedef Ns_id id_type;
 }; @endcode
 *******************************************************************************/
-#define OWLCPP_STD_NAMESPACE_TYPE(r, d, i, e) struct OWLCPP_NAMESPACE_TYPE_NAME(e) { \
+#define OWLCPP_STD_NAMESPACE_TYPE(r, d, i, e) \
+struct OWLCPP_DECL OWLCPP_NAMESPACE_TYPE_NAME(e) { \
    static const unsigned index = i; \
    static const std::string name; \
    static const std::string prefix; \

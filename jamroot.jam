@@ -3,16 +3,19 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
+import build/singleton-target ;
+
 path-constant PROJ_ROOT : . ;
+path-constant INCLUDE : include ;
 path-constant OUT : out ;
-path-constant INCL : include ;
-path-constant SMPL_DATA : "./sample_data" ;
-path-constant TEMP_DIR : "./out/temp/" ;
-constant SAMPLE_DATA_DIR : $(SMPL_DATA) ;
-constant TEMPORARY_DIR : $(TEMP_DIR) ;
-import utils ;
-constant BUILD_VERSION : [ utils.build_version 3 ] ; #YYYYMMDD
-constant CODE_REVISION : [ utils.split_git_tag : $(GIT_PATH) ] ; #1 2 3 17-g123acf* v1.2.3-17-g123acf*
+path-constant SMPL_DATA : "sample_data" ;
+path-constant TEMP_DIR : "out/temp" ;
+make $(TEMP_DIR) : : @common.mkdir ;
+path-constant GENERATED_INCLUDE : out/include ;
+path-constant GENERATED_LIB : out/lib ;
+
+if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
+use-project boost : $(BOOST[1]) ;
 
 project owl_cpp
    : 
@@ -21,10 +24,6 @@ project owl_cpp
    : requirements
 ;
 
-make $(TEMP_DIR) : : @common.mkdir ;
-if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
-use-project boost : $(BOOST[1]) ;
-
 alias test
    : #sources
       lib/test
@@ -32,14 +31,7 @@ alias test
    : #requirements
 ;
 
-alias lib_owl_cpp
-   : #sources
-      lib//lib_owl_cpp
-   : #requirements
-   : #default build options
-   : #usage requirements
-      <include>include
-;
+alias lib_owl_cpp : lib//lib_owl_cpp ;
 
 alias applications : apps ;
 alias factpp_kernel : external//factpp_kernel ;
@@ -90,4 +82,9 @@ if [ modules.peek doxygen : .initialized ] {
 }
 explicit autodoc ;
 
+import feature : feature ;
+import toolset ;
+feature pic : off on : propagated ;
+toolset.flags gcc.compile.c USER_OPTIONS <pic>on : -fPIC : unchecked ;
+toolset.flags gcc.compile.c++ USER_OPTIONS <pic>on : -fPIC : unchecked ;
 

@@ -6,36 +6,67 @@
 project lib
    : build-dir $(OUT)/bin
    : requirements
-      <include>$(BOOST[1])
+      <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
 ;
-
-obj lib_info
-   : #sources
-         lib_info.cpp
-   : #requirements
-      <include>../include
-      <define>OWLCPP_VERSION_1=$(CODE_REVISION[1])
-      <define>OWLCPP_VERSION_2=$(CODE_REVISION[2])
-      <define>OWLCPP_VERSION_3=$(CODE_REVISION[3])
-      <define>OWLCPP_VERSION_EXTRA=\"$(CODE_REVISION[4])\"
-      <define>OWLCPP_VERSION_STR=$(CODE_REVISION[5])
-      <define>OWLCPP_BUILD=$(BUILD_VERSION)
-   : #default build options
-   : #usage requirements
-;
-explicit lib_info ;
 
 lib lib_owl_cpp
     : #sources
         [ glob *.cpp : lib_info.cpp ] lib_info
     : #requirements
       <include>.
-      <include>../include
+      <include>$(INCLUDE)
+      <include>$(GENERATED_INCLUDE)
       <library>/boost//filesystem
       <library>..//raptor
       <library>..//factpp_kernel
+      <define>OWLCPP_SOURCE
+      <link>shared:<define>OWLCPP_DYN_LINK
     : #default build options
     : #usage requirements
-      <include>../include
+      <include>$(INCLUDE)
+      <include>$(GENERATED_INCLUDE)
+      <link>shared:<define>OWLCPP_DYN_LINK
 ;
+
+obj lib_info
+   : #sources
+         lib_info.cpp
+   : #requirements
+      <include>$(BOOST[1])
+      <include>$(INCLUDE)
+      <include>$(GENERATED_INCLUDE)
+      <implicit-dependency>version.hpp
+      <define>OWLCPP_SOURCE
+      <link>shared:<define>OWLCPP_DYN_LINK
+   : #default build options
+   : #usage requirements
+;
+explicit lib_info ;
+
+import utils ;
+# Generate version header
+make-singleton version.hpp 
+   : 
+   : @version_header 
+   : <location>$(GENERATED_INCLUDE)/owl_cpp
+;
+
+rule version_header ( targets * : sources * : properties * ) {
+   import utils ;
+   local tag = [ utils.git_describe $(GIT_PATH) ] ;
+   local v = [ utils.process_version_string $(tag) : 0 0 0 unknown ] ;
+   local build = [ utils.build_version 3 ] ; #YYYYMMDD
+   STR on $(<) =
+      "// Generated header.  Do not edit."
+      "#define OWLCPP_VERSION_1 $(v[1])"
+      "#define OWLCPP_VERSION_2 $(v[2])"
+      "#define OWLCPP_VERSION_3 $(v[3])"
+      "#define OWLCPP_VERSION_EXTRA $(v[4])"
+      "#define OWLCPP_BUILD $(build)"
+   ;
+   NL on $(<) = "
+" ;
+}
+actions version_header { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
+
 

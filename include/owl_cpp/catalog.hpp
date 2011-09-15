@@ -14,6 +14,7 @@ namespace b = boost;
 #include "boost/multi_index/member.hpp"
 namespace bm = boost::multi_index;
 
+#include "owl_cpp/config.hpp"
 #include "owl_cpp/exception.hpp"
 
 namespace owl_cpp{
@@ -24,7 +25,7 @@ non-empty verions IRIs should be unique.
 Ontology ID is pair of ontology IRI and version IRI.
 Ontology ID should be unique.
 *******************************************************************************/
-class Catalog {
+class OWLCPP_DECL Catalog {
    struct Location {
       Location(const std::string& path_, const std::string& iri_, const std::string& version_)
       : path(path_), iri(iri_), version(version_) {}

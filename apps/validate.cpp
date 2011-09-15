@@ -8,7 +8,7 @@ part of owl_cpp project.
 namespace b = boost;
 #include "boost/filesystem.hpp"
 namespace bf = boost::filesystem;
-#include "Kernel.h"
+#include "factpp/Kernel.hpp"
 
 #include "owl_cpp/triple_store.hpp"
 #include "owl_cpp/parse_to_triple_store.hpp"

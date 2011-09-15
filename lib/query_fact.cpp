@@ -4,7 +4,7 @@ part of owl_cpp project.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #include "owl_cpp/query_fact.hpp"
-#include "Kernel.h"
+#include "factpp/Kernel.hpp"
 #include "owl_cpp/triple_store.hpp"
 #include "owl_cpp/query_nodes.hpp"
 #include "owl_cpp/terms/term_tags.hpp"

@@ -8,20 +8,19 @@
 
 import extension ;
 
-import property ;
 import project ;
-import feature ;
-import common ;
 import regex ;
 import path ;
 import utils ; #local jam-file
 
 extension.declare factpp ;
 
-rule factpp_kernel_config_hpp ( targets * : sources * : properties * ) {
+## generate header for symbol export macro
+################################################################################
+rule config_hpp ( targets * : sources * : properties * ) {
    STR on $(<) =
-      "#ifndef FACT_KERNEL_CONFIG_HPP"
-      "#define FACT_KERNEL_CONFIG_HPP"
+      "#ifndef FACTPP_CONFIG_HPP"
+      "#define FACTPP_CONFIG_HPP"
       ""
       "#include \"boost/config.hpp\""
       "#ifndef BOOST_SYMBOL_EXPORT"
@@ -38,82 +37,215 @@ rule factpp_kernel_config_hpp ( targets * : sources * : properties * ) {
       "#  define FACTPP_KERNEL_DECL"
       "#endif"
       ""
-      "#endif /* FACT_KERNEL_CONFIG_HPP */"
+      "#ifdef BOOST_MSVC"
+      "#pragma warning (push)"
+      "#pragma warning (disable : 4251) // class 'A<T>' needs to have dll-interface to be used by clients of class 'B'"
+      "#pragma warning (disable : 4275) // non DLL-interface classkey \"identifier\" used as base for DLL-interface"
+      "#pragma warning (disable : 4290) // C++ exception specification ignored except to ..."
+      "#pragma warning (disable : 4355) // 'this' : used in base member initializer list"
+      "#pragma warning (disable : 4800) // forcing value to bool 'true' or 'false'"
+      "#endif /* BOOST_MSVC */"
+      ""
+      "#endif /* FACTPP_CONFIG_HPP */"
    ;
    
    NL on $(<) = "
 " ;
 }
-actions factpp_kernel_config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
+actions config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 
-rule Kernel_h ( targets * : sources * : properties * ) {
-   ## insert symbol visibility declaration
-   local str = "#define KERNEL_H
-
-#include \"factpp_kernel_config.hpp\"
-class FACTPP_KERNEL_DECL ReasoningKernel;"
-;
-
-   local kern_h = [ utils.read_file $(sources:G=) ] ;
-   kern_h = [ regex.replace $(kern_h) "#define KERNEL_H" $(str) ] ;
-#   exit $(targets);
-#   exit [ path.native $(targets) ] ;
-   STR on $(<) = $(kern_h) ;
+## 
+################################################################################
+rule transform_hpp ( src_dir : version ) {
+   local files = [ glob $(src_dir)/*.h ] ;
+   local out_dir = factpp ;
+   for local file in $(files) {
+      make-singleton $(file:B).hpp
+      :  $(file) $(files)
+      :  @transform_hpp_action
+      :  <location>$(GENERATED_INCLUDE)/$(out_dir)
+      ;
+   }
+   return $(files) ;
 }
-actions Kernel_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 
+## 
+################################################################################
+rule replace_include ( str : incl * ) {
+   local re = "^(.*) *#[ \t]*include *\"([0-9a-zA-Z_]+)\.h\"(.*)" ;
+   local result = "" ;
+   local parts = 1 ;
+   while $(parts) {
+      parts = [ MATCH $(re) : $(str) ] ;
+      if $(parts) {
+         parts += "" ;
+         if $(parts[2]) in $(incl) {
+            result = "#include \"factpp/$(parts[2]).hpp\"$(parts[3])$(result)" ;
+         } else {
+            result = "#include \"$(parts[2]).h\"$(parts[3])$(result)" ;
+         }
+         str = $(parts[1]) ;
+      }
+   }
+   str ?= "" ;
+   result = "$(str)$(result)" ;
+   return $(result) ;
+}
+
+## 
+################################################################################
+rule add_class_export ( str : list * ) {
+   local re = "^(.*)class[ \t]+([0-9a-zA-Z_]+)([^;]*[{].*)" ;
+   local result = "" ;
+   local parts = 1 ;
+   while $(parts) {
+      parts = [ MATCH $(re) : $(str) ] ;
+      if $(parts) {
+         parts += "" ;
+         if $(parts[2]) in $(list) {
+            result = "class FACTPP_KERNEL_DECL $(parts[2])$(parts[3])$(result)" ;
+         } else {
+            result = "class $(parts[2])$(parts[3])$(result)" ;
+         }
+         str = $(parts[1]) ;
+      }
+   }
+   str ?= "" ;
+   result = "$(str)$(result)" ;
+   return $(result) ;
+}
+
+## 
+################################################################################
+rule add_fun_export ( str : list * ) {
+   local re = "^(.*)extern[ \t\n]*([a-zA-Z_][ 0-9a-zA-Z_]+[ *&\t\n]+)([0-9a-zA-Z_]+)[ \t\n]*([(][^();]*[)];.*)" ;
+   local result = "" ;
+   local parts = 1 ;
+   while $(parts) {
+      parts = [ MATCH $(re) : $(str) ] ;
+      if $(parts) {
+         parts += "" ;
+         if $(parts[3]) in $(list) {
+            result = "extern FACTPP_KERNEL_DECL $(parts[2])$(parts[3])$(parts[4])$(result)" ;
+         } else {
+            result = "extern $(parts[2]) $(parts[3])$(parts[4])$(result)" ;
+         }
+         str = $(parts[1]) ;
+      }
+   }
+   str ?= "" ;
+   result = "$(str)$(result)" ;
+   return $(result) ;
+}
+
+## 
+################################################################################
+rule transform_hpp_action ( targets * : sources * : properties * ) {
+   local files = $(sources:G=) ;
+   local incl_dir = factpp ;
+   local src = 
+      "/* Modified to control symbol export */"
+      "#include \"$(incl_dir)/config.hpp\""
+   ;
+   if tSignature = $(files[1]:B) { src += "#include <iterator>" ; }
+   src += "" ;
+   local orig = [ utils.read_file $(files[1]) ] ;
+   orig = [ replace_include $(orig) : $(files[2-]:B) ] ;
+   local export_classes = 
+      ReasoningKernel TNamedEntry TRole TExpressionManager TBox 
+      DLConceptTaxonomy Taxonomy DlSatTester TRole
+   ;
+   orig = [ add_class_export $(orig) : $(export_classes) ] ;
+   local export_funs = 
+      isSNF equalTrees isSubTree createInverse createSNFNot createSNFAnd
+      createSNFReducedAnd createSNFForall createSNFGE TokenName #"operator <<"
+   ;
+   orig = [ add_fun_export $(orig) : $(export_funs) ] ;
+   
+   #move getVersion definition to Kernel.cpp
+   if Kernel = $(files[1]:B) {
+      local re = "const[ \t\n]+char[ \t\n]*[*][ \t\n]*getVersion[ \t\n]*[(][a-z \t\n]*[)][ \t\n]*[{][^}]*[}]" ;
+      local decl = "//definition moved to Kernel.cpp to fix MSVC linking
+const char* getVersion();" ;
+      orig = [ regex.replace $(orig) $(re) $(decl) ] ;
+   }
+   
+   STR on $(<) = $(src) $(orig) ;
+   NL on $(<) = "
+" ;
+}
+actions transform_hpp_action { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
+
+## 
+################################################################################
+rule transform_cpp ( src_dir : version : headers * ) {
+   local files = [ glob $(src_dir)/*.cpp : $(src_dir)/parseTime.cpp ] ;
+   local out_dir = factpp ;
+   for local file in $(files) {
+      make-singleton $(file:D=$(GENERATED_LIB)/$(out_dir))
+      :  $(file) $(headers)
+      :  @transform_cpp_action
+      ;
+   }
+   return $(files:D=$(GENERATED_LIB)/$(out_dir)) ;
+}
+
+## 
+################################################################################
+rule transform_cpp_action ( targets * : sources * : properties * ) {
+   local files = $(sources:G=) ;
+   local src = [ utils.read_file $(files[1]) ] ;
+   src = [ replace_include $(src) : $(files[2-]:B) ] ;
+   
+   #make getVersion definition in Kernel.cpp
+   if Kernel = $(files[1]:B) {
+      local re = "\"factpp/Kernel.hpp\"" ;
+      local def = "\"factpp/Kernel.hpp\"
+//definition moved from Kernel.hpp to fix MSVC linking
+const char* ReasoningKernel::getVersion() { return ReasoningKernel::Version; }" ;
+      src = [ regex.replace $(src) $(re) $(def) ] ;
+   }
+   
+   STR on $(<) = $(src) ;
+}
+actions transform_cpp_action { @($(STDOUT):E=$(STR)) > "$(<)" }
+
+
+
+## 
+################################################################################
 rule init ( version ? : location : options * )
 {
    version ?= default ;
    
    local kernel_location = [ path.join $(location) src/Kernel ] ;
    
+   make-singleton config.hpp 
+      : 
+      :  @config_hpp
+      :  <factpp-version>$(version)
+         <location>$(GENERATED_INCLUDE)/factpp
+   ;
+   
+   local headers = [ transform_hpp $(kernel_location) : $(version) ] ;
+   local src = [ transform_cpp $(kernel_location) : $(version) : $(headers) ] ;
+   
    local requirements = 
-      [ extension.define factpp $(version)
-         : $(kernel_location)
-         : $(options)
-      ]
-#      <dependency>factpp_kernel_config.hpp
-#      <implicit-dependency>factpp_kernel_config.hpp
-#      <dependency>headers
-#      <implicit-dependency>kernel_h
-      <include>$(BOOST[0])
-      <include>$(kernel_location)
+      [ extension.define factpp $(version) : $(kernel_location) : $(options) ]
+      <include>$(BOOST[1])
+      <include>$(GENERATED_INCLUDE)
+      <implicit-dependency>config.hpp
+      <implicit-dependency>$(headers:B).hpp
       <define>FACTPP_KERNEL_SOURCE
       <link>shared:<define>FACTPP_KERNEL_DYN_LINK
+      <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
    ;
    
-   make factpp_kernel_config.hpp 
-      : 
-      : @factpp_kernel_config_hpp
-      : <factpp-version>$(version)
-        <location-prefix>src
-   ;
-
-   make Kernel.h 
-      : $(kernel_location)/Kernel.h
-      : @Kernel_h
-      : <factpp-version>$(version)
-        <location-prefix>src
-   ;
-   
-#   install headers : Kernel.h factpp_kernel_config.hpp : <location>$(OUT)/include ;
-   
-   local src = 
-      [ glob $(kernel_location)/*.cpp : $(kernel_location)/parseTime.cpp ] 
-   ;
-   src += 
-#      $(kernel_location)/Kernel.cpp 
-   ;
    lib factpp_kernel
       :   $(src)
       :   $(requirements)
-         <toolset>msvc:<link>static
-#         <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
-#         <toolset>gcc:<linkflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
-#         <toolset>gcc:<cflags>"-include\"$(OUT)/include/factpp_kernel_config.hpp\""
-      :   
-      :   
-         <include>$(kernel_location)
+      :   #default build properties
+      :   #usage requirements
+         <include>$(GENERATED_INCLUDE)
       ;
 }

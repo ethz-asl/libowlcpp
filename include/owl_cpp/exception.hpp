@@ -8,8 +8,7 @@ part of owl_cpp project.
 
 #include <exception>
 #include "boost/exception/all.hpp"
-namespace b = boost;
-
+#include "owl_cpp/config.hpp"
 namespace owl_cpp{
 
 /**
@@ -20,12 +19,12 @@ Example:
          << base_exception::nested_t(b::current_exception())
    );
 *******************************************************************************/
-struct base_exception : virtual public std::exception, virtual public b::exception {
-   typedef b::error_info<struct errinfo_message_, std::string> msg_t;
-   typedef b::error_info<struct errinfo_str1_, std::string> str1_t;
-   typedef b::error_info<struct errinfo_str2_, std::string> str2_t;
-   typedef b::error_info<struct errinfo_str3_, std::string> str3_t;
-   typedef b::errinfo_nested_exception nested_t;
+struct OWLCPP_DECL base_exception : virtual public std::exception, virtual public boost::exception {
+   typedef boost::error_info<struct errinfo_message_, std::string> msg_t;
+   typedef boost::error_info<struct errinfo_str1_, std::string> str1_t;
+   typedef boost::error_info<struct errinfo_str2_, std::string> str2_t;
+   typedef boost::error_info<struct errinfo_str3_, std::string> str3_t;
+   typedef boost::errinfo_nested_exception nested_t;
 };
 
 }//namespace owl_cpp

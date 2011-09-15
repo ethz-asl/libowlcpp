@@ -5,8 +5,9 @@ part of owl_cpp project.
 *******************************************************************************/
 #ifndef TRIPLE_TO_FACT_HPP_
 #define TRIPLE_TO_FACT_HPP_
-#include <memory>
-class ReasoningKernel;
+#include "owl_cpp/config.hpp"
+
+class OWLCPP_DECL ReasoningKernel;
 
 namespace owl_cpp{
 
@@ -14,7 +15,7 @@ class Triple_store;
 
 /** Add triples from the store to reasoning kernel
 *******************************************************************************/
-void add(const Triple_store&, ReasoningKernel&, const bool lax = false);
+OWLCPP_DECL void add(const Triple_store&, ReasoningKernel&, const bool lax = false);
 
 
 }//namespace owl_cpp

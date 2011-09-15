@@ -27,7 +27,8 @@ See doc/user-config.jam
 " ;
 }
 using ext/expat : $(EXPAT[2]) : $(EXPAT[1]) ;
-alias expat : /ext/expat ;
+alias expat : /ext/expat//expat ;
+alias expat_pic : /ext/expat//expat : <link>static <pic>on ;
 
 if ! $(RAPTOR) { 
 EXIT "
@@ -36,5 +37,6 @@ See doc/user-config.jam
 " ;
 }
 using ext/raptor : $(RAPTOR[2]) : $(RAPTOR[1]) ;
-alias raptor : /ext/raptor ;
+alias raptor : /ext/raptor//raptor ;
+alias raptor_pic : /ext/raptor//raptor : <link>static <pic>on ;
 

@@ -5,8 +5,9 @@ part of owl_cpp project.
 *******************************************************************************/
 #ifndef TERM_MACRO_HPP_
 #define TERM_MACRO_HPP_
-#include "custom_type_macro.hpp"
-#include "term_list.hpp"
+#include "owl_cpp/terms/custom_type_macro.hpp"
+#include "owl_cpp/terms/term_list.hpp"
+#include "owl_cpp/config.hpp"
 
 #include "boost/preprocessor/cat.hpp"
 #include "boost/preprocessor/facilities/empty.hpp"
@@ -26,7 +27,7 @@ part of owl_cpp project.
 }; @endcode
 *******************************************************************************/
 #define OWLCPP_STD_TERM_TYPE(r, d, i, e) \
-   struct OWLCPP_TERM_TYPE_NAME(e) { \
+   struct OWLCPP_DECL OWLCPP_TERM_TYPE_NAME(e) { \
    typedef OWLCPP_NAMESPACE_TYPE_NAME(e) ns_type; \
    typedef ::owl_cpp::Node_id id_type; \
    static const unsigned index = i; \

@@ -6,6 +6,8 @@ part of owl_cpp project.
 #ifndef LIB_INFO_HPP_
 #define LIB_INFO_HPP_
 #include <string>
+#include "owl_cpp/config.hpp"
+
 /**
 @mainpage %owl_cpp library
 
@@ -33,20 +35,19 @@ namespace owl_cpp{
 
 /**@brief library name
 *******************************************************************************/
-const std::string& lib_name();
+OWLCPP_DECL const std::string& lib_name();
 
 /**@brief library version
 *******************************************************************************/
-const std::string& version_str();
+OWLCPP_DECL const std::string& version_str();
 
 /**@brief library build number
 *******************************************************************************/
-const std::string& build_str();
+OWLCPP_DECL const std::string& build_str();
 
 /**@brief
 *******************************************************************************/
-const std::string& lib_info_str();
+OWLCPP_DECL const std::string& lib_info_str();
 
 }//namespace owl_cpp
-
 #endif /* LIB_INFO_HPP_ */
