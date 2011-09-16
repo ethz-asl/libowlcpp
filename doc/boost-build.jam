@@ -1,11 +1,11 @@
-# File boost-build.jam
-# part of owl_cpp project.
-# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2010-1
+## File boost-build.jam
+## part of owl_cpp project.
+## Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+## Copyright Mikhail K Levin 2010-1
 
-# File "boost-build.jam" should be present in the project directory or 
-# in any directory above it.
-# If does not already exist, copy this file to one of the locations, 
-# and adjust the path below to the location of Boost.Build.
+## File "boost-build.jam" should be present in the project directory or 
+## in any directory above it.
+## If does not already exist, copy this file to one of the locations, 
+## uncomment and adjust the path below to the location of Boost.Build.
 
-boost-build boost_1_46_1/tools/build/v2 ;
+# boost-build boost_1_47_0/tools/build/v2 ;

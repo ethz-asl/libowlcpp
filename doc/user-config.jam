@@ -39,23 +39,28 @@
 
 ################################################################################
 ## Libraries
+## Uncomment all "constant" statements and provide correct paths and versions. 
 
 local utils = "c:/utils" ;
 
 ## Boost library source
 ## http://www.boost.org/
-constant BOOST : "$(utils)/boost_1_47_0/" 1.47.0 ;
+# constant BOOST : "$(utils)/boost_1_47_0/" 1.47.0 ;
 
 ## FaCT++ library source
 ## http://code.google.com/p/factplusplus/
-constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
+# constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
 
 ## Expat library source
 ## http://expat.sourceforge.net/
 ## http://sourceforge.net/projects/expat/files/expat/2.0.1/
-constant EXPAT : "$(utils)/expat-2.0.1" 2.0.1 ;
+# constant EXPAT : "$(utils)/expat-2.0.1" 2.0.1 ;
 
 ## Raptor library source
 ## http://librdf.org/raptor/
-constant RAPTOR : "$(utils)/raptor2-2.0.4" 2.0.4 ;
+# constant RAPTOR : "$(utils)/raptor2-2.0.4" 2.0.4 ;
 
+## owl_cpp library source
+## http://sourceforge.net/projects/owl-cpp/
+## (optionally) uncomment this to use owl_cpp library in your projects
+# constant OWLCPP : "$(utils)/owl_cpp" 0.0.3 ;
