@@ -6,7 +6,7 @@
 project lib
    : build-dir $(OUT)/bin
    : requirements
-      <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
+      <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
 ;
 
 lib lib_owl_cpp
