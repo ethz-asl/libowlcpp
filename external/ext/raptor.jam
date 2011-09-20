@@ -112,18 +112,19 @@ rule config_h ( targets * : sources * : properties * ) {
          HAVE_SYS_TIME_H
          TIME_WITH_SYS_TIME
          HAVE_UNISTD_H
-         ;
+      ;
       undef +=
-         ;
-      
+      ;
+
       case *windows* :
       define +=
          HAVE_STRICMP
          WIN32_LEAN_AND_MEAN
          YY_USE_CONST
-         ;
+         WIN32_CONFIG_H
+      ;
       undef +=
-         ;
+      ;
       other +=
 #         "#define vsnprintf _vsnprintf"
          "#define snprintf _snprintf"
@@ -134,14 +135,17 @@ rule config_h ( targets * : sources * : properties * ) {
          "#define __func__ \"\""
          "#undef RAPTOR_INLINE"
          "#define RAPTOR_INLINE __inline"
+         "#include \"boost/config.hpp\""
+         "#if defined BOOST_MSVC"
          "#define lround(x) (((x) < 0) ? (long)((x)-0.5) : (long)((x)+0.5))"
+         "#endif"
       ;
    }
    CONFIG on $(<) =
       $(other)
       "#define $(define) 1"
       "#undef $(undef)"
-      ;
+   ;
    NL on $(<) = "
 " ;
 }
@@ -240,7 +244,7 @@ rule init ( version ? : location : options * ) {
          #<dependency>raptor2.h
          <link>shared:<define>RAPTOR_DYN_LINK
          <toolset>msvc:<define>RAPTOR_WIN32
-         <toolset>gcc:<cflags>"-fvisibility=hidden"
+         <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden"
    ;
    
    

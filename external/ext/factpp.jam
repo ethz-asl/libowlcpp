@@ -237,7 +237,7 @@ rule init ( version ? : location : options * )
       <implicit-dependency>$(headers:B).hpp
       <define>FACTPP_KERNEL_SOURCE
       <link>shared:<define>FACTPP_KERNEL_DYN_LINK
-      <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
+      <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
    ;
    
    lib factpp_kernel
