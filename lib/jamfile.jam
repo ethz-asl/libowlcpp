@@ -10,9 +10,9 @@ project lib
 ;
 
 lib lib_owl_cpp
-    : #sources
-        [ glob *.cpp : lib_info.cpp ] lib_info
-    : #requirements
+   :  #sources
+      [ glob *.cpp : lib_info.cpp ] lib_info
+   :  #requirements
       <include>.
       <include>$(INCLUDE)
       <include>$(GENERATED_INCLUDE)
@@ -21,8 +21,8 @@ lib lib_owl_cpp
       <library>..//factpp_kernel
       <define>OWLCPP_SOURCE
       <link>shared:<define>OWLCPP_DYN_LINK
-    : #default build options
-    : #usage requirements
+   :  #default build options
+   :  #usage requirements
       <include>$(INCLUDE)
       <include>$(GENERATED_INCLUDE)
       <link>shared:<define>OWLCPP_DYN_LINK

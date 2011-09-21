@@ -2,7 +2,7 @@ File owl_cpp/doc/build.txt
 provides instructions for building owl_cpp library and for running tests
 
 owl_cpp is built using Boost.Build V2 (http://www.boost.org/boost-build2).
-Libraries required by owl_cpp are listed in file "user-config.jam.txt".
+Libraries required by owl_cpp are listed in file user-config.jam.
 
 1. Download current distribution of Boost (http://www.boost.org/).
    Expand the archive on your hard drive.
@@ -19,11 +19,11 @@ Libraries required by owl_cpp are listed in file "user-config.jam.txt".
    or to any directory above it.  Adjust the path to Boost.Build.
    For details see "doc/boost-build.jam" file.
 
-5. If not already present, copy file "doc/user-config.jam" to your HOME folder.
+5. If not already present, copy file "doc/user-config.jam" to your HOME directory.
    Edit it to specify compilers and the libraries used by owl_cpp. 
    For details see "doc/user-config.jam" file.
 
-6. Run Boost.Build in folder owl_cpp.  Examples:
+6. Run Boost.Build in directory owl_cpp.  Examples:
         b2 release
         b2 debug test
         b2 --toolset=msvc release

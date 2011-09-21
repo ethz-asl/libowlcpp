@@ -30,13 +30,7 @@ rule run-all ( sources * )
 
 local auto_run_src = [ glob *_run.cpp ] ;
 
-test-suite simple_tests
-    :
-        [ run-all 
-            $(auto_run_src)
-#         factpp_05_run.cpp
-        ]
-;
+test-suite simple_tests : [ run-all $(auto_run_src) ] ;
 
 test-suite all_tests
    :

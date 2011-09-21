@@ -1,7 +1,5 @@
-# File doc/user-config.jam
-# Availability and locations of build tools and libraries on your system.  
-# See also
-# http://www.boost.org/boost-build2/doc/html/bbv2/overview/configuration.html
+# File user-config.jam
+# Describes build tools and libraries on your system.  
 #
 # 1. Copy this file, "doc/user-config.jam", to your HOME folder.
 #     On MS Windows, HOME folder is usually
@@ -14,6 +12,9 @@
 #    Make sure that the libraries are installed on your system and 
 #    enter their correct locations and versions.
 #    IMPORTANT: Use forward slashes ('/').
+#
+# See also
+# http://www.boost.org/boost-build2/doc/html/bbv2/overview/configuration.html
 
 ################################################################################
 ## Compilers and other tools
