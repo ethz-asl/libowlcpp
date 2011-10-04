@@ -5,16 +5,17 @@
 #     On MS Windows, HOME folder is usually
 #    "C:\Documents and Settings\your_user_name".
 #
-# 2. Uncomment "using" statements for the compilers you are going to use.
+# 2. Uncomment lines for the compilers and other tools that you are going to use.
 #
-# 3. Statements "constant" and "path-constant" specify locations of 
-#    the libraries required for building the project.
-#    Make sure that the libraries are installed on your system and 
-#    enter their correct locations and versions.
-#    IMPORTANT: Use forward slashes ('/').
+# 3. For each library, make sure it is available on the system, 
+#    uncomment "constant" statement, and specify its full path and version.
+#    
+# IMPORTANT: Use forward slashes '/'.
+# IMPORTANT: Put spaces around colons and semicolons.
 #
-# See also
+# See also:
 # http://www.boost.org/boost-build2/doc/html/bbv2/overview/configuration.html
+# http://www.boost.org/boost-build2/doc/html/bbv2/reference/tools.html
 
 ################################################################################
 ## Compilers and other tools

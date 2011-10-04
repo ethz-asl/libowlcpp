@@ -1,32 +1,41 @@
-File owl_cpp/doc/build.txt
-provides instructions for building owl_cpp library and for running tests
+File owl_cpp/doc/build.txt, part of owl_cpp project.
+Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+Copyright Mikhail K Levin 2011
 
-owl_cpp is built using Boost.Build V2 (http://www.boost.org/boost-build2).
-Libraries required by owl_cpp are listed in file user-config.jam.
+Instructions for building owl_cpp
+
+The build process is managed by Boost.Build V2 (http://www.boost.org/boost-build2).
+Libraries required by owl_cpp are listed in file "owl_cpp/doc/user-config.jam".
 
 1. Download current distribution of Boost (http://www.boost.org/).
-   Expand the archive on your hard drive.
+   Expand the archive to a directory on your hard drive, 
+   e.g., to "C:\Program Files\boost\boost_1_47_0".
+   In this document, this directory will be referred as $(BOOST).
 
-2. Change directory to $(BOOST)/tools/build/v2/, where $(BOOST) is the path 
-   to the Boost root directory, e.g., "C:\Program Files\boost\boost_1_47_0".
-   Build Boost.Build by running bootstrap.(bat or sh) script.
-   See also http://www.boost.org/boost-build2/doc/html/index.html
+2. In your terminal, change directory to $(BOOST)/tools/build/v2/.
+   Run script bootstrap.(bat or sh).  
+   This will produce Boost.Build executable, e.g., $(BOOST)/tools/build/v2/b2.exe.
 
-3. (optional) Add location of Boost.Build executable to your PATH variable,
-   e.g., "C:\Program Files\boost\boost_1_47_0\tools\build\v2"
+3. (optional) Add directory of Boost.Build executable to your PATH variable,
+   e.g., "$(BOOST)/tools/build/v2"
 
-4. If not already present, copy "doc/boost-build.jam" to owl_cpp/ 
-   or to any directory above it.  Adjust the path to Boost.Build.
-   For details see "doc/boost-build.jam" file.
+4. If not already present, copy file "owl_cpp/doc/boost-build.jam" to
+   any directory above owl_cpp.
+   Edit the file to specify full path to Boost.Build.
+   For details see "owl_cpp/doc/boost-build.jam" file.
 
-5. If not already present, copy file "doc/user-config.jam" to your HOME directory.
-   Edit it to specify compilers and the libraries used by owl_cpp. 
-   For details see "doc/user-config.jam" file.
+5. If not already present, copy file "owl_cpp/doc/user-config.jam" to 
+   your HOME directory.
+   Edit the file to specify compilers and libraries used by owl_cpp. 
+   For details see "owl_cpp/doc/user-config.jam" file.
 
 6. Run Boost.Build in directory owl_cpp.  Examples:
         b2 release
         b2 debug test
         b2 --toolset=msvc release
         b2 autodoc
-   
+   The output will be generated in directory owl_cpp/out, e.g.,
+   owl_cpp/out/bin/gcc-4.5.2/release/lib_owl_cpp.so
+   owl_cpp/out/html/api.html
+
 For more info on using Boost.Build see http://www.boost.org/boost-build2
