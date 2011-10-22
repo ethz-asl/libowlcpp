@@ -1,0 +1,70 @@
+# owl_cpp/lib/rdf/jamfile.jam
+# part of owl_cpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2011
+
+project lib/rdf
+   : build-dir $(OUT)/bin
+   : requirements
+      <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
+;
+
+lib lib_owl_cpp
+   :  #sources
+      [ glob *.cpp : lib_info.cpp ] lib_info
+   :  #requirements
+      <include>.
+      <include>$(INCLUDE)
+      <include>$(GENERATED_INCLUDE)
+      <library>/boost//filesystem
+      <library>..//raptor
+      <library>..//factpp_kernel
+      <define>OWLCPP_SOURCE
+      <link>shared:<define>OWLCPP_DYN_LINK
+   :  #default build options
+   :  #usage requirements
+      <include>$(INCLUDE)
+      <include>$(GENERATED_INCLUDE)
+      <link>shared:<define>OWLCPP_DYN_LINK
+;
+
+obj lib_info
+   : #sources
+         lib_info.cpp
+   : #requirements
+      <include>$(BOOST[1])
+      <include>$(INCLUDE)
+      <include>$(GENERATED_INCLUDE)
+      <implicit-dependency>version.hpp
+      <define>OWLCPP_SOURCE
+      <link>shared:<define>OWLCPP_DYN_LINK
+   : #default build options
+   : #usage requirements
+;
+explicit lib_info ;
+
+# Generate version header
+make-singleton version.hpp 
+   : 
+   : @version_header 
+   : <location>$(GENERATED_INCLUDE)/owl_cpp
+;
+
+rule version_header ( targets * : sources * : properties * ) {
+   local tag = [ git_describe $(GIT_PATH) ] ;
+   local v = [ process_version_string $(tag) : 0 0 0 unknown ] ;
+   local build = [ build_version 3 ] ; #YYYYMMDD
+   STR on $(<) =
+      "// Generated header.  Do not edit."
+      "#define OWLCPP_VERSION_1 $(v[1])"
+      "#define OWLCPP_VERSION_2 $(v[2])"
+      "#define OWLCPP_VERSION_3 $(v[3])"
+      "#define OWLCPP_VERSION_EXTRA $(v[4])"
+      "#define OWLCPP_BUILD $(build)"
+   ;
+   NL on $(<) = "
+" ;
+}
+actions version_header { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
+
+
