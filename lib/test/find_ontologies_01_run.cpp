@@ -7,7 +7,7 @@ part of owl_cpp project.
 #include "boost/test/unit_test.hpp"
 #include <iostream>
 
-#include "owl_cpp/parse_to_triple_store.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
 #include "sample_data.hpp"
 
 namespace owl_cpp{ namespace test{

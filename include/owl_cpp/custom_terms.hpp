@@ -11,8 +11,8 @@ namespace bmp = boost::mpl;
 
 #include "terms/custom_type_macro.hpp"
 #include "terms/term_methods.hpp"
-#include "triple_store.hpp"
-#include "query_nodes.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
 
 namespace owl_cpp{ namespace detail{
 /**

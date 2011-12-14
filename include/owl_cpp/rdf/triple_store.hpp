@@ -1,4 +1,4 @@
-/** @file "/owl_cpp/include/owl_cpp/triple_store.hpp"
+/** @file "/owl_cpp/include/owl_cpp/rdf/triple_store.hpp"
 part of owl_cpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
