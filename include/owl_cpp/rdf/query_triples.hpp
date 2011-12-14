@@ -11,8 +11,8 @@ part of owl_cpp project.
 namespace b = boost;
 
 #include "owl_cpp/config.hpp"
-#include "owl_cpp/triple_store.hpp"
-#include "owl_cpp/triple.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/rdf/triple.hpp"
 #include "owl_cpp/exception.hpp"
 
 namespace owl_cpp{

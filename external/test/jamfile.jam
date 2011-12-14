@@ -14,7 +14,6 @@ project
 exe rdfprint
    : raptor_rdfprint.cpp
    :  #requirements
-      <include>$(BOOST[1])
       <library>..//raptor
       <link>static
 ;
@@ -22,7 +21,6 @@ exe rdfprint
 exe elements
    : expat_elements.cpp
    :  #requirements
-      <include>$(BOOST[1])
       <library>..//expat
       <link>static
 ;

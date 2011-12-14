@@ -6,21 +6,21 @@ part of owl_cpp project.
 #ifndef FACT_VISITOR_HPP_
 #define FACT_VISITOR_HPP_
 
-#include "type_vector.hpp"
+#include "../type_vector.hpp"
 #include "boost/mpl/inherit.hpp"
 #include "boost/mpl/inherit_linearly.hpp"
 namespace bmp = boost::mpl;
 namespace bmpp = boost::mpl::placeholders;
 
-#include "owl_cpp/Visitor.h"
+#include "loki/Visitor.h"
 #include "factpp/Kernel.hpp"
 
-#include "owl_cpp/triple.hpp"
+#include "owl_cpp/rdf/triple.hpp"
 #include "owl_cpp/node_base.hpp"
 #include "owl_cpp/exception.hpp"
 #include "owl_cpp/print.hpp"
 namespace ot = owl_cpp::terms;
-#include "owl_cpp/query_fact.hpp"
+#include "owl_cpp/reasoner/query_fact.hpp"
 
 namespace owl_cpp{
 

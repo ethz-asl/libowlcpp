@@ -1,24 +1,27 @@
-# owl_cpp/lib/rdf/jamfile.jam
+# owl_cpp/lib/io/jamfile.jam
 # part of owl_cpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011
 
-project lib/rdf
+project lib/io
+   : requirements
 ;
 
-lib owlcpp_rdf
+lib owlcpp_io
    :  #sources
       [ glob *.cpp ]
    :  #requirements
       <include>.
       <include>$(INCLUDE)
+#      <include>$(GENERATED_INCLUDE)
+      <library>/boost//filesystem
+      <library>/owlcpp//raptor
       <define>OWLCPP_SOURCE
       <link>shared:<define>OWLCPP_DYN_LINK
    :  #default build options
    :  #usage requirements
       <include>$(INCLUDE)
+#      <include>$(GENERATED_INCLUDE)
       <link>shared:<define>OWLCPP_DYN_LINK
 ;
-
-
 

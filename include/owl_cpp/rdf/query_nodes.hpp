@@ -8,7 +8,7 @@ part of owl_cpp project.
 #include "boost/tuple/tuple.hpp"
 namespace b = boost;
 #include "owl_cpp/config.hpp"
-#include "owl_cpp/triple_store.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
 
 namespace owl_cpp{
 

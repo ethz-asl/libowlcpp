@@ -13,7 +13,7 @@ part of owl_cpp project.
 
 #include "owl_cpp/config.hpp"
 #include "owl_cpp/exception.hpp"
-#include "owl_cpp/object_store.hpp"
+#include "owl_cpp/rdf/object_store.hpp"
 #include "owl_cpp/ns_id.hpp"
 #include "owl_cpp/node_id.hpp"
 #include "owl_cpp/node_base.hpp"

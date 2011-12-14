@@ -3,9 +3,9 @@ part of owl_cpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
-#include "owl_cpp/query_nodes.hpp"
-#include "owl_cpp/triple_store.hpp"
-#include "node_type.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "../node_type.hpp"
 
 namespace owl_cpp {
 

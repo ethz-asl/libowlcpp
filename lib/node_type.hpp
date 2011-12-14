@@ -8,14 +8,14 @@ part of owl_cpp project.
 #include <string>
 #include <vector>
 #include <cassert>
-#include "owl_cpp/Visitor.h"
+#include "loki/Visitor.h"
 namespace L = Loki;
 #include "owl_cpp/ns_id.hpp"
 #include "owl_cpp/terms/term_tags.hpp"
 namespace ot = owl_cpp::terms;
 
 #include "owl_cpp/node_base.hpp"
-#include "owl_cpp/triple.hpp"
+#include "owl_cpp/rdf/triple.hpp"
 
 namespace owl_cpp{
 

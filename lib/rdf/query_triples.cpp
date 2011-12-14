@@ -3,10 +3,10 @@ part of owl_cpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
-#include "owl_cpp/query_triples.hpp"
+#include "owl_cpp/rdf/query_triples.hpp"
 #include "boost/foreach.hpp"
-#include "owl_cpp/query_nodes.hpp"
-#include "node_type.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
+#include "../node_type.hpp"
 #include "owl_cpp/terms/term_tags.hpp"
 namespace ot = owl_cpp::terms;
 

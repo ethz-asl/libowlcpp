@@ -234,7 +234,6 @@ rule init ( version ? : location : options * ) {
          <raptor-version>$(version)
          <raptor-location>$(location)
          <include>$(location_src)
-         <include>$(BOOST[1])
          <define>HAVE_CONFIG_H
          <define>LIBRDFA_IN_RAPTOR
          <define>RAPTOR_INTERNAL

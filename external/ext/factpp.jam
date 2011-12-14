@@ -231,7 +231,6 @@ rule init ( version ? : location : options * )
    
    local requirements = 
       [ extension.define factpp $(version) : $(kernel_location) : $(options) ]
-      <include>$(BOOST[1])
       <include>$(GENERATED_INCLUDE)
       <implicit-dependency>config.hpp
       <implicit-dependency>$(headers:B).hpp
