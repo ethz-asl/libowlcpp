@@ -8,8 +8,8 @@ part of owl_cpp project.
 
 #include <iostream>
 #include "sample_data.hpp"
-#include "owl_cpp/parse_to_triple_store.hpp"
-#include "owl_cpp/triple_store.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
 #include "owl_cpp/print.hpp"
 #include "owl_cpp/lib_info.hpp"
 #include "owl_cpp/terms/term_tags.hpp"

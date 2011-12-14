@@ -12,7 +12,7 @@ part of owl_cpp project.
 #include "boost/functional/hash.hpp"
 namespace b = boost;
 
-#include "owl_cpp/Visitor.h"
+#include "loki/Visitor.h"
 namespace L = Loki;
 
 #include "owl_cpp/ns_id.hpp"

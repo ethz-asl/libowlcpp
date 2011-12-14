@@ -8,7 +8,7 @@ part of owl_cpp project.
 #include <cassert>
 #include "boost/array.hpp"
 namespace b = boost;
-#include "owl_cpp/Visitor.h"
+#include "loki/Visitor.h"
 namespace L = Loki;
 #include "owl_cpp/node_id.hpp"
 #include "owl_cpp/terms/term_tags.hpp"

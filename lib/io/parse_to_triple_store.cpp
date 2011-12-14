@@ -4,7 +4,7 @@ part of owl_cpp project.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 
-#include "owl_cpp/parse_to_triple_store.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
 
 #include <set>
 #include <cassert>
@@ -14,8 +14,8 @@ namespace bf = boost::filesystem;
 #include "boost/algorithm/string/predicate.hpp"
 namespace ba = boost::algorithm;
 
-#include "owl_cpp/triple_store.hpp"
-#include "owl_cpp/query_triples.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/rdf/query_triples.hpp"
 #include "owl_cpp/terms/term_tags.hpp"
 #include "owl_cpp/print.hpp"
 namespace ot = owl_cpp::terms;

@@ -12,9 +12,9 @@ part of owl_cpp project.
 #include "boost/lexical_cast.hpp"
 namespace b = boost;
 
-#include "owl_cpp/triple_store.hpp"
-#include "owl_cpp/triple.hpp"
-#include "owl_cpp/query_nodes.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/rdf/triple.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
 #include "owl_cpp/terms/uri_tags.hpp"
 namespace ot = owl_cpp::terms;
 

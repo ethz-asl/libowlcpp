@@ -7,10 +7,10 @@ part of owl_cpp project.
 #include <cassert>
 #include "fact_visitor.hpp"
 #include "boost/foreach.hpp"
-#include "owl_cpp/triple_store.hpp"
-#include "owl_cpp/query_nodes.hpp"
-#include "owl_cpp/query_triples.hpp"
-#include "str_conversion.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
+#include "owl_cpp/rdf/query_triples.hpp"
+#include "../str_conversion.hpp"
 
 namespace owl_cpp {
 

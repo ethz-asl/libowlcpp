@@ -7,30 +7,47 @@ project apps
    :  build-dir $(OUT)/apps
    :  requirements
       <link>static
-      <library>..//lib_owl_cpp
+      <library>/owlcpp//common
 ;
 
 exe print_triples
    : #sources
       print_triples.cpp
+   : #requirements
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
 ;
 
 exe find_owl
    : #sources
       find_ontologies.cpp
+   : #requirements
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
 ;
 
 exe print_classes
    : #sources
       print_classes.cpp
+   : #requirements
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
 ;
 
 exe validate
    : #sources
       validate.cpp
+   : #requirements
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
+      <library>/owlcpp//reasoner
 ;
 
 exe satisfiable
    : #sources
       satisfiable.cpp
+   : #requirements
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
+      <library>/owlcpp//reasoner
 ;

@@ -1,0 +1,23 @@
+# owl_cpp/lib/rdf/jamfile.jam
+# part of owl_cpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2011
+
+project lib/reasoner
+;
+
+lib owlcpp_reasoner
+   :  #sources
+      [ glob *.cpp ]
+   :  #requirements
+      <include>.
+      <include>$(INCLUDE)
+      <library>/owlcpp//factpp_kernel
+      <define>OWLCPP_SOURCE
+      <link>shared:<define>OWLCPP_DYN_LINK
+   :  #default build options
+   :  #usage requirements
+      <include>$(INCLUDE)
+      <link>shared:<define>OWLCPP_DYN_LINK
+;
+

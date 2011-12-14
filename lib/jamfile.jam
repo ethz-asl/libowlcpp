@@ -9,22 +9,17 @@ project lib
       <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
 ;
 
-lib lib_owl_cpp
+lib owlcpp_common
    :  #sources
       [ glob *.cpp : lib_info.cpp ] lib_info
    :  #requirements
       <include>.
       <include>$(INCLUDE)
-      <include>$(GENERATED_INCLUDE)
-      <library>/boost//filesystem
-      <library>..//raptor
-      <library>..//factpp_kernel
       <define>OWLCPP_SOURCE
       <link>shared:<define>OWLCPP_DYN_LINK
    :  #default build options
    :  #usage requirements
       <include>$(INCLUDE)
-      <include>$(GENERATED_INCLUDE)
       <link>shared:<define>OWLCPP_DYN_LINK
 ;
 
@@ -32,7 +27,6 @@ obj lib_info
    : #sources
          lib_info.cpp
    : #requirements
-      <include>$(BOOST[1])
       <include>$(INCLUDE)
       <include>$(GENERATED_INCLUDE)
       <implicit-dependency>version.hpp

@@ -10,14 +10,14 @@ part of owl_cpp project.
 
 #include "sample_data.hpp"
 
-#include "owl_cpp/triple_store.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
 #include "owl_cpp/terms/term_tags.hpp"
 #include "owl_cpp/print.hpp"
 namespace ot = owl_cpp::terms;
 #include "node_type.hpp"
 #include "triple_store_checks.hpp"
-#include "owl_cpp/query_nodes.hpp"
-#include "owl_cpp/query_triples.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
+#include "owl_cpp/rdf/query_triples.hpp"
 
 namespace owl_cpp{ namespace test{
 

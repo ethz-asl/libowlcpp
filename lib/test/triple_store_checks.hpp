@@ -13,8 +13,8 @@ namespace bmp = boost::mpl;
 
 #include "owl_cpp/exception.hpp"
 namespace ot = owl_cpp::terms;
-#include "owl_cpp/triple_store.hpp"
-#include "owl_cpp/query_nodes.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
 
 namespace owl_cpp { namespace test{ namespace detail{
 

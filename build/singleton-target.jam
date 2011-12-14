@@ -30,7 +30,7 @@ class make-target-singleton : basic-target {
       local props ;
       local remove = 
          <link> <variant> <debug-symbols> <define> <inlining> <optimization> 
-         <runtime-debugging> <toolset> <toolset-gcc:version> <pic>
+         <threading> <runtime-debugging> <toolset> <toolset-gcc:version> <pic>
       ;
       for local e in [ $(property-set).raw ] {
          if ! [ set.intersection $(remove) : $(e:G) ] {

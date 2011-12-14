@@ -11,7 +11,7 @@ namespace bmp = boost::mpl;
 #include "boost/foreach.hpp"
 
 #include "sample_data.hpp"
-#include "owl_cpp/object_store.hpp"
+#include "owl_cpp/rdf/object_store.hpp"
 #include "type_vector.hpp"
 namespace ot = owl_cpp::terms;
 #include "node_type.hpp"

@@ -1,0 +1,25 @@
+# owl_cpp/lib/io/jamfile.jam
+# part of owl_cpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2011
+
+project lib/io
+   : requirements
+;
+
+lib owlcpp_io
+   :  #sources
+      [ glob *.cpp ]
+   :  #requirements
+      <include>.
+      <include>$(INCLUDE)
+      <library>/boost//filesystem
+      <library>/owlcpp//raptor
+      <define>OWLCPP_SOURCE
+      <link>shared:<define>OWLCPP_DYN_LINK
+   :  #default build options
+   :  #usage requirements
+      <include>$(INCLUDE)
+      <link>shared:<define>OWLCPP_DYN_LINK
+;
+

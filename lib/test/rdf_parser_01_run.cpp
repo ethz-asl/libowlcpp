@@ -7,10 +7,10 @@ part of owl_cpp project.
 #define BOOST_TEST_MODULE rdf_parser_01_run
 #include "boost/test/unit_test.hpp"
 #include <iostream>
-#include "owl_cpp/parse_to_triple_store.hpp"
-#include "owl_cpp/triple_store.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
 #include "owl_cpp/print.hpp"
-#include "owl_cpp/query_triples.hpp"
+#include "owl_cpp/rdf/query_triples.hpp"
 #include "triple_store_checks.hpp"
 #include "fixture.hpp"
 

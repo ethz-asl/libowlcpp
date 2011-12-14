@@ -3,7 +3,7 @@ part of owl_cpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
-#include "owl_cpp/triple_store.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
 
 #include "boost/mpl/for_each.hpp"
 namespace bmp = boost::mpl;
@@ -12,11 +12,11 @@ namespace bmp = boost::mpl;
 #include "boost/algorithm/string/trim.hpp"
 namespace b = boost;
 
-#include "owl_cpp/triple.hpp"
-#include "owl_cpp/query_triples.hpp"
+#include "owl_cpp/rdf/triple.hpp"
+#include "owl_cpp/rdf/query_triples.hpp"
 #include "owl_cpp/print.hpp"
-#include "node_type.hpp"
-#include "type_vector.hpp"
+#include "../node_type.hpp"
+#include "../type_vector.hpp"
 namespace ot = owl_cpp::terms;
 
 namespace owl_cpp {

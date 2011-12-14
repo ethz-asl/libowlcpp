@@ -10,7 +10,7 @@ part of owl_cpp project.
 #include "boost/tuple/tuple.hpp"
 #include "owl_cpp/config.hpp"
 #include "owl_cpp/exception.hpp"
-#include "owl_cpp/catalog.hpp"
+#include "owl_cpp/io/catalog.hpp"
 
 namespace owl_cpp{
 class OWLCPP_DECL Triple_store;

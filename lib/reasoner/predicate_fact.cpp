@@ -4,8 +4,8 @@ part of owl_cpp project.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 
-#include "owl_cpp/predicate_fact.hpp"
-#include "owl_cpp/query_fact.hpp"
+#include "owl_cpp/reasoner/predicate_fact.hpp"
+#include "owl_cpp/reasoner/query_fact.hpp"
 #include "owl_cpp/exception.hpp"
 
 namespace owl_cpp {

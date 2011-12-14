@@ -1,4 +1,4 @@
-/** @file "/owl_cpp/include/owl_cpp/triple_store.hpp"
+/** @file "/owl_cpp/include/owl_cpp/rdf/triple_store.hpp"
 part of owl_cpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
@@ -13,7 +13,7 @@ part of owl_cpp project.
 
 #include "owl_cpp/config.hpp"
 #include "owl_cpp/exception.hpp"
-#include "owl_cpp/object_store.hpp"
+#include "owl_cpp/rdf/object_store.hpp"
 #include "owl_cpp/ns_id.hpp"
 #include "owl_cpp/node_id.hpp"
 #include "owl_cpp/node_base.hpp"

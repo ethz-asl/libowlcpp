@@ -9,10 +9,10 @@ part of owl_cpp project.
 #include "boost/filesystem.hpp"
 #include "boost/test/unit_test_monitor.hpp"
 #include "boost/preprocessor/stringize.hpp"
-#include "owl_cpp/catalog.hpp"
-#include "owl_cpp/triple_to_fact.hpp"
-#include "owl_cpp/parse_to_triple_store.hpp"
-#include "owl_cpp/triple_store.hpp"
+#include "owl_cpp/io/catalog.hpp"
+#include "owl_cpp/reasoner/triple_to_fact.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
 
 #ifndef SAMPLE_DATA_DIR
 #error SAMPLE_DATA_DIR needs to be defined
