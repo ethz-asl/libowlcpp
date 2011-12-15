@@ -20,10 +20,16 @@ part of owl_cpp project.
 
 /**@brief Generate light-weight type definition for standard OWL term
 @details OWLCPP_STD_TERM_TYPE( , , 2, (rdfs)(subClassOf))
-@code struct T_rdfs_subClassOf {
-   static const unsigned index = 1;
-   typedef Uri_rdfs uri_t;
-   static const std::string name;
+@code
+struct OWLCPP_DECL T_owl_allValuesFrom {
+   typedef N_owl ns_type;
+   typedef ::owl_cpp::Node_id id_type;
+   static const unsigned index = 4;
+   static std::string const & name() {
+      static const std::string str("allValuesFrom");
+      return str;
+   }
+   static ::owl_cpp::Node_id id() {return ::owl_cpp::Node_id(index);}
 }; @endcode
 *******************************************************************************/
 #define OWLCPP_STD_TERM_TYPE(r, d, i, e) \
@@ -31,7 +37,10 @@ part of owl_cpp project.
    typedef OWLCPP_NAMESPACE_TYPE_NAME(e) ns_type; \
    typedef ::owl_cpp::Node_id id_type; \
    static const unsigned index = i; \
-   static const std::string name; \
+   static std::string const & name() { \
+      static const std::string str(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_REVERSE(e)))); \
+      return str; \
+   } \
    static ::owl_cpp::Node_id id() {return ::owl_cpp::Node_id(index);} \
 }; \
 BOOST_PP_EMPTY() \

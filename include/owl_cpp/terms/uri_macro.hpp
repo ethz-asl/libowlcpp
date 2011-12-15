@@ -24,8 +24,14 @@ part of owl_cpp project.
 #define OWLCPP_STD_NAMESPACE_TYPE(r, d, i, e) \
 struct OWLCPP_DECL OWLCPP_NAMESPACE_TYPE_NAME(e) { \
    static const unsigned index = i; \
-   static const std::string name; \
-   static const std::string prefix; \
+   static std::string const & name() { \
+      static const std::string str(BOOST_PP_SEQ_ELEM(1,e)); \
+      return str; \
+   } \
+   static std::string const & prefix() { \
+      static const std::string str(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(0,e))); \
+      return str; \
+   } \
    typedef Ns_id id_type; \
    static ::owl_cpp::Ns_id id() {return ::owl_cpp::Ns_id(index);} \
 }; \

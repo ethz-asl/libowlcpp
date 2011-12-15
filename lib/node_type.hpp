@@ -57,7 +57,7 @@ template<class S> struct Node_std : public Node_base {
       return ns_type::id();
    }
 
-   const std::string& value_str() const {return tag_t::name;}
+   const std::string& value_str() const {return tag_t::name();}
 
    LOKI_DEFINE_CONST_VISITABLE()
 
@@ -73,7 +73,7 @@ template<class S> struct Node_std : public Node_base {
 template<> class Node_std<ot::T_0_generic> : public Node_base {
 public:
    typedef ot::T_0_generic tag_t;
-   Node_std() : ns_( tag_t::ns_type::id() ), name_(tag_t::name) {}
+   Node_std() : ns_( tag_t::ns_type::id() ), name_(tag_t::name()) {}
 
    Node_std(const Ns_id ns, const std::string& name)
    : ns_(ns), name_(name) {}

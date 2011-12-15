@@ -44,7 +44,6 @@ namespace ot = owl_cpp::terms;
 namespace owl_cpp{ namespace test{
 
 OWLCPP_GENERATE_NAMESPACE_TYPES(OWLCPP_TEST_NAMESPACES)
-OWLCPP_INIT_NAMESPACE_NAME_STRINGS(OWLCPP_TEST_NAMESPACES)
 typedef OWLCPP_NAMESPACE_MPL_VECTOR(OWLCPP_TEST_NAMESPACES) iri_type_vector;
 
 /** Insert namespace prefixes
@@ -54,40 +53,39 @@ BOOST_AUTO_TEST_CASE( ontology_prefixes_case01 ) {
    const std::string iri1("http://www.blah.com/blah/blah");
    BOOST_CHECK_THROW(store.insert_namespace(iri1, "owl"), Triple_store::Err);
    BOOST_CHECK_NO_THROW(store.insert_namespace(iri1, "blah"));
-   BOOST_CHECK_NO_THROW(store.insert_namespace(N_ro::name, N_ro::prefix));
-   BOOST_CHECK(store[N_ro::name] == store.prefix_id(N_ro::prefix));
+   BOOST_CHECK_NO_THROW(store.insert_namespace(N_ro::name(), N_ro::prefix()));
+   BOOST_CHECK(store[N_ro::name()] == store.prefix_id(N_ro::prefix()));
 }
 
 /** Adding custom namespaces to triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( triple_store_03_run_case02 ) {
    Triple_store store;
-   BOOST_CHECK_THROW(store[N_ro::name], Triple_store::Err);
+   BOOST_CHECK_THROW(store[N_ro::name()], Triple_store::Err);
    insert_namespaces<iri_type_vector>(store);
    BOOST_CHECK( check_and_print(store, std::cout) );
-   BOOST_REQUIRE_NO_THROW(store[N_ro::name]);
-   BOOST_CHECK(store[N_ro::name] == store.prefix_id(N_ro::prefix));
+   BOOST_REQUIRE_NO_THROW(store[N_ro::name()]);
+   BOOST_CHECK(store[N_ro::name()] == store.prefix_id(N_ro::prefix()));
    BOOST_CHECK(store["http://purl.obolibrary.org/obo/"] == store.prefix_id("obo"));
 }
 
 OWLCPP_GENERATE_TERM_TYPES(OWLCPP_TEST_TERMS)
-OWLCPP_INIT_TERM_NAME_STRINGS(OWLCPP_TEST_TERMS)
 typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TEST_TERMS) term_type_vector;
 
 /** Adding custom terms to triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( triple_store_03_run_case03 ) {
    Triple_store store;
-   BOOST_CHECK_THROW( store[N_ro::name], Triple_store::Err );
+   BOOST_CHECK_THROW( store[N_ro::name()], Triple_store::Err );
    BOOST_CHECK_THROW( find_node(T_obo_realizes(), store), Triple_store::Err );
    BOOST_CHECK( check_and_print(store, std::cout) );
    insert_namespaces<iri_type_vector>(store);
    insert_terms<term_type_vector>(store);
    BOOST_CHECK( check_and_print(store, std::cout) );
-   BOOST_REQUIRE_NO_THROW( store[N_ro::name] );
+   BOOST_REQUIRE_NO_THROW( store[N_ro::name()] );
    Node_id id1;
    BOOST_REQUIRE_NO_THROW( id1 = find_node(T_obo_realizes(), store) );
-   BOOST_CHECK_EQUAL(store[id1].value_str(), T_obo_realizes::name);
+   BOOST_CHECK_EQUAL(store[id1].value_str(), T_obo_realizes::name());
 }
 
 }//namespace test

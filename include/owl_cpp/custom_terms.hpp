@@ -23,7 +23,7 @@ public:
    Store_namespaces(Triple_store& store) : store_(store) {}
 
    template<class T> void operator()(const T&) const {
-      store_.insert_namespace(T::name, T::prefix);
+      store_.insert_namespace(T::name(), T::prefix());
    }
 };
 
@@ -36,8 +36,8 @@ public:
 
    template<class T> void operator()(const T& t) const {
       typedef typename T::ns_type ns_type;
-      const Ns_id ns_id = store_.insert_namespace(ns_type::name, ns_type::prefix);
-      store_.insert_node( ns_id, T::name );
+      const Ns_id ns_id = store_.insert_namespace(ns_type::name(), ns_type::prefix());
+      store_.insert_node( ns_id, T::name() );
    }
 };
 
@@ -61,7 +61,7 @@ template<class Vec> inline void insert_terms(Triple_store& store) {
 *******************************************************************************/
 template<class TermTag>inline Node_id find_node(const TermTag&, const Triple_store& store) {
    typedef typename TermTag::ns_type ns_type;
-   return find_node(ns_type::name, TermTag::name, store);
+   return find_node(ns_type::name(), TermTag::name(), store);
 }
 
 }//namespace owl_cpp
