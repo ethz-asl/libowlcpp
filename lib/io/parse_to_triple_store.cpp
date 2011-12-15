@@ -63,7 +63,7 @@ private:
          return store_.insert_node(ns_id, p.get<1>());
       }
       case Literal:
-         return store_.insert_node(ot::N_::id(), term.value);
+         return store_.insert_node(ot::N_0::id(), term.value);
       case Anonymous:
          return store_.insert_node(ot::N__::id(), term.value);
       default:

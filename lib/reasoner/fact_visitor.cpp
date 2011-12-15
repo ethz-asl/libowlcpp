@@ -20,7 +20,7 @@ typedef Triples_query<Node_id, Node_id, blank>::q_range_t q_range_nnb_t;
 
 /* Annotation or property assertion
 *******************************************************************************/
-void Triple_to_fact::Visit(const Triple_std<ot::T__generic>& tr) {
+void Triple_to_fact::Visit(const Triple_std<ot::T_0_generic>& tr) {
    if( tr.predicate() == ot::T_rdf_type::id() ) {
       instance(tr.subject(), tr.object());
       return;

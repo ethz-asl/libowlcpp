@@ -23,7 +23,7 @@ namespace owl_cpp{
 *******************************************************************************/
 class Node_literal : public Node_base {
 public:
-   typedef ot::N_ ns_type;
+   typedef ot::N_0 ns_type;
 
    Node_literal(const std::string& val) : val_(val) {}
 
@@ -70,9 +70,9 @@ template<class S> struct Node_std : public Node_base {
 
 /** specialize for a generic term
 *******************************************************************************/
-template<> class Node_std<ot::T__generic> : public Node_base {
+template<> class Node_std<ot::T_0_generic> : public Node_base {
 public:
-   typedef ot::T__generic tag_t;
+   typedef ot::T_0_generic tag_t;
    Node_std() : ns_( tag_t::ns_type::id() ), name_(tag_t::name) {}
 
    Node_std(const Ns_id ns, const std::string& name)
@@ -95,7 +95,7 @@ private:
    std::string name_;
 };
 
-typedef Node_std<ot::T__generic> node_generic_t;
+typedef Node_std<ot::T_0_generic> node_generic_t;
 
 
 /**
