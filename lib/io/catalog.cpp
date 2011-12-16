@@ -3,7 +3,7 @@ part of owl_cpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
-#include "owl_cpp/catalog.hpp"
+#include "owl_cpp/io/catalog.hpp"
 #include "boost/foreach.hpp"
 
 namespace owl_cpp {

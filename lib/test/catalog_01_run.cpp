@@ -5,7 +5,7 @@ part of owl_cpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE catalog_01_run
 #include "boost/test/unit_test.hpp"
-#include "owl_cpp/catalog.hpp"
+#include "owl_cpp/io/catalog.hpp"
 
 namespace owl_cpp{ namespace test{
 

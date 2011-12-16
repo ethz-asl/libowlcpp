@@ -8,14 +8,14 @@ part of owl_cpp project.
 #include <string>
 #include <vector>
 #include <cassert>
-#include "owl_cpp/Visitor.h"
+#include "loki/Visitor.h"
 namespace L = Loki;
 #include "owl_cpp/ns_id.hpp"
 #include "owl_cpp/terms/term_tags.hpp"
 namespace ot = owl_cpp::terms;
 
 #include "owl_cpp/node_base.hpp"
-#include "owl_cpp/triple.hpp"
+#include "owl_cpp/rdf/triple.hpp"
 
 namespace owl_cpp{
 
@@ -23,7 +23,7 @@ namespace owl_cpp{
 *******************************************************************************/
 class Node_literal : public Node_base {
 public:
-   typedef ot::N_ ns_type;
+   typedef ot::N_0 ns_type;
 
    Node_literal(const std::string& val) : val_(val) {}
 
@@ -57,7 +57,7 @@ template<class S> struct Node_std : public Node_base {
       return ns_type::id();
    }
 
-   const std::string& value_str() const {return tag_t::name;}
+   const std::string& value_str() const {return tag_t::name();}
 
    LOKI_DEFINE_CONST_VISITABLE()
 
@@ -70,10 +70,10 @@ template<class S> struct Node_std : public Node_base {
 
 /** specialize for a generic term
 *******************************************************************************/
-template<> class Node_std<ot::T__generic> : public Node_base {
+template<> class Node_std<ot::T_0_generic> : public Node_base {
 public:
-   typedef ot::T__generic tag_t;
-   Node_std() : ns_( tag_t::ns_type::id() ), name_(tag_t::name) {}
+   typedef ot::T_0_generic tag_t;
+   Node_std() : ns_( tag_t::ns_type::id() ), name_(tag_t::name()) {}
 
    Node_std(const Ns_id ns, const std::string& name)
    : ns_(ns), name_(name) {}
@@ -95,7 +95,7 @@ private:
    std::string name_;
 };
 
-typedef Node_std<ot::T__generic> node_generic_t;
+typedef Node_std<ot::T_0_generic> node_generic_t;
 
 
 /**

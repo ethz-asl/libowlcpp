@@ -10,11 +10,11 @@ part of owl_cpp project.
 #include <iostream>
 #include "sample_data.hpp"
 #include "factpp/Kernel.hpp"
-#include "owl_cpp/triple_to_fact.hpp"
-#include "owl_cpp/parse_to_triple_store.hpp"
-#include "owl_cpp/triple_store.hpp"
+#include "owl_cpp/reasoner/triple_to_fact.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
 #include "node_type.hpp"
-#include "owl_cpp/query_fact.hpp"
+#include "owl_cpp/reasoner/query_fact.hpp"
 #include "owl_cpp/print.hpp"
 
 namespace owl_cpp{ namespace test{

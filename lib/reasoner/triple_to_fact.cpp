@@ -9,9 +9,9 @@ part of owl_cpp project.
 #include "boost/exception/get_error_info.hpp"
 namespace b = boost;
 
-#include "owl_cpp/triple_store.hpp"
-#include "owl_cpp/triple_to_fact.hpp"
-#include "owl_cpp/query_nodes.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/reasoner/triple_to_fact.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
 #include "owl_cpp/print.hpp"
 #include "owl_cpp/exception.hpp"
 #include "fact_visitor.hpp"

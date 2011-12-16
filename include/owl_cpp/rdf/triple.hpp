@@ -8,7 +8,7 @@ part of owl_cpp project.
 #include <cassert>
 #include "boost/array.hpp"
 namespace b = boost;
-#include "owl_cpp/Visitor.h"
+#include "loki/Visitor.h"
 namespace L = Loki;
 #include "owl_cpp/node_id.hpp"
 #include "owl_cpp/terms/term_tags.hpp"
@@ -111,7 +111,7 @@ template<class T>struct Triple_std : public Triple {
       assert(
             ( tag_t::index == pred() ) ||
             ( tag_t::index == obj() && ot::T_rdf_type::index == pred() ) ||
-            ( tag_t::index == ot::T__generic::index )
+            ( tag_t::index == ot::T_0_generic::index )
       );
    }
    LOKI_DEFINE_CONST_VISITABLE()

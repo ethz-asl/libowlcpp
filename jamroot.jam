@@ -4,24 +4,26 @@
 # Copyright Mikhail K Levin 2010-1
 
 import build/singleton-target ;
+import build/version ;
 
 path-constant PROJ_ROOT : . ;
 path-constant INCLUDE : include ;
 path-constant OUT : out ;
-path-constant SMPL_DATA : "sample_data" ;
-path-constant TEMP_DIR : "out/temp" ;
+path-constant SMPL_DATA : sample_data ;
+path-constant TEMP_DIR : out/temp ;
 make $(TEMP_DIR) : : @common.mkdir ;
 path-constant GENERATED_INCLUDE : out/include ;
 path-constant GENERATED_LIB : out/lib ;
 
 if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
-use-project boost : $(BOOST[1]) ;
+use-project /boost : $(BOOST[1]) ;
 
 project owl_cpp
    : 
       build-dir $(OUT)
    : 
    : requirements
+      <include>$(BOOST[1])
 ;
 
 alias test
@@ -31,49 +33,59 @@ alias test
    : #requirements
 ;
 
-alias lib_owl_cpp : lib//lib_owl_cpp ;
-
-alias applications : apps ;
+use-project /owlcpp : . ;
+alias common : lib//owlcpp_common ;
+alias rdf : lib/rdf ;
+alias io : lib/io ;
+alias reasoner : lib/reasoner ;
+alias apps : ./apps ;
 alias factpp_kernel : external//factpp_kernel ;
 alias expat : external//expat ;
 alias raptor : external//raptor ;
 explicit test factpp_kernel expat raptor ;
 
-if $(USING_DOXYGEN) {
-import path ;
-local doc_public = [ path.glob-tree include apps : *.hpp *.cpp ] ;
-local doc_all = [ path.glob-tree lib : *.cpp *.hpp ] $(doc_public) ;
-
-doxygen complete.html
-   :
-      $(doc_all)
-   :
-      <doxygen:param>EXTRACT_ALL=YES
-      <doxygen:param>EXTRACT_STATIC=YES
-      <doxygen:param>EXTRACT_PRIVATE=YES
-      <doxygen:param>EXTRACT_ANON_NSPACES=YES
-      <doxygen:param>QUIET=YES
-      <doxygen:param>SHOW_DIRECTORIES=YES
-      <doxygen:param>EXAMPLE_PATH=.
-;
-
-doxygen api.html
-   :
-      $(doc_public)
-   :
-      <doxygen:param>EXTRACT_ALL=NO
-      <doxygen:param>WARN_IF_UNDOCUMENTED=NO
-      <doxygen:param>EXTRACT_STATIC=YES
-      <doxygen:param>EXTRACT_PRIVATE=NO
-      <doxygen:param>EXTRACT_ANON_NSPACES=NO
-      <doxygen:param>QUIET=YES
-      <doxygen:param>SHOW_DIRECTORIES=YES
-      <doxygen:param>EXAMPLE_PATH=.
-;
-
-alias autodoc : complete.html api.html ;
-explicit complete.html api.html autodoc ;
-} #if $(USING_DOXYGEN)
+if [ modules.peek doxygen : .initialized ] {
+   import path ;
+   local doc_public = [ path.glob-tree include apps : *.hpp *.cpp ] ;
+   local doc_all = [ path.glob-tree lib : *.cpp *.hpp ] $(doc_public) ;
+   
+   doxygen complete.html
+      :
+         $(doc_all)
+      :
+         <doxygen:param>EXTRACT_ALL=YES
+         <doxygen:param>EXTRACT_STATIC=YES
+         <doxygen:param>EXTRACT_PRIVATE=YES
+         <doxygen:param>EXTRACT_ANON_NSPACES=YES
+         <doxygen:param>QUIET=YES
+         <doxygen:param>SHOW_DIRECTORIES=YES
+         <doxygen:param>EXAMPLE_PATH=.
+   ;
+   
+   doxygen api.html
+      :
+         $(doc_public)
+      :
+         <doxygen:param>EXTRACT_ALL=NO
+         <doxygen:param>WARN_IF_UNDOCUMENTED=NO
+         <doxygen:param>EXTRACT_STATIC=YES
+         <doxygen:param>EXTRACT_PRIVATE=NO
+         <doxygen:param>EXTRACT_ANON_NSPACES=NO
+         <doxygen:param>QUIET=YES
+         <doxygen:param>SHOW_DIRECTORIES=YES
+         <doxygen:param>EXAMPLE_PATH=.
+   ;
+   
+   alias autodoc : complete.html api.html ;
+   explicit complete.html api.html ;
+} else {
+   import message ;
+   alias autodoc : [ message msg : "
+      To generate documentation with rule \"autodoc\","
+      "please configure Doxygen in user-config.jam file
+" ] ;
+}
+explicit autodoc ;
 
 import feature : feature ;
 import toolset ;

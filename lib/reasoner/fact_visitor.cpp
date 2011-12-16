@@ -7,10 +7,10 @@ part of owl_cpp project.
 #include <cassert>
 #include "fact_visitor.hpp"
 #include "boost/foreach.hpp"
-#include "owl_cpp/triple_store.hpp"
-#include "owl_cpp/query_nodes.hpp"
-#include "owl_cpp/query_triples.hpp"
-#include "str_conversion.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
+#include "owl_cpp/rdf/query_triples.hpp"
+#include "../str_conversion.hpp"
 
 namespace owl_cpp {
 
@@ -20,7 +20,7 @@ typedef Triples_query<Node_id, Node_id, blank>::q_range_t q_range_nnb_t;
 
 /* Annotation or property assertion
 *******************************************************************************/
-void Triple_to_fact::Visit(const Triple_std<ot::T__generic>& tr) {
+void Triple_to_fact::Visit(const Triple_std<ot::T_0_generic>& tr) {
    if( tr.predicate() == ot::T_rdf_type::id() ) {
       instance(tr.subject(), tr.object());
       return;

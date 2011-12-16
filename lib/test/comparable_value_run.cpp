@@ -8,7 +8,7 @@ part of owl_cpp project.
 #include "boost/test/unit_test.hpp"
 #include <iostream>
 #include "sample_data.hpp"
-#include "owl_cpp/comparable_value.hpp"
+#include "owl_cpp/detail/comparable_value.hpp"
 
 namespace owl_cpp{ namespace test{
 

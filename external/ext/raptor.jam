@@ -12,7 +12,6 @@ import feature ;
 import common ;
 import regex ;
 import path ;
-import utils ; #local jam-file
 
 extension.declare raptor ;
 
@@ -156,8 +155,7 @@ rule raptor2_h ( targets * : sources * : properties * ) {
    local v = 2.0.4 ; #[ version_raptor $(properties) ] ;
    local vs = [ version_split $(v) ] ;
    local vc = [ version_calc $(v) ] ;
-   
-   local src = [ utils.read_file $(sources:G=) ] ;
+   local src = [ read_file $(sources:G=) ] ;
    src = [ regex.replace $(src) @RAPTOR_VERSION_DECIMAL@ $(vc[2]) ] ;
    src = [ regex.replace $(src) @VERSION@ $(v) ] ;
    src = [ regex.replace $(src) @RAPTOR_VERSION_MAJOR@ $(vs[1]) ] ;
@@ -236,7 +234,6 @@ rule init ( version ? : location : options * ) {
          <raptor-version>$(version)
          <raptor-location>$(location)
          <include>$(location_src)
-         <include>$(BOOST[1])
          <define>HAVE_CONFIG_H
          <define>LIBRDFA_IN_RAPTOR
          <define>RAPTOR_INTERNAL

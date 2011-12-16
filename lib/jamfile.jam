@@ -9,22 +9,17 @@ project lib
       <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
 ;
 
-lib lib_owl_cpp
-    : #sources
-        [ glob *.cpp : lib_info.cpp ] lib_info
-    : #requirements
+lib owlcpp_common
+   :  #sources
+      [ glob *.cpp : lib_info.cpp ] lib_info
+   :  #requirements
       <include>.
       <include>$(INCLUDE)
-      <include>$(GENERATED_INCLUDE)
-      <library>/boost//filesystem
-      <library>..//raptor
-      <library>..//factpp_kernel
       <define>OWLCPP_SOURCE
       <link>shared:<define>OWLCPP_DYN_LINK
-    : #default build options
-    : #usage requirements
+   :  #default build options
+   :  #usage requirements
       <include>$(INCLUDE)
-      <include>$(GENERATED_INCLUDE)
       <link>shared:<define>OWLCPP_DYN_LINK
 ;
 
@@ -32,7 +27,6 @@ obj lib_info
    : #sources
          lib_info.cpp
    : #requirements
-      <include>$(BOOST[1])
       <include>$(INCLUDE)
       <include>$(GENERATED_INCLUDE)
       <implicit-dependency>version.hpp
@@ -43,7 +37,6 @@ obj lib_info
 ;
 explicit lib_info ;
 
-import utils ;
 # Generate version header
 make-singleton version.hpp 
    : 
@@ -52,10 +45,9 @@ make-singleton version.hpp
 ;
 
 rule version_header ( targets * : sources * : properties * ) {
-   import utils ;
-   local tag = [ utils.git_describe $(GIT_PATH) ] ;
-   local v = [ utils.process_version_string $(tag) : 0 0 0 unknown ] ;
-   local build = [ utils.build_version 3 ] ; #YYYYMMDD
+   local tag = [ git_describe $(GIT_PATH) ] ;
+   local v = [ process_version_string $(tag) : 0 0 0 unknown ] ;
+   local build = [ build_version 3 ] ; #YYYYMMDD
    STR on $(<) =
       "// Generated header.  Do not edit."
       "#define OWLCPP_VERSION_1 $(v[1])"

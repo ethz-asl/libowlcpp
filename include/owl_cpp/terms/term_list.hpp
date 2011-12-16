@@ -144,7 +144,7 @@ part of owl_cpp project.
 /**@brief miscellaneous terms
 *******************************************************************************/
 #define OWLCPP_TERMS_MISC \
-      (()(generic)()) \
+      ((0)(generic)()) \
 /* */
 
 /**@brief Combined set of supported OWL terms
@@ -174,7 +174,7 @@ Visitor implements a method for each of the Tags
 e.g. void Visit(const Triple_std<ot::T_owl_IrreflexiveProperty>&);
 *******************************************************************************/
 #define OWLCPP_TERMS_VISITABLE \
-      (()(generic)()) \
+      ((0)(generic)()) \
       ((owl)(AllDifferent)) \
       ((owl)(AllDisjointClasses)) \
       ((owl)(AllDisjointProperties)) \

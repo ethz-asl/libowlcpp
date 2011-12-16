@@ -9,13 +9,13 @@ part of owl_cpp project.
 
 #include "sample_data.hpp"
 
-#include "owl_cpp/triple_store.hpp"
-#include "owl_cpp/query_triples.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/rdf/query_triples.hpp"
 #include "owl_cpp/terms/term_tags.hpp"
 namespace ot = owl_cpp::terms;
 #include "node_type.hpp"
 #include "owl_cpp/print.hpp"
-#include "owl_cpp/parse_to_triple_store.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
 #include "triple_store_checks.hpp"
 
 namespace owl_cpp{ namespace test{

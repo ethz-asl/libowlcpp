@@ -34,8 +34,14 @@ part of owl_cpp project.
 }; @endcode
 *******************************************************************************/
 #define OWLCPP_NAMESPACE_TYPE(r, d, e) struct OWLCPP_NAMESPACE_TYPE_NAME(e) { \
-   static const std::string name; \
-   static const std::string prefix; \
+   static std::string const & name() { \
+      static const std::string str(BOOST_PP_SEQ_ELEM(1,e)); \
+      return str; \
+   } \
+   static std::string const & prefix() { \
+      static const std::string str(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(0,e))); \
+      return str; \
+   } \
 }; \
 BOOST_PP_EMPTY() \
 /* */
@@ -46,18 +52,6 @@ BOOST_PP_EMPTY() \
    BOOST_PP_SEQ_FOR_EACH(OWLCPP_NAMESPACE_TYPE, , seq) \
 /* */
 
-
-#define OWLCPP_NS_INIT(r, d, e) \
-const std::string OWLCPP_NAMESPACE_TYPE_NAME(e)::name(BOOST_PP_SEQ_ELEM(1,e)); \
-const std::string OWLCPP_NAMESPACE_TYPE_NAME(e)::prefix=std::string(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(0,e))); \
-BOOST_PP_EMPTY() \
-/* */
-
-/**@brief Initialize string members in IRI tag classes
-*******************************************************************************/
-#define OWLCPP_INIT_NAMESPACE_NAME_STRINGS(seq) \
-   BOOST_PP_SEQ_FOR_EACH(OWLCPP_NS_INIT, , seq)
-/* */
 
 /**@brief Round up number
 *******************************************************************************/
@@ -114,15 +108,23 @@ OWLCPP_TERM_TYPE_NAME((rdfs)(subClassOf)) produces T_rdfs_subClassOf
 
 /**@brief Generate light-weight type definition for standard OWL term
 @details OWLCPP_STD_TERM_TYPE( , , 2, (rdfs)(subClassOf))
-@code struct T_rdfs_subClassOf {
-   typedef Uri_rdfs ns_type;
-   static const std::string name;
-}; @endcode
+@code
+struct T_ro_has_participant {
+   typedef N_ro ns_type;
+   static std::string const & name() {
+      static const std::string str("has_participant");
+      return str;
+   }
+};
+@endcode
 *******************************************************************************/
 #define OWLCPP_TERM_TYPE(r, d, e) \
    struct OWLCPP_TERM_TYPE_NAME(e) { \
    typedef OWLCPP_NAMESPACE_TYPE_NAME(e) ns_type; \
-   static const std::string name; \
+   static std::string const & name() { \
+      static const std::string str(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_REVERSE(e)))); \
+      return str; \
+   } \
 }; \
 BOOST_PP_EMPTY() \
 /* */
@@ -132,22 +134,6 @@ BOOST_PP_EMPTY() \
 #define OWLCPP_GENERATE_TERM_TYPES(seq) \
    BOOST_PP_SEQ_FOR_EACH(OWLCPP_TERM_TYPE, , seq) \
 /* */
-
-/**@brief Generate triplet name member initialization e.g.,
-@details OWLCPP_TERM_INIT( , , (rdfs)(subClassOf))
-@code const std::string T_rdfs_subClassOf::name ="subClassOf";
-@endcode
-*******************************************************************************/
-#define OWLCPP_TERM_INIT(r, d, e) \
-const std::string OWLCPP_TERM_TYPE_NAME(e)::name=std::string(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_REVERSE(e)))); \
-BOOST_PP_EMPTY() \
-/* */
-
-/**@brief Generate name member initializations for the supported triple types
-@details OWLCPP_INITIALIZE_TERM_NAME_STRINGS
-*******************************************************************************/
-#define OWLCPP_INIT_TERM_NAME_STRINGS(seq) \
-   BOOST_PP_SEQ_FOR_EACH(OWLCPP_TERM_INIT, , seq)
 
 #define OWLCPP_TERM_ENUM_MACRO(r, d, e) (OWLCPP_TERM_TYPE_NAME(e))
 
@@ -164,8 +150,5 @@ boost::mpl::vector48<
    T_rdfs_subClassOf, T_rdfs_subPropertyOf, ...   > @endcode
 *******************************************************************************/
 #define OWLCPP_TERM_MPL_VECTOR(seq) OWLCPP_MPL_VECTOR(seq)<OWLCPP_TERM_ENUM(seq)>
-
-
-
 
 #endif /* CUSTOM_TYPE_MACRO_HPP_ */

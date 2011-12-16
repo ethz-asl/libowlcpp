@@ -5,7 +5,7 @@ part of owl_cpp project.
 *******************************************************************************/
 #ifndef NS_ID_HPP_
 #define NS_ID_HPP_
-#include "owl_cpp/comparable_value.hpp"
+#include "owl_cpp/detail/comparable_value.hpp"
 
 namespace owl_cpp{
 
