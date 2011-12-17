@@ -25,11 +25,11 @@ part of owl_cpp project.
 struct OWLCPP_DECL OWLCPP_NAMESPACE_TYPE_NAME(e) { \
    static const unsigned index = i; \
    static std::string const & name() { \
-      static const std::string str(BOOST_PP_SEQ_ELEM(1,e)); \
+      static const std::string str=BOOST_PP_SEQ_ELEM(1,e); \
       return str; \
    } \
    static std::string const & prefix() { \
-      static const std::string str(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(0,e))); \
+      static const std::string str=BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(0,e)); \
       return str; \
    } \
    typedef Ns_id id_type; \

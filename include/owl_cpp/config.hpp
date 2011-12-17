@@ -28,6 +28,7 @@ part of owl_cpp project.
    #pragma warning (disable : 4290) // C++ exception specification ignored except to ...
    #pragma warning (disable : 4355) // 'this' : used in base member initializer list
    #pragma warning (disable : 4800) // forcing value to bool 'true' or 'false'
+   #pragma warning (disable : 4003) // not enough actual parameters for macro
 #endif
 
 #endif /* CONFIG_HPP_ */

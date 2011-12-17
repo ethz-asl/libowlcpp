@@ -11,10 +11,12 @@ project
    : requirements
       <include>../
       <library>/boost//unit_test_framework
+      <library>/boost//filesystem
       <library>/owlcpp//common
       <library>/owlcpp//rdf
       <library>/owlcpp//io
       <library>/owlcpp//reasoner
+      <library>/owlcpp//factpp_kernel
       <define>SAMPLE_DATA_DIR="\"$(smpl_dir:T)\""
       <define>TEMPORARY_DIR="\"$(tmp_dir:T)\""
 ;

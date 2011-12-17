@@ -38,10 +38,10 @@ struct OWLCPP_DECL T_owl_allValuesFrom {
    typedef ::owl_cpp::Node_id id_type; \
    static const unsigned index = i; \
    static std::string const & name() { \
-      static const std::string str(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_REVERSE(e)))); \
+      static const std::string str = std::string(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_REVERSE(e)))); \
       return str; \
    } \
-   static ::owl_cpp::Node_id id() {return ::owl_cpp::Node_id(index);} \
+   static id_type id() {return id_type(index);} \
 }; \
 BOOST_PP_EMPTY() \
 /* */
