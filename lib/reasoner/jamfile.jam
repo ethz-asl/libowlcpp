@@ -13,6 +13,7 @@ lib owlcpp_reasoner
       <include>.
       <include>$(INCLUDE)
       <library>/owlcpp//factpp_kernel
+      <library>/owlcpp//rdf
       <define>OWLCPP_SOURCE
       <link>shared:<define>OWLCPP_DYN_LINK
    :  #default build options
