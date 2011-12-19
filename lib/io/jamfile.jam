@@ -12,7 +12,6 @@ lib owlcpp_io
       [ glob *.cpp ]
    :  #requirements
       <include>.
-      <include>$(INCLUDE)
       <library>/boost//filesystem
       <library>/owlcpp//raptor
       <library>/owlcpp//rdf
@@ -20,7 +19,6 @@ lib owlcpp_io
       <link>shared:<define>OWLCPP_DYN_LINK
    :  #default build options
    :  #usage requirements
-      <include>$(INCLUDE)
       <link>shared:<define>OWLCPP_DYN_LINK
 ;
 

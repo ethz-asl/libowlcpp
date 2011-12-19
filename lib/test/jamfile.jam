@@ -12,7 +12,6 @@ project
       <include>../
       <library>/boost//unit_test_framework
       <library>/boost//filesystem
-      <library>/owlcpp//common
       <library>/owlcpp//rdf
       <library>/owlcpp//io
       <library>/owlcpp//reasoner

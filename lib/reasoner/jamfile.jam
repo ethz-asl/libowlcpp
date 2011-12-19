@@ -11,14 +11,12 @@ lib owlcpp_reasoner
       [ glob *.cpp ]
    :  #requirements
       <include>.
-      <include>$(INCLUDE)
       <library>/owlcpp//factpp_kernel
       <library>/owlcpp//rdf
       <define>OWLCPP_SOURCE
       <link>shared:<define>OWLCPP_DYN_LINK
    :  #default build options
    :  #usage requirements
-      <include>$(INCLUDE)
       <link>shared:<define>OWLCPP_DYN_LINK
 ;
 

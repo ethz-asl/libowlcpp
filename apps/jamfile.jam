@@ -7,7 +7,6 @@ project apps
    :  build-dir $(OUT)/apps
    :  requirements
       <link>static
-      <library>/owlcpp//common
 ;
 
 exe print_triples

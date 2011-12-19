@@ -7,35 +7,13 @@ project lib
    : build-dir $(OUT)/bin
    : requirements
       <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
-;
-
-lib owlcpp_common
-   :  #sources
-      [ glob *.cpp : lib_info.cpp ] lib_info
-   :  #requirements
-      <include>.
-      <include>$(INCLUDE)
-      <define>OWLCPP_SOURCE
-      <link>shared:<define>OWLCPP_DYN_LINK
-   :  #default build options
-   :  #usage requirements
-      <include>$(INCLUDE)
-      <link>shared:<define>OWLCPP_DYN_LINK
-;
-
-obj lib_info
-   : #sources
-         lib_info.cpp
-   : #requirements
+      <toolset>msvc:<cxxflags>/Gy
       <include>$(INCLUDE)
       <include>$(GENERATED_INCLUDE)
-      <implicit-dependency>version.hpp
-      <define>OWLCPP_SOURCE
-      <link>shared:<define>OWLCPP_DYN_LINK
-   : #default build options
-   : #usage requirements
+   : usage-requirements
+      <include>$(INCLUDE)
+      <include>$(GENERATED_INCLUDE)
 ;
-explicit lib_info ;
 
 # Generate version header
 make-singleton version.hpp 
@@ -53,7 +31,7 @@ rule version_header ( targets * : sources * : properties * ) {
       "#define OWLCPP_VERSION_1 $(v[1])"
       "#define OWLCPP_VERSION_2 $(v[2])"
       "#define OWLCPP_VERSION_3 $(v[3])"
-      "#define OWLCPP_VERSION_EXTRA $(v[4])"
+      "#define OWLCPP_VERSION_EXTRA \"$(v[4])\""
       "#define OWLCPP_BUILD $(build)"
    ;
    NL on $(<) = "
