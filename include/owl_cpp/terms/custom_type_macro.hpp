@@ -35,11 +35,11 @@ part of owl_cpp project.
 *******************************************************************************/
 #define OWLCPP_NAMESPACE_TYPE(r, d, e) struct OWLCPP_NAMESPACE_TYPE_NAME(e) { \
    static std::string const & name() { \
-      static const std::string str(BOOST_PP_SEQ_ELEM(1,e)); \
+      static const std::string str=BOOST_PP_SEQ_ELEM(1,e); \
       return str; \
    } \
    static std::string const & prefix() { \
-      static const std::string str(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(0,e))); \
+      static const std::string str=BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(0,e)); \
       return str; \
    } \
 }; \
@@ -122,7 +122,7 @@ struct T_ro_has_participant {
    struct OWLCPP_TERM_TYPE_NAME(e) { \
    typedef OWLCPP_NAMESPACE_TYPE_NAME(e) ns_type; \
    static std::string const & name() { \
-      static const std::string str(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_REVERSE(e)))); \
+      static const std::string str=BOOST_PP_STRINGIZE(BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_REVERSE(e))); \
       return str; \
    } \
 }; \
