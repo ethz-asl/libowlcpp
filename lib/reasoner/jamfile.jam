@@ -12,11 +12,10 @@ lib owlcpp_reasoner
    :  #requirements
       <include>.
       <library>/owlcpp//factpp_kernel
-      <library>/owlcpp//rdf
-      <define>OWLCPP_SOURCE
-      <link>shared:<define>OWLCPP_DYN_LINK
+#      <library>/owlcpp//rdf
+      <link>shared:<define>OWLCPP_REASONER_DYN_LINK
    :  #default build options
    :  #usage requirements
-      <link>shared:<define>OWLCPP_DYN_LINK
+      <link>shared:<define>OWLCPP_REASONER_DYN_LINK
 ;
 

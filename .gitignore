@@ -1,3 +1,4 @@
-.cproject
-.project
-out
+/.cproject
+/.project
+/out
+/include/owl_cpp/version.hpp

@@ -9,17 +9,15 @@ project lib
       <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
       <toolset>msvc:<cxxflags>/Gy
       <include>$(INCLUDE)
-      <include>$(GENERATED_INCLUDE)
    : usage-requirements
       <include>$(INCLUDE)
-      <include>$(GENERATED_INCLUDE)
 ;
 
 # Generate version header
 make-singleton version.hpp 
    : 
    : @version_header 
-   : <location>$(GENERATED_INCLUDE)/owl_cpp
+   : <location>$(INCLUDE)/owl_cpp
 ;
 
 rule version_header ( targets * : sources * : properties * ) {

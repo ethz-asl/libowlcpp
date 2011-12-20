@@ -11,7 +11,7 @@ part of owl_cpp project.
 #include "boost/range.hpp"
 #include "boost/iterator/indirect_iterator.hpp"
 
-#include "owl_cpp/config.hpp"
+#include "owl_cpp/rdf/config.hpp"
 #include "owl_cpp/exception.hpp"
 #include "owl_cpp/rdf/object_store.hpp"
 #include "owl_cpp/ns_id.hpp"
@@ -38,7 +38,7 @@ Access objects through opaque object IDs
 result of fetching with invalid ID is undetermined.
 Fetching ID for a non-existing object produces exception.
 *******************************************************************************/
-class OWLCPP_DECL Triple_store {
+class OWLCPP_RDF_DECL Triple_store {
    typedef Obj_store<std::string> uri_store_t;
    typedef Obj_store<Node_base> term_store_t;
    typedef std::vector<Triple*> triple_store_t;

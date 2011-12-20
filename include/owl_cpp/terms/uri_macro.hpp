@@ -22,7 +22,7 @@ part of owl_cpp project.
 }; @endcode
 *******************************************************************************/
 #define OWLCPP_STD_NAMESPACE_TYPE(r, d, i, e) \
-struct OWLCPP_DECL OWLCPP_NAMESPACE_TYPE_NAME(e) { \
+struct OWLCPP_NAMESPACE_TYPE_NAME(e) { \
    static const unsigned index = i; \
    static std::string const & name() { \
       static const std::string str=BOOST_PP_SEQ_ELEM(1,e); \
