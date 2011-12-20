@@ -14,7 +14,7 @@ lib owlcpp_io
       <include>.
       <library>/boost//filesystem
       <library>/owlcpp//raptor
-#      <library>/owlcpp//rdf
+      <library>/owlcpp//rdf
       <link>shared:<define>OWLCPP_IO_DYN_LINK
    :  #default build options
    :  #usage requirements
