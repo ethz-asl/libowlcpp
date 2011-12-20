@@ -7,7 +7,7 @@ part of owl_cpp project.
 #define QUERY_NODES_HPP_
 #include "boost/tuple/tuple.hpp"
 namespace b = boost;
-#include "owl_cpp/config.hpp"
+#include "owl_cpp/rdf/config.hpp"
 #include "owl_cpp/rdf/triple_store.hpp"
 
 namespace owl_cpp{
@@ -22,7 +22,7 @@ inline Node_id insert_node(const std::string& node, Triple_store& store) {
 
 /**
 *******************************************************************************/
-OWLCPP_DECL Node_id find_node(
+OWLCPP_RDF_DECL Node_id find_node(
       const std::string& iri,
       const std::string& term,
       const Triple_store& store
@@ -30,7 +30,7 @@ OWLCPP_DECL Node_id find_node(
 
 /**
 *******************************************************************************/
-OWLCPP_DECL bool have_node(
+OWLCPP_RDF_DECL bool have_node(
       const std::string& iri_term,
       const Triple_store& store
 );
@@ -61,7 +61,7 @@ inline std::string short_name(const Node_id id, const Triple_store& store) {
 @details Since short names are not stored, split it into prefix and term name
 and search Triple_store for node ID
 *******************************************************************************/
-OWLCPP_DECL Node_id short_name_id(const std::string& short_name, const Triple_store& store);
+OWLCPP_RDF_DECL Node_id short_name_id(const std::string& short_name, const Triple_store& store);
 
 
 }//namespace owl_cpp

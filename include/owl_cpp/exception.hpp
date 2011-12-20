@@ -19,7 +19,7 @@ Example:
          << base_exception::nested_t(b::current_exception())
    );
 *******************************************************************************/
-struct OWLCPP_DECL base_exception : virtual public std::exception, virtual public boost::exception {
+struct base_exception : virtual public std::exception, virtual public boost::exception {
    typedef boost::error_info<struct errinfo_message_, std::string> msg_t;
    typedef boost::error_info<struct errinfo_str1_, std::string> str1_t;
    typedef boost::error_info<struct errinfo_str2_, std::string> str2_t;

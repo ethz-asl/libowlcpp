@@ -7,19 +7,6 @@ part of owl_cpp project.
 #define CONFIG_HPP_
 
 #include "boost/config.hpp"
-#ifndef BOOST_SYMBOL_EXPORT
-  #define BOOST_SYMBOL_EXPORT
-  #define BOOST_SYMBOL_IMPORT
-#endif
-#if defined(OWLCPP_DYN_LINK)
-#  if defined(OWLCPP_SOURCE)
-#     define OWLCPP_DECL BOOST_SYMBOL_EXPORT
-#  else
-#     define OWLCPP_DECL BOOST_SYMBOL_IMPORT
-#  endif
-#else
-#  define OWLCPP_DECL
-#endif
 
 #ifdef BOOST_MSVC
    #pragma warning (push)

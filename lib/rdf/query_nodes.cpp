@@ -3,6 +3,10 @@ part of owl_cpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
+#ifndef OWLCPP_RDF_SOURCE
+#define OWLCPP_RDF_SOURCE
+#endif
+
 #include "owl_cpp/rdf/query_nodes.hpp"
 #include "owl_cpp/rdf/triple_store.hpp"
 #include "../node_type.hpp"

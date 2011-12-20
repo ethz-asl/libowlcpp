@@ -11,13 +11,11 @@ lib owlcpp_rdf
       [ glob *.cpp ]
    :  #requirements
       <include>.
-      <include>$(INCLUDE)
-      <define>OWLCPP_SOURCE
-      <link>shared:<define>OWLCPP_DYN_LINK
+      <link>shared:<define>OWLCPP_RDF_DYN_LINK
+      <implicit-dependency>..//version.hpp
    :  #default build options
    :  #usage requirements
-      <include>$(INCLUDE)
-      <link>shared:<define>OWLCPP_DYN_LINK
+      <link>shared:<define>OWLCPP_RDF_DYN_LINK
 ;
 
 

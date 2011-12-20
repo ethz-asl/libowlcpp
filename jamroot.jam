@@ -33,8 +33,8 @@ alias test
    : #requirements
 ;
 
+build-project lib ;
 use-project /owlcpp : . ;
-alias common : lib//owlcpp_common ;
 alias rdf : lib/rdf ;
 alias io : lib/io ;
 alias reasoner : lib/reasoner ;
