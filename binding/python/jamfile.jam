@@ -12,15 +12,20 @@ project binding/python
 
 import python ;
 
-python-extension rdf : rdf.cpp : <dll-path>$(PYTHON_OUT) ;
+python-extension rdf 
+   : 
+      rdf.cpp 
+   : 
+#      <linkflags>"-Wl,-rpath=$(PYTHON_OUT)" 
+      <dll-path>$(PYTHON_OUT)
+;
 
 install rdf_install
    : 
-      rdf 
+      rdf
    : 
-#      <variant>release
       <location>$(PYTHON_OUT)
-      <dll-path>$(PYTHON_OUT)
+#      <dll-path>$(PYTHON_OUT)
       <install-dependencies>on
       <install-type>LIB
       <dependency>__init__.py
