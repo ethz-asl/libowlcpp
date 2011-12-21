@@ -5,7 +5,6 @@
 
 project binding/python/test
     : build-dir $(OUT)/binding
-    : requirements <library>/boost/python//boost_python 
 ;
 
 import python ;
