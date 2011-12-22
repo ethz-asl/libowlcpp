@@ -36,5 +36,3 @@ rule version_header ( targets * : sources * : properties * ) {
 " ;
 }
 actions version_header { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
-
-

@@ -14,7 +14,7 @@ path-constant TEMP_DIR : $(OUT)/temp ;
 make $(TEMP_DIR) : : @common.mkdir ;
 path-constant GENERATED_INCLUDE : $(OUT)/include ;
 path-constant GENERATED_LIB : $(OUT)/lib ;
-path-constant PYTHON_OUT : $(OUT)/binding/python/owlcpp ;
+path-constant PYTHON_OUT : $(OUT)/binding/python ;
 
 if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
 use-project /boost : $(BOOST[1]) ;
@@ -31,9 +31,15 @@ alias test
    : #sources
       lib/test
       apps/test
+   : #requirements
+;
+
+alias test-py
+   : #sources
       binding/python/test
    : #requirements
 ;
+explicit test test-py ;
 
 build-project lib ;
 use-project /owlcpp : . ;
@@ -44,8 +50,11 @@ alias apps : ./apps ;
 alias factpp_kernel : external//factpp_kernel ;
 alias expat : external//expat ;
 alias raptor : external//raptor ;
-alias rdf_py : binding/python//rdf_install ;
-explicit test factpp_kernel expat raptor ;
+explicit factpp_kernel expat raptor ;
+
+alias rdf-py : binding/python//rdf_install ;
+alias api-py : rdf-py ;
+explicit rdf-py api-py ;
 
 if [ modules.peek doxygen : .initialized ] {
    import path ;

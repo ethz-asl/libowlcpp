@@ -4,7 +4,7 @@
 # Copyright Mikhail K Levin 2011
 
 project binding/python
-    : build-dir $(OUT)/binding/python
+    : build-dir $(PYTHON_OUT)
     : requirements 
       <library>/boost/python//boost_python 
       <library>/owlcpp//rdf 
@@ -16,22 +16,22 @@ python-extension rdf
    : 
       rdf.cpp 
    : 
-#      <linkflags>"-Wl,-rpath=$(PYTHON_OUT)" 
-      <dll-path>$(PYTHON_OUT)
+#      <linkflags>"-Wl,-rpath=$(PYTHON_OUT)/owlcpp" 
+      <dll-path>$(PYTHON_OUT)/owlcpp
 ;
 
 install rdf_install
    : 
       rdf
    : 
-      <location>$(PYTHON_OUT)
-#      <dll-path>$(PYTHON_OUT)
+      <location>$(PYTHON_OUT)/owlcpp
+#      <dll-path>$(PYTHON_OUT)/owlcpp
       <install-dependencies>on
       <install-type>LIB
       <dependency>__init__.py
 ;
 
-make __init__.py : : @init_py : <location>$(PYTHON_OUT) ;
+make __init__.py : : @init_py : <location>$(PYTHON_OUT)/owlcpp ;
 actions init_py {
     @($(STDOUT):E=#!/usr/bin/env python
 __all__ = ["rdf"]
