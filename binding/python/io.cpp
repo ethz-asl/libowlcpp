@@ -18,9 +18,6 @@ namespace owl = owl_cpp;
 namespace bp = boost::python;
 
 namespace{
-void (*load1)(std::string const&, owl::Triple_store&) = &owl::load;
-void (*load2)(std::string const&, owl::Triple_store&, owl::Catalog const&) = &owl::load;
-
 bp::tuple ontology_id(std::string const& file) {
    boost::tuple<std::string,std::string> t = owl::ontology_id(file);
    return bp::make_tuple(t.get<0>(), t.get<1>());
@@ -41,6 +38,22 @@ BOOST_PYTHON_MODULE(io) {
 
    bp::def("ontology_id", &ontology_id);
    bp::def("find_ontologies", &owl::find_ontologies);
-   bp::def("load", load1);
-   bp::def("load", load2);
+
+   bp::def(
+         "load",
+         static_cast<
+            void (*) (std::string const&, owl::Triple_store&)
+         >(&owl::load)
+   );
+
+   bp::def(
+         "load",
+         static_cast<
+            void (*) (
+                  std::string const&,
+                  owl::Triple_store&,
+                  owl::Catalog const&
+                  )
+         >(&owl::load)
+   );
 }
