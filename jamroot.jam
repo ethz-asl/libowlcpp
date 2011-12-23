@@ -53,8 +53,9 @@ alias raptor : external//raptor ;
 explicit factpp_kernel expat raptor ;
 
 alias rdf-py : binding/python//rdf_install ;
-alias api-py : rdf-py ;
-explicit rdf-py api-py ;
+alias io-py : binding/python//io_install ;
+alias api-py : rdf-py io-py ;
+explicit rdf-py io-py api-py ;
 
 if [ modules.peek doxygen : .initialized ] {
    import path ;

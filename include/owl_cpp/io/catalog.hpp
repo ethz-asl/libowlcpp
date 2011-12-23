@@ -67,7 +67,7 @@ public:
    void insert(
          const std::string& path,/**< path to ontology file */
          const std::string& iri, /**< ontology IRI */
-         const std::string& version /**< ontology version IRI */
+         const std::string& version = std::string() /**< ontology version IRI */
    );
 
    /**@brief Find ontology location

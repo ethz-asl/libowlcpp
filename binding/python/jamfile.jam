@@ -7,7 +7,7 @@ project binding/python
     : build-dir $(PYTHON_OUT)
     : requirements 
       <library>/boost/python//boost_python 
-      <library>/owlcpp//rdf 
+      <library>/owlcpp//rdf
 ;
 
 import python ;
@@ -16,19 +16,31 @@ python-extension rdf
    : 
       rdf.cpp 
    : 
-#      <linkflags>"-Wl,-rpath=$(PYTHON_OUT)/owlcpp" 
-      <dll-path>$(PYTHON_OUT)/owlcpp
 ;
-
 install rdf_install
    : 
       rdf
    : 
       <location>$(PYTHON_OUT)/owlcpp
-#      <dll-path>$(PYTHON_OUT)/owlcpp
       <install-dependencies>on
       <install-type>LIB
       <dependency>__init__.py
+;
+
+python-extension io 
+   : 
+      io.cpp 
+   :
+      <library>/owlcpp//io
+;
+install io_install
+   : 
+      io
+   : 
+      <location>$(PYTHON_OUT)/owlcpp
+      <install-dependencies>on
+      <install-type>LIB
+      <dependency>rdf_install
 ;
 
 make __init__.py : : @init_py : <location>$(PYTHON_OUT)/owlcpp ;
