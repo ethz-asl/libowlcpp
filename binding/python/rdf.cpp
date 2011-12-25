@@ -6,6 +6,7 @@ part of owl_cpp project.
 #include "boost/python/class.hpp"
 #include "boost/python/module.hpp"
 #include "boost/python/def.hpp"
+#include "boost/python/operators.hpp"
 #include "boost/utility.hpp"
 
 #include "owl_cpp/rdf/triple_store.hpp"
@@ -13,7 +14,28 @@ part of owl_cpp project.
 BOOST_PYTHON_MODULE(rdf) {
    namespace owl = owl_cpp;
    namespace bp = boost::python;
-//   class_<Node_id>("Node_id", init<unsigned>())
+
+   bp::class_<owl::Node_id>("Node_id", bp::init<unsigned>())
+      .def(str(bp::self))
+      .def(bp::self < bp::self)
+      .def(bp::self > bp::self)
+      .def(bp::self == bp::self)
+      .def(bp::self != bp::self)
+      .def("__call__", &owl::Node_id::operator())
+      ;
+
+/*
+   bp::class_<owl::Triple>("Triple")
+      .def(str(bp::self))
+      .def(bp::self < bp::self)
+      .def(bp::self > bp::self)
+      .def(bp::self == bp::self)
+      .def(bp::self != bp::self)
+      .def("subject", &owl::Triple::get<0>())
+      .def("predicate", &owl::Triple::get<1>())
+      .def("object", &owl::Triple::get<2>())
+      ;
+*/
 
    bp::class_<owl::Triple_store, boost::noncopyable>("Triple_store")
       .def("n_uris", &owl::Triple_store::n_uris)

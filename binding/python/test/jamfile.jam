@@ -14,6 +14,7 @@ import testing ;
 
 test-suite python :
    [ bpl-test import : import.py ]
+   [ bpl-test node_id : node_id.py ]
    [ bpl-test triple_store : triple_store.py ]
    [ bpl-test io : io.py : <dependency>..//io_install ]
 ;
