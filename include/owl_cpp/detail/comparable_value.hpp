@@ -5,6 +5,7 @@ part of owl_cpp project.
 *******************************************************************************/
 #ifndef COMPARABLE_VALUE_HPP_
 #define COMPARABLE_VALUE_HPP_
+#include <iosfwd>
 
 namespace owl_cpp{
 
@@ -27,6 +28,11 @@ protected:
 private:
    T val_;
 };
+
+template<class ChT, class Tr, class T> std::basic_ostream<ChT,Tr>& operator<<(
+      std::basic_ostream<ChT,Tr>& os, Comparable_value<T> const& cv) {
+   return os << cv();
+}
 
 typedef Comparable_value<unsigned> unsigned_val_t;
 

@@ -33,6 +33,8 @@ Libraries required by owl_cpp are listed in file "owl_cpp/doc/user-config.jam".
         b2 release
         b2 debug test
         b2 --toolset=msvc release
+        b2 release api-py
+        b2 release test-py
         b2 autodoc
    The output will be generated in directory owl_cpp/out, e.g.,
    owl_cpp/out/bin/gcc-4.5.2/release/lib_owl_cpp.so

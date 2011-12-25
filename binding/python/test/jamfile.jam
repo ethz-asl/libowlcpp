@@ -1,0 +1,20 @@
+# owl_cpp/binding/python/test/jamfile.jam
+# part of owl_cpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2011
+
+project binding/python/test
+    : requirements
+      <pythonpath>$(PYTHON_OUT)
+      <dependency>..//rdf_install
+;
+
+import python ;
+import testing ;
+
+test-suite python :
+   [ bpl-test import : import.py ]
+   [ bpl-test node_id : node_id.py ]
+   [ bpl-test triple_store : triple_store.py ]
+   [ bpl-test io : io.py : <dependency>..//io_install ]
+;

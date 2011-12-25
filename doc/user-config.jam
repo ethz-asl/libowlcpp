@@ -11,7 +11,7 @@
 #    uncomment "constant" statement, and specify its full path and version.
 #    
 # IMPORTANT: Use forward slashes '/'.
-# IMPORTANT: Put spaces around colons and semicolons.
+# IMPORTANT: Put spaces around colons and before semicolons.
 #
 # See also:
 # http://www.boost.org/boost-build2/doc/html/bbv2/overview/configuration.html
@@ -28,6 +28,15 @@
 
 ## Mac OS X
 # using darwin ;
+
+## Python (for generating python bindings)
+## For more details see 
+## http://www.boost.org/doc/libs/1_48_0/libs/python/doc/building.html
+## Alternatives:
+# using python ;
+# using python : 2.7 : /usr/bin/python ;
+# using python : 2.7 : "C:/Program Files/Python" ;
+
 
 ## Doxygen (generating documentation from source code, optional)
 ## http://www.stack.nl/~dimitri/doxygen/
@@ -47,7 +56,7 @@ local utils = "c:/utils" ;
 
 ## Boost library source
 ## http://www.boost.org/
-# constant BOOST : "$(utils)/boost_1_47_0/" 1.47.0 ;
+# constant BOOST : "$(utils)/boost_1_48_0/" 1.48.0 ;
 
 ## FaCT++ library source
 ## http://code.google.com/p/factplusplus/
