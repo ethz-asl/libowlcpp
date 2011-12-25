@@ -5,7 +5,8 @@ part of owl_cpp project.
 *******************************************************************************/
 #ifndef TRIPLE_HPP_
 #define TRIPLE_HPP_
-#include <cassert>
+#include <iosfwd>
+#include "boost/assert.hpp"
 #include "boost/array.hpp"
 namespace b = boost;
 #include "loki/Visitor.h"
@@ -99,6 +100,11 @@ private:
    b::array<Node_id, 3> arr_;
 };
 
+template<class ChT, class Tr> std::basic_ostream<ChT,Tr>& operator<<(
+      std::basic_ostream<ChT,Tr>& os, Triple const& tr) {
+   return os << '{' << tr.get<0>()  << ',' << tr.get<1>() << ',' << tr.get<2>() << '}';
+}
+
 
 /** Triple that uses one of the standard OWL predicates
 *******************************************************************************/
@@ -108,7 +114,7 @@ template<class T>struct Triple_std : public Triple {
    : Triple(subj, pred, obj) {
       //triple's type tag should be either same as predicate,
       //same as object if predicate is rdf:type, or generic
-      assert(
+      BOOST_ASSERT(
             ( tag_t::index == pred() ) ||
             ( tag_t::index == obj() && ot::T_rdf_type::index == pred() ) ||
             ( tag_t::index == ot::T_0_generic::index )
