@@ -8,17 +8,15 @@ project external
     : 
 ;
 
-if ! $(FACTPP) { 
+if ! $(ICONV) { 
 EXIT "
-Please set variable FACTPP to location and version of FaCT++ library.
+Please set variable ICONV to location and version of iconv library.
 See doc/user-config.jam
 " ;
 }
-using ext/factpp : $(FACTPP[2]) : $(FACTPP[1]) ;
-alias factpp_kernel 
-   : /ext/factpp//factpp_kernel 
-   : #<link>static 
-;
+using ext/iconv : $(ICONV[2]) : $(ICONV[1]) ;
+alias iconv : /ext/iconv//iconv ;
+alias iconv_pic : /ext/iconv//iconv : <link>static <pic>on ;
 
 if ! $(EXPAT) { 
 EXIT "
@@ -40,3 +38,14 @@ using ext/raptor : $(RAPTOR[2]) : $(RAPTOR[1]) ;
 alias raptor : /ext/raptor//raptor ;
 alias raptor_pic : /ext/raptor//raptor : <link>static <pic>on ;
 
+if ! $(FACTPP) { 
+EXIT "
+Please set variable FACTPP to location and version of FaCT++ library.
+See doc/user-config.jam
+" ;
+}
+using ext/factpp : $(FACTPP[2]) : $(FACTPP[1]) ;
+alias factpp_kernel 
+   : /ext/factpp//factpp_kernel 
+   : #<link>static 
+;
