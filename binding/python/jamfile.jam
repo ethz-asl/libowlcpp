@@ -46,7 +46,7 @@ install io_install
 make __init__.py : : @init_py : <location>$(PYTHON_OUT)/owlcpp ;
 actions init_py {
     @($(STDOUT):E=#!/usr/bin/env python
-__all__ = ["rdf"]
+__all__ = ["rdf", "io"]
 ) > "$(<)"
 echo $(<)
 }
