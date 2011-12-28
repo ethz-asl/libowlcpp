@@ -1,17 +1,13 @@
 /** @file "/owl_cpp/lib/test/rdf_parser_02_run.cpp" 
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010-1 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010-1
 *******************************************************************************/
 #define BOOST_TEST_MODULE rdf_parser_02_run
 #include "boost/test/unit_test.hpp"
 #include <iostream>
 #include "sample_data.hpp"
-#include "owl_cpp/parse_to_triple_store.hpp"
-//#include "owl_cpp/triple_store.hpp"
-//#include "owl_cpp/print.hpp"
-//#include "owl_cpp/query_triples.hpp"
-//#include "triple_store_checks.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
 
 namespace owl_cpp{ namespace test{
 

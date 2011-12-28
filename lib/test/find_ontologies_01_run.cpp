@@ -1,13 +1,13 @@
 /** @file "/owl_cpp/lib/test/find_ontologies_01_run.cpp" 
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010-1 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010-1
 *******************************************************************************/
 #define BOOST_TEST_MODULE find_ontologies_01_run
 #include "boost/test/unit_test.hpp"
 #include <iostream>
 
-#include "owl_cpp/parse_to_triple_store.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
 #include "sample_data.hpp"
 
 namespace owl_cpp{ namespace test{

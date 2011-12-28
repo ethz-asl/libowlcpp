@@ -1,13 +1,16 @@
-owl_cpp library
+owl_cpp is a C++ library for reading and querying OWL ontologies.
 
 Copyright (C) 2010-1 Mikhail K Levin
 
 owl_cpp is a C++ library for reading and querying OWL ontologies.
 - parse OWL/RDF files into RDF triple store
-- load triples into FaCT++ reasoner
+- query triple store
+- generate axioms for FaCT++ reasoner
 - run queries
 
+Distributed under the Boost Software License, Version 1.0; 
+see doc/license.txt or http://www.boost.org/LICENSE_1_0.txt
+
 For building, see doc/build.txt.
-For legal information see doc/license.txt.
-Doxygen HTML documentation is generated in out/html/api.html
+
 Contact: svarneticist (at) users.sourceforge.net

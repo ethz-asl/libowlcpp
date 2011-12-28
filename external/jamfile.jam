@@ -1,7 +1,7 @@
-# @file "owl_cpp/external/jamfile.jam"
+# owl_cpp/external/jamfile.jam
 # part of owl_cpp project.
-# Distributed under GNU Lesser General Public License; see doc/license.txt.
-# @date 2011 @author Mikhail K Levin
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2010-1
 
 project external
     : build-dir $(OUT)/bin
@@ -15,7 +15,10 @@ See doc/user-config.jam
 " ;
 }
 using ext/factpp : $(FACTPP[2]) : $(FACTPP[1]) ;
-alias factpp_kernel : /ext/factpp//factpp_kernel ;
+alias factpp_kernel 
+   : /ext/factpp//factpp_kernel 
+   : #<link>static 
+;
 
 if ! $(EXPAT) { 
 EXIT "
@@ -24,7 +27,8 @@ See doc/user-config.jam
 " ;
 }
 using ext/expat : $(EXPAT[2]) : $(EXPAT[1]) ;
-alias expat : /ext/expat ;
+alias expat : /ext/expat//expat ;
+alias expat_pic : /ext/expat//expat : <link>static <pic>on ;
 
 if ! $(RAPTOR) { 
 EXIT "
@@ -33,5 +37,6 @@ See doc/user-config.jam
 " ;
 }
 using ext/raptor : $(RAPTOR[2]) : $(RAPTOR[1]) ;
-alias raptor : /ext/raptor ;
+alias raptor : /ext/raptor//raptor ;
+alias raptor_pic : /ext/raptor//raptor : <link>static <pic>on ;
 

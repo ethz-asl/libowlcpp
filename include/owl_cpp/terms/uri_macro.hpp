@@ -1,12 +1,13 @@
 /** @file "/owl_cpp/include/owl_cpp/terms/uri_macro.hpp"
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef URI_MACRO_HPP_
 #define URI_MACRO_HPP_
-#include "custom_type_macro.hpp"
-#include "uri_list.hpp"
+#include "owl_cpp/config.hpp"
+#include "owl_cpp/terms/custom_type_macro.hpp"
+#include "owl_cpp/terms/uri_list.hpp"
 
 #include "boost/preprocessor/facilities/empty.hpp"
 #include "boost/preprocessor/seq/for_each.hpp"
@@ -20,10 +21,17 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
    typedef Ns_id id_type;
 }; @endcode
 *******************************************************************************/
-#define OWLCPP_STD_NAMESPACE_TYPE(r, d, i, e) struct OWLCPP_NAMESPACE_TYPE_NAME(e) { \
+#define OWLCPP_STD_NAMESPACE_TYPE(r, d, i, e) \
+struct OWLCPP_NAMESPACE_TYPE_NAME(e) { \
    static const unsigned index = i; \
-   static const std::string name; \
-   static const std::string prefix; \
+   static std::string const & name() { \
+      static const std::string str=BOOST_PP_SEQ_ELEM(1,e); \
+      return str; \
+   } \
+   static std::string const & prefix() { \
+      static const std::string str=BOOST_PP_STRINGIZE(BOOST_PP_SEQ_ELEM(0,e)); \
+      return str; \
+   } \
    typedef Ns_id id_type; \
    static ::owl_cpp::Ns_id id() {return ::owl_cpp::Ns_id(index);} \
 }; \

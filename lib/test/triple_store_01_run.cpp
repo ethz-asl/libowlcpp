@@ -1,7 +1,7 @@
 /** @file "/owl_cpp/lib/test/triple_store_01_run.cpp"
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 //#include "pch.hpp"
 #define BOOST_TEST_MODULE triple_store_01_run
@@ -10,14 +10,14 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
 
 #include "sample_data.hpp"
 
-#include "owl_cpp/triple_store.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
 #include "owl_cpp/terms/term_tags.hpp"
 #include "owl_cpp/print.hpp"
 namespace ot = owl_cpp::terms;
 #include "node_type.hpp"
 #include "triple_store_checks.hpp"
-#include "owl_cpp/query_nodes.hpp"
-#include "owl_cpp/query_triples.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
+#include "owl_cpp/rdf/query_triples.hpp"
 
 namespace owl_cpp{ namespace test{
 
@@ -62,19 +62,19 @@ BOOST_AUTO_TEST_CASE( triple_store_01_visitor_test ) {
    Visitor_get_name vgn;
    const Node_base& t1 = store[Node_id(ot::T_owl_Class::index)];
    t1.Accept(vgn);
-   BOOST_CHECK_EQUAL(ot::T_owl_Class::name, vgn.name);
+   BOOST_CHECK_EQUAL(ot::T_owl_Class::name(), vgn.name);
 
    const Node_base& t2 = store[ Node_id(ot::T_rdf_Property::index) ];
    t2.Accept(vgn);
-   BOOST_CHECK_EQUAL(ot::T_rdf_Property::name, vgn.name);
+   BOOST_CHECK_EQUAL(ot::T_rdf_Property::name(), vgn.name);
 }
 
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( triple_store_01_run_case01 ) {
    Triple_store store;
-   BOOST_CHECK_EQUAL(store[Ns_id(ot::N_owl::index)], ot::N_owl::name);
-   Ns_id id1 = store.insert_namespace(ot::N_xsd::name);
+   BOOST_CHECK_EQUAL(store[Ns_id(ot::N_owl::index)], ot::N_owl::name());
+   Ns_id id1 = store.insert_namespace(ot::N_xsd::name());
    BOOST_CHECK(id1() == ot::N_xsd::index);
 
    const Node_base& ti = store[ ot::T_owl_Class::id() ];
@@ -85,13 +85,13 @@ BOOST_AUTO_TEST_CASE( triple_store_01_run_case01 ) {
 
    Visitor_get_name vgn;
    ti.Accept(vgn);
-   BOOST_CHECK_EQUAL(ot::T_owl_Class::name, vgn.name);
+   BOOST_CHECK_EQUAL(ot::T_owl_Class::name(), vgn.name);
 
    const unsigned i = ot::T_owl_Class::ns_type::index;
    const unsigned j = ot::T_owl_Class::ns_type::id()();
    BOOST_CHECK_EQUAL(i, j);
    BOOST_CHECK_EQUAL(i, ti.ns_id()());
-   BOOST_CHECK_EQUAL(ot::T_owl_Class::name, ti.value_str());
+   BOOST_CHECK_EQUAL(ot::T_owl_Class::name(), ti.value_str());
 
    Node_id id2 = store.insert_node(Node_std<ot::T_rdfs_subClassOf>());
    Node_id id3 = store.insert_node(Node_std<ot::T_rdfs_subClassOf>());
@@ -104,7 +104,7 @@ are equal to the corresponding standard classes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( triple_store_01_run_case02 ) {
    Triple_store store;
-   node_generic_t tr(ot::T_rdfs_subClassOf::ns_type::id(), ot::T_rdfs_subClassOf::name);
+   node_generic_t tr(ot::T_rdfs_subClassOf::ns_type::id(), ot::T_rdfs_subClassOf::name());
    const Node_base& ti = store[ ot::T_rdfs_subClassOf::id() ];
    BOOST_CHECK(tr == ti);
    BOOST_CHECK( store.insert_node(tr) == ot::T_rdfs_subClassOf::id() );

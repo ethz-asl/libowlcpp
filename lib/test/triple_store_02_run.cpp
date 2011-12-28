@@ -1,7 +1,7 @@
 /** @file "/owl_cpp/lib/test/triple_store_02_run.cpp"
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010-1 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010-1
 *******************************************************************************/
 #define BOOST_TEST_MODULE triple_store_02_run
 #include "boost/test/unit_test.hpp"
@@ -9,13 +9,13 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
 
 #include "sample_data.hpp"
 
-#include "owl_cpp/triple_store.hpp"
-#include "owl_cpp/query_triples.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/rdf/query_triples.hpp"
 #include "owl_cpp/terms/term_tags.hpp"
 namespace ot = owl_cpp::terms;
 #include "node_type.hpp"
 #include "owl_cpp/print.hpp"
-#include "owl_cpp/parse_to_triple_store.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
 #include "triple_store_checks.hpp"
 
 namespace owl_cpp{ namespace test{

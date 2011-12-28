@@ -1,7 +1,7 @@
 /** @file "/owl_cpp/include/owl_cpp/terms/term_list.hpp"
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef TERM_LIST_HPP_
 #define TERM_LIST_HPP_
@@ -144,7 +144,7 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
 /**@brief miscellaneous terms
 *******************************************************************************/
 #define OWLCPP_TERMS_MISC \
-      (()(generic)()) \
+      ((0)(generic)()) \
 /* */
 
 /**@brief Combined set of supported OWL terms
@@ -174,7 +174,7 @@ Visitor implements a method for each of the Tags
 e.g. void Visit(const Triple_std<ot::T_owl_IrreflexiveProperty>&);
 *******************************************************************************/
 #define OWLCPP_TERMS_VISITABLE \
-      (()(generic)()) \
+      ((0)(generic)()) \
       ((owl)(AllDifferent)) \
       ((owl)(AllDisjointClasses)) \
       ((owl)(AllDisjointProperties)) \

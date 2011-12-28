@@ -1,12 +1,12 @@
 /** @file "/owl_cpp/include/owl_cpp/terms/uri_tags.hpp"
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef URI_TAGS_HPP_
 #define URI_TAGS_HPP_
 #include <string>
-#include "uri_macro.hpp"
+#include "owl_cpp/terms/uri_macro.hpp"
 #include "owl_cpp/ns_id.hpp"
 
 namespace owl_cpp{ namespace terms{

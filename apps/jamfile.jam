@@ -1,54 +1,52 @@
 # owl_cpp/apps/jamfile.jam
+# part of owl_cpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2010-1
 
 project apps
-   : build-dir $(OUT)/bin
-   : requirements
+   :  build-dir $(OUT)/apps
+   :  requirements
+      <link>static
 ;
 
 exe print_triples
    : #sources
       print_triples.cpp
    : #requirements
-      <link>static
-      <library>..//lib_owl_cpp
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
 ;
 
 exe find_owl
    : #sources
       find_ontologies.cpp
    : #requirements
-      <link>static
-      <library>..//lib_owl_cpp
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
 ;
 
 exe print_classes
    : #sources
       print_classes.cpp
    : #requirements
-      <link>static
-      <library>..//lib_owl_cpp
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
 ;
 
 exe validate
    : #sources
       validate.cpp
    : #requirements
-      <link>static
-      <library>..//lib_owl_cpp
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
+      <library>/owlcpp//reasoner
 ;
 
 exe satisfiable
    : #sources
       satisfiable.cpp
    : #requirements
-      <link>static
-      <library>..//lib_owl_cpp
-;
-
-test-suite app_tests :
-   [ run print_triples : sample_data/test_01.owl : : : print_triples_test ]
-   [ run find_owl : sample_data : : : find_owl_test ]
-   [ run print_classes : sample_data/one_eq_two_01.owl : : : print_classes_test ]
-   [ run validate : sample_data/test_01.owl : : : validate_test01 ]
-   [ run-fail validate : sample_data/one_eq_two_01.owl : : : validate_test02 ]
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
+      <library>/owlcpp//reasoner
 ;

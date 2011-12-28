@@ -1,12 +1,13 @@
 /** @file "/owl_cpp/include/owl_cpp/terms/term_macro.hpp"
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef TERM_MACRO_HPP_
 #define TERM_MACRO_HPP_
-#include "custom_type_macro.hpp"
-#include "term_list.hpp"
+#include "owl_cpp/terms/custom_type_macro.hpp"
+#include "owl_cpp/terms/term_list.hpp"
+#include "owl_cpp/config.hpp"
 
 #include "boost/preprocessor/cat.hpp"
 #include "boost/preprocessor/facilities/empty.hpp"
@@ -19,10 +20,16 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
 
 /**@brief Generate light-weight type definition for standard OWL term
 @details OWLCPP_STD_TERM_TYPE( , , 2, (rdfs)(subClassOf))
-@code struct T_rdfs_subClassOf {
-   static const unsigned index = 1;
-   typedef Uri_rdfs uri_t;
-   static const std::string name;
+@code
+struct T_owl_allValuesFrom {
+   typedef N_owl ns_type;
+   typedef ::owl_cpp::Node_id id_type;
+   static const unsigned index = 4;
+   static std::string const & name() {
+      static const std::string str("allValuesFrom");
+      return str;
+   }
+   static ::owl_cpp::Node_id id() {return ::owl_cpp::Node_id(index);}
 }; @endcode
 *******************************************************************************/
 #define OWLCPP_STD_TERM_TYPE(r, d, i, e) \
@@ -30,8 +37,11 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
    typedef OWLCPP_NAMESPACE_TYPE_NAME(e) ns_type; \
    typedef ::owl_cpp::Node_id id_type; \
    static const unsigned index = i; \
-   static const std::string name; \
-   static ::owl_cpp::Node_id id() {return ::owl_cpp::Node_id(index);} \
+   static std::string const & name() { \
+      static const std::string str = std::string(BOOST_PP_STRINGIZE(BOOST_PP_SEQ_HEAD(BOOST_PP_SEQ_REVERSE(e)))); \
+      return str; \
+   } \
+   static id_type id() {return id_type(index);} \
 }; \
 BOOST_PP_EMPTY() \
 /* */

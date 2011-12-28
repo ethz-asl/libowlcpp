@@ -1,46 +1,77 @@
 # File user-config.jam
-# provides information about build tools and libraries on your system.  
-# For more information see
-# http://www.boost.org/boost-build2/doc/html/bbv2/overview/configuration.html
+# Describes build tools and libraries on your system.  
 #
-# 1. If file "user-config.jam" does not already exist in your HOME folder, copy
-#    "doc/user-config.jam" to that location.  
+# 1. Copy this file, "doc/user-config.jam", to your HOME folder.
 #     On MS Windows, HOME folder is usually
 #    "C:\Documents and Settings\your_user_name".
 #
-# 2. Uncomment "using" statements for the compilers you are going to use.
+# 2. Uncomment lines for the compilers and other tools that you are going to use.
 #
-# 3. Statements "constant" and "path-constant" specify locations of 
-#    the libraries required for building the project.
-#    Make sure that the libraries are installed on your system and 
-#    enter their correct locations and versions.
+# 3. For each library, make sure it is available on the system, 
+#    uncomment "constant" statement, and specify its full path and version.
+#    
+# IMPORTANT: Use forward slashes '/'.
+# IMPORTANT: Put spaces around colons and before semicolons.
+#
+# See also:
+# http://www.boost.org/boost-build2/doc/html/bbv2/overview/configuration.html
+# http://www.boost.org/boost-build2/doc/html/bbv2/reference/tools.html
 
-## compilers:
+################################################################################
+## Compilers and other tools
 
 ## Microsoft Visual C++
 # using msvc ;
 
-## Linux gcc
+## GCC (under Linux of MS Windows MinGW)
 # using gcc ;
 
-## To use Doxygen, uncomment following two lines
+## Mac OS X
+# using darwin ;
+
+## Python (for generating python bindings)
+## For more details see 
+## http://www.boost.org/doc/libs/1_48_0/libs/python/doc/building.html
+## Alternatives:
+# using python ;
+# using python : 2.7 : /usr/bin/python ;
+# using python : 2.7 : "C:/Program Files/Python" ;
+
+
+## Doxygen (generating documentation from source code, optional)
+## http://www.stack.nl/~dimitri/doxygen/
+## Specifying Doxygen location may be required. For example
+## using doxygen : "c:/Program Files/doxygen/bin/doxygen.exe" ;
 # using doxygen ;
-# constant USING_DOXYGEN : 1 ;
 
-local utils = utils ;
+## Path for GIT client executable (optional)
+## http://git-scm.com/
+# path-constant GIT_PATH : "c:/Program Files (x86)/Git/bin/git.exe" ;
 
-## Boost library
+################################################################################
+## Libraries
+## Uncomment all "constant" statements and provide correct paths and versions. 
+
+local utils = "c:/utils" ;
+
+## Boost library source
 ## http://www.boost.org/
-path-constant BOOST : "$(utils)/boost/boost_1_47_0/" 1.47.0 ;
+# constant BOOST : "$(utils)/boost_1_48_0/" 1.48.0 ;
 
-## FaCT++ library
+## FaCT++ library source
 ## http://code.google.com/p/factplusplus/
-constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
+# constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
 
-## expat library
+## Expat library source
 ## http://expat.sourceforge.net/
-constant EXPAT : "$(utils)/expat-2.0.1" 2.0.1 ;
+## http://sourceforge.net/projects/expat/files/expat/2.0.1/
+# constant EXPAT : "$(utils)/expat-2.0.1" 2.0.1 ;
 
-## Raptor library
+## Raptor library source
 ## http://librdf.org/raptor/
-constant RAPTOR : "$(utils)/raptor2-2.0.4" 2.0.4 ;
+# constant RAPTOR : "$(utils)/raptor2-2.0.4" 2.0.4 ;
+
+## owl_cpp library source
+## http://sourceforge.net/projects/owl-cpp/
+## (optionally) uncomment this to use owl_cpp library in your projects
+# constant OWLCPP : "$(utils)/owl_cpp" 0.0.3 ;

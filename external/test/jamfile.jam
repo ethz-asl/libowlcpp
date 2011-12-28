@@ -1,0 +1,27 @@
+# owl_cpp/external/test/jamfile.jam
+# part of owl_cpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2011
+
+import path ;
+local smpl_dir = [ path.make $(SMPL_DATA) ] ;
+local tmp_dir = [ path.make $(TEMP_DIR) ] ;
+
+project
+   : build-dir $(OUT)/ext/test
+;
+
+exe rdfprint
+   : raptor_rdfprint.cpp
+   :  #requirements
+      <library>..//raptor
+      <link>static
+;
+
+exe elements
+   : expat_elements.cpp
+   :  #requirements
+      <library>..//expat
+      <link>static
+;
+

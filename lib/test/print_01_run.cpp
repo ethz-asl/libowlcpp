@@ -1,15 +1,15 @@
 /** @file "/owl_cpp/lib/test/print_01_run.cpp" 
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #define BOOST_TEST_MODULE print_01_run
 #include "boost/test/unit_test.hpp"
 
 #include <iostream>
 #include "sample_data.hpp"
-#include "owl_cpp/parse_to_triple_store.hpp"
-#include "owl_cpp/triple_store.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
 #include "owl_cpp/print.hpp"
 #include "owl_cpp/lib_info.hpp"
 #include "owl_cpp/terms/term_tags.hpp"
@@ -50,11 +50,8 @@ BOOST_AUTO_TEST_CASE( print_01_run_case02 ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( print_01_run_case03 ) {
    std::cout << std::endl;
-   std::cout
-   << "version:" << version_str() << ' '
-   << "code revision:" << revision_str() << ' '
-   << "build:" << build_str() << '\n';
-   std::cout << lib_info_str();
+   Lib_info::print_version(std::cout << "version: ")
+   << " build:" << Lib_info::build() << std::endl;
 }
 
 }//namespace test

@@ -1,7 +1,7 @@
 /** @file "/owl_cpp/include/owl_cpp/print.hpp"
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef PRINT_HPP_
 #define PRINT_HPP_
@@ -12,9 +12,9 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
 #include "boost/lexical_cast.hpp"
 namespace b = boost;
 
-#include "owl_cpp/triple_store.hpp"
-#include "owl_cpp/triple.hpp"
-#include "owl_cpp/query_nodes.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
+#include "owl_cpp/rdf/triple.hpp"
+#include "owl_cpp/rdf/query_nodes.hpp"
 #include "owl_cpp/terms/uri_tags.hpp"
 namespace ot = owl_cpp::terms;
 
@@ -65,7 +65,7 @@ inline void print_short(
 ) {
    const Node_base& node = store[id];
    const Ns_id ns_id = node.ns_id();
-   if( ns_id == ot::N_::id() ) {
+   if( ns_id == ot::N_0::id() ) {
       stream << '\"' << node.value_str() << '\"';
    } else {
       stream << store.prefix(ns_id) << ':' << node.value_str();
@@ -105,7 +105,7 @@ inline std::string print( const Triple& t, const Triple_store& store) {
 *******************************************************************************/
 inline void print_namespaces(const Triple_store& store,std::ostream& stream) {
    BOOST_FOREACH(const Ns_id ns_id, store.namespace_ids()) {
-      if( ns_id == ot::N_::id() || ns_id == ot::N__::id() )
+      if( ns_id == ot::N_0::id() || ns_id == ot::N__::id() )
          continue;
       stream << store.prefix(ns_id) << "=\"" << store[ns_id] << "\"\n";
    }

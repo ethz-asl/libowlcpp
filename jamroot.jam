@@ -1,82 +1,108 @@
 # owl_cpp/jamroot.jam
+# part of owl_cpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2010-1
+
+import build/singleton-target ;
+import build/version ;
 
 path-constant PROJ_ROOT : . ;
+path-constant INCLUDE : include ;
 path-constant OUT : out ;
-path-constant INCL : include ;
-path-constant SMPL_DATA : "./sample_data" ;
-path-constant TEMP_DIR : "./out/temp/" ;
-constant SAMPLE_DATA_DIR : $(SMPL_DATA) ;
-constant TEMPORARY_DIR : $(TEMP_DIR) ;
-import utils ;
-constant BUILD_VERSION : [ utils.build_version 3 ] ; #YYYYMMDD
-constant CODE_REVISION : [ utils.git_revision ] ; #1234567890abcdef
+path-constant SMPL_DATA : sample_data ;
+path-constant TEMP_DIR : $(OUT)/temp ;
+make $(TEMP_DIR) : : @common.mkdir ;
+path-constant GENERATED_INCLUDE : $(OUT)/include ;
+path-constant GENERATED_LIB : $(OUT)/lib ;
+path-constant PYTHON_OUT : $(OUT)/binding/python ;
+
+if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
+use-project /boost : $(BOOST[1]) ;
 
 project owl_cpp
    : 
       build-dir $(OUT)
    : 
    : requirements
+      <include>$(BOOST[1])
 ;
-
-make $(TEMP_DIR) : : @common.mkdir ;
-
-if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
-use-project boost : $(BOOST[1]) ;
 
 alias test
    : #sources
       lib/test
-      apps
+      apps/test
    : #requirements
 ;
 
-alias lib_owl_cpp
+alias test-py
    : #sources
-      lib//lib_owl_cpp
+      binding/python/test
    : #requirements
-   : #default build options
-   : #usage requirements
-      <include>include
 ;
+explicit test test-py ;
 
-alias applications : apps ;
+build-project lib ;
+use-project /owlcpp : . ;
+alias rdf : lib/rdf ;
+alias io : lib/io ;
+alias reasoner : lib/reasoner ;
+alias apps : ./apps ;
 alias factpp_kernel : external//factpp_kernel ;
 alias expat : external//expat ;
 alias raptor : external//raptor ;
-explicit test factpp_kernel expat raptor ;
+explicit factpp_kernel expat raptor ;
 
-if $(USING_DOXYGEN) {
-import path ;
-local doc_public = [ path.glob-tree include : *.hpp : .svn ] ;
-local doc_all = [ path.glob-tree lib : *.cpp *.hpp : .svn ] $(doc_public) ;
+alias rdf-py : binding/python//rdf_install ;
+alias io-py : binding/python//io_install ;
+alias api-py : rdf-py io-py ;
+explicit rdf-py io-py api-py ;
 
-doxygen complete.html
-   :
-      $(doc_all)
-   :
-      <doxygen:param>EXTRACT_ALL=YES
-      <doxygen:param>EXTRACT_STATIC=YES
-      <doxygen:param>EXTRACT_PRIVATE=YES
-      <doxygen:param>EXTRACT_ANON_NSPACES=YES
-      <doxygen:param>QUIET=YES
-      <doxygen:param>SHOW_DIRECTORIES=YES
-;
+if [ modules.peek doxygen : .initialized ] {
+   import path ;
+   local doc_public = [ path.glob-tree include apps : *.hpp *.cpp ] ;
+   local doc_all = [ path.glob-tree lib : *.cpp *.hpp ] $(doc_public) ;
+   
+   doxygen complete.html
+      :
+         $(doc_all)
+      :
+         <doxygen:param>EXTRACT_ALL=YES
+         <doxygen:param>EXTRACT_STATIC=YES
+         <doxygen:param>EXTRACT_PRIVATE=YES
+         <doxygen:param>EXTRACT_ANON_NSPACES=YES
+         <doxygen:param>QUIET=YES
+         <doxygen:param>SHOW_DIRECTORIES=YES
+         <doxygen:param>EXAMPLE_PATH=.
+   ;
+   
+   doxygen api.html
+      :
+         $(doc_public)
+      :
+         <doxygen:param>EXTRACT_ALL=NO
+         <doxygen:param>WARN_IF_UNDOCUMENTED=NO
+         <doxygen:param>EXTRACT_STATIC=YES
+         <doxygen:param>EXTRACT_PRIVATE=NO
+         <doxygen:param>EXTRACT_ANON_NSPACES=NO
+         <doxygen:param>QUIET=YES
+         <doxygen:param>SHOW_DIRECTORIES=YES
+         <doxygen:param>EXAMPLE_PATH=.
+   ;
+   
+   alias autodoc : complete.html api.html ;
+   explicit complete.html api.html ;
+} else {
+   import message ;
+   alias autodoc : [ message msg : "
+      To generate documentation with rule \"autodoc\","
+      "please configure Doxygen in user-config.jam file
+" ] ;
+}
+explicit autodoc ;
 
-doxygen api.html
-   :
-      $(doc_public)
-   :
-      <doxygen:param>EXTRACT_ALL=NO
-      <doxygen:param>WARN_IF_UNDOCUMENTED=NO
-      <doxygen:param>EXTRACT_STATIC=YES
-      <doxygen:param>EXTRACT_PRIVATE=NO
-      <doxygen:param>EXTRACT_ANON_NSPACES=NO
-      <doxygen:param>QUIET=YES
-      <doxygen:param>SHOW_DIRECTORIES=YES
-;
-
-alias autodoc : complete.html api.html ;
-explicit complete.html api.html autodoc ;
-} #if $(USING_DOXYGEN)
-
+import feature : feature ;
+import toolset ;
+feature pic : off on : propagated ;
+toolset.flags gcc.compile.c USER_OPTIONS <pic>on : -fPIC : unchecked ;
+toolset.flags gcc.compile.c++ USER_OPTIONS <pic>on : -fPIC : unchecked ;
 

@@ -1,7 +1,7 @@
 /** @file "/owl_cpp/lib/test/custom_terms.hpp" 
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef TEST_CUSTOM_TERMS_HPP_
 #define TEST_CUSTOM_TERMS_HPP_
@@ -32,11 +32,9 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
 
 namespace owl_cpp{ namespace test{
 OWLCPP_GENERATE_NAMESPACE_TYPES(OWLCPP_TEST_NAMESPACES)
-OWLCPP_INIT_NAMESPACE_NAME_STRINGS(OWLCPP_TEST_NAMESPACES)
 typedef OWLCPP_NAMESPACE_MPL_VECTOR(OWLCPP_TEST_NAMESPACES) custom_iri_type_vector;
 
 OWLCPP_GENERATE_TERM_TYPES(OWLCPP_TEST_TERMS)
-OWLCPP_INIT_TERM_NAME_STRINGS(OWLCPP_TEST_TERMS)
 typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TEST_TERMS) custom_term_type_vector;
 
 }//namespace test

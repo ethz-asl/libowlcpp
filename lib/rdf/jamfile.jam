@@ -1,0 +1,22 @@
+# owl_cpp/lib/rdf/jamfile.jam
+# part of owl_cpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2011
+
+project lib/rdf
+;
+
+lib owlcpp_rdf
+   :  #sources
+      [ glob *.cpp ]
+   :  #requirements
+      <include>.
+      <link>shared:<define>OWLCPP_RDF_DYN_LINK
+      <implicit-dependency>..//version.hpp
+   :  #default build options
+   :  #usage requirements
+      <link>shared:<define>OWLCPP_RDF_DYN_LINK
+;
+
+
+

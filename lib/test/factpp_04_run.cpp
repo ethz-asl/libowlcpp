@@ -1,7 +1,7 @@
 /** @file "/owl_cpp/lib/test/factpp_04_run.cpp" 
 part of owl_cpp project.
-Distributed under GNU Lesser General Public License; see doc/license.txt.
-@date 2010 @author Mikhail K Levin
+@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #define BOOST_TEST_MODULE factpp_04_run
 #include "boost/test/unit_test.hpp"
@@ -10,13 +10,13 @@ Distributed under GNU Lesser General Public License; see doc/license.txt.
 #include "boost/exception/diagnostic_information.hpp"
 #include "sample_data.hpp"
 #include "triple_store_checks.hpp"
-#include "Kernel.h"
-#include "owl_cpp/triple_to_fact.hpp"
-#include "owl_cpp/parse_to_triple_store.hpp"
-#include "owl_cpp/triple_store.hpp"
+#include "factpp/Kernel.hpp"
+#include "owl_cpp/reasoner/triple_to_fact.hpp"
+#include "owl_cpp/io/parse_to_triple_store.hpp"
+#include "owl_cpp/rdf/triple_store.hpp"
 #include "node_type.hpp"
 #include "owl_cpp/print.hpp"
-#include "owl_cpp/query_fact.hpp"
+#include "owl_cpp/reasoner/query_fact.hpp"
 
 namespace owl_cpp{ namespace test{
 
