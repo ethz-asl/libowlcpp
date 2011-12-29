@@ -56,7 +56,7 @@ public:
    /** Annotation or property assertion
    @param tr {instance, property, instance}
    */
-   void Visit(const Triple_std<ot::T_0_generic>& tr);
+   void Visit(const Triple_std<ot::T_empty_generic>& tr);
 
    /** @param tr {_:x, rdf:type, owl:AllDifferent},
     {_:x owl:members Seq} or {_:x owl:distinctMembers Seq}   */

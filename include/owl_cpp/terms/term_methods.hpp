@@ -14,7 +14,7 @@ namespace owl_cpp{
 *******************************************************************************/
 template<class T> inline std::string full_name(const T&) {
    typedef typename T::ns_type ns_t;
-   return ns_t::name() + "#" + T::name();
+   return ns_t::iri() + "#" + T::name();
 }
 
 /** @return prefix IRI for standard terms

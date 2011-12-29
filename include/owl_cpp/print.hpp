@@ -65,7 +65,7 @@ inline void print_short(
 ) {
    const Node_base& node = store[id];
    const Ns_id ns_id = node.ns_id();
-   if( ns_id == ot::N_0::id() ) {
+   if( ns_id == ot::N_empty::id() ) {
       stream << '\"' << node.value_str() << '\"';
    } else {
       stream << store.prefix(ns_id) << ':' << node.value_str();
@@ -105,7 +105,7 @@ inline std::string print( const Triple& t, const Triple_store& store) {
 *******************************************************************************/
 inline void print_namespaces(const Triple_store& store,std::ostream& stream) {
    BOOST_FOREACH(const Ns_id ns_id, store.namespace_ids()) {
-      if( ns_id == ot::N_0::id() || ns_id == ot::N__::id() )
+      if( ns_id == ot::N_empty::id() || ns_id == ot::N_blank::id() )
          continue;
       stream << store.prefix(ns_id) << "=\"" << store[ns_id] << "\"\n";
    }

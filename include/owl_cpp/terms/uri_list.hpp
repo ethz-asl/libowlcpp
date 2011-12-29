@@ -8,14 +8,15 @@ part of owl_cpp project.
 
 /**@brief Define set of common namespaces.
 @details This macro is used for generating types and typelists.
+((class name)("standard prefix")("IRI"))
 *******************************************************************************/
 #define OWLCPP_NAMESPACES_ALL \
-   ((0)("0")) \
-   ((_)("_")) \
-   ((owl)("http://www.w3.org/2002/07/owl")) \
-   ((rdfs)("http://www.w3.org/2000/01/rdf-schema")) \
-   ((rdf)("http://www.w3.org/1999/02/22-rdf-syntax-ns")) \
-   ((xsd)("http://www.w3.org/2001/XMLSchema")) \
+   ((empty)("")("")) \
+   ((blank)("_")("_")) \
+   ((owl)("owl")("http://www.w3.org/2002/07/owl")) \
+   ((rdfs)("rdfs")("http://www.w3.org/2000/01/rdf-schema")) \
+   ((rdf)("rdf")("http://www.w3.org/1999/02/22-rdf-syntax-ns")) \
+   ((xsd)("xsd")("http://www.w3.org/2001/XMLSchema")) \
 /* */
 
 

@@ -42,8 +42,8 @@ public:
 
    template<class T> void operator()(const T&) const {
       assert( ! names_.have(T::id()) );
-      assert( ! names_.find(T::name()) );
-      names_.insert( T::name(), T::id() );
+      assert( ! names_.find(T::iri()) );
+      names_.insert( T::iri(), T::id() );
       assert( ! prefixes_.have(T::id()) );
       assert( ! prefixes_.find(T::prefix()) );
       prefixes_.insert( T::prefix(), T::id() );

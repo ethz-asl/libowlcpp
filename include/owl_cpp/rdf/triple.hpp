@@ -117,7 +117,7 @@ template<class T>struct Triple_std : public Triple {
       BOOST_ASSERT(
             ( tag_t::index == pred() ) ||
             ( tag_t::index == obj() && ot::T_rdf_type::index == pred() ) ||
-            ( tag_t::index == ot::T_0_generic::index )
+            ( tag_t::index == ot::T_empty_generic::index )
       );
    }
    LOKI_DEFINE_CONST_VISITABLE()

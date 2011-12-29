@@ -73,8 +73,8 @@ BOOST_AUTO_TEST_CASE( triple_store_01_visitor_test ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( triple_store_01_run_case01 ) {
    Triple_store store;
-   BOOST_CHECK_EQUAL(store[Ns_id(ot::N_owl::index)], ot::N_owl::name());
-   Ns_id id1 = store.insert_namespace(ot::N_xsd::name());
+   BOOST_CHECK_EQUAL(store[Ns_id(ot::N_owl::index)], ot::N_owl::iri());
+   Ns_id id1 = store.insert_namespace(ot::N_xsd::iri());
    BOOST_CHECK(id1() == ot::N_xsd::index);
 
    const Node_base& ti = store[ ot::T_owl_Class::id() ];
