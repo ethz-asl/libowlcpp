@@ -3,10 +3,17 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
-project external
-    : build-dir $(OUT)/bin
-    : 
-;
+project external ;
+
+if ! $(RAPTOR) { 
+EXIT "
+Please set variable RAPTOR to location and version of expat library.
+See doc/user-config.jam
+" ;
+}
+using ext/raptor : $(RAPTOR[2]) : $(RAPTOR[1]) ;
+alias raptor : /ext/raptor//raptor ;
+# alias raptor_pic : /ext/raptor//raptor : <link>static <pic>on ;
 
 if ! $(FACTPP) { 
 EXIT "
@@ -20,23 +27,39 @@ alias factpp_kernel
    : #<link>static 
 ;
 
-if ! $(EXPAT) { 
-EXIT "
-Please set variable EXPAT to location and version of expat library.
-See doc/user-config.jam
-" ;
-}
-using ext/expat : $(EXPAT[2]) : $(EXPAT[1]) ;
-alias expat : /ext/expat//expat ;
-alias expat_pic : /ext/expat//expat : <link>static <pic>on ;
+# libxml2 (not Expat) is used with Raptor because it better handles encodings.
+# Building libxml2 requires iconv and libzip.
+# On Linux libxml2 is integrated into the system and is expected to be available.
+# On Windows and Mac, pre-built libxml2 is currently required.
+# A Boost:build module for building it from the sources will be added in future.
+import modules ;
+local os = [ modules.peek : OS ] ;
+if $(os) = LINUX {
 
-if ! $(RAPTOR) { 
-EXIT "
-Please set variable RAPTOR to location and version of expat library.
-See doc/user-config.jam
-" ;
-}
-using ext/raptor : $(RAPTOR[2]) : $(RAPTOR[1]) ;
-alias raptor : /ext/raptor//raptor ;
-alias raptor_pic : /ext/raptor//raptor : <link>static <pic>on ;
+   LIBXML2_H ?= /usr/include/libxml2 ;
+   
+   if $(LIBXML2_DLL) { 
+      lib libxml2 : : <file>$(LIBXML2_DLL) <link>shared : : <include>$(LIBXML2_H) ; 
+   } else { 
+      lib libxml2 : : <name>xml2 <link>shared : : <include>$(LIBXML2_H) ; 
+   }
+   
+} else {
 
+   if ! $(LIBXML2_DLL) && ! $(LIBXML2_H) { 
+   EXIT "
+   Please set variables LIBXML2_DLL and LIBXML2_H to location of libxml2.dll and its headers
+   See doc/user-config.jam
+   " ;
+   }
+}
+
+#if ! $(ICONV) { 
+#EXIT "
+#Please set variable ICONV to location and version of iconv library.
+#See doc/user-config.jam
+#" ;
+#}
+#using ext/iconv : $(ICONV[2]) : $(ICONV[1]) ;
+#alias iconv : /ext/iconv//iconv ;
+#alias iconv_pic : /ext/iconv//iconv : <link>static <pic>on ;

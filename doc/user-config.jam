@@ -58,9 +58,9 @@ local utils = "c:/utils" ;
 ## http://www.boost.org/
 # constant BOOST : "$(utils)/boost_1_48_0/" 1.48.0 ;
 
-## FaCT++ library source
-## http://code.google.com/p/factplusplus/
-# constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
+## iconv library
+## http://www.gnu.org/software/libiconv/
+constant ICONV : $(UTILS)/cpp/iconv/libiconv-1.14 1.14 ;
 
 ## Expat library source
 ## http://expat.sourceforge.net/
@@ -70,6 +70,10 @@ local utils = "c:/utils" ;
 ## Raptor library source
 ## http://librdf.org/raptor/
 # constant RAPTOR : "$(utils)/raptor2-2.0.4" 2.0.4 ;
+
+## FaCT++ library source
+## http://code.google.com/p/factplusplus/
+# constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
 
 ## owl_cpp library source
 ## http://sourceforge.net/projects/owl-cpp/

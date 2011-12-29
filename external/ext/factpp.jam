@@ -209,8 +209,6 @@ const char* ReasoningKernel::getVersion() { return ReasoningKernel::Version; }" 
 }
 actions transform_cpp_action { @($(STDOUT):E=$(STR)) > "$(<)" }
 
-
-
 ## 
 ################################################################################
 rule init ( version ? : location : options * )
