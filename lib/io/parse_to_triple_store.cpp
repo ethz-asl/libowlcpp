@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/parse_to_triple_store.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/parse_to_triple_store.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -7,7 +7,7 @@ part of owl_cpp project.
 #define OWLCPP_IO_SOURCE
 #endif
 
-#include "owl_cpp/io/parse_to_triple_store.hpp"
+#include "owlcpp/io/parse_to_triple_store.hpp"
 
 #include <set>
 #include <cassert>
@@ -17,14 +17,14 @@ namespace bf = boost::filesystem;
 #include "boost/algorithm/string/predicate.hpp"
 namespace ba = boost::algorithm;
 
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/rdf/query_triples.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
-#include "owl_cpp/print.hpp"
-namespace ot = owl_cpp::terms;
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_triples.hpp"
+#include "owlcpp/terms/term_tags.hpp"
+#include "owlcpp/print.hpp"
+namespace ot = owlcpp::terms;
 #include "parse.hpp"
 
-namespace owl_cpp{
+namespace owlcpp{
 
 namespace{
 typedef std::set<std::string> owl_set_t;
@@ -254,4 +254,4 @@ void load_iri(
 }//namespace detail
 
 
-}//namespace owl_cpp
+}//namespace owlcpp

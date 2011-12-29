@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/object_store_01_run.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/object_store_01_run.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -11,13 +11,13 @@ namespace bmp = boost::mpl;
 #include "boost/foreach.hpp"
 
 #include "sample_data.hpp"
-#include "owl_cpp/rdf/object_store.hpp"
+#include "owlcpp/rdf/object_store.hpp"
 #include "type_vector.hpp"
-namespace ot = owl_cpp::terms;
+namespace ot = owlcpp::terms;
 #include "node_type.hpp"
-#include "owl_cpp/node_id.hpp"
+#include "owlcpp/node_id.hpp"
 
-namespace owl_cpp {
+namespace owlcpp {
 
 /**
 *******************************************************************************/
@@ -72,4 +72,4 @@ BOOST_AUTO_TEST_CASE( object_store_01_run_case02 ) {
    }
 }
 
-}//namespace owl_cpp
+}//namespace owlcpp

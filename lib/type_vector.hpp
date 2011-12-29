@@ -1,12 +1,12 @@
-/** @file "/owl_cpp/lib/type_vector.hpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/type_vector.hpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef TYPE_VECTOR_HPP_
 #define TYPE_VECTOR_HPP_
-#include "owl_cpp/terms/uri_tags.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
+#include "owlcpp/terms/uri_tags.hpp"
+#include "owlcpp/terms/term_tags.hpp"
 
 // include appropriate boost::mpl vector headers
 #include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_NAMESPACES_ALL)
@@ -16,7 +16,7 @@ part of owl_cpp project.
 #include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_OWL2)
 #include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_VISITABLE)
 
-namespace owl_cpp{ namespace terms{
+namespace owlcpp{ namespace terms{
 
 /**
 @brief typelist of common OWL namespace tags
@@ -52,5 +52,5 @@ typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TERMS_VISITABLE)
       mpl_vector_terms_visitable_t;
 
 }//namespace keywords
-}//namespace owl_cpp
+}//namespace owlcpp
 #endif /* TYPE_VECTOR_HPP_ */

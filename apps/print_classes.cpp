@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/apps/print_classes.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/apps/print_classes.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -9,11 +9,11 @@ part of owl_cpp project.
 #include "boost/range.hpp"
 #include "boost/foreach.hpp"
 #include "boost/filesystem.hpp"
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/rdf/query_triples.hpp"
-#include "owl_cpp/io/parse_to_triple_store.hpp"
-#include "owl_cpp/print.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_triples.hpp"
+#include "owlcpp/io/parse_to_triple_store.hpp"
+#include "owlcpp/print.hpp"
+#include "owlcpp/terms/term_tags.hpp"
 
 /**
 Parse OWL ontology file and its imports located in the same folder
@@ -21,8 +21,8 @@ Find triples that define classes
 Print prefixed names of classes
 *******************************************************************************/
 int main(int argc, char* argv[]) {
-   namespace owl = owl_cpp;
-   namespace ot = owl_cpp::terms;
+   namespace owl = owlcpp;
+   namespace ot = owlcpp::terms;
    if( argc < 2 ) {
       std::cout << "Usage: print_classes ontology_file.owl" << std::endl;
       return 0;

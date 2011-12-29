@@ -1,8 +1,8 @@
-owl_cpp is a C++ library for reading and querying OWL ontologies.
+owlcpp is a C++ library for reading and querying OWL ontologies.
 
 Copyright (C) 2010-1 Mikhail K Levin
 
-owl_cpp is a C++ library for reading and querying OWL ontologies.
+owlcpp is a C++ library for reading and querying OWL ontologies.
 - parse OWL/RDF files into RDF triple store
 - query triple store
 - generate axioms for FaCT++ reasoner

@@ -1,12 +1,12 @@
-/** @file "/owl_cpp/lib/triple_store.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/triple_store.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef OWLCPP_RDF_SOURCE
 #define OWLCPP_RDF_SOURCE
 #endif
-#include "owl_cpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 
 #include "boost/mpl/for_each.hpp"
 namespace bmp = boost::mpl;
@@ -15,14 +15,14 @@ namespace bmp = boost::mpl;
 #include "boost/algorithm/string/trim.hpp"
 namespace b = boost;
 
-#include "owl_cpp/rdf/triple.hpp"
-#include "owl_cpp/rdf/query_triples.hpp"
-#include "owl_cpp/print.hpp"
+#include "owlcpp/rdf/triple.hpp"
+#include "owlcpp/rdf/query_triples.hpp"
+#include "owlcpp/print.hpp"
 #include "../node_type.hpp"
 #include "../type_vector.hpp"
-namespace ot = owl_cpp::terms;
+namespace ot = owlcpp::terms;
 
-namespace owl_cpp {
+namespace owlcpp {
 
 /*
 *******************************************************************************/
@@ -256,4 +256,4 @@ b::tuple<std::string,std::string> Triple_store::split(const std::string& node) {
 
 /*
 *******************************************************************************/
-}//namespace owl_cpp
+}//namespace owlcpp

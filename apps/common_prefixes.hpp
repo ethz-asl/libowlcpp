@@ -1,12 +1,12 @@
-/** @file "/owl_cpp/apps/common_prefixes.hpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/apps/common_prefixes.hpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 Copyright @author Mikhail K Levin @date 2010
 *******************************************************************************/
 #ifndef COMMON_PREFIXES_HPP_
 #define COMMON_PREFIXES_HPP_
 
-#include "owl_cpp/custom_terms.hpp"
+#include "owlcpp/custom_terms.hpp"
 
 #define OWLCPP_COMMON_NAMESPACES \
 ((obo)  ("http://purl.obolibrary.org/obo/")) \
@@ -22,11 +22,11 @@ Copyright @author Mikhail K Levin @date 2010
 #include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_COMMON_NAMESPACES)
 
 
-namespace owl_cpp{
+namespace owlcpp{
 OWLCPP_GENERATE_NAMESPACE_TYPES(OWLCPP_COMMON_NAMESPACES)
 
 typedef OWLCPP_NAMESPACE_MPL_VECTOR(OWLCPP_COMMON_NAMESPACES) iri_type_vector;
 
-}//namespace owl_cpp
+}//namespace owlcpp
 
 #endif /* COMMON_PREFIXES_HPP_ */

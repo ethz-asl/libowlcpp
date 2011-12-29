@@ -1,5 +1,5 @@
-# owl_cpp/apps/test/jamfile.jam
-# part of owl_cpp project.
+# owlcpp/apps/test/jamfile.jam
+# part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011
 

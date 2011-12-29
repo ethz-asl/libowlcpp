@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/triple_store_02_run.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/triple_store_02_run.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010-1
 *******************************************************************************/
@@ -9,16 +9,16 @@ part of owl_cpp project.
 
 #include "sample_data.hpp"
 
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/rdf/query_triples.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
-namespace ot = owl_cpp::terms;
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_triples.hpp"
+#include "owlcpp/terms/term_tags.hpp"
+namespace ot = owlcpp::terms;
 #include "node_type.hpp"
-#include "owl_cpp/print.hpp"
-#include "owl_cpp/io/parse_to_triple_store.hpp"
+#include "owlcpp/print.hpp"
+#include "owlcpp/io/parse_to_triple_store.hpp"
 #include "triple_store_checks.hpp"
 
-namespace owl_cpp{ namespace test{
+namespace owlcpp{ namespace test{
 
 /** Find members of RDF collection
 *******************************************************************************/
@@ -55,4 +55,4 @@ BOOST_AUTO_TEST_CASE( short_name_case01 ) {
 }
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp

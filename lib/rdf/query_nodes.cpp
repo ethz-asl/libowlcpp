@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/query_nodes.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/query_nodes.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -7,11 +7,11 @@ part of owl_cpp project.
 #define OWLCPP_RDF_SOURCE
 #endif
 
-#include "owl_cpp/rdf/query_nodes.hpp"
-#include "owl_cpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_nodes.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 #include "../node_type.hpp"
 
-namespace owl_cpp {
+namespace owlcpp {
 
 /*
 *******************************************************************************/
@@ -52,4 +52,4 @@ Node_id short_name_id(const std::string& short_name, const Triple_store& store) 
 
 /*
 *******************************************************************************/
-}//namespace owl_cpp
+}//namespace owlcpp

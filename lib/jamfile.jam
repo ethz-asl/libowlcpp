@@ -1,5 +1,5 @@
-# owl_cpp/lib/jamfile.jam
-# part of owl_cpp project.
+# owlcpp/lib/jamfile.jam
+# part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
@@ -17,7 +17,7 @@ project lib
 make-singleton version.hpp 
    : 
    : @version_header 
-   : <location>$(INCLUDE)/owl_cpp
+   : <location>$(INCLUDE)/owlcpp
 ;
 
 rule version_header ( targets * : sources * : properties * ) {

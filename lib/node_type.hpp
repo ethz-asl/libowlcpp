@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/node_type.hpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/node_type.hpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010-1
 *******************************************************************************/
@@ -10,14 +10,14 @@ part of owl_cpp project.
 #include <cassert>
 #include "loki/Visitor.h"
 namespace L = Loki;
-#include "owl_cpp/ns_id.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
-namespace ot = owl_cpp::terms;
+#include "owlcpp/ns_id.hpp"
+#include "owlcpp/terms/term_tags.hpp"
+namespace ot = owlcpp::terms;
 
-#include "owl_cpp/node_base.hpp"
-#include "owl_cpp/rdf/triple.hpp"
+#include "owlcpp/node_base.hpp"
+#include "owlcpp/rdf/triple.hpp"
 
-namespace owl_cpp{
+namespace owlcpp{
 
 /** Literal description term of an RDF triple
 *******************************************************************************/
@@ -129,5 +129,5 @@ private:
 /**
 *******************************************************************************/
 
-}//namespace owl_cpp
+}//namespace owlcpp
 #endif /* NODE_TYPE_HPP_ */

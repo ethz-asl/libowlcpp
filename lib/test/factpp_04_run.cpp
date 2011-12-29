@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/factpp_04_run.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/factpp_04_run.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -11,14 +11,14 @@ part of owl_cpp project.
 #include "sample_data.hpp"
 #include "triple_store_checks.hpp"
 #include "factpp/Kernel.hpp"
-#include "owl_cpp/reasoner/triple_to_fact.hpp"
-#include "owl_cpp/io/parse_to_triple_store.hpp"
-#include "owl_cpp/rdf/triple_store.hpp"
+#include "owlcpp/reasoner/triple_to_fact.hpp"
+#include "owlcpp/io/parse_to_triple_store.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 #include "node_type.hpp"
-#include "owl_cpp/print.hpp"
-#include "owl_cpp/reasoner/query_fact.hpp"
+#include "owlcpp/print.hpp"
+#include "owlcpp/reasoner/query_fact.hpp"
 
-namespace owl_cpp{ namespace test{
+namespace owlcpp{ namespace test{
 
 BOOST_AUTO_TEST_CASE( negative_property_assertion_01_owl_case ) {
    Triple_store store;
@@ -78,4 +78,4 @@ BOOST_AUTO_TEST_CASE( propertyChain_01_owl_case ) {
 }
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp

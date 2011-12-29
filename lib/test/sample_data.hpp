@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/sample_data.hpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/sample_data.hpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -15,7 +15,7 @@ part of owl_cpp project.
 #error TEMPORARY_DIR needs to be defined
 #endif
 
-namespace owl_cpp{ namespace test{
+namespace owlcpp{ namespace test{
 
 inline std::string sample_file_path(const std::string& name) {
    std::string sf( BOOST_PP_STRINGIZE(SAMPLE_DATA_DIR) );
@@ -32,6 +32,6 @@ inline std::string temp_file_path(const std::string& name) {
 }
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp
 
 #endif /* SAMPLE_DATA_HPP_ */

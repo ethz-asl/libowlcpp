@@ -1,19 +1,19 @@
-/** @file "/owl_cpp/lib/query_fact.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/query_fact.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef OWLCPP_REASONER_SOURCE
 #define OWLCPP_REASONER_SOURCE
 #endif
-#include "owl_cpp/reasoner/query_fact.hpp"
+#include "owlcpp/reasoner/query_fact.hpp"
 #include "factpp/Kernel.hpp"
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/rdf/query_nodes.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
-namespace ot = owl_cpp::terms;
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_nodes.hpp"
+#include "owlcpp/terms/term_tags.hpp"
+namespace ot = owlcpp::terms;
 
-namespace owl_cpp {
+namespace owlcpp {
 
 /**
 *******************************************************************************/
@@ -249,4 +249,4 @@ void set_top_bottom(ReasoningKernel& kernel) {
 
 /*
 *******************************************************************************/
-}//namespace owl_cpp
+}//namespace owlcpp

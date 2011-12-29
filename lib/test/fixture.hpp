@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/fixture.hpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/fixture.hpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2011
 *******************************************************************************/
@@ -9,10 +9,10 @@ part of owl_cpp project.
 #include "boost/filesystem.hpp"
 #include "boost/test/unit_test_monitor.hpp"
 #include "boost/preprocessor/stringize.hpp"
-#include "owl_cpp/io/catalog.hpp"
-#include "owl_cpp/reasoner/triple_to_fact.hpp"
-#include "owl_cpp/io/parse_to_triple_store.hpp"
-#include "owl_cpp/rdf/triple_store.hpp"
+#include "owlcpp/io/catalog.hpp"
+#include "owlcpp/reasoner/triple_to_fact.hpp"
+#include "owlcpp/io/parse_to_triple_store.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 
 #ifndef SAMPLE_DATA_DIR
 #error SAMPLE_DATA_DIR needs to be defined
@@ -21,7 +21,7 @@ part of owl_cpp project.
 #error TEMPORARY_DIR needs to be defined
 #endif
 
-namespace owl_cpp{ namespace test{
+namespace owlcpp{ namespace test{
 namespace b = boost;
 namespace but = boost::unit_test;
 namespace bfs = boost::filesystem;
@@ -50,5 +50,5 @@ struct Fixture {
 };
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp
 #endif /* FIXTURE_HPP_ */

@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/comparable_value_run.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/comparable_value_run.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -8,9 +8,9 @@ part of owl_cpp project.
 #include "boost/test/unit_test.hpp"
 #include <iostream>
 #include "sample_data.hpp"
-#include "owl_cpp/detail/comparable_value.hpp"
+#include "owlcpp/detail/comparable_value.hpp"
 
-namespace owl_cpp{ namespace test{
+namespace owlcpp{ namespace test{
 
 class Id1 : public Comparable_value<int>{
    Id1(const int x) : Comparable_value<int>(x) {}
@@ -29,4 +29,4 @@ BOOST_AUTO_TEST_CASE( id_01_run_case01 ) {
 }
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp

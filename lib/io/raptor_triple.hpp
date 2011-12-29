@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/raptor_triple.hpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/raptor_triple.hpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -9,7 +9,7 @@ part of owl_cpp project.
 #include "boost/tuple/tuple.hpp"
 namespace b = boost;
 
-namespace owl_cpp{
+namespace owlcpp{
 
 enum Node_type {
    Resource,
@@ -51,6 +51,6 @@ struct Term {
 typedef b::tuple<Term,Term,Term> triple_t;
 
 
-}//namespace owl_cpp
+}//namespace owlcpp
 
 #endif /* RAPTOR_TRIPLE_HPP_ */

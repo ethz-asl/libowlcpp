@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/parse.hpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/parse.hpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -8,14 +8,14 @@ part of owl_cpp project.
 #include <iosfwd>
 #include <string>
 #include "raptor_triple.hpp"
-#include "owl_cpp/exception.hpp"
+#include "owlcpp/exception.hpp"
 
 typedef std::basic_string<unsigned char> ustring_t;
 
 typedef struct raptor_parser_s raptor_parser;
 typedef struct raptor_world_s raptor_world;
 
-namespace owl_cpp{
+namespace owlcpp{
 
 /**
 *******************************************************************************/
@@ -68,6 +68,6 @@ private:
 };
 
 
-}//namespace owl_cpp
+}//namespace owlcpp
 
 #endif /* PARSE_HPP_ */

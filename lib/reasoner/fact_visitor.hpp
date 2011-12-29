@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/fact_visitor.hpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/fact_visitor.hpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010-1
 *******************************************************************************/
@@ -15,14 +15,14 @@ namespace bmpp = boost::mpl::placeholders;
 #include "loki/Visitor.h"
 #include "factpp/Kernel.hpp"
 
-#include "owl_cpp/rdf/triple.hpp"
-#include "owl_cpp/node_base.hpp"
-#include "owl_cpp/exception.hpp"
-#include "owl_cpp/print.hpp"
-namespace ot = owl_cpp::terms;
-#include "owl_cpp/reasoner/query_fact.hpp"
+#include "owlcpp/rdf/triple.hpp"
+#include "owlcpp/node_base.hpp"
+#include "owlcpp/exception.hpp"
+#include "owlcpp/print.hpp"
+namespace ot = owlcpp::terms;
+#include "owlcpp/reasoner/query_fact.hpp"
 
-namespace owl_cpp{
+namespace owlcpp{
 
 class Triple_store;
 
@@ -241,12 +241,12 @@ private:
 
    /** */
    TDLConceptExpression* concept(const Node_id nid){
-      return owl_cpp::concept(nid, store_, kernel_);
+      return owlcpp::concept(nid, store_, kernel_);
    }
 
    /** */
    TDLIndividualExpression* instance(const Node_id nid){
-      return owl_cpp::instance(nid, store_, kernel_);
+      return owlcpp::instance(nid, store_, kernel_);
    }
 
    /** make instance of a class */
@@ -254,11 +254,11 @@ private:
 
    /** */
    TDLObjectRoleExpression* property(const Node_id nid){
-      return owl_cpp::property(nid, store_, kernel_);
+      return owlcpp::property(nid, store_, kernel_);
    }
 };
 
 
-}//namespace owl_cpp
+}//namespace owlcpp
 
 #endif /* FACT_VISITOR_HPP_ */

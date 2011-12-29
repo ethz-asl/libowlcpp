@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/fact_visitor.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/fact_visitor.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -7,12 +7,12 @@ part of owl_cpp project.
 #include <cassert>
 #include "fact_visitor.hpp"
 #include "boost/foreach.hpp"
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/rdf/query_nodes.hpp"
-#include "owl_cpp/rdf/query_triples.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_nodes.hpp"
+#include "owlcpp/rdf/query_triples.hpp"
 #include "../str_conversion.hpp"
 
-namespace owl_cpp {
+namespace owlcpp {
 
 namespace{
 typedef Triples_query<Node_id, Node_id, blank>::q_range_t q_range_nnb_t;
@@ -541,4 +541,4 @@ TDLIndividualExpression* Triple_to_fact::instance(const Node_id i, const Node_id
 
 /*
 *******************************************************************************/
-}//namespace owl_cpp
+}//namespace owlcpp

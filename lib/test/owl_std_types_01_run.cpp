@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/owl_std_types_01_run.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/owl_std_types_01_run.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -9,11 +9,11 @@ part of owl_cpp project.
 #include <iostream>
 #include "sample_data.hpp"
 
-//#include "owl_cpp/owl_std_uri_type.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
-namespace ot = owl_cpp::terms;
+//#include "owlcpp/owl_std_uri_type.hpp"
+#include "owlcpp/terms/term_tags.hpp"
+namespace ot = owlcpp::terms;
 
-namespace owl_cpp{ namespace test{
+namespace owlcpp{ namespace test{
 
 /** Standard namespace and term types store correct strings and indices
 *******************************************************************************/
@@ -47,4 +47,4 @@ BOOST_AUTO_TEST_CASE( make_ids ) {
 }
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp

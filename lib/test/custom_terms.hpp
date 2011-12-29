@@ -1,11 +1,11 @@
-/** @file "/owl_cpp/lib/test/custom_terms.hpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/custom_terms.hpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef TEST_CUSTOM_TERMS_HPP_
 #define TEST_CUSTOM_TERMS_HPP_
-#include "owl_cpp/custom_terms.hpp"
+#include "owlcpp/custom_terms.hpp"
 
 #define OWLCPP_TEST_NAMESPACES \
 ((obo)  ("http://purl.obolibrary.org/obo/")) \
@@ -30,7 +30,7 @@ part of owl_cpp project.
 /* */
 #include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TEST_TERMS)
 
-namespace owl_cpp{ namespace test{
+namespace owlcpp{ namespace test{
 OWLCPP_GENERATE_NAMESPACE_TYPES(OWLCPP_TEST_NAMESPACES)
 typedef OWLCPP_NAMESPACE_MPL_VECTOR(OWLCPP_TEST_NAMESPACES) custom_iri_type_vector;
 
@@ -38,6 +38,6 @@ OWLCPP_GENERATE_TERM_TYPES(OWLCPP_TEST_TERMS)
 typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TEST_TERMS) custom_term_type_vector;
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp
 
 #endif /* TEST_CUSTOM_TERMS_HPP_ */

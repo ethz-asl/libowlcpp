@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/parse.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/parse.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -10,7 +10,7 @@ part of owl_cpp project.
 namespace b = boost;
 #include "raptor2.h"
 
-namespace owl_cpp { namespace{
+namespace owlcpp { namespace{
 /**@brief error message handler
 *******************************************************************************/
 void handle_error(void* data, raptor_log_message* msg) {
@@ -140,4 +140,4 @@ triple_t Rdf_parser::convert_statement(const void* rs) {
 
 /**
 *******************************************************************************/
-}//namespace owl_cpp
+}//namespace owlcpp

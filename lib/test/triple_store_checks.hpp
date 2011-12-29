@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/triple_store_checks.hpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/triple_store_checks.hpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -11,12 +11,12 @@ part of owl_cpp project.
 namespace bmp = boost::mpl;
 #include "boost/foreach.hpp"
 
-#include "owl_cpp/exception.hpp"
-namespace ot = owl_cpp::terms;
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/rdf/query_nodes.hpp"
+#include "owlcpp/exception.hpp"
+namespace ot = owlcpp::terms;
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_nodes.hpp"
 
-namespace owl_cpp { namespace test{ namespace detail{
+namespace owlcpp { namespace test{ namespace detail{
 
 /**
 *******************************************************************************/
@@ -198,6 +198,6 @@ inline bool check_and_print(const Triple_store& store, std::ostream& stream) {
 }
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp
 
 #endif /* TRIPLE_STORE_CHECKS_HPP_ */

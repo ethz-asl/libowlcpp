@@ -1,5 +1,5 @@
-# owl_cpp/build/singleton-target.jam
-# part of owl_cpp project.
+# owlcpp/build/singleton-target.jam
+# part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011
 

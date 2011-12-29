@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/catalog.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/catalog.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -7,10 +7,10 @@ part of owl_cpp project.
 #define OWLCPP_IO_SOURCE
 #endif
 
-#include "owl_cpp/io/catalog.hpp"
+#include "owlcpp/io/catalog.hpp"
 #include "boost/foreach.hpp"
 
-namespace owl_cpp {
+namespace owlcpp {
 
 /*
 *******************************************************************************/
@@ -96,4 +96,4 @@ const std::string& Catalog::find_location(const std::string& iri) const {
    );
 }
 
-}//namespace owl_cpp
+}//namespace owlcpp

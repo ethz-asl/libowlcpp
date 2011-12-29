@@ -1,14 +1,14 @@
-/** @file "/owl_cpp/lib/predicate_fact.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/predicate_fact.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 
-#include "owl_cpp/reasoner/predicate_fact.hpp"
-#include "owl_cpp/reasoner/query_fact.hpp"
-#include "owl_cpp/exception.hpp"
+#include "owlcpp/reasoner/predicate_fact.hpp"
+#include "owlcpp/reasoner/query_fact.hpp"
+#include "owlcpp/exception.hpp"
 
-namespace owl_cpp {
+namespace owlcpp {
 
 /*
 *******************************************************************************/
@@ -54,4 +54,4 @@ Can_relate::Can_relate(
 
 /*
 *******************************************************************************/
-}//namespace owl_cpp
+}//namespace owlcpp
