@@ -11,10 +11,10 @@ namespace owlcpp{
 
 /** Namespace identifier
 *******************************************************************************/
-class Ns_id : public unsigned_val_t {
+class Ns_id : public detail::unsigned_val_t {
 public:
-   Ns_id() : unsigned_val_t(0) {}
-   explicit Ns_id(const unsigned x) : unsigned_val_t(x) {}
+   Ns_id() : detail::unsigned_val_t(0) {}
+   explicit Ns_id(const unsigned x) : detail::unsigned_val_t(x) {}
 };
 
 

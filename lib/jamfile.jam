@@ -9,6 +9,7 @@ project lib
       <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
       <toolset>msvc:<cxxflags>/Gy
       <include>$(INCLUDE)
+      <include>.
    : usage-requirements
       <include>$(INCLUDE)
 ;

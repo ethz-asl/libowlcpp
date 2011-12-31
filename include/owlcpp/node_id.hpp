@@ -11,10 +11,10 @@ namespace owlcpp{
 
 /** Term identifier
 *******************************************************************************/
-class Node_id : public unsigned_val_t {
+class Node_id : public detail::unsigned_val_t {
 public:
-   explicit Node_id(const unsigned x) : unsigned_val_t(x) {}
-   Node_id() : unsigned_val_t(0) {}
+   explicit Node_id(const unsigned x) : detail::unsigned_val_t(x) {}
+   Node_id() : detail::unsigned_val_t(0) {}
 };
 
 }//namespace owlcpp

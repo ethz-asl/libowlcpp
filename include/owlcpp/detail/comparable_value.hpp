@@ -7,7 +7,7 @@ part of owlcpp project.
 #define COMPARABLE_VALUE_HPP_
 #include <iosfwd>
 
-namespace owlcpp{
+namespace owlcpp{ namespace detail{
 
 /** Use as a base for making type-specific IDs for large objects
 *******************************************************************************/
@@ -29,13 +29,21 @@ private:
    T val_;
 };
 
+/**
+*******************************************************************************/
 template<class ChT, class Tr, class T> std::basic_ostream<ChT,Tr>& operator<<(
       std::basic_ostream<ChT,Tr>& os, Comparable_value<T> const& cv) {
    return os << cv();
 }
 
+/**
+*******************************************************************************/
+template<class T> std::size_t hash_value(Comparable_value<T> const& cv) {
+   return cv();
+}
+
 typedef Comparable_value<unsigned> unsigned_val_t;
 
+}//namespace detail
 }//namespace owlcpp
-
 #endif /* COMPARABLE_VALUE_HPP_ */
