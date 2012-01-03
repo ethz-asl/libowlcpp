@@ -14,9 +14,7 @@ part of owlcpp project.
 #include "triple_store_checks.hpp"
 #include "fixture.hpp"
 
-namespace owlcpp{
-
-namespace test{
+namespace owlcpp{ namespace test{
 BOOST_FIXTURE_TEST_SUITE(suite, Fixture);
 
 /**

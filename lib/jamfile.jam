@@ -6,12 +6,7 @@
 project lib
    : build-dir $(OUT)/bin
    : requirements
-      <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
-      <toolset>msvc:<cxxflags>/Gy
-      <include>$(INCLUDE)
       <include>.
-   : usage-requirements
-      <include>$(INCLUDE)
 ;
 
 # Generate version header

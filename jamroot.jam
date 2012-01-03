@@ -16,15 +16,22 @@ path-constant GENERATED_INCLUDE : $(OUT)/include ;
 path-constant GENERATED_LIB : $(OUT)/lib ;
 path-constant PYTHON_OUT : $(OUT)/binding/python ;
 
+constant LIB_REQUIREMENTS :
+   <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
+   <toolset>msvc:<cxxflags>/Gy
+;
+
 if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
 use-project /boost : $(BOOST[1]) ;
 
 project owlcpp
-   : 
-      build-dir $(OUT)
-   : 
+   : build-dir $(OUT)
    : requirements
       <include>$(BOOST[1])
+      <include>$(INCLUDE)
+   : usage-requirements
+      <include>$(INCLUDE)
+
 ;
 
 alias test

@@ -11,6 +11,7 @@ lib owlcpp_io
    :  #sources
       [ glob *.cpp ]
    :  #requirements
+      $(LIB_REQUIREMENTS)
       <include>.
       <library>/boost//filesystem
       <library>/owlcpp//raptor

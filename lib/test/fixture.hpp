@@ -9,6 +9,7 @@ part of owlcpp project.
 #include "boost/filesystem.hpp"
 #include "boost/test/unit_test_monitor.hpp"
 #include "boost/preprocessor/stringize.hpp"
+#include "owlcpp/exception.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/reasoner/triple_to_fact.hpp"
 #include "owlcpp/io/parse_to_triple_store.hpp"
@@ -21,30 +22,28 @@ part of owlcpp project.
 #error TEMPORARY_DIR needs to be defined
 #endif
 
-namespace owlcpp{ namespace test{
-namespace b = boost;
-namespace but = boost::unit_test;
-namespace bfs = boost::filesystem;
+namespace owlcpp{ namespace test{ namespace detail{
 
-void translate(const b::exception &e) {
-    BOOST_FAIL(b::diagnostic_information(e));
+void translate(boost::exception const& e) {
+   BOOST_FAIL(boost::diagnostic_information(e));
 }
+}//namespace detail
 
 /** Test fixture for printing exception info
 *******************************************************************************/
 struct Fixture {
    Fixture() {
-      but::unit_test_monitor.register_exception_translator<b::exception>(&translate);
+      boost::unit_test::unit_test_monitor.register_exception_translator<boost::exception>(&detail::translate);
    }
 
    static std::string sample_data_path(const std::string& file = "") {
-      static const bfs::path path(BOOST_PP_STRINGIZE(SAMPLE_DATA_DIR));
+      static const boost::filesystem::path path(BOOST_PP_STRINGIZE(SAMPLE_DATA_DIR));
       return (path / file).string();
    }
 
    static const std::string temp_path(const std::string& file = "") {
       static const std::string str(BOOST_PP_STRINGIZE(TEMPORARY_DIR));
-      return (bfs::path(str) / file).string();
+      return (boost::filesystem::path(str) / file).string();
    }
 
 };

@@ -10,6 +10,7 @@ lib owlcpp_reasoner
    :  #sources
       [ glob *.cpp ]
    :  #requirements
+      $(LIB_REQUIREMENTS)
       <include>.
       <library>/owlcpp//factpp_kernel
       <library>/owlcpp//rdf

@@ -8,7 +8,7 @@ part of owlcpp project.
 
 #include <exception>
 #include "boost/exception/all.hpp"
-#include "owlcpp/config.hpp"
+
 namespace owlcpp{
 
 /**
