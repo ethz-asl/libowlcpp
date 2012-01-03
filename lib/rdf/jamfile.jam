@@ -10,7 +10,6 @@ lib owlcpp_rdf
    :  #sources
       [ glob *.cpp ]
    :  #requirements
-      <include>.
       <link>shared:<define>OWLCPP_RDF_DYN_LINK
       <implicit-dependency>..//version.hpp
    :  #default build options
