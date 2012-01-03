@@ -14,6 +14,8 @@ part of %owlcpp project.
 #include "boost/multi_index/global_fun.hpp"
 #include "boost/multi_index/ordered_index.hpp"
 #include "boost/tuple/tuple.hpp"
+#include "boost/mpl/size.hpp"
+#include "boost/mpl/for_each.hpp"
 
 #include "owlcpp/ns_id.hpp"
 #include "owlcpp/exception.hpp"
@@ -51,9 +53,43 @@ private:
    typedef store_t::index<string_tag>::type string_index_t;
    typedef string_index_t::iterator string_iter_t;
 
+   class Store_iri_tags {
+   public:
+      Store_iri_tags(Iri_store& store) : store_(store) {}
+      template<class T> void operator()(const T&) const {
+         BOOST_ASSERT(
+                  store_.store_iri_.get<id_tag>().find(T::id()) ==
+                           store_.store_iri_.get<id_tag>().end()
+                  );
+         BOOST_ASSERT(
+                  store_.store_iri_.get<string_tag>().find(T::iri()) ==
+                           store_.store_iri_.get<string_tag>().end()
+                  );
+         BOOST_ASSERT(
+                  store_.store_pref_.get<id_tag>().find(T::id()) ==
+                           store_.store_pref_.get<id_tag>().end()
+                  );
+         BOOST_ASSERT(
+                  store_.store_pref_.get<string_tag>().find(T::prefix()) ==
+                           store_.store_pref_.get<string_tag>().end()
+                  );
+         store_.store_iri_.insert(boost::make_tuple(T::id(), T::iri()));
+         store_.store_pref_.insert(boost::make_tuple(T::id(), T::prefix()));
+      }
+   private:
+      mutable Iri_store& store_;
+   };
+
 public:
    struct Err : public base_exception {};
-   Iri_store(std::size_t const n0 = 0) : tracker_(n0) {}
+   Iri_store() : tracker_(0) {}
+
+   template<class Vec> explicit Iri_store(Vec const&)
+   : tracker_(boost::mpl::size<Vec>::type::value)
+   {
+      Store_iri_tags sit(*this);
+      boost::mpl::for_each<Vec>(sit);
+   }
 
    std::string const& operator[](const id_type id) const {
       return store_iri_.get<id_tag>().find(id)->get<1>();

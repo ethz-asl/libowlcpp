@@ -7,21 +7,20 @@ part of %owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_translator.hpp"
 #include "owlcpp/rdf/iri_store.hpp"
-#include "owlcpp/terms/uri_tags.hpp"
-#include <exception>
-#include "boost/exception/all.hpp"
+#include "type_vector.hpp"
 
 namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_translator );
 
+const std::string iri1("http://iri1");
+const std::string iri2("http://iri2");
+const std::string iri3("http://iri3");
+
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( iri_store01_case01 ) {
    Iri_store is;
-   const std::string iri1("http://iri1");
-   const std::string iri2("http://iri2");
-   const std::string iri3("http://iri3");
    const Ns_id id1 = is.insert(iri1);
    BOOST_CHECK_MESSAGE( id1 == is.insert(iri1), "same ID from inserting duplicates" );
    const Ns_id id2 = is.insert(iri2);
@@ -32,6 +31,16 @@ BOOST_AUTO_TEST_CASE( iri_store01_case01 ) {
    BOOST_CHECK_THROW(is.remove(id1), Iri_store::Err);
    const Ns_id id3 = is.insert(iri3);
    BOOST_CHECK_MESSAGE(id1 == id3, "id should be recycled");
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( iri_store01_case02 ) {
+   Iri_store is((terms::mpl_vector_namespaces_all_t()));
+   BOOST_CHECK_EQUAL( is[terms::N_owl::id()], terms::N_owl::iri() );
+   BOOST_CHECK_EQUAL( *is.prefix(terms::N_owl::id()), terms::N_owl::prefix() );
+   const Ns_id id1 = is.insert(iri1);
+
 }
 
 }//namespace test
