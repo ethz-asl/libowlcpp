@@ -83,13 +83,14 @@ private:
 public:
    struct Err : public base_exception {};
    Iri_store() : tracker_(0) {}
-
    template<class Vec> explicit Iri_store(Vec const&)
    : tracker_(boost::mpl::size<Vec>::type::value)
    {
       Store_iri_tags sit(*this);
       boost::mpl::for_each<Vec>(sit);
    }
+
+   std::size_t size() const {return store_iri_.size();}
 
    std::string const& operator[](const id_type id) const {
       return store_iri_.get<id_tag>().find(id)->get<1>();
@@ -100,6 +101,20 @@ public:
       id_iter_t id_iter = id_index.find(id);
       if( id_iter == id_index.end() ) return 0;
       return &id_iter->get<1>();
+   }
+
+   id_type const* find_iri(std::string const& iri) const {
+      string_index_t const& s_index = store_iri_.get<string_tag>();
+      const string_iter_t s_iter = s_index.find(iri);
+      if( s_iter == s_index.end() ) return 0;
+      return &s_iter->get<0>();
+   }
+
+   id_type const* find_prefix(std::string const& pref) const {
+      string_index_t const& s_index = store_pref_.get<string_tag>();
+      const string_iter_t s_iter = s_index.find(pref);
+      if( s_iter == s_index.end() ) return 0;
+      return &s_iter->get<0>();
    }
 
    void insert_prefix(const id_type id, std::string const& prefix) {

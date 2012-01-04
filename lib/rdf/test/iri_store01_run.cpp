@@ -36,11 +36,22 @@ BOOST_AUTO_TEST_CASE( iri_store01_case01 ) {
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( iri_store01_case02 ) {
+   Iri_store is;
+   const Ns_id id1 = is.insert(iri1, "iri1");
+   BOOST_REQUIRE( is.find_iri(iri1) );
+   BOOST_CHECK_EQUAL( id1, *is.find_iri(iri1) );
+   BOOST_REQUIRE( is.find_prefix("iri1") );
+   BOOST_CHECK_EQUAL( id1, *is.find_prefix("iri1") );
+   BOOST_CHECK( ! is.find_iri(iri2) );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( iri_store01_case03 ) {
    Iri_store is((terms::mpl_vector_namespaces_all_t()));
    BOOST_CHECK_EQUAL( is[terms::N_owl::id()], terms::N_owl::iri() );
    BOOST_CHECK_EQUAL( *is.prefix(terms::N_owl::id()), terms::N_owl::prefix() );
    const Ns_id id1 = is.insert(iri1);
-
 }
 
 }//namespace test

@@ -31,14 +31,14 @@ private:
 
 /**
 *******************************************************************************/
-template<class ChT, class Tr, class T> std::basic_ostream<ChT,Tr>& operator<<(
+template<class ChT, class Tr, class T> inline std::basic_ostream<ChT,Tr>& operator<<(
       std::basic_ostream<ChT,Tr>& os, Comparable_value<T> const& cv) {
    return os << cv();
 }
 
 /**
 *******************************************************************************/
-template<class T> std::size_t hash_value(Comparable_value<T> const& cv) {
+template<class T> inline std::size_t hash_value(Comparable_value<T> const& cv) {
    return cv();
 }
 

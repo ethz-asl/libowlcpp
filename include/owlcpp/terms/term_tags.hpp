@@ -19,12 +19,16 @@ namespace owlcpp{ namespace terms{
 @details Declare types for each standard triplet type;
 The type of a triplet is determined by the type of its predicate
 e.g.: @code
-struct T_rdfs_subClassOf {
-   typedef Ns_rdfs ns_type;
-   typedef Node_id id_type;
+struct T_owl_AllDifferent {
+   typedef N_owl ns_type;
+   typedef ::owlcpp::Node_id id_type;
    static const unsigned index = 1;
-   static const std::string name;
-}; @endcode
+   static std::string const & name() {
+      static const std::string str = std::string("AllDifferent");
+      return str;
+   }
+   static id_type id() {return id_type(index);}
+};@endcode
 *******************************************************************************/
 OWLCPP_GENERATE_STD_TERM_TYPES
 
