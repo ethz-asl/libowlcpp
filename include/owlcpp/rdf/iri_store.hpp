@@ -1,7 +1,7 @@
 /** @file "/owlcpp/include/owlcpp/rdf/iri_store.hpp"
 part of %owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-@n Copyright Mikhail K Levin 2011
+@n Copyright Mikhail K Levin 2011-2
 *******************************************************************************/
 #ifndef IRI_STORE_HPP_
 #define IRI_STORE_HPP_
@@ -14,8 +14,6 @@ part of %owlcpp project.
 #include "boost/multi_index/global_fun.hpp"
 #include "boost/multi_index/ordered_index.hpp"
 #include "boost/tuple/tuple.hpp"
-#include "boost/mpl/size.hpp"
-#include "boost/mpl/for_each.hpp"
 
 #include "owlcpp/ns_id.hpp"
 #include "owlcpp/exception.hpp"
@@ -53,56 +51,51 @@ private:
    typedef store_t::index<string_tag>::type string_index_t;
    typedef string_index_t::iterator string_iter_t;
 
-   class Store_iri_tags {
-   public:
-      Store_iri_tags(Iri_store& store) : store_(store) {}
-      template<class T> void operator()(const T&) const {
-         BOOST_ASSERT(
-                  store_.store_iri_.get<id_tag>().find(T::id()) ==
-                           store_.store_iri_.get<id_tag>().end()
-                  );
-         BOOST_ASSERT(
-                  store_.store_iri_.get<string_tag>().find(T::iri()) ==
-                           store_.store_iri_.get<string_tag>().end()
-                  );
-         BOOST_ASSERT(
-                  store_.store_pref_.get<id_tag>().find(T::id()) ==
-                           store_.store_pref_.get<id_tag>().end()
-                  );
-         BOOST_ASSERT(
-                  store_.store_pref_.get<string_tag>().find(T::prefix()) ==
-                           store_.store_pref_.get<string_tag>().end()
-                  );
-         store_.store_iri_.insert(boost::make_tuple(T::id(), T::iri()));
-         store_.store_pref_.insert(boost::make_tuple(T::id(), T::prefix()));
-      }
-   private:
-      mutable Iri_store& store_;
-   };
+
+protected:
+
+   void insert(const id_type iid, std::string const& iri, std::string const& prefix) {
+      BOOST_ASSERT(
+               store_iri_.get<id_tag>().find(iid) == store_iri_.get<id_tag>().end()
+      );
+      BOOST_ASSERT( ! find_iri(iri) );
+      BOOST_ASSERT(
+               store_pref_.get<id_tag>().find(iid) == store_pref_.get<id_tag>().end()
+      );
+      BOOST_ASSERT( ! find_prefix(prefix) );
+
+      store_iri_.insert(boost::make_tuple(iid, iri));
+      store_pref_.insert(boost::make_tuple(iid, prefix));
+   }
+
+   Iri_store(const std::size_t n0) : tracker_(n0) {}
 
 public:
    struct Err : public base_exception {};
    Iri_store() : tracker_(0) {}
-   template<class Vec> explicit Iri_store(Vec const&)
-   : tracker_(boost::mpl::size<Vec>::type::value)
-   {
-      Store_iri_tags sit(*this);
-      boost::mpl::for_each<Vec>(sit);
-   }
 
    std::size_t size() const {return store_iri_.size();}
 
-   std::string const& operator[](const id_type id) const {
-      return store_iri_.get<id_tag>().find(id)->get<1>();
+   std::string const& operator[](const id_type iid) const {
+      BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) != store_iri_.get<id_tag>().end());
+      return store_iri_.get<id_tag>().find(iid)->get<1>();
    }
 
-   std::string const* prefix(const id_type id) const {
-      id_index_t const& id_index = store_pref_.get<id_tag>();
-      id_iter_t id_iter = id_index.find(id);
-      if( id_iter == id_index.end() ) return 0;
-      return &id_iter->get<1>();
+   std::string const& at(const id_type iid) const {
+      id_index_t const& index = store_iri_.get<id_tag>();
+      const id_iter_t iter = index.find(iid);
+      if(iter == index.end()) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("unknown IRI ID")
+               << Err::int1_t(iid())
+      );
+      return iter->get<1>();
    }
 
+   /**
+    @param iri namespace IRI string
+    @return pointer to namespace IRI ID or NULL if iri is unknown
+   */
    id_type const* find_iri(std::string const& iri) const {
       string_index_t const& s_index = store_iri_.get<string_tag>();
       const string_iter_t s_iter = s_index.find(iri);
@@ -110,33 +103,52 @@ public:
       return &s_iter->get<0>();
    }
 
+   /**
+    @param iid namespace IRI ID
+    @return pointer to prefix string or NULL if no prefix was defined
+   */
+   std::string const* find_prefix(const id_type iid) const {
+      id_index_t const& id_index = store_pref_.get<id_tag>();
+      id_iter_t id_iter = id_index.find(iid);
+      if( id_iter == id_index.end() ) return 0;
+      return &id_iter->get<1>();
+   }
+
+   /**
+    @param pref prefix for namespace IRI
+    @return pointer to namespace IRI ID or NULL if prefix is unknown
+   */
    id_type const* find_prefix(std::string const& pref) const {
       string_index_t const& s_index = store_pref_.get<string_tag>();
       const string_iter_t s_iter = s_index.find(pref);
       if( s_iter == s_index.end() ) return 0;
+      BOOST_ASSERT(
+               store_iri_.get<id_tag>().find(s_iter->get<0>()) !=
+                        store_iri_.get<id_tag>().end()
+      );
       return &s_iter->get<0>();
    }
 
-   void insert_prefix(const id_type id, std::string const& prefix) {
+   void insert_prefix(const id_type iid, std::string const& prefix) {
       id_index_t const& iri_i_i = store_iri_.get<id_tag>();
-      const id_iter_t iri_i_iter = iri_i_i.find(id);
+      const id_iter_t iri_i_iter = iri_i_i.find(iid);
       if( iri_i_iter == iri_i_i.end() ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("inserting prefix for unknown IRI ID")
                << Err::str1_t(prefix)
-               << Err::int1_t(id())
+               << Err::int1_t(iid())
       );
       string_index_t const& pref_s_i = store_pref_.get<string_tag>();
       const string_iter_t pref_s_iter = pref_s_i.find(prefix);
       if( pref_s_iter == pref_s_i.end() ) {
-         store_pref_.insert(boost::make_tuple(id, prefix));
+         store_pref_.insert(boost::make_tuple(iid, prefix));
       } else {
          const id_type id2 = pref_s_iter->get<0>();
-         if( id != id2 ) BOOST_THROW_EXCEPTION(
+         if( iid != id2 ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("inserting prefix used for another IRI")
                   << Err::str1_t(prefix)
-                  << Err::str2_t((*this)[id])
+                  << Err::str2_t((*this)[iid])
                   << Err::str3_t((*this)[id2])
          );
       }
@@ -146,11 +158,11 @@ public:
       string_index_t const& iri_i = store_iri_.get<string_tag>();
       const string_iter_t iri_s_iter = iri_i.find(iri);
       if( iri_s_iter == iri_i.end() ) {
-         const id_type id = tracker_.get();
-         BOOST_ASSERT(store_iri_.get<id_tag>().find(id) == store_iri_.get<id_tag>().end());
-         BOOST_ASSERT(store_pref_.get<id_tag>().find(id) == store_pref_.get<id_tag>().end());
-         store_iri_.insert(boost::make_tuple(id, iri));
-         return id;
+         const id_type iid = tracker_.get();
+         BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) == store_iri_.get<id_tag>().end());
+         BOOST_ASSERT(store_pref_.get<id_tag>().find(iid) == store_pref_.get<id_tag>().end());
+         store_iri_.insert(boost::make_tuple(iid, iri));
+         return iid;
       }
       return iri_s_iter->get<0>();
    }
@@ -161,9 +173,9 @@ public:
       string_index_t const& pref_i = store_pref_.get<string_tag>();
       const string_iter_t pref_s_iter = pref_i.find(prefix);
       if( iri_s_iter == iri_i.end() ) {
-         const id_type id = tracker_.get();
-         BOOST_ASSERT(store_iri_.get<id_tag>().find(id) == store_iri_.get<id_tag>().end());
-         BOOST_ASSERT(store_pref_.get<id_tag>().find(id) == store_pref_.get<id_tag>().end());
+         const id_type iid = tracker_.get();
+         BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) == store_iri_.get<id_tag>().end());
+         BOOST_ASSERT(store_pref_.get<id_tag>().find(iid) == store_pref_.get<id_tag>().end());
 
          if( pref_s_iter != pref_i.end() ) BOOST_THROW_EXCEPTION(
                   Err()
@@ -172,16 +184,16 @@ public:
                   << Err::str2_t(iri)
                   << Err::str3_t((*this)[pref_s_iter->get<0>()])
          );
-         store_iri_.insert(boost::make_tuple(id, iri));
-         store_pref_.insert(boost::make_tuple(id, prefix));
-         return id;
+         store_iri_.insert(boost::make_tuple(iid, iri));
+         store_pref_.insert(boost::make_tuple(iid, prefix));
+         return iid;
       }
-      const id_type id = iri_s_iter->get<0>();
+      const id_type iid = iri_s_iter->get<0>();
       if( pref_s_iter == pref_i.end() ) {
-         store_pref_.insert(boost::make_tuple(id, prefix));
+         store_pref_.insert(boost::make_tuple(iid, prefix));
       } else {
          const id_type id2 = pref_s_iter->get<0>();
-         if( id != id2 ) BOOST_THROW_EXCEPTION(
+         if( iid != id2 ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("inserting prefix used for another IRI")
                   << Err::str1_t(prefix)
@@ -189,20 +201,20 @@ public:
                   << Err::str3_t((*this)[id2])
          );
       }
-      return id;
+      return iid;
    }
 
-   void remove(const id_type id) {
+   void remove(const id_type iid) {
       id_index_t & id_index = store_iri_.get<id_tag>();
-      id_iter_t i = id_index.find(id);
+      id_iter_t i = id_index.find(iid);
       if( i == id_index.end() ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("removing non-existing IRI ID")
-               << Err::int1_t(id())
+               << Err::int1_t(iid())
       );
-      id_index.erase(id);
-      store_pref_.get<id_tag>().erase(id);
-      tracker_.push(id);
+      id_index.erase(iid);
+      store_pref_.get<id_tag>().erase(iid);
+      tracker_.push(iid);
    }
 
    void remove(std::string const& iri) {
@@ -213,10 +225,10 @@ public:
                << Err::msg_t("removing non-existing IRI")
                << Err::str1_t(iri)
       );
-      const id_type id = i->get<0>();
+      const id_type iid = i->get<0>();
       string_index.erase(i);
-      store_pref_.get<id_tag>().erase(id);
-      tracker_.push(id);
+      store_pref_.get<id_tag>().erase(iid);
+      tracker_.push(iid);
    }
 
 private:

@@ -25,8 +25,10 @@ BOOST_AUTO_TEST_CASE( iri_store01_case01 ) {
    BOOST_CHECK_MESSAGE( id1 == is.insert(iri1), "same ID from inserting duplicates" );
    const Ns_id id2 = is.insert(iri2);
    BOOST_CHECK_EQUAL(is[id1], iri1);
-   BOOST_CHECK_MESSAGE( ! is.prefix(id1), "should return NULL pointer" );
+   BOOST_CHECK_EQUAL(is.at(id1), iri1);
+   BOOST_CHECK_MESSAGE( ! is.find_prefix(id1), "should return NULL pointer" );
    is.remove(iri1);
+   BOOST_CHECK_THROW(is.at(id1), Iri_store::Err);
    BOOST_CHECK_THROW(is.remove(iri1), Iri_store::Err);
    BOOST_CHECK_THROW(is.remove(id1), Iri_store::Err);
    const Ns_id id3 = is.insert(iri3);
@@ -43,15 +45,6 @@ BOOST_AUTO_TEST_CASE( iri_store01_case02 ) {
    BOOST_REQUIRE( is.find_prefix("iri1") );
    BOOST_CHECK_EQUAL( id1, *is.find_prefix("iri1") );
    BOOST_CHECK( ! is.find_iri(iri2) );
-}
-
-/**
-*******************************************************************************/
-BOOST_AUTO_TEST_CASE( iri_store01_case03 ) {
-   Iri_store is((terms::mpl_vector_namespaces_all_t()));
-   BOOST_CHECK_EQUAL( is[terms::N_owl::id()], terms::N_owl::iri() );
-   BOOST_CHECK_EQUAL( *is.prefix(terms::N_owl::id()), terms::N_owl::prefix() );
-   const Ns_id id1 = is.insert(iri1);
 }
 
 }//namespace test
