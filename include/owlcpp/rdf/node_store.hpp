@@ -57,43 +57,30 @@ private:
    typedef store_t::index<node_tag>::type node_index_t;
    typedef node_index_t::iterator node_iter_t;
 
-   class Store_node_tags {
-   public:
-      Store_node_tags(Node_store& store) : nstor_(store) {}
-      template<class T> void operator()(const T&) const {
-         BOOST_ASSERT(
-                  nstor_.store_.get<id_tag>().find(T::id()) ==
-                           nstor_.store_.get<id_tag>().end()
-                  );
-         BOOST_ASSERT(
-                  nstor_.store_.get<node_tag>().find(Node(T::ns_type::id(), T::name())) ==
-                           nstor_.store_.get<node_tag>().end()
-                  );
-         nstor_.store_.insert(
-                  boost::make_tuple( T::id(), Node(T::ns_type::id(), T::name()) )
-         );
-      }
-   private:
-      mutable Node_store& nstor_;
-   };
+protected:
+   Node_store(Iri_store const& is, const std::size_t n0)
+   : tracker_(n0), iris_(is), store_() {}
 
-   Node_store(const std::size_t n0) : tracker_(n0), iris_(), store_() {}
+   void insert(const Node_id nid, Node const& node) {
+      BOOST_ASSERT(
+               store_.get<id_tag>().find(nid) == store_.get<id_tag>().end()
+      );
+      BOOST_ASSERT(
+               store_.get<node_tag>().find(node) == store_.get<node_tag>().end()
+      );
+      store_.insert( boost::make_tuple(nid, node) );
+   }
 
 public:
-   static Node_store owl();
-   Node_store() : tracker_(0), iris_(new Iri_store()), store_() {}
-   Node_store(Node_store const& ns)
-   :
-      tracker_(ns.tracker_),
-      iris_(new Iri_store(*ns.iris_)),
-      store_(ns.store_)
-   {}
+   struct Err : public base_exception {};
+   Node_store() : tracker_(0), iris_(), store_() {}
 
-   Iri_store const& iri_store() const {return *iris_;}
-   Iri_store& iri_store() {return *iris_;}
+   Iri_store const& iri_store() const {return iris_;}
+   Iri_store& iri_store() {return iris_;}
    std::size_t size() const {return store_.size();}
 
    id_type insert(Node const& n) {
+
       node_index_t const& node_index = store_.get<node_tag>();
       const node_iter_t node_iter = node_index.find(n);
       if( node_iter == node_index.end() ) {
@@ -106,12 +93,24 @@ public:
    }
 
    Node const& operator[](const Node_id nid) const {
+      BOOST_ASSERT(store_.get<id_tag>().find(nid) != store_.get<id_tag>().end());
       return store_.get<id_tag>().find(nid)->get<1>();
+   }
+
+   Node const& at(const Node_id nid) const {
+      id_index_t const& index = store_.get<id_tag>();
+      const id_iter_t iter = index.find(nid);
+      if(iter == index.end()) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("unknown node ID")
+               << Err::int1_t(nid())
+      );
+      return iter->get<1>();
    }
 
 private:
    detail::Id_tracker<id_type> tracker_;
-   boost::scoped_ptr<Iri_store> iris_;
+   Iri_store iris_;
    store_t store_;
 };
 
