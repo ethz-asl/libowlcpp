@@ -1,4 +1,4 @@
-/** @file "/owlcpp/include/owlcpp/object_store.hpp"
+/** @file "/owlcpp/include/owlcpp/rdf/object_store.hpp"
 part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010

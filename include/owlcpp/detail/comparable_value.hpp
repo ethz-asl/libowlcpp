@@ -1,4 +1,4 @@
-/** @file "/owlcpp/include/owlcpp/comparable_value.hpp" 
+/** @file "/owlcpp/include/owlcpp/detail/comparable_value.hpp"
 part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010

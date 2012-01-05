@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/fact_visitor.hpp"
+/** @file "/owlcpp/lib/reasoner/fact_visitor.hpp"
 part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010-1

@@ -26,7 +26,7 @@ struct N_rdfs {
    }
    typedef ::owlcpp::Ns_id id_type;
    static id_type id() {return id_type(index);}
-};@endcode
+}; @endcode
 *******************************************************************************/
 OWLCPP_GENERATE_STD_NAMESPACE_TYPES
 

@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/parse.hpp"
+/** @file "/owlcpp/lib/io/parse.hpp"
 part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010

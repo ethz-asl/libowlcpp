@@ -28,7 +28,7 @@ struct T_owl_AllDifferent {
       return str;
    }
    static id_type id() {return id_type(index);}
-};@endcode
+}; @endcode
 *******************************************************************************/
 OWLCPP_GENERATE_STD_TERM_TYPES
 

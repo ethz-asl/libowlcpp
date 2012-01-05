@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/query_fact.cpp" 
+/** @file "/owlcpp/lib/reasoner/query_fact.cpp"
 part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010

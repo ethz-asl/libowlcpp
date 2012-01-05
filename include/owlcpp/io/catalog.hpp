@@ -1,4 +1,4 @@
-/** @file "/owlcpp/include/owlcpp/catalog.hpp"
+/** @file "/owlcpp/include/owlcpp/io/catalog.hpp"
 part of %owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010-1
