@@ -37,8 +37,8 @@ BOOST_AUTO_TEST_CASE( make_ids ) {
    BOOST_CHECK( Node_id(ot::T_rdf_type::index) == ot::T_rdf_type::id() );
 
    BOOST_CHECK( ot::N_owl::index == ot::N_owl::id()() );
-   BOOST_CHECK( ot::T_empty_generic::index == ot::T_empty_generic::id()() );
-   BOOST_CHECK( ot::T_rdf_type::index != ot::T_empty_generic::id()() );
+   BOOST_CHECK( ot::T_empty_::index == ot::T_empty_::id()() );
+   BOOST_CHECK( ot::T_rdf_type::index != ot::T_empty_::id()() );
    BOOST_CHECK( ot::T_rdf_type::index == ot::T_rdf_type::id()() );
 
    BOOST_CHECK( ot::N_rdfs::index == ot::T_rdfs_subClassOf::ns_type::id()() );
