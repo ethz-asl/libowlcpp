@@ -25,6 +25,7 @@ struct base_exception : virtual public std::exception, virtual public boost::exc
    typedef boost::error_info<struct errinfo_str2_, std::string> str2_t;
    typedef boost::error_info<struct errinfo_str3_, std::string> str3_t;
    typedef boost::error_info<struct errinfo_int1_, int> int1_t;
+   typedef boost::error_info<struct errinfo_int2_, int> int2_t;
    typedef boost::errinfo_nested_exception nested_t;
 };
 

@@ -18,7 +18,7 @@ BOOST_GLOBAL_FIXTURE( Exception_translator );
 BOOST_AUTO_TEST_CASE( node_store01_run_case01 ) {
    Node_store ns;
 
-   BOOST_CHECK_EQUAL(ns.iri_store().size(), 0);
+   BOOST_CHECK_EQUAL(ns.iri_store().size(), 0u);
    BOOST_CHECK_EQUAL(ns.size(), 0);
 
    const Node node1 =

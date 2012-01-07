@@ -9,7 +9,7 @@ part of owlcpp project.
 
 namespace owlcpp{
 
-/** Term identifier
+/**@brief Term identifier
 *******************************************************************************/
 class Node_id : public detail::unsigned_val_t {
 public:
@@ -18,5 +18,4 @@ public:
 };
 
 }//namespace owlcpp
-
 #endif /* NODE_ID_HPP_ */

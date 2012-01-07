@@ -9,16 +9,9 @@ part of owlcpp project.
 #include "boost/assert.hpp"
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
-#include "boost/multi_index/member.hpp"
 #include "boost/multi_index/mem_fun.hpp"
-#include "boost/multi_index/global_fun.hpp"
-#include "boost/multi_index/ordered_index.hpp"
 #include "boost/tuple/tuple.hpp"
-#include "boost/mpl/size.hpp"
-#include "boost/mpl/for_each.hpp"
-#include "boost/scoped_ptr.hpp"
 
-#include "owlcpp/rdf/config.hpp"
 #include "owlcpp/node.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/rdf/iri_store.hpp"
@@ -29,7 +22,7 @@ namespace owlcpp{
 
 /**@brief Store RDF nodes
 *******************************************************************************/
-class OWLCPP_RDF_DECL Node_store {
+class Node_store {
 public:
    typedef Node_id id_type;
 private:
