@@ -5,7 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TERM_MACRO_HPP_
 #define TERM_MACRO_HPP_
-#include "owlcpp/terms/custom_type_macro.hpp"
+#include "owlcpp/terms/detail/term_typename_macro.hpp"
 #include "owlcpp/terms/term_list.hpp"
 #include "owlcpp/config.hpp"
 
@@ -15,6 +15,7 @@ part of owlcpp project.
 #include "boost/preprocessor/seq/enum.hpp"
 #include "boost/preprocessor/seq/for_each.hpp"
 #include "boost/preprocessor/seq/for_each_i.hpp"
+#include "boost/preprocessor/seq/reverse.hpp"
 
 #include "owlcpp/node_id.hpp"
 

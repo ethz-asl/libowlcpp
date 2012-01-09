@@ -7,6 +7,7 @@ part of owlcpp project.
 #define TYPE_VECTOR_HPP_
 #include "owlcpp/terms/uri_tags.hpp"
 #include "owlcpp/terms/term_tags.hpp"
+#include "type_vector_macro.hpp"
 
 // include appropriate boost::mpl vector headers
 #include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_NAMESPACES_ALL)

@@ -11,28 +11,17 @@ part of owlcpp project.
 #include "boost/mpl/size.hpp"
 #include "boost/mpl/for_each.hpp"
 
+#include "owlcpp/rdf/detail/iri_tag_inserter.hpp"
 #include "type_vector.hpp"
 
-namespace owlcpp { namespace detail{
-
-class Iri_tags_inserter {
-public:
-   Iri_tags_inserter(Iri_store_owl& store) : store_(store) {}
-   template<class T> void operator()(const T&) const {
-      store_.insert(T::id(), T::iri(), T::prefix());
-   }
-private:
-   mutable Iri_store_owl& store_;
-};
-
-}//namespace detail
+namespace owlcpp {
 
 /**
 *******************************************************************************/
 Iri_store_owl::Iri_store_owl()
 : Iri_store(boost::mpl::size<terms::mpl_vector_namespaces_all_t>::type::value)
 {
-   detail::Iri_tags_inserter iti(*this);
+   detail::Iri_tag_inserter iti(*this);
    boost::mpl::for_each<terms::mpl_vector_namespaces_all_t>(iti);
 }
 

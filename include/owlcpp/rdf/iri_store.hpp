@@ -19,7 +19,9 @@ part of owlcpp project.
 #include "owlcpp/exception.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
 
-namespace owlcpp{
+namespace owlcpp{ namespace detail{
+class Iri_tag_inserter;
+}
 
 /**@brief Store namespace IRIs
 *******************************************************************************/
@@ -51,9 +53,6 @@ private:
    typedef store_t::index<string_tag>::type string_index_t;
    typedef string_index_t::iterator string_iter_t;
 
-
-protected:
-
    void insert(const id_type iid, std::string const& iri, std::string const& prefix) {
       BOOST_ASSERT(
                store_iri_.get<id_tag>().find(iid) == store_iri_.get<id_tag>().end()
@@ -68,6 +67,9 @@ protected:
       store_pref_.insert(boost::make_tuple(iid, prefix));
    }
 
+   friend class detail::Iri_tag_inserter;
+
+protected:
    Iri_store(const std::size_t n0) : tracker_(n0) {}
 
 public:

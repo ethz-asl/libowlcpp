@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef URI_MACRO_HPP_
 #define URI_MACRO_HPP_
 #include "owlcpp/config.hpp"
-#include "owlcpp/terms/custom_type_macro.hpp"
+#include "owlcpp/terms/detail/uri_typename_macro.hpp"
 #include "owlcpp/terms/uri_list.hpp"
 
 #include "boost/preprocessor/facilities/empty.hpp"

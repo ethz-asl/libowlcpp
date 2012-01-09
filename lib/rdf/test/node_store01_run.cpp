@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE( node_store01_run_case01 ) {
    Node_store ns;
 
    BOOST_CHECK_EQUAL(ns.iri_store().size(), 0u);
-   BOOST_CHECK_EQUAL(ns.size(), 0);
+   BOOST_CHECK_EQUAL(ns.size(), 0u);
 
    const Node node1 =
             Node( terms::T_owl_Class::ns_type::id(), terms::T_owl_Class::name() );

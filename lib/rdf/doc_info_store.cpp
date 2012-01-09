@@ -44,5 +44,25 @@ Doc_store::id_type Doc_store::insert(std::string const& path, const Node_id iri,
    return path_iter->id_;
 }
 
+/*
+*******************************************************************************/
+Doc_store::id_type Doc_store::insert(std::string const& path, const Node_id iri) {
+   return insert(path, iri, terms::T_empty_::id());
+}
+
+/*
+*******************************************************************************/
+Node_id Doc_store::iri(const id_type id) const {
+   BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
+   return store_.get<id_tag>().find(id)->iri_id_;
+}
+
+/*
+*******************************************************************************/
+Node_id Doc_store::version(const id_type id) const {
+   BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
+   return store_.get<id_tag>().find(id)->version_id_;
+}
+
 
 }//namespace owlcpp

@@ -8,14 +8,11 @@ part of owlcpp project.
 #include "owlcpp/rdf/iri_store.hpp"
 #include "owlcpp/rdf/config.hpp"
 
-namespace owlcpp{ namespace detail{
-class Iri_tags_inserter;
-}
+namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
 struct OWLCPP_RDF_DECL Iri_store_owl : public Iri_store {
-   friend class detail::Iri_tags_inserter;
    Iri_store_owl();
 };
 

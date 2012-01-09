@@ -18,7 +18,11 @@ BOOST_GLOBAL_FIXTURE( Exception_translator );
 BOOST_AUTO_TEST_CASE( case01 ) {
    Doc_store ds;
    ds.insert("some path", Node_id(13), Node_id(0));
-   ds.insert("some path", Node_id(12), Node_id(0));
+   BOOST_CHECK_THROW(
+            ds.insert("some path", Node_id(12), Node_id(0)),
+            Doc_store::Err
+   );
+
 }
 
 }//namespace test
