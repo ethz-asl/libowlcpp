@@ -18,7 +18,6 @@ BOOST_GLOBAL_FIXTURE( Exception_translator );
 BOOST_AUTO_TEST_CASE( node_store01_run_case01 ) {
    Node_store ns;
 
-   BOOST_CHECK_EQUAL(ns.iri_store().size(), 2u); //two system namespaces, "" and "_"
    BOOST_CHECK_EQUAL(ns.size(), 1u); //one system node, "empty"
 
    const Node node1 =

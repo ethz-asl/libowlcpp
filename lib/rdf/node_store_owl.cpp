@@ -7,7 +7,6 @@ part of owlcpp project.
 #define OWLCPP_RDF_SOURCE
 #endif
 #include "owlcpp/rdf/node_store_owl.hpp"
-#include "owlcpp/rdf/iri_store_owl.hpp"
 
 #include "boost/mpl/for_each.hpp"
 
@@ -18,7 +17,7 @@ namespace owlcpp{
 
 /**
 *******************************************************************************/
-Node_store_owl::Node_store_owl() : Node_store(Iri_store_owl()) {
+Node_store_owl::Node_store_owl() : Node_store() {
    detail::Node_tag_inserter nti(*this);
    boost::mpl::for_each<terms::mpl_vector_terms_rdfs_t>(nti);
    boost::mpl::for_each<terms::mpl_vector_terms_rdf_t>(nti);

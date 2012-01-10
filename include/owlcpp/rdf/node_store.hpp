@@ -14,7 +14,6 @@ part of owlcpp project.
 
 #include "owlcpp/node.hpp"
 #include "owlcpp/node_id.hpp"
-#include "owlcpp/rdf/iri_store.hpp"
 #include "owlcpp/rdf/config.hpp"
 #include "owlcpp/exception.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
@@ -55,15 +54,10 @@ private:
 
    friend class detail::Node_tag_inserter;
 
-protected:
-   Node_store(Iri_store const& is) : tracker_(), iris_(is), store_() {init();}
-
 public:
    struct Err : public base_exception {};
-   Node_store() : tracker_(), iris_(), store_() {init();}
+   Node_store() : tracker_(), store_() {init();}
 
-   Iri_store const& iri_store() const {return iris_;}
-   Iri_store& iri_store() {return iris_;}
    std::size_t size() const {return store_.size();}
 
    id_type insert(Node const& node) {
@@ -96,7 +90,6 @@ public:
 
 private:
    detail::Id_tracker<id_type> tracker_;
-   Iri_store iris_;
    store_t store_;
 
    void init();

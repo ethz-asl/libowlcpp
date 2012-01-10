@@ -18,7 +18,6 @@ BOOST_GLOBAL_FIXTURE( Exception_translator );
 BOOST_AUTO_TEST_CASE( case01 ) {
    Node_store_owl ns;
 
-   BOOST_CHECK_GT(ns.iri_store().size(), 4u);
    BOOST_CHECK_GT(ns.size(), 50u);
 
    const Node_id nid1 = ns.insert(
