@@ -1,12 +1,13 @@
-/** @file "/owlcpp/include/owlcpp/terms/term_list.hpp"
+/** @file "/owlcpp/include/owlcpp/terms/node_tags_owl.hpp" 
 part of owlcpp project.
-@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-@n Copyright Mikhail K Levin 2010
+@n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef TERM_LIST_HPP_
-#define TERM_LIST_HPP_
+#ifndef NODE_TAGS_OWL_HPP_
+#define NODE_TAGS_OWL_HPP_
 
-/**@brief OWL terms in RDFS namespace
+/**@brief Standard OWL nodes in RDFS namespace
+@details ((standard namespace IRI prefix)(node name))
 *******************************************************************************/
 #define OWLCPP_TERMS_RDFS \
       ((rdfs)(comment)) \
@@ -141,14 +142,8 @@ part of owlcpp project.
 #define OWLCPP_TERMS_XSD \
 /* */
 
-/**@brief miscellaneous terms
-*******************************************************************************/
-#define OWLCPP_TERMS_MISC \
-      ((empty)()) \
-/* */
-
 /**@brief Combined set of supported OWL terms
-@details Define sequences of standard OWL terms.
+@details Define sequence of standard OWL terms.
 The sequences are used for generating small Tag types and typelists.
 Each term is defined by a sequence of 2 or 3 elements
 of which the first one refers to IRI prefix defined in "uri_list.hpp".
@@ -156,7 +151,6 @@ The name of the type is formed by concatenating first and second elements.
 The last element---either second or third---is used as string value of the term.
 *******************************************************************************/
 #define OWLCPP_TERMS_ALL \
-      OWLCPP_TERMS_MISC \
       OWLCPP_TERMS_OWL1 \
       OWLCPP_TERMS_OWL2 \
       OWLCPP_TERMS_RDF \
@@ -164,63 +158,28 @@ The last element---either second or third---is used as string value of the term.
       OWLCPP_TERMS_XSD \
 /* */
 
-/**@brief Visitable tags: subset of OWLCPP_TERMS_ALL
-@details These tags are used in Triple_std<Tag> types, which are passed to
-reasoner using visitor pattern.
-The meaning of a triple is usually determined by its predicate.
-Therefore most triples carry tags that come from their predicate nodes.
-However, triples with rdf:type predicate take tags from their object nodes.
-Visitor implements a method for each of the Tags
-e.g. void Visit(const Triple_std<ot::T_owl_IrreflexiveProperty>&);
+#include "owlcpp/terms/term_macro.hpp"
+#include "owlcpp/terms/iri_tags_owl.hpp"
+#include "owlcpp/node_id.hpp"
+
+namespace owlcpp{ namespace terms{
+
+/**@brief
+@code
+struct T_empty_ {
+   typedef N_empty ns_type;
+   typedef ::owlcpp::Node_id id_type;
+   static const unsigned index = 0;
+   static std::string const & name() {
+      static const std::string str = std::string("");
+      return str;
+   }
+   static id_type id() {return id_type(index);}
+}; @endcode
+
 *******************************************************************************/
-#define OWLCPP_TERMS_VISITABLE \
-      ((empty)()) \
-      ((owl)(AllDifferent)) \
-      ((owl)(AllDisjointClasses)) \
-      ((owl)(AllDisjointProperties)) \
-      ((owl)(allValuesFrom)) \
-      ((owl)(AsymmetricProperty)) \
-      ((owl)(cardinality)) \
-      ((owl)(Class)) \
-      ((owl)(complementOf)) \
-      ((owl)(datatypeComplementOf)) \
-      ((owl)(differentFrom)) \
-      ((owl)(disjointUnionOf)) \
-      ((owl)(disjointWith)) \
-      ((owl)(equivalentClass)) \
-      ((owl)(equivalentProperty)) \
-      ((owl)(FunctionalProperty)) \
-      ((owl)(hasKey)) \
-      ((owl)(hasSelf)) \
-      ((owl)(hasValue)) \
-      ((owl)(intersectionOf)) \
-      ((owl)(InverseFunctionalProperty)) \
-      ((owl)(inverseOf)) \
-      ((owl)(IrreflexiveProperty)) \
-      ((owl)(maxCardinality)) \
-      ((owl)(maxQualifiedCardinality)) \
-      ((owl)(minCardinality)) \
-      ((owl)(minQualifiedCardinality)) \
-      ((owl)(NamedIndividual)) \
-      ((owl)(NegativePropertyAssertion)) \
-      ((owl)(ObjectProperty)) \
-      ((owl)(oneOf)) \
-      ((owl)(propertyChainAxiom)) \
-      ((owl)(propertyDisjointWith)) \
-      ((owl)(qualifiedCardinality)) \
-      ((owl)(ReflexiveProperty)) \
-      ((owl)(sameAs)) \
-      ((owl)(someValuesFrom)) \
-      ((owl)(SymmetricProperty)) \
-      ((owl)(TransitiveProperty)) \
-      ((owl)(unionOf)) \
-      ((owl)(withRestrictions)) \
-      ((rdfs)(Datatype)) \
-      ((rdfs)(domain)) \
-      ((rdfs)(range)) \
-      ((rdfs)(subClassOf)) \
-      ((rdfs)(subPropertyOf)) \
-/* */
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_ALL, 5)
 
-
-#endif /* TERM_LIST_HPP_ */
+}//namespace terms
+}//namespace owlcpp
+#endif /* NODE_TAGS_OWL_HPP_ */

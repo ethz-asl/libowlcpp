@@ -10,7 +10,7 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "owlcpp/rdf/query_nodes.hpp"
 #include "../node_type.hpp"
-#include "owlcpp/terms/term_tags.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
 namespace ot = owlcpp::terms;
 
 namespace owlcpp{ namespace{

@@ -8,7 +8,7 @@ part of owlcpp project.
 #endif
 #include "boost/assert.hpp"
 #include "owlcpp/rdf/doc_info_store.hpp"
-#include "owlcpp/terms/term_tags.hpp"
+#include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp {
 

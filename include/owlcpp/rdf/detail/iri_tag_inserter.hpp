@@ -6,6 +6,8 @@ part of owlcpp project.
 #ifndef IRI_TAG_INSERTER_HPP_
 #define IRI_TAG_INSERTER_HPP_
 
+#include "owlcpp/rdf/iri_store.hpp"
+
 namespace owlcpp{ namespace detail{
 
 /**@brief Insert standard IRI tags into IRI store

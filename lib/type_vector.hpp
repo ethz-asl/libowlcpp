@@ -5,46 +5,66 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TYPE_VECTOR_HPP_
 #define TYPE_VECTOR_HPP_
-#include "owlcpp/terms/uri_tags.hpp"
-#include "owlcpp/terms/term_tags.hpp"
+#include "owlcpp/terms/node_tags_system.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
 #include "type_vector_macro.hpp"
+#include "rdf/iri_tag_vector_system.hpp"
+#include "rdf/iri_tag_vector_owl.hpp"
+#include "rdf/node_tag_vector_system.hpp"
+#include "rdf/node_tag_vector_owl.hpp"
 
-// include appropriate boost::mpl vector headers
-#include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_NAMESPACES_ALL)
-#include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_RDFS)
-#include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_RDF)
-#include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_OWL1)
-#include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_OWL2)
+#define OWLCPP_TERMS_VISITABLE \
+      ((empty)()) \
+      ((owl)(AllDifferent)) \
+      ((owl)(AllDisjointClasses)) \
+      ((owl)(AllDisjointProperties)) \
+      ((owl)(allValuesFrom)) \
+      ((owl)(AsymmetricProperty)) \
+      ((owl)(cardinality)) \
+      ((owl)(Class)) \
+      ((owl)(complementOf)) \
+      ((owl)(datatypeComplementOf)) \
+      ((owl)(differentFrom)) \
+      ((owl)(disjointUnionOf)) \
+      ((owl)(disjointWith)) \
+      ((owl)(equivalentClass)) \
+      ((owl)(equivalentProperty)) \
+      ((owl)(FunctionalProperty)) \
+      ((owl)(hasKey)) \
+      ((owl)(hasSelf)) \
+      ((owl)(hasValue)) \
+      ((owl)(intersectionOf)) \
+      ((owl)(InverseFunctionalProperty)) \
+      ((owl)(inverseOf)) \
+      ((owl)(IrreflexiveProperty)) \
+      ((owl)(maxCardinality)) \
+      ((owl)(maxQualifiedCardinality)) \
+      ((owl)(minCardinality)) \
+      ((owl)(minQualifiedCardinality)) \
+      ((owl)(NamedIndividual)) \
+      ((owl)(NegativePropertyAssertion)) \
+      ((owl)(ObjectProperty)) \
+      ((owl)(oneOf)) \
+      ((owl)(propertyChainAxiom)) \
+      ((owl)(propertyDisjointWith)) \
+      ((owl)(qualifiedCardinality)) \
+      ((owl)(ReflexiveProperty)) \
+      ((owl)(sameAs)) \
+      ((owl)(someValuesFrom)) \
+      ((owl)(SymmetricProperty)) \
+      ((owl)(TransitiveProperty)) \
+      ((owl)(unionOf)) \
+      ((owl)(withRestrictions)) \
+      ((rdfs)(Datatype)) \
+      ((rdfs)(domain)) \
+      ((rdfs)(range)) \
+      ((rdfs)(subClassOf)) \
+      ((rdfs)(subPropertyOf)) \
+/* */
+
 #include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_VISITABLE)
 
 namespace owlcpp{ namespace terms{
-
-/**
-@brief typelist of common OWL namespace tags
-*******************************************************************************/
-typedef OWLCPP_NAMESPACE_MPL_VECTOR(OWLCPP_NAMESPACES_ALL)
-      mpl_vector_namespaces_all_t;
-
-/**
-@brief typelist of OWL term tags from RDFS namespace
-*******************************************************************************/
-typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TERMS_RDFS) mpl_vector_terms_rdfs_t;
-
-/**
-@brief typelist of OWL term tags from RDF namespace
-*******************************************************************************/
-typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TERMS_RDF) mpl_vector_terms_rdf_t;
-
-/**
-@brief typelist of OWL term tags from OWL namespace
-*******************************************************************************/
-typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TERMS_OWL1) mpl_vector_terms_owl1_t;
-typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TERMS_OWL2) mpl_vector_terms_owl2_t;
-
-/**
-@brief typelist of other term tags
-*******************************************************************************/
-typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TERMS_MISC) mpl_vector_terms_other_t;
 
 /**
 @brief typelist of OWL term tags to generate visitable triple classes

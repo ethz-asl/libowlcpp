@@ -68,14 +68,15 @@ public:
 *******************************************************************************/
 void Triple_store::enter_standard_uris() {
    Store_std_uris<uri_store_t> ssu(uris_, prefixes_);
-   bmp::for_each<ot::mpl_vector_namespaces_all_t>(ssu);
+   bmp::for_each<ot::mpl_vector_iris_system_t>(ssu);
+   bmp::for_each<ot::mpl_vector_iris_owl_t>(ssu);
 }
 
 /*
 *******************************************************************************/
 void Triple_store::enter_standard_terms() {
    Store_std_terms<term_store_t> sso(nodes_);
-   bmp::for_each<ot::mpl_vector_terms_other_t>(sso);
+   bmp::for_each<ot::mpl_vector_nodes_system_t>(sso);
    bmp::for_each<ot::mpl_vector_terms_rdfs_t>(sso);
    bmp::for_each<ot::mpl_vector_terms_rdf_t>(sso);
    bmp::for_each<ot::mpl_vector_terms_owl1_t>(sso);

@@ -19,7 +19,12 @@ private:
    typedef typename id_type::value_type value_type;
 
 public:
-   Id_tracker(value_type const n0) : counter_(n0), stack_() {}
+   Id_tracker() : counter_(0), stack_() {}
+
+   void ensure_min(const id_type id) {
+      if( counter_ > id() ) return;
+      counter_ = id() + 1;
+   }
 
    id_type get() {
       if( stack_.empty() ) return id_type(counter_++);

@@ -81,14 +81,25 @@ private:
    typedef store_t::index<version_tag>::type version_index_t;
    typedef version_index_t::iterator version_iter_t;
 
+
+
 public:
    struct Err : public base_exception {};
    typedef boost::iterator_range<iri_iter_t> iri_range_t;
    typedef boost::iterator_range<version_iter_t> version_range_t;
 
-   Doc_store() : tracker_(0), store_() {}
+   Doc_store() : tracker_(), store_() {}
 
    id_type insert(std::string const& path, const Node_id iri, const Node_id ver);
+   id_type insert(std::string const& path, const Node_id iri);
+   Node_id iri(const id_type id) const;
+   Node_id version(const id_type id) const;
+
+   /**@brief
+    @param
+    @return
+   */
+   id_type const* find(const Node_id nid) const;
 
 private:
    detail::Id_tracker<id_type> tracker_;

@@ -7,7 +7,7 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_translator.hpp"
 #include "owlcpp/rdf/iri_store_owl.hpp"
-#include "owlcpp/terms/uri_tags.hpp"
+#include "owlcpp/terms/iri_tags_owl.hpp"
 
 namespace owlcpp{ namespace test{
 

@@ -12,7 +12,8 @@ namespace b = boost;
 #include "loki/Visitor.h"
 namespace L = Loki;
 #include "owlcpp/node_id.hpp"
-#include "owlcpp/terms/term_tags.hpp"
+#include "owlcpp/terms/node_tags_system.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
 namespace ot = owlcpp::terms;
 #include "owlcpp/exception.hpp"
 

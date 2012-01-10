@@ -7,7 +7,7 @@ Distributed under GNU General Public License; see doc/license.txt.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_translator.hpp"
 #include "owlcpp/rdf/node_store.hpp"
-#include "owlcpp/terms/term_tags.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -18,8 +18,8 @@ BOOST_GLOBAL_FIXTURE( Exception_translator );
 BOOST_AUTO_TEST_CASE( node_store01_run_case01 ) {
    Node_store ns;
 
-   BOOST_CHECK_EQUAL(ns.iri_store().size(), 0u);
-   BOOST_CHECK_EQUAL(ns.size(), 0u);
+   BOOST_CHECK_EQUAL(ns.iri_store().size(), 2u); //two system namespaces, "" and "_"
+   BOOST_CHECK_EQUAL(ns.size(), 1u); //one system node, "empty"
 
    const Node node1 =
             Node( terms::T_owl_Class::ns_type::id(), terms::T_owl_Class::name() );

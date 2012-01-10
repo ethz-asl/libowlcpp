@@ -11,7 +11,8 @@ part of owlcpp project.
 #include "loki/Visitor.h"
 namespace L = Loki;
 #include "owlcpp/ns_id.hpp"
-#include "owlcpp/terms/term_tags.hpp"
+#include "owlcpp/terms/node_tags_system.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
 namespace ot = owlcpp::terms;
 
 #include "owlcpp/node_base.hpp"
