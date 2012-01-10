@@ -95,11 +95,12 @@ public:
    Node_id iri(const id_type id) const;
    Node_id version(const id_type id) const;
 
-   /**@brief
-    @param
-    @return
+   /**
+    @param nid node ID
+    @return pointer to document ID for the first document that has VersionIRI nid or,
+    if not found, for the first document with OntologyIRI nid, or NULL if not found.
    */
-   id_type const* find(const Node_id nid) const;
+   id_type const* find(const Node_id id) const;
 
 private:
    detail::Id_tracker<id_type> tracker_;
