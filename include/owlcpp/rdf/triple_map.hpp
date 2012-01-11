@@ -16,8 +16,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple.hpp"
 
 namespace owlcpp{ namespace detail{
-template<class,class,class,class> class Select_iter1;
-template<class,bool> class Iterator_selector;
+template<class,class,class,class> class Selector_1;
 }//namespace detail
 template<class,class,class,class>class Query;
 struct blank{};
@@ -67,8 +66,7 @@ class Triple_map {
    > store_t;
 
    template<class,class,class,class> friend class Query;
-   template<class,class,class,class> friend class detail::Select_iter1;
-   template<class,bool> friend class detail::Iterator_selector;
+   template<class,class,class,class> friend class detail::Selector_1;
 
 public:
    typedef store_t::iterator iter_t;
@@ -79,7 +77,7 @@ public:
    template<class S, class P, class O, class D>
    typename Query<S,P,O,D>::range_t
    find(const S s, const P p, const O o, const D d) const {
-      return Query<S,P,O,D>::find(store_, s, p, o, d);
+      return Query<S,P,O,D>::find(*this, s, p, o, d);
    }
 
    range_t range() const {return boost::make_iterator_range(store_);}

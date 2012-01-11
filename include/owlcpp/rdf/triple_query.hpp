@@ -12,28 +12,49 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace detail {
 
+template<class,class,class,class> class Triple_predicate;
+
+template<class Pred, class Iter1> struct Selector_2 {
+   typedef boost::filter_iterator<Pred, Iter1> iter_t;
+};
+
+template<class Iter1> struct Selector_2<Triple_predicate<blank,blank,blank,blank>, Iter1> {
+   typedef Iter1 iter_t;
+};
+
 /** Check for matching node ID
 *******************************************************************************/
 template<class Id> class Check {
 public:
-   Check(const Id id) : id_(id) {}
+   explicit Check(const Id id) : id_(id) {}
    bool operator()(const Id id) const {return id == id_;}
 private:
    Id id_;
 };
 
 template<> struct Check<blank> {
-   Check(const blank) {}
-   bool operator()(const Node_id) const {return true;}
+   template<class T> explicit Check(const T) {}
+   template<class T> bool operator()(const T) const {return true;}
 };
 
 /**
 *******************************************************************************/
 template<class S, class P, class O, class D> class Triple_predicate {
    typedef boost::tuple<Check<S>,Check<P>,Check<O>,Check<D> > tuple_t;
-public:
-   Triple_predicate(const S n1, const P n2, const O n3, const D d)
+   typedef Triple_predicate self_t;
+
+   Triple_predicate();
+
+   template<class S1, class P1, class O1, class D1>
+   Triple_predicate(const S1 n1, const P1 n2, const O1 n3, const D1 d)
    : t_(Check<S>(n1),Check<P>(n2),Check<O>(n3),Check<D>(d)) {}
+
+public:
+   template<class Iter, class S1, class P1, class O1, class D1> static
+   typename Selector_2<self_t, Iter>::iter_t
+   make_iterator(Iter i1, Iter i2, const S1 s, const P1 p, const O1 o, const D1 d) {
+      return typename Selector_2<self_t, Iter>::iter_t(self_t(s,p,o,d), i1, i2);
+   }
 
    bool operator()(const Triple& triple) const {
       return
@@ -47,109 +68,118 @@ private:
    tuple_t t_;
 };
 
-/** Tell Query which tag to use for index extraction
+template<> class Triple_predicate<blank,blank,blank,blank> {
+   typedef Triple_predicate self_t;
+   Triple_predicate();
+public:
+   template<class Iter, class S1, class P1, class O1, class D1> static
+   typename Selector_2<self_t, Iter>::iter_t
+   make_iterator(Iter i1, Iter, const S1, const P1, const O1, const D1) {
+      return i1;
+   }
+};
+
+/** Declare and make iterator 1 and declare predicate
 *******************************************************************************/
-template<class,class,class,class> struct Select_iter1;
+template<class,class,class,class> struct Selector_1;
 
-template<> struct Select_iter1<blank,blank,blank,blank> {
-   typedef typename Triple_map::seq_tag tag_t;
+template<> struct Selector_1<blank,blank,blank,blank> {
+   typedef Triple_predicate<blank,blank,blank,blank> predicate_t;
+   typedef Triple_map::store_t::iterator iter_t;
+
+   static iter_t begin(Triple_map const& tm, const blank, const blank, const blank, const blank) {
+      return tm.store_.begin();
+   }
+
+   static iter_t end(Triple_map const& tm, const blank, const blank, const blank, const blank) {
+      return tm.store_.end();
+   }
 };
 
-template<class P, class O, class D> struct Select_iter1<Node_id,P,O,D> {
+template<class P, class O, class D> class Selector_1<Node_id,P,O,D> {
    typedef typename Triple_map::subj_tag tag_t;
+public:
    typedef Triple_predicate<blank,P,O,D> predicate_t;
+   typedef typename Triple_map::store_t::index<tag_t>::type::iterator iter_t;
+
+   static iter_t begin(Triple_map const& tm, const Node_id s, const P, const O, const D) {
+      return tm.store_.get<tag_t>().find(s);
+   }
+
+   static iter_t end(Triple_map const& tm, const Node_id, const P, const O, const D) {
+      return tm.store_.get<tag_t>().end();
+   }
 };
 
-template<class P, class D> struct Select_iter1<blank,P,Node_id,D> {
+template<class P, class D> class Selector_1<blank,P,Node_id,D> {
    typedef typename Triple_map::obj_tag tag_t;
+public:
    typedef Triple_predicate<blank,P,blank,D> predicate_t;
+   typedef typename Triple_map::store_t::index<tag_t>::type::iterator iter_t;
+
+   static iter_t begin(Triple_map const& tm, const blank, const P, const Node_id o, const D) {
+      return tm.store_.get<tag_t>().find(o);
+   }
+
+   static iter_t end(Triple_map const& tm, const blank, const P, const Node_id, const D) {
+      return tm.store_.get<tag_t>().end();
+   }
 };
 
-template<> struct Select_iter1<blank,Node_id,blank,Doc_id> {
+template<class D> class Selector_1<blank,Node_id,blank,D> {
    typedef typename Triple_map::pred_tag tag_t;
-   typedef Triple_predicate<blank,blank,blank,Doc_id> predicate_t;
+public:
+   typedef Triple_predicate<blank,blank,blank,D> predicate_t;
+   typedef typename Triple_map::store_t::index<tag_t>::type::iterator iter_t;
+
+   static iter_t begin(Triple_map const& tm, const blank, const Node_id p, const blank, const D) {
+      return tm.store_.get<tag_t>().find(p);
+   }
+
+   static iter_t end(Triple_map const& tm, const blank, const Node_id, const blank, const D) {
+      return tm.store_.get<tag_t>().end();
+   }
 };
 
-template<class S, class P, class O, class D> struct Filter_selector {
-   static const bool use_filter = true;
-};
-template<> struct Filter_selector<blank,blank,blank,blank> {
-   static const bool use_filter = false;
-};
-template<> struct Filter_selector<Node_id,blank,blank,blank> {
-   static const bool use_filter = false;
-};
-template<> struct Filter_selector<blank,Node_id,blank,blank> {
-   static const bool use_filter = false;
-};
-template<> struct Filter_selector<blank,blank,Node_id,blank> {
-   static const bool use_filter = false;
-};
-template<> struct Filter_selector<blank,blank,blank,Node_id> {
-   static const bool use_filter = false;
-};
+template<> class Selector_1<blank,blank,blank,Doc_id> {
+   typedef typename Triple_map::doc_tag tag_t;
+public:
+   typedef Triple_predicate<blank,blank,blank,blank> predicate_t;
+   typedef typename Triple_map::store_t::index<tag_t>::type::iterator iter_t;
 
-template<class, bool> struct Iterator_selector;
-template<class Iter1> struct Iterator_selector<Iter1,false> {
-   typedef Iter1 iter_t;
+   static iter_t begin(Triple_map const& tm, const blank, const blank, const blank, const Doc_id d) {
+      return tm.store_.get<tag_t>().find(d);
+   }
 
-//   template<class S, class P, class O, class D> static
-};
-template<class Tag> struct Iterator_selector<Tag,true> {
-   typedef typename Triple_map::store_t::index<Tag>::type index_t;
-//   template<class S, class P, class O, class D> static
+   static iter_t end(Triple_map const& tm, const blank, const blank, const blank, const Doc_id) {
+      return tm.store_.get<tag_t>().end();
+   }
 };
 
 }//namespace detail
 
-/**@brief
+/**@brief Query triples
 *******************************************************************************/
 template<class S = blank, class P = blank, class O = blank, class D = blank>
 class Query {
-   friend class Triple_map;
-   typedef Triple_map::store_t store_t;
-   typedef typename detail::Select_iter1<S,P,O,D>::tag_t tag_t;
-   typedef typename Triple_map::store_t::index<tag_t>::type index_t;
-   typedef typename index_t::iterator iter1_t;
-   static const bool use_filter = detail::Filter_selector<S,P,O,D>::use_filter;
+   typedef typename detail::Selector_1<S,P,O,D> selector1_t;
+   typedef typename selector1_t::predicate_t predicate_t;
+   typedef typename selector1_t::iter_t iter1_t;
+   typedef typename detail::Selector_2<predicate_t, iter1_t> selector2_t;
 public:
+   typedef typename selector2_t::iter_t iterator_t;
+   typedef boost::iterator_range<iterator_t> range_t;
 
-};
-
-/*
-template<> class Query<blank,blank,blank,blank> {
-   friend class Triple_map;
-   typedef Triple_map::store_t store_t;
-public:
-   typedef typename store_t::iterator iter_t;
-   typedef boost::iterator_range<iter_t> range_t;
-
-private:
-   static range_t find(store_t const& stor, const blank, const blank, const blank, const blank){
-      return boost::make_iterator_range(stor);
+   static range_t
+   find(Triple_map const& tm, const S s, const P p, const O o, const D d) {
+      const iter1_t i1 = selector1_t::begin(tm, s, p, o, d);
+      const iter1_t i2 = selector1_t::end(tm, s, p, o, d);
+      return boost::make_iterator_range(
+               predicate_t::make_iterator(i1, i2, s, p, o, d),
+               predicate_t::make_iterator(i2, i2, s, p, o, d)
+      );
    }
 };
-
-template<class P, class O, class D> class Query<Node_id,P,O,D> {
-   friend class Triple_map;
-   typedef Triple_map::store_t store_t;
-public:
-   typedef typename store_t::iterator iter_t;
-   typedef boost::iterator_range<iter_t> range_t;
-
-private:
-   static range_t find(store_t const& stor, const Node_id s, const P p, const O o, const D d){
-      typedef typename detail::Select_iter1<Node_id,P,O,D>::tag_t tag_t;
-//      typedef boost::filter_iterator<
-      return boost::make_iterator_range(stor);
-   }
-};
-*/
-
-
-/**@brief 
-*******************************************************************************/
-
 
 }//namespace owlcpp
 #endif /* TRIPLE_QUERY_HPP_ */
