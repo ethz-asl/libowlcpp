@@ -8,15 +8,13 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_store.hpp"
 #include "owlcpp/rdf/config.hpp"
 
-namespace owlcpp{ namespace detail{
-class Node_tags_inserter;
-}
+namespace owlcpp{
 
 /**@brief Store RDF nodes including standard OWL/RDF nodes
 *******************************************************************************/
 struct OWLCPP_RDF_DECL Node_store_owl : public Node_store {
-   friend class detail::Node_tags_inserter;
    Node_store_owl();
+   Node_id insert(Node const& node);
 };
 
 }//namespace owlcpp

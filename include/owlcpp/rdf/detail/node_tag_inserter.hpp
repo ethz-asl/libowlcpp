@@ -17,7 +17,7 @@ public:
    Node_tag_inserter(Node_store& store) : store_(store) {}
 
    template<class T> void operator()(T const&) const {
-      store_.insert(T::id(), Node(T::ns_type::id(), T::name()));
+      store_.insert( T::id(), Node(T::ns_type::id(), T::name()) );
    }
 
 private:

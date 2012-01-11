@@ -20,15 +20,10 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 
    BOOST_CHECK_GT(ns.size(), 50u);
 
-   const Node_id nid1 = ns.insert(
-            Node( terms::T_owl_Class::ns_type::id(), terms::T_owl_Class::name() )
-   );
+   const Node_id nid1 = ns.insert( Node( terms::T_owl_Class() ) );
    BOOST_CHECK_EQUAL(nid1, terms::T_owl_Class::id());
 
-   BOOST_CHECK_EQUAL(
-            ns[terms::T_rdfs_range::id()],
-            Node( terms::T_rdfs_range::ns_type::id(), terms::T_rdfs_range::name() )
-   );
+   BOOST_CHECK_EQUAL( ns[terms::T_rdfs_range::id()], Node(terms::T_rdfs_range()) );
 }
 
 }//namespace test

@@ -12,10 +12,11 @@ part of owlcpp project.
 
 #include "node_tag_vector_owl.hpp"
 #include "owlcpp/rdf/detail/node_tag_inserter.hpp"
+#include "owlcpp/rdf/query_iris.hpp"
 
 namespace owlcpp{
 
-/**
+/*
 *******************************************************************************/
 Node_store_owl::Node_store_owl() : Node_store() {
    detail::Node_tag_inserter nti(*this);
@@ -23,6 +24,20 @@ Node_store_owl::Node_store_owl() : Node_store() {
    boost::mpl::for_each<terms::mpl_vector_terms_rdf_t>(nti);
    boost::mpl::for_each<terms::mpl_vector_terms_owl1_t>(nti);
    boost::mpl::for_each<terms::mpl_vector_terms_owl2_t>(nti);
+}
+
+/*
+*******************************************************************************/
+Node_id Node_store_owl::insert(Node const& node) {
+   Node_id const* id = find(node);
+   if( id ) return *id;
+   if( is_std_owl(node.ns_id()) ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("inserting unknown term into standard OWL namespace")
+            << Err::str1_t( node.value_str() )
+            << Err::int1_t( node.ns_id()() )
+   );
+   return Node_store::insert(node);
 }
 
 }//namespace owlcpp

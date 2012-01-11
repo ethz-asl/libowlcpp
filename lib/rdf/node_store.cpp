@@ -17,7 +17,7 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-void Node_store::init() {
+Node_store::Node_store() : tracker_(), store_() {
    detail::Node_tag_inserter nti(*this);
    boost::mpl::for_each<terms::mpl_vector_nodes_system_t>(nti);
 }

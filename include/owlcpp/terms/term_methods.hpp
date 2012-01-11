@@ -6,9 +6,8 @@ part of owlcpp project.
 #ifndef TERM_METHODS_HPP_
 #define TERM_METHODS_HPP_
 #include <string>
-//#include "owlcpp/ns_id.hpp"
 
-namespace owlcpp{
+namespace owlcpp{ namespace terms{
 
 /** @return complete IRI for standard terms
 *******************************************************************************/
@@ -25,7 +24,7 @@ template<class T> inline std::string short_name(const T&) {
 }
 
 
-
+}//namespace terms
 }//namespace owlcpp
 
 #endif /* TERM_METHODS_HPP_ */

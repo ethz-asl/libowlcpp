@@ -56,25 +56,19 @@ private:
 
 public:
    struct Err : public base_exception {};
-   Node_store() : tracker_(), store_() {init();}
-
+   Node_store();
    std::size_t size() const {return store_.size();}
-
-   id_type insert(Node const& node) {
-      node_index_t const& node_index = store_.get<node_tag>();
-      const node_iter_t node_iter = node_index.find(node);
-      if( node_iter == node_index.end() ) {
-         const id_type id = tracker_.get();
-         BOOST_ASSERT(store_.get<id_tag>().find(id) == store_.get<id_tag>().end());
-         store_.insert( boost::make_tuple(id, node) );
-         return id;
-      }
-      return node_iter->get<0>();
-   }
 
    Node const& operator[](const Node_id id) const {
       BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
       return store_.get<id_tag>().find(id)->get<1>();
+   }
+
+   Node_id const* find(Node const& node) const {
+      node_index_t const& node_index = store_.get<node_tag>();
+      const node_iter_t node_iter = node_index.find(node);
+      if( node_iter == node_index.end() ) return 0;
+      return &node_iter->get<0>();
    }
 
    Node const& at(const Node_id id) const {
@@ -88,12 +82,25 @@ public:
       return iter->get<1>();
    }
 
+protected:
+   id_type insert(Node const& node) {
+      node_index_t const& node_index = store_.get<node_tag>();
+      const node_iter_t node_iter = node_index.find(node);
+      if( node_iter == node_index.end() ) {
+         const id_type id = tracker_.get();
+         BOOST_ASSERT(store_.get<id_tag>().find(id) == store_.get<id_tag>().end());
+         store_.insert( boost::make_tuple(id, node) );
+         return id;
+      }
+      return node_iter->get<0>();
+   }
+
+   void insert(const Node_id id, Node const& node);
+
 private:
    detail::Id_tracker<id_type> tracker_;
    store_t store_;
 
-   void init();
-   void insert(const Node_id id, Node const& node);
 };
 
 }//namespace owlcpp
