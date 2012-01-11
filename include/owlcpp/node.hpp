@@ -17,7 +17,13 @@ namespace owlcpp{
 class Node {
    Node();
 public:
-   Node(const Ns_id ns, std::string const& val) : val_(val), ns_(ns) {}
+   /** make Node from standard node tag */
+   template<class Tag> explicit Node(Tag const&)
+   : val_(Tag::name()), ns_(Tag::ns_type::id()) {}
+
+   Node(const Ns_id ns, std::string const& val)
+   : val_(val), ns_(ns) {}
+
    std::string const& value_str() const {return val_;}
    Ns_id ns_id() const {return ns_;}
 

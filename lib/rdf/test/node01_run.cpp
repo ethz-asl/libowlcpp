@@ -16,10 +16,13 @@ BOOST_GLOBAL_FIXTURE( Exception_translator );
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( node01_run_case01 ) {
-   std::cout
-   << Node( terms::T_owl_Nothing::ns_type::id(), terms::T_owl_Nothing::name() )
-   << std::endl
-   ;
+   const Node n1 = Node(
+            terms::T_owl_Nothing::ns_type::id(),
+            terms::T_owl_Nothing::name()
+   );
+   BOOST_CHECK_EQUAL( n1, Node(terms::T_owl_Nothing()) );
+
+   std::cout << n1 << std::endl;
 
 }
 
