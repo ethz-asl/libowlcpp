@@ -18,7 +18,7 @@ BOOST_GLOBAL_FIXTURE( Exception_translator );
 BOOST_AUTO_TEST_CASE( case01 ) {
    Triple_map tm;
    tm.insert(Triple(Node_id(0), Node_id(0), Node_id(0), Doc_id(0)));
-   tm.range();
+   tm.all();
 }
 
 }//namespace test

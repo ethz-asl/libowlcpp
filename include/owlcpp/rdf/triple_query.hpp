@@ -7,10 +7,27 @@ part of owlcpp project.
 #define TRIPLE_QUERY_HPP_
 #include "boost/iterator/filter_iterator.hpp"
 #include "boost/tuple/tuple.hpp"
+#include "boost/mpl/if.hpp"
+#include "boost/type_traits/is_same.hpp"
 
 #include "owlcpp/rdf/triple_map.hpp"
 
 namespace owlcpp{ namespace detail {
+
+template<bool S, bool P, bool O, bool D> struct Triple_bool2type {
+   typedef typename boost::mpl::if_<boost::mpl::bool_<S>, Node_id, blank>::type subj_t;
+   typedef typename boost::mpl::if_<boost::mpl::bool_<P>, Node_id, blank>::type pred_t;
+   typedef typename boost::mpl::if_<boost::mpl::bool_<O>, Node_id, blank>::type obj_t;
+   typedef typename boost::mpl::if_<boost::mpl::bool_<D>, Doc_id, blank>::type doc_t;
+};
+
+template<class S, class P, class O, class D> struct Query_type {
+   static const bool subj = boost::is_same<S, Node_id>::type::value;
+   static const bool pred = boost::is_same<P, Node_id>::type::value;
+   static const bool obj = boost::is_same<O, Node_id>::type::value;
+   static const bool doc = boost::is_same<D, Doc_id>::type::value;
+   typedef Query<subj, pred, obj, doc> query_t;
+};
 
 template<class,class,class,class> class Triple_predicate;
 
@@ -160,9 +177,14 @@ public:
 
 /**@brief Query triples
 *******************************************************************************/
-template<class S = blank, class P = blank, class O = blank, class D = blank>
+template<bool S = false, bool P = false, bool O = false, bool D = false>
 class Query {
-   typedef typename detail::Selector_1<S,P,O,D> selector1_t;
+   typedef typename detail::Triple_bool2type<S,P,O,D> tts_t;
+   typedef typename tts_t::subj_t subj_t;
+   typedef typename tts_t::pred_t pred_t;
+   typedef typename tts_t::obj_t obj_t;
+   typedef typename tts_t::doc_t doc_t;
+   typedef typename detail::Selector_1<subj_t, pred_t, obj_t, doc_t> selector1_t;
    typedef typename selector1_t::predicate_t predicate_t;
    typedef typename selector1_t::iter_t iter1_t;
    typedef typename detail::Selector_2<predicate_t, iter1_t> selector2_t;
@@ -171,7 +193,7 @@ public:
    typedef boost::iterator_range<iterator_t> range_t;
 
    static range_t
-   find(Triple_map const& tm, const S s, const P p, const O o, const D d) {
+   find(Triple_map const& tm, const subj_t s, const pred_t p, const obj_t o, const doc_t d) {
       const iter1_t i1 = selector1_t::begin(tm, s, p, o, d);
       const iter1_t i2 = selector1_t::end(tm, s, p, o, d);
       return boost::make_iterator_range(

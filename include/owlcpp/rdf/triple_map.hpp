@@ -16,16 +16,22 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple.hpp"
 
 namespace owlcpp{ namespace detail{
+
 template<class,class,class,class> class Selector_1;
+template<class, class, class, class> struct Query_type;
+
 }//namespace detail
-template<class,class,class,class>class Query;
+
+template<bool,bool,bool,bool>class Query;
+
 struct blank{};
+
 
 /**@brief Store, index, and search RDF triples
 *******************************************************************************/
 class Triple_map {
 
-   struct seq_tag{};
+//   struct seq_tag{};
    struct subj_tag{};
    struct pred_tag{};
    struct obj_tag{};
@@ -36,7 +42,7 @@ class Triple_map {
       boost::multi_index::indexed_by<
 //         boost::multi_index::random_access<
          boost::multi_index::sequenced<
-            boost::multi_index::tag<seq_tag>
+//            boost::multi_index::tag<seq_tag>
          >,
          boost::multi_index::hashed_non_unique<
             boost::multi_index::tag<subj_tag>,
@@ -65,22 +71,51 @@ class Triple_map {
       >
    > store_t;
 
-   template<class,class,class,class> friend class Query;
+   template<bool,bool,bool,bool> friend class Query;
    template<class,class,class,class> friend class detail::Selector_1;
+
 
 public:
    typedef store_t::iterator iter_t;
    typedef boost::iterator_range<iter_t> range_t;
 
-   void insert(Triple const& t) { store_.push_back(t); }
+   /**@brief Insert a new triple
+    @param triple
+   */
+   void insert(Triple const& triple) { store_.push_back(triple); }
 
-   template<class S, class P, class O, class D>
-   typename Query<S,P,O,D>::range_t
-   find(const S s, const P p, const O o, const D d) const {
-      return Query<S,P,O,D>::find(*this, s, p, o, d);
+   /**
+    @return number of stored triples
+   */
+   std::size_t size() const {return store_.size();}
+
+   /**@brief Search triples by subject, predicate, object, or document IDs.
+    @details Polymorphically search stored triples to find ones with matching
+    any combination of node IDs for subject, predicate, or object nodes or
+    document ID.
+    If none of the nodes are specified, the search returns a range containing all
+    stored triples, same as from all() method.
+    @param subj ID for subject node of blank()
+    @param pred ID for predicate node of blank()
+    @param obj ID for object node of blank()
+    @param doc ID for document node of blank()
+    @return iterator range of triples matching the query.
+    @details
+    The type of the range can be obtained from
+    @code template<bool Subj, bool Pred, bool Obj, bool Doc> class Query; @endcode
+    For example,
+    @code Query<1,0,0,1>::range_t range = triple_map.find(subj, blank(), blank(), doc); @endcode
+   */
+   template<class Subj, class Pred, class Obj, class Doc>
+   typename detail::Query_type<Subj,Pred,Obj,Doc>::query_t::range_t
+   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
+      return detail::Query_type<Subj,Pred,Obj,Doc>::query_t::find(*this, subj, pred, obj, doc);
    }
 
-   range_t range() const {return boost::make_iterator_range(store_);}
+   /**
+    @return iterator range of all stored triples
+   */
+   range_t all() const {return boost::make_iterator_range(store_);}
 
 private:
    store_t store_;

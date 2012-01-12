@@ -36,13 +36,13 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    Query<>::range_t r1 = tm.find(blank(), blank(), blank(), blank());
    BOOST_CHECK_EQUAL(boost::distance(r1), 3);
 
-   Query<Node_id>::range_t r2 = tm.find(Node_id(0), blank(), blank(), blank());
+   Query<1>::range_t r2 = tm.find(Node_id(0), blank(), blank(), blank());
    BOOST_CHECK_EQUAL(boost::distance(r2), 3);
 
-   Query<Node_id, blank, Node_id>::range_t r3 = tm.find(Node_id(0), blank(), Node_id(0), blank());
+   Query<1, 0, 1>::range_t r3 = tm.find(Node_id(0), blank(), Node_id(0), blank());
    BOOST_CHECK_EQUAL(boost::distance(r3), 3);
 
-   Query<Node_id, blank, Node_id>::range_t r4 = tm.find(Node_id(0), blank(), Node_id(1), blank());
+   Query<1, 0, 1>::range_t r4 = tm.find(Node_id(0), blank(), Node_id(1), blank());
    BOOST_CHECK_EQUAL(boost::distance(r4), 0);
 }
 
