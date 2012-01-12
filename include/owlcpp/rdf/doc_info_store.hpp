@@ -96,7 +96,7 @@ public:
    Node_id version(const id_type id) const;
 
    /**
-    @param nid node ID
+    @param id node ID
     @return pointer to document ID for the first document that has VersionIRI nid or,
     if not found, for the first document with OntologyIRI nid, or NULL if not found.
    */
