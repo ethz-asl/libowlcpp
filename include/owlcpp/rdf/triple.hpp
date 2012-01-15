@@ -13,8 +13,10 @@ namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-class Triple {
-public:
+struct Triple {
+   Node_id subj_, pred_, obj_;
+   Doc_id doc_;
+
    Triple(
             const Node_id subj, const Node_id pred,
             const Node_id obj, const Doc_id doc
@@ -26,9 +28,6 @@ public:
    Node_id object() const {return obj_;}
    Doc_id document() const {return doc_;}
 
-private:
-   Node_id subj_, pred_, obj_;
-   Doc_id doc_;
 };
 
 }//namespace owlcpp

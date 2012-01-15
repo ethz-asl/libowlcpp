@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_MAP_HPP_
 #define TRIPLE_MAP_HPP_
+#include "owlcpp/rdf/detail/triple_store_types.hpp"
 #include "boost/assert.hpp"
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
@@ -13,67 +14,16 @@ part of owlcpp project.
 #include "boost/multi_index/mem_fun.hpp"
 #include "boost/range.hpp"
 
-#include "owlcpp/rdf/triple.hpp"
+#include "owlcpp/rdf/detail/triple_store_types.hpp"
+#include "owlcpp/rdf/detail/triple_store_query.hpp"
 
-namespace owlcpp{ namespace detail{
-
-template<class,class,class,class> class Selector_1;
-template<class, class, class, class> struct Query_type;
-
-}//namespace detail
-
-template<bool,bool,bool,bool>class Query;
-
-struct blank{};
-
+namespace owlcpp{
 
 /**@brief Store, index, and search RDF triples
 *******************************************************************************/
 class Triple_map {
-
-//   struct seq_tag{};
-   struct subj_tag{};
-   struct pred_tag{};
-   struct obj_tag{};
-   struct doc_tag{};
-
-   typedef boost::multi_index_container<
-      Triple,
-      boost::multi_index::indexed_by<
-//         boost::multi_index::random_access<
-         boost::multi_index::sequenced<
-//            boost::multi_index::tag<seq_tag>
-         >,
-         boost::multi_index::hashed_non_unique<
-            boost::multi_index::tag<subj_tag>,
-            boost::multi_index::const_mem_fun<
-               Triple, Node_id, &Triple::subject
-            >
-         >,
-         boost::multi_index::hashed_non_unique<
-            boost::multi_index::tag<pred_tag>,
-            boost::multi_index::const_mem_fun<
-               Triple, Node_id, &Triple::predicate
-            >
-         >,
-         boost::multi_index::hashed_non_unique<
-            boost::multi_index::tag<obj_tag>,
-            boost::multi_index::const_mem_fun<
-               Triple, Node_id, &Triple::object
-            >
-         >,
-         boost::multi_index::hashed_non_unique<
-            boost::multi_index::tag<doc_tag>,
-            boost::multi_index::const_mem_fun<
-               Triple, Doc_id, &Triple::document
-            >
-         >
-      >
-   > store_t;
-
-   template<bool,bool,bool,bool> friend class Query;
-   template<class,class,class,class> friend class detail::Selector_1;
-
+//   template<bool,bool,bool,bool> friend class Query;
+   typedef query_detail::triple_map_store_t store_t;
 
 public:
    typedef store_t::iterator iter_t;
@@ -107,9 +57,10 @@ public:
     @code Query<1,0,0,1>::range_t range = triple_map.find(subj, blank(), blank(), doc); @endcode
    */
    template<class Subj, class Pred, class Obj, class Doc>
-   typename detail::Query_type<Subj,Pred,Obj,Doc>::query_t::range_t
+   typename query_detail::Query_type<Subj,Pred,Obj,Doc>::range_t
    find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
-      return detail::Query_type<Subj,Pred,Obj,Doc>::query_t::find(*this, subj, pred, obj, doc);
+      typedef typename query_detail::Query_type<Subj, Pred, Obj, Doc> q_type;
+      return q_type::range(store_, subj, pred, obj, doc);
    }
 
    /**
