@@ -10,10 +10,6 @@ part of owlcpp project.
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/member.hpp"
-#include "boost/multi_index/mem_fun.hpp"
-#include "boost/multi_index/global_fun.hpp"
-#include "boost/multi_index/ordered_index.hpp"
-#include "boost/tuple/tuple.hpp"
 
 #include "owlcpp/ns_id.hpp"
 #include "owlcpp/rdf/config.hpp"
@@ -30,21 +26,21 @@ class OWLCPP_RDF_DECL Iri_store {
 public:
    typedef Ns_id id_type;
 private:
-   typedef boost::tuple<id_type, std::string> entry_t;
+   typedef std::pair<id_type, std::string> entry_t;
 
    typedef boost::multi_index_container<
          entry_t,
          boost::multi_index::indexed_by<
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct id_tag>,
-               boost::multi_index::const_mem_fun<
-                  entry_t::inherited, id_type const&, &entry_t::get<0>
+               boost::multi_index::member<
+                  entry_t, id_type, &entry_t::first
                >
             >,
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct string_tag>,
-               boost::multi_index::const_mem_fun<
-                  entry_t::inherited, std::string const&, &entry_t::get<1>
+               boost::multi_index::member<
+                  entry_t, std::string, &entry_t::second
                >
             >
          >
@@ -59,6 +55,8 @@ private:
    friend class detail::Iri_tag_inserter;
 
 public:
+   typedef store_t::iterator iterator;
+
    struct Err : public base_exception {};
    Iri_store();
 
@@ -66,7 +64,7 @@ public:
 
    std::string const& operator[](const id_type iid) const {
       BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) != store_iri_.get<id_tag>().end());
-      return store_iri_.get<id_tag>().find(iid)->get<1>();
+      return store_iri_.get<id_tag>().find(iid)->second;
    }
 
    std::string const& at(const id_type iid) const {
@@ -77,7 +75,7 @@ public:
                << Err::msg_t("unknown IRI ID")
                << Err::int1_t(iid())
       );
-      return iter->get<1>();
+      return iter->second;
    }
 
    /**
@@ -88,7 +86,7 @@ public:
       string_index_t const& s_index = store_iri_.get<string_tag>();
       const string_iter_t s_iter = s_index.find(iri);
       if( s_iter == s_index.end() ) return 0;
-      return &s_iter->get<0>();
+      return &s_iter->first;
    }
 
    /**
@@ -99,7 +97,7 @@ public:
       id_index_t const& id_index = store_pref_.get<id_tag>();
       id_iter_t id_iter = id_index.find(iid);
       if( id_iter == id_index.end() ) return 0;
-      return &id_iter->get<1>();
+      return &id_iter->second;
    }
 
    /**
@@ -111,10 +109,10 @@ public:
       const string_iter_t s_iter = s_index.find(pref);
       if( s_iter == s_index.end() ) return 0;
       BOOST_ASSERT(
-               store_iri_.get<id_tag>().find(s_iter->get<0>()) !=
+               store_iri_.get<id_tag>().find(s_iter->first) !=
                         store_iri_.get<id_tag>().end()
       );
-      return &s_iter->get<0>();
+      return &s_iter->first;
    }
 
    void insert_prefix(const id_type iid, std::string const& prefix);
@@ -126,10 +124,10 @@ public:
          const id_type iid = tracker_.get();
          BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) == store_iri_.get<id_tag>().end());
          BOOST_ASSERT(store_pref_.get<id_tag>().find(iid) == store_pref_.get<id_tag>().end());
-         store_iri_.insert(boost::make_tuple(iid, iri));
+         store_iri_.insert(std::make_pair(iid, iri));
          return iid;
       }
-      return iri_s_iter->get<0>();
+      return iri_s_iter->first;
    }
 
    id_type insert(std::string const& iri, std::string const& prefix) {
@@ -147,17 +145,17 @@ public:
                   << Err::msg_t("same prefix for two IRIs")
                   << Err::str1_t(prefix)
                   << Err::str2_t(iri)
-                  << Err::str3_t((*this)[pref_s_iter->get<0>()])
+                  << Err::str3_t((*this)[pref_s_iter->first])
          );
-         store_iri_.insert(boost::make_tuple(iid, iri));
-         store_pref_.insert(boost::make_tuple(iid, prefix));
+         store_iri_.insert(std::make_pair(iid, iri));
+         store_pref_.insert(std::make_pair(iid, prefix));
          return iid;
       }
-      const id_type iid = iri_s_iter->get<0>();
+      const id_type iid = iri_s_iter->first;
       if( pref_s_iter == pref_i.end() ) {
-         store_pref_.insert(boost::make_tuple(iid, prefix));
+         store_pref_.insert(std::make_pair(iid, prefix));
       } else {
-         const id_type id2 = pref_s_iter->get<0>();
+         const id_type id2 = pref_s_iter->first;
          if( iid != id2 ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("inserting prefix used for another IRI")
@@ -171,6 +169,8 @@ public:
 
    void remove(const id_type id);
    void remove(std::string const& iri);
+   iterator begin() const {return store_iri_.begin();}
+   iterator end() const {return store_iri_.end();}
 
 protected:
    detail::Id_tracker<id_type> tracker_;

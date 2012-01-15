@@ -9,8 +9,7 @@ part of owlcpp project.
 #include "boost/assert.hpp"
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
-#include "boost/multi_index/mem_fun.hpp"
-#include "boost/tuple/tuple.hpp"
+#include "boost/multi_index/member.hpp"
 
 #include "owlcpp/node.hpp"
 #include "owlcpp/node_id.hpp"
@@ -28,21 +27,21 @@ class OWLCPP_RDF_DECL Node_store {
 public:
    typedef Node_id id_type;
 private:
-   typedef boost::tuple<id_type, Node> entry_t;
+   typedef std::pair<id_type, Node> entry_t;
 
    typedef boost::multi_index_container<
          entry_t,
          boost::multi_index::indexed_by<
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct id_tag>,
-               boost::multi_index::const_mem_fun<
-                  entry_t::inherited, id_type const&, &entry_t::get<0>
+               boost::multi_index::member<
+                  entry_t, id_type, &entry_t::first
                >
             >,
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct node_tag>,
-               boost::multi_index::const_mem_fun<
-                  entry_t::inherited, Node const&, &entry_t::get<1>
+               boost::multi_index::member<
+                  entry_t, Node, &entry_t::second
                >
             >
          >
@@ -55,20 +54,22 @@ private:
    friend class detail::Node_tag_inserter;
 
 public:
+   typedef store_t::iterator iterator;
+
    struct Err : public base_exception {};
    Node_store();
    std::size_t size() const {return store_.size();}
 
    Node const& operator[](const Node_id id) const {
       BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
-      return store_.get<id_tag>().find(id)->get<1>();
+      return store_.get<id_tag>().find(id)->second;
    }
 
    Node_id const* find(Node const& node) const {
       node_index_t const& node_index = store_.get<node_tag>();
       const node_iter_t node_iter = node_index.find(node);
       if( node_iter == node_index.end() ) return 0;
-      return &node_iter->get<0>();
+      return &node_iter->first;
    }
 
    Node const& at(const Node_id id) const {
@@ -79,8 +80,13 @@ public:
                << Err::msg_t("unknown node ID")
                << Err::int1_t(id())
       );
-      return iter->get<1>();
+      return iter->second;
    }
+
+   void remove(const id_type id);
+   void remove(Node const& node);
+   iterator begin() const {return store_.begin();}
+   iterator end() const {return store_.end();}
 
 protected:
    id_type insert(Node const& node) {
@@ -89,10 +95,10 @@ protected:
       if( node_iter == node_index.end() ) {
          const id_type id = tracker_.get();
          BOOST_ASSERT(store_.get<id_tag>().find(id) == store_.get<id_tag>().end());
-         store_.insert( boost::make_tuple(id, node) );
+         store_.insert( std::make_pair(id, node) );
          return id;
       }
-      return node_iter->get<0>();
+      return node_iter->first;
    }
 
    void insert(const Node_id id, Node const& node);

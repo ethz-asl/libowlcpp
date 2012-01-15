@@ -8,7 +8,6 @@ part of owlcpp project.
 #endif
 #include "owlcpp/rdf/iri_store.hpp"
 
-#include "boost/foreach.hpp"
 #include "boost/mpl/for_each.hpp"
 
 #include "iri_tag_vector_system.hpp"
@@ -35,8 +34,8 @@ void Iri_store::insert(const id_type id, std::string const& iri, std::string con
    );
    BOOST_ASSERT( ! find_prefix(prefix) );
 
-   store_iri_.insert(boost::make_tuple(id, iri));
-   store_pref_.insert(boost::make_tuple(id, prefix));
+   store_iri_.insert(std::make_pair(id, iri));
+   store_pref_.insert(std::make_pair(id, prefix));
    tracker_.ensure_min(id);
 }
 
@@ -54,9 +53,9 @@ void Iri_store::insert_prefix(const id_type iid, std::string const& prefix) {
    string_index_t const& pref_s_i = store_pref_.get<string_tag>();
    const string_iter_t pref_s_iter = pref_s_i.find(prefix);
    if( pref_s_iter == pref_s_i.end() ) {
-      store_pref_.insert(boost::make_tuple(iid, prefix));
+      store_pref_.insert(std::make_pair(iid, prefix));
    } else {
-      const id_type id2 = pref_s_iter->get<0>();
+      const id_type id2 = pref_s_iter->first;
       if( iid != id2 ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("inserting prefix used for another IRI")
@@ -92,7 +91,7 @@ void Iri_store::remove(std::string const& iri) {
             << Err::msg_t("removing non-existing IRI")
             << Err::str1_t(iri)
    );
-   const id_type iid = i->get<0>();
+   const id_type iid = i->first;
    string_index.erase(i);
    store_pref_.get<id_tag>().erase(iid);
    tracker_.push(iid);

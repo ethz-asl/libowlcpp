@@ -12,7 +12,6 @@ part of owlcpp project.
 #include "boost/multi_index/sequenced_index.hpp"
 //#include "boost/multi_index/random_access_index.hpp"
 #include "boost/multi_index/mem_fun.hpp"
-#include "boost/range.hpp"
 
 #include "owlcpp/rdf/detail/triple_store_types.hpp"
 #include "owlcpp/rdf/detail/triple_store_query.hpp"
@@ -26,8 +25,7 @@ class Triple_map {
    typedef query_detail::triple_map_store_t store_t;
 
 public:
-   typedef store_t::iterator iter_t;
-   typedef boost::iterator_range<iter_t> range_t;
+   typedef store_t::iterator iterator;
 
    /**@brief Insert a new triple
     @param triple
@@ -63,10 +61,8 @@ public:
       return q_type::range(store_, subj, pred, obj, doc);
    }
 
-   /**
-    @return iterator range of all stored triples
-   */
-   range_t all() const {return boost::make_iterator_range(store_);}
+   iterator begin() const {return store_.begin();}
+   iterator end() const {return store_.end();}
 
 private:
    store_t store_;

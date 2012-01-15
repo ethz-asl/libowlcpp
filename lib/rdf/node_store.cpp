@@ -31,8 +31,37 @@ void Node_store::insert(const Node_id id, Node const& node) {
    BOOST_ASSERT(
             store_.get<node_tag>().find(node) == store_.get<node_tag>().end()
    );
-   store_.insert( boost::make_tuple(id, node) );
+   store_.insert( std::make_pair(id, node) );
    tracker_.ensure_min(id);
+}
+
+/*
+*******************************************************************************/
+void Node_store::remove(const id_type id) {
+   id_index_t & id_index = store_.get<id_tag>();
+   id_iter_t i = id_index.find(id);
+   if( i == id_index.end() ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("removing non-existing node ID")
+            << Err::int1_t(id())
+   );
+   id_index.erase(id);
+   tracker_.push(id);
+}
+
+/*
+*******************************************************************************/
+void Node_store::remove(Node const& node) {
+   node_index_t& node_index = store_.get<node_tag>();
+   node_iter_t i = node_index.find(node);
+   if( i == node_index.end() ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("removing non-existing node")
+            << Err::str1_t(node.value_str())
+   );
+   const id_type id = i->first;
+   node_index.erase(i);
+   tracker_.push(id);
 }
 
 }//namespace owlcpp
