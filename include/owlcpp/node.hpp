@@ -24,7 +24,7 @@ public:
    Node(const Ns_id ns, std::string const& val)
    : val_(val), ns_(ns) {}
 
-   std::string const& value_str() const {return val_;}
+   std::string value_str() const {return val_;}
    Ns_id ns_id() const {return ns_;}
 
    bool operator<(const Node& n) const {

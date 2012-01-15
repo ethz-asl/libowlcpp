@@ -62,12 +62,12 @@ public:
 
    std::size_t size() const {return store_iri_.size();}
 
-   std::string const& operator[](const id_type iid) const {
+   std::string operator[](const id_type iid) const {
       BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) != store_iri_.get<id_tag>().end());
       return store_iri_.get<id_tag>().find(iid)->second;
    }
 
-   std::string const& at(const id_type iid) const {
+   std::string at(const id_type iid) const {
       id_index_t const& index = store_iri_.get<id_tag>();
       const id_iter_t iter = index.find(iid);
       if(iter == index.end()) BOOST_THROW_EXCEPTION(
@@ -91,13 +91,13 @@ public:
 
    /**
     @param iid namespace IRI ID
-    @return pointer to prefix string or NULL if no prefix was defined
+    @return IRI prefix string or "" if no prefix was defined
    */
-   std::string const* find_prefix(const id_type iid) const {
+   std::string find_prefix(const id_type iid) const {
       id_index_t const& id_index = store_pref_.get<id_tag>();
       id_iter_t id_iter = id_index.find(iid);
-      if( id_iter == id_index.end() ) return 0;
-      return &id_iter->second;
+      if( id_iter == id_index.end() ) return "";
+      return id_iter->second;
    }
 
    /**

@@ -19,7 +19,7 @@ public:
    {}
    Node_id iri() const {return iri_;}
    Node_id version() const {return version_;}
-   std::string const& path() const {return path_;}
+   std::string path() const {return path_;}
 
    bool operator<(Doc_info const& odi) const {
       if( iri() < odi.iri() ) return true;

@@ -18,7 +18,7 @@ BOOST_GLOBAL_FIXTURE( Exception_translator );
 BOOST_AUTO_TEST_CASE( case01 ) {
    Iri_store_owl is;
    BOOST_CHECK_EQUAL( is[terms::N_owl::id()], terms::N_owl::iri() );
-   BOOST_CHECK_EQUAL( *is.find_prefix(terms::N_owl::id()), terms::N_owl::prefix() );
+   BOOST_CHECK_EQUAL( is.find_prefix(terms::N_owl::id()), terms::N_owl::prefix() );
 }
 
 }//namespace test
