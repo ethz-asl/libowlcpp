@@ -81,10 +81,10 @@ private:
    typedef store_t::index<version_tag>::type version_index_t;
    typedef version_index_t::iterator version_iter_t;
 
-
-
 public:
    struct Err : public base_exception {};
+
+   //todo: redefine to point to Doc_id-s
    typedef boost::iterator_range<iri_iter_t> iri_range_t;
    typedef boost::iterator_range<version_iter_t> version_range_t;
 
@@ -96,11 +96,20 @@ public:
    Node_id version(const id_type id) const;
 
    /**
+    @param id node ID of document's OntologyIRI
+    @return
+   */
+   iri_range_t find_iri(const Node_id id) const;
+
+   version_range_t const* find_version(const Node_id id) const;
+
+
+   /**
     @param id node ID
     @return pointer to document ID for the first document that has VersionIRI nid or,
     if not found, for the first document with OntologyIRI nid, or NULL if not found.
    */
-   id_type const* find(const Node_id id) const;
+//   id_type const* find(const Node_id id) const;
 
 private:
    detail::Id_tracker<id_type> tracker_;
