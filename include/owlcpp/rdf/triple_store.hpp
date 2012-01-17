@@ -24,10 +24,42 @@ public:
    Doc_store const& documents() const {return doc_;}
    Triple_map const& triples() const {return triple_;}
 
-   Node_id insert_reference(std::string const&);
-   Node_id insert_literal(std::string const&);
-   Node_id insert_blank(std::string const&);
+   /**@brief if not already present, store IRI reference node
+    @param iri node IRI string;
+    consistent uniform representation of non-ascii characters is assumed
+    (e.g., UTF-8, or %HH)
+    @return node ID
+   */
+   Node_id insert_reference(std::string const& iri);
+
+   /**@brief if not already present, store literal node
+    @param str literal node value
+    @return node ID
+   */
+   Node_id insert_literal(std::string const& str);
+
+   /**@brief if not already present, store blank node
+    @param name node name;
+    name is assumed to be unique across all documents stored in Triple_store
+    @return node ID
+   */
+   Node_id insert_blank(std::string const& name);
+
+   /**
+    @param path
+    @param iri
+    @param version
+    @return
+   */
    Doc_id insert_doc(std::string const& path, std::string const& iri, std::string const& version);
+
+   /**
+    @param iri OntologyIRI or VersionIRI
+    @return pointer to document ID for the first document that has specified VersionIRI or,
+    if not found, for the first document that has specified OntologyIRI, or NULL if not found.
+   */
+   Doc_id const* find_doc(std::string const& iri) const;
+
    void insert_triple(const Node_id subj, const Node_id pred, const Node_id obj, const Doc_id doc);
 
 private:
