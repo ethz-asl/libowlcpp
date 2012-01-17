@@ -36,6 +36,14 @@ public:
    bool operator== (const Node& n) const {
       return ns_id() == n.ns_id() && value_str() == n.value_str();
    }
+
+   std::size_t hash() const {
+      std::size_t x = 0;
+      boost::hash_combine(x, ns_());
+      boost::hash_combine(x, boost::hash_value(val_));
+      return x;
+   }
+
 private:
    const std::string val_;
    const Ns_id ns_;
@@ -50,12 +58,7 @@ template<class ChT, class Tr> inline std::basic_ostream<ChT,Tr>& operator<<(
 
 /**
 *******************************************************************************/
-inline std::size_t hash_value(Node const& n) {
-   std::size_t x = 0;
-   boost::hash_combine(x, n.ns_id()());
-   boost::hash_combine(x, boost::hash_value(n.value_str()));
-   return x;
-}
+inline std::size_t hash_value(Node const& n) { return n.hash(); }
 
 
 }//namespace owlcpp
