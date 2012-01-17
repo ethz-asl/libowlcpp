@@ -13,14 +13,15 @@ namespace owlcpp{ namespace detail{
 /**@brief Insert standard IRI tags into IRI store
 *******************************************************************************/
 class Iri_tag_inserter {
+   Iri_tag_inserter();
 public:
-   Iri_tag_inserter(Iri_store& store) : store_(store) {}
+   Iri_tag_inserter(Iri_store& store) : store_(&store) {}
 
    template<class T> void operator()(const T&) const {
-      store_.insert(T::id(), T::iri(), T::prefix());
+      store_->insert(T::id(), T::iri(), T::prefix());
    }
 private:
-   mutable Iri_store& store_;
+   mutable Iri_store* store_;
 };
 
 }//namespace detail
