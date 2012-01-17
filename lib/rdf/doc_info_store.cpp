@@ -64,18 +64,4 @@ Node_id Doc_store::version(const id_type id) const {
    return store_.get<id_tag>().find(id)->version_id_;
 }
 
-/*
-Doc_store::id_type const* Doc_store::find(const Node_id id) const {
-   version_index_t const& v_ind = store_.get<version_tag>();
-   version_iter_t v_iter = v_ind.find(id);
-   if( v_iter != v_ind.end() ) return &v_iter->id_;
-
-   iri_index_t const& iri_ind = store_.get<iri_tag>();
-   iri_iter_t iri_iter = iri_ind.find(id);
-   if( iri_iter != iri_ind.end() ) return &iri_iter->id_;
-
-   return 0;
-}
-*******************************************************************************/
-
 }//namespace owlcpp

@@ -9,8 +9,6 @@ part of owlcpp project.
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/member.hpp"
-#include "boost/iterator/iterator_adaptor.hpp"
-#include "boost/iterator/indirect_iterator.hpp"
 #include "boost/range.hpp"
 
 #include "owlcpp/rdf/config.hpp"
@@ -18,6 +16,7 @@ part of owlcpp project.
 #include "owlcpp/exception.hpp"
 #include "owlcpp/rdf/doc_id.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
+#include "owlcpp/detail/member_iterator.hpp"
 
 namespace owlcpp{
 
@@ -39,21 +38,6 @@ private:
       std::string path_;
       Node_id iri_id_;
       Node_id version_id_;
-   };
-
-   template<class Iter, typename Value, Value Iter::value_type::*Member > class Member_access
-   : public boost::iterator_adaptor<Member_access<Iter, Value, Member>, Iter, Value> {
-
-      typedef boost::iterator_adaptor<Member_access<Iter, Value, Member>, Iter, Value> super_t;
-      friend class boost::iterator_core_access;
-   public:
-      Member_access() {}
-      Member_access(Iter i) : super_t(i) {}
-
-   private:
-      typename super_t::reference dereference() const {
-         return (*this->base()).*Member;
-      }
    };
 
    typedef boost::multi_index_container<
@@ -101,10 +85,10 @@ private:
 public:
    struct Err : public base_exception {};
 
-   typedef Member_access<iri_iter_t, const id_type, &entry_t::id_> iri_iterator;
+   typedef Member_iterator<iri_iter_t, const id_type, &entry_t::id_> iri_iterator;
    typedef boost::iterator_range<iri_iterator> iri_range;
 
-   typedef Member_access<version_iter_t, const id_type, &entry_t::id_> version_iterator;
+   typedef Member_iterator<version_iter_t, const id_type, &entry_t::id_> version_iterator;
    typedef boost::iterator_range<version_iterator> version_range;
 
    Doc_store() : tracker_(), store_() {}
@@ -133,14 +117,6 @@ public:
                version_iterator(v_ind.end())
       );
    }
-
-
-   /**
-    @param id node ID
-    @return pointer to document ID for the first document that has VersionIRI nid or,
-    if not found, for the first document with OntologyIRI nid, or NULL if not found.
-   */
-//   id_type const* find(const Node_id id) const;
 
 private:
    detail::Id_tracker<id_type> tracker_;
