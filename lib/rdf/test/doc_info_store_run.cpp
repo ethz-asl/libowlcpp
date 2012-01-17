@@ -27,10 +27,11 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    );
 
    ds.insert(path2, Node_id(13), Node_id(1));
-   Doc_id const* did = ds.find(Node_id(1));
-   BOOST_REQUIRE(did);
-   BOOST_CHECK_EQUAL(Node_id(13), ds.iri(*did));
-   BOOST_CHECK_EQUAL(Node_id(1), ds.version(*did));
+   Doc_store::iri_range ir1 = ds.find_iri(Node_id(13));
+   BOOST_CHECK(ir1);
+   const Doc_id id1 = ir1.front();
+   BOOST_CHECK_EQUAL(Node_id(13), ds.iri(id1));
+   BOOST_CHECK_EQUAL(Node_id(1), ds.version(id1));
 }
 
 }//namespace test
