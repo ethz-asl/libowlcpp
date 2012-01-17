@@ -65,6 +65,8 @@ public:
       return store_.get<id_tag>().find(id)->second;
    }
 
+   //TODO: implement range_t find(const Ns_id) const;
+
    Node_id const* find(Node const& node) const {
       node_index_t const& node_index = store_.get<node_tag>();
       const node_iter_t node_iter = node_index.find(node);
