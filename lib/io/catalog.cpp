@@ -1,99 +1,28 @@
-/** @file "/owlcpp/lib/io/catalog.cpp"
+/** @file "/owlcpp/lib/io/catalog.cpp" 
 part of owlcpp project.
-@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-@n Copyright Mikhail K Levin 2010
+@n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n Copyright Mikhail K Levin 2012
 *******************************************************************************/
 #ifndef OWLCPP_IO_SOURCE
 #define OWLCPP_IO_SOURCE
 #endif
-
 #include "owlcpp/io/catalog.hpp"
-#include "boost/foreach.hpp"
 
 namespace owlcpp {
 
 /*
 *******************************************************************************/
-void Catalog::insert(
-      const std::string& path,
-      const std::string& iri,
-      const std::string& version
+Doc_id Catalog::insert_doc(
+         std::string const& path,
+         std::string const& iri,
+         std::string const& version
 ) {
-   if( path.empty() ) BOOST_THROW_EXCEPTION(
-         Err() << Err::msg_t("empty ontology location")
-   );
-
-   if( iri.empty() ) BOOST_THROW_EXCEPTION(
-         Err() << Err::msg_t("empty ontology IRI")
-   );
-
-   by_path_t& by_path = stor_.get<0>();
-   path_iter_t pi = by_path.find(path);
-
-   //check for duplicate locations
-   if( pi != by_path.end() ) {
-      //different ontology at same location
-      if( pi->iri != iri || pi->version != version ) {
-         BOOST_THROW_EXCEPTION(
-               Err() << Err::msg_t("duplicate location") << Err::str1_t(path)
-         );
-      }
-      //same ontology at same location -- do nothing
-      return;
-   }
-
-   //check for duplicate non-empty version
-   if( ! version.empty() ) {
-      by_version_t& by_version = stor_.get<2>();
-      version_iter_t vi = by_version.find(version);
-      if( vi != by_version.end() )
-         BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("duplicate version")
-               << Err::str1_t(path)
-               << Err::str2_t(vi->path)
-               << Err::str3_t(version)
-         );
-   }
-
-   //check for duplicate ID
-   by_iri_t& by_iri = stor_.get<1>();
-   iri_range_t iri_range = by_iri.equal_range(iri);
-   BOOST_FOREACH(const Location& loc, iri_range) {
-      if( loc.version == version ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("duplicate ontology")
-               << Err::str1_t(path)
-               << Err::str2_t(loc.path)
-               << Err::str3_t(loc.iri)
-         );
-   }
-
-   stor_.insert(pi, Location(path, iri, version));
+   const Node_id iid = insert_iri_node(iri);
+   if( version.empty() ) return doc_.insert(path, iid);
+   const Node_id vid = insert_iri_node(version);
+   return doc_.insert(path, iid, vid);
 }
 
-/*
-*******************************************************************************/
-const std::string& Catalog::find_location(const std::string& iri) const {
-   if( iri.empty() ) BOOST_THROW_EXCEPTION(
-         Err() << Err::msg_t("empty ontology IRI")
-   );
 
-   //search versions
-   const by_version_t& by_version = stor_.get<2>();
-   version_iter_t vi = by_version.find(iri);
-   if( vi != by_version.end() ) return vi->path;
-
-   //search IRIs
-   const by_iri_t& by_iri = stor_.get<1>();
-   iri_iter_t ii = by_iri.find(iri);
-   if( ii != by_iri.end() ) return ii->path;
-
-   BOOST_THROW_EXCEPTION(
-         Not_found_err()
-         << Not_found_err::msg_t("not found")
-         << Not_found_err::str1_t(iri)
-   );
-}
 
 }//namespace owlcpp
