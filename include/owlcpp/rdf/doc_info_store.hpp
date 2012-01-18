@@ -96,7 +96,8 @@ public:
    id_type insert(std::string const& path, const Node_id iri, const Node_id ver);
    id_type insert(std::string const& path, const Node_id iri);
    Node_id iri(const id_type id) const;
-   Node_id version(const id_type id) const;
+   Node_id const* version(const id_type id) const;
+   std::string path(const id_type id) const;
 
    /**
     @param id node ID of document's OntologyIRI

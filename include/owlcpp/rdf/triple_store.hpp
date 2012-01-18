@@ -30,20 +30,20 @@ public:
     (e.g., UTF-8, or %HH)
     @return node ID
    */
-   Node_id insert_reference(std::string const& iri);
+   Node_id insert_iri_node(std::string const& iri);
 
    /**@brief if not already present, store literal node
     @param str literal node value
     @return node ID
    */
-   Node_id insert_literal(std::string const& str);
+   Node_id insert_lit_node(std::string const& str);
 
    /**@brief if not already present, store blank node
     @param name node name;
     name is assumed to be unique across all documents stored in Triple_store
     @return node ID
    */
-   Node_id insert_blank(std::string const& name);
+   Node_id insert_blank_node(std::string const& name);
 
    /**
     @param path
@@ -51,7 +51,17 @@ public:
     @param version
     @return
    */
-   Doc_id insert_doc(std::string const& path, std::string const& iri, std::string const& version);
+   Doc_id insert_doc(
+            std::string const& path,
+            std::string const& iri,
+            std::string const& version = std::string()
+   );
+
+   /**
+    @param iri node IRI
+    @return pointer to node ID or NULL if not found.
+   */
+   Node_id const* find_iri_node(std::string const& iri) const;
 
    /**
     @param iri OntologyIRI or VersionIRI
@@ -60,7 +70,20 @@ public:
    */
    Doc_id const* find_doc(std::string const& iri) const;
 
-   void insert_triple(const Node_id subj, const Node_id pred, const Node_id obj, const Doc_id doc);
+   void insert_triple(
+            const Node_id subj,
+            const Node_id pred,
+            const Node_id obj,
+            const Doc_id doc
+   ) {
+      triple_.insert(Triple(subj, pred, obj, doc));
+   }
+
+   Node const& operator[](const Node_id nid) const {return node_[nid];}
+   std::string operator[](const Ns_id iid) const {return iri_[iid];}
+   Node const& iri(const Doc_id did) const {return node_[doc_.iri(did)];}
+   Node const* version(const Doc_id did) const;
+   std::string path(const Doc_id did) const {return doc_.path(did);}
 
 private:
    Iri_store_owl iri_;

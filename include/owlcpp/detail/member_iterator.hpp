@@ -18,7 +18,7 @@ namespace owlcpp{
 typedef Member_iterator<std::map<int,double>, const int, @std::pair<int,double>::first> int_iterator_t;
 @endcode
 *******************************************************************************/
-template<class Iter, typename Value, Value Iter::value_type::*Member >
+template<class Iter, typename Value, Value Iter::value_type::*Member>
 class Member_iterator
 : public boost::iterator_adaptor<Member_iterator<Iter, Value, Member>, Iter, Value> {
 

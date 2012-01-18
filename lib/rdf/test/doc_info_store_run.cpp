@@ -31,7 +31,10 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK(ir1);
    const Doc_id id1 = ir1.front();
    BOOST_CHECK_EQUAL(Node_id(13), ds.iri(id1));
-   BOOST_CHECK_EQUAL(Node_id(1), ds.version(id1));
+
+   //document versionIRI is returned by pointer
+   BOOST_REQUIRE_MESSAGE(ds.version(id1), "versionIRI exists");
+   BOOST_CHECK_EQUAL(Node_id(1), *ds.version(id1));
 }
 
 }//namespace test

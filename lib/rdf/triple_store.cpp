@@ -7,12 +7,13 @@ part of owlcpp project.
 #define OWLCPP_RDF_SOURCE
 #endif
 #include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/terms/iri_tags_system.hpp"
 
 namespace owlcpp {
 
 /*
 *******************************************************************************/
-Node_id Triple_store::insert_reference(std::string const& iri) {
+Node_id Triple_store::insert_iri_node(std::string const& iri) {
    const std::size_t n = iri.find('#');
    if( std::string::npos == n ) {
       const Ns_id nid = iri_.insert(iri);
@@ -24,16 +25,14 @@ Node_id Triple_store::insert_reference(std::string const& iri) {
 
 /*
 *******************************************************************************/
-Node_id Triple_store::insert_literal(std::string const&) {
-
-   //todo:
+Node_id Triple_store::insert_lit_node(std::string const& val) {
+   return node_.insert( Node(terms::N_empty::id(), val) );
 }
 
 /*
 *******************************************************************************/
-Node_id Triple_store::insert_blank(std::string const&) {
-
-   //todo:
+Node_id Triple_store::insert_blank_node(std::string const& name) {
+   return node_.insert( Node(terms::N_blank::id(), name) );
 }
 
 /*
@@ -41,39 +40,51 @@ Node_id Triple_store::insert_blank(std::string const&) {
 Doc_id Triple_store::insert_doc(
          std::string const& path,
          std::string const& iri,
-         std::string const& version) {
-
-   //todo:
+         std::string const& version
+) {
+   const Node_id iid = insert_iri_node(iri);
+   if( version.empty() ) return doc_.insert(path, iid);
+   const Node_id vid = insert_iri_node(version);
+   return doc_.insert(path, iid, vid);
 }
 
 /*
 *******************************************************************************/
-void Triple_store::insert_triple(
-         const Node_id subj,
-         const Node_id pred,
-         const Node_id obj,
-         const Doc_id doc) {
-
-   //todo:
+Node_id const* Triple_store::find_iri_node(std::string const& iri) const {
+   const std::size_t n = iri.find('#');
+   Ns_id const * iid;
+   if( std::string::npos == n ) {
+      iid = iri_.find_iri(iri);
+      if( ! iid ) return 0;
+      return node_.find( Node(*iid, ""));
+   } else {
+      iid = iri_.find_iri(iri.substr(0, n));
+      if( ! iid ) return 0;
+      return node_.find( Node(*iid, iri.substr(n+1)));
+   }
 }
-
 
 /*
 *******************************************************************************/
 Doc_id const* Triple_store::find_doc(std::string const& iri) const {
-   //todo:
-/*
-   version_index_t const& v_ind = store_.get<version_tag>();
-   version_iter_t v_iter = v_ind.find(id);
-   if( v_iter != v_ind.end() ) return &v_iter->id_;
-
-   iri_index_t const& iri_ind = store_.get<iri_tag>();
-   iri_iter_t iri_iter = iri_ind.find(id);
-   if( iri_iter != iri_ind.end() ) return &iri_iter->id_;
-
+   Node_id const* nid = find_iri_node(iri);
+   if( ! nid ) return 0;
+   const Doc_store::version_range vr = doc_.find_version(*nid);
+   if( vr ) return &vr.front();
+   const Doc_store::iri_range ir = doc_.find_iri(*nid);
+   if( ir ) return &ir.front();
    return 0;
-*/
+}
+
+/*
+*******************************************************************************/
+Node const* Triple_store::version(const Doc_id did) const {
+   Node_id const* nid = doc_.version(did);
+   if( nid ) return &node_[*nid];
+   return 0;
 }
 
 
+/*
+*******************************************************************************/
 }//namespace owlcpp

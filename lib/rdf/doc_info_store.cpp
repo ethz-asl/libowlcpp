@@ -59,9 +59,18 @@ Node_id Doc_store::iri(const id_type id) const {
 
 /*
 *******************************************************************************/
-Node_id Doc_store::version(const id_type id) const {
+Node_id const* Doc_store::version(const id_type id) const {
    BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
-   return store_.get<id_tag>().find(id)->version_id_;
+   const id_iter_t i = store_.get<id_tag>().find(id);
+   if( i->version_id_ == terms::T_empty_::id() ) return 0;
+   return &i->version_id_;
+}
+
+/*
+*******************************************************************************/
+std::string Doc_store::path(const id_type id) const {
+   BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
+   return store_.get<id_tag>().find(id)->path_;
 }
 
 }//namespace owlcpp
