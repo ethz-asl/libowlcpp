@@ -7,7 +7,6 @@ part of owlcpp project.
 #define BOOST_TEST_MODULE id_01_run
 #include "boost/test/unit_test.hpp"
 #include <iostream>
-#include "test/sample_data.hpp"
 #include "owlcpp/detail/comparable_value.hpp"
 
 namespace owlcpp{ namespace test{
