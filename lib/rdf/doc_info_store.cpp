@@ -14,7 +14,11 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-Doc_store::id_type Doc_store::insert(std::string const& path, const Node_id iri, const Node_id ver) {
+Doc_store::id_type Doc_store::insert(
+         std::string const& path,
+         const Node_id iri,
+         const Node_id ver
+) {
    path_index_t const& path_index = store_.get<path_tag>();
    path_iter_t path_iter = path_index.find(path);
 

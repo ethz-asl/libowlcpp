@@ -91,8 +91,11 @@ public:
    typedef Member_iterator<version_iter_t, const id_type, &entry_t::id_> version_iterator;
    typedef boost::iterator_range<version_iterator> version_range;
 
+   typedef Member_iterator<store_t::iterator, const id_type, &entry_t::id_> id_iterator;
+
    Doc_store() : tracker_(), store_() {}
 
+   std::size_t size() const {return store_.size();}
    id_type insert(std::string const& path, const Node_id iri, const Node_id ver);
    id_type insert(std::string const& path, const Node_id iri);
    Node_id iri(const id_type id) const;
@@ -118,6 +121,9 @@ public:
                version_iterator(v_ind.end())
       );
    }
+
+   id_iterator begin() const {return id_iterator(store_.begin());}
+   id_iterator end() const {return id_iterator(store_.end());}
 
 private:
    detail::Id_tracker<id_type> tracker_;
