@@ -24,6 +24,7 @@ BOOST_AUTO_TEST_CASE( iri_store01_case01 ) {
    const Ns_id id1 = is.insert(iri1);
    BOOST_CHECK_MESSAGE( id1 == is.insert(iri1), "same ID from inserting duplicates" );
    const Ns_id id2 = is.insert(iri2);
+   BOOST_CHECK_NE(id1, id2);
    BOOST_CHECK_EQUAL(is[id1], iri1);
    BOOST_CHECK_EQUAL(is.at(id1), iri1);
    BOOST_CHECK_MESSAGE( is.find_prefix(id1) == "", "should return empty string" );
