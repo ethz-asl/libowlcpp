@@ -18,8 +18,8 @@ namespace owlcpp{
 
 /*
 *******************************************************************************/
-Node_store_owl::Node_store_owl() : Node_store() {
-   detail::Node_tag_inserter nti(*this);
+Node_store_owl::Node_store_owl() {
+   detail::Node_tag_inserter nti(store_);
    boost::mpl::for_each<terms::mpl_vector_terms_rdfs_t>(nti);
    boost::mpl::for_each<terms::mpl_vector_terms_rdf_t>(nti);
    boost::mpl::for_each<terms::mpl_vector_terms_owl1_t>(nti);
@@ -37,7 +37,7 @@ Node_id Node_store_owl::insert(Node const& node) {
             << Err::str1_t( node.value_str() )
             << Err::int1_t( node.ns_id()() )
    );
-   return Node_store::insert(node);
+   return store_.insert(node);
 }
 
 }//namespace owlcpp

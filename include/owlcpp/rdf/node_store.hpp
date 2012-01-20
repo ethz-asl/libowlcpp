@@ -90,7 +90,6 @@ public:
    iterator begin() const {return store_.begin();}
    iterator end() const {return store_.end();}
 
-protected:
    id_type insert(Node const& node) {
       node_index_t const& node_index = store_.get<node_tag>();
       const node_iter_t node_iter = node_index.find(node);
@@ -103,12 +102,11 @@ protected:
       return node_iter->first;
    }
 
-   void insert(const Node_id id, Node const& node);
-
 private:
    detail::Id_tracker<id_type> tracker_;
    store_t store_;
 
+   void insert(const Node_id id, Node const& node);
 };
 
 }//namespace owlcpp
