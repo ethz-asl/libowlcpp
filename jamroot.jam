@@ -36,8 +36,9 @@ project owlcpp
 
 alias test
    : #sources
-      lib/test
-      apps/test
+      lib/rdf/test
+      lib/io/test
+#      apps/test
    : #requirements
 ;
 
@@ -52,8 +53,8 @@ build-project lib ;
 use-project /owlcpp : . ;
 alias rdf : lib/rdf ;
 alias io : lib/io ;
-alias reasoner : lib/reasoner ;
-alias apps : ./apps ;
+# alias reasoner : lib/reasoner ;
+# alias apps : ./apps ;
 alias factpp_kernel : external//factpp_kernel ;
 alias expat : external//expat ;
 alias raptor : external//raptor ;
