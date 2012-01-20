@@ -84,7 +84,6 @@ Node const* Triple_store::version(const Doc_id did) const {
    return 0;
 }
 
-
 /*
 *******************************************************************************/
 }//namespace owlcpp

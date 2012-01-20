@@ -23,6 +23,32 @@ Doc_id Catalog::insert_doc(
    return doc_.insert(path, iid, vid);
 }
 
+/*
+*******************************************************************************/
+Node const* Catalog::version(const Doc_id did) const {
+   Node_id const* nid = doc_.version(did);
+   if( nid ) return &node_[*nid];
+   return 0;
+}
+
+/*
+*******************************************************************************/
+Node_id Catalog::insert_iri_node(std::string const& iri) {
+   const std::size_t n = iri.find('#');
+   if( std::string::npos == n ) {
+      const Ns_id nid = iri_.insert(iri);
+      return node_.insert(Node(nid, ""));
+   }
+   const Ns_id nid = iri_.insert(iri.substr(0,n));
+   return node_.insert( Node(nid, iri.substr(n+1)) );
+}
+
+/*
+*******************************************************************************/
+Catalog& Catalog::add(const boost::filesystem::path path, const bool recurse) {
+   //TODO:
+   return *this;
+}
 
 
 }//namespace owlcpp
