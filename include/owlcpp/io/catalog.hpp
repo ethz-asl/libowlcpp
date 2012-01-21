@@ -54,7 +54,7 @@ public:
     @return reference to self
     @throw Err
    */
-   Catalog& add(const boost::filesystem::path path, const bool recurse = false);
+   Catalog& add(boost::filesystem::path const& path, const bool recurse = false);
 
 private:
    Iri_store iri_;
@@ -69,6 +69,10 @@ private:
    */
    Node_id insert_iri_node(std::string const& iri);
 };
+
+/**
+*******************************************************************************/
+std::pair<std::string,std::string> read_id(boost::filesystem::path const& path);
 
 }//namespace owlcpp
 #endif /* CATALOG_HPP_ */
