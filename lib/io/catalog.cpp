@@ -8,6 +8,12 @@ part of owlcpp project.
 #endif
 #include "owlcpp/io/catalog.hpp"
 
+#include "boost/filesystem/fstream.hpp"
+#include "boost/filesystem.hpp"
+
+#include "parse.hpp"
+#include "adaptor_iri_finder.hpp"
+
 namespace owlcpp {
 
 /*
@@ -45,7 +51,12 @@ Node_id Catalog::insert_iri_node(std::string const& iri) {
 
 /*
 *******************************************************************************/
-Catalog& Catalog::add(const boost::filesystem::path path, const bool recurse) {
+Catalog& Catalog::add(boost::filesystem::path const& path, const bool recurse) {
+   const unsigned char base_iri[] = "IRI not found";
+   Rdf_parser parser = Rdf_parser::rdfxml(base_iri);
+   detail::Iri_finder irif;
+   boost::filesystem::ifstream is(path);
+   parser(is, irif, 0);
    //TODO:
    return *this;
 }

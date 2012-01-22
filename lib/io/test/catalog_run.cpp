@@ -5,18 +5,21 @@ part of owlcpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE catalog_run
 #include "boost/test/unit_test.hpp"
-#include "test/exception_translator.hpp"
+#include "test/exception_fixture.hpp"
+#include "test/sample_data.hpp"
 #include "owlcpp/io/catalog.hpp"
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_translator );
+BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Catalog cat;
-   cat.add("some/path/").add(std::string("some/other/path/"));
+   cat.add(sample_file_path("version_test_b.owl"));
+
+   BOOST_ERROR("");
 }
 
 }//namespace test

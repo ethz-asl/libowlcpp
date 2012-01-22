@@ -7,7 +7,7 @@ part of owlcpp project.
 #define PARSE_HPP_
 #include <iosfwd>
 #include <string>
-#include "raptor_triple.hpp"
+//#include "raptor_triple.hpp"
 #include "owlcpp/exception.hpp"
 
 typedef std::basic_string<unsigned char> ustring_t;
@@ -26,9 +26,7 @@ public:
    //Raptor prefers unsigned chars
    typedef std::basic_string<unsigned char> string_t;
 
-   struct Err : public base_exception {
-      typedef b::error_info<struct errinfo_line_num_, unsigned> line_num_t;
-   };
+   struct Err : public base_exception {};
    static Rdf_parser rdfxml(const string_t&);
 
    ~Rdf_parser();
@@ -56,15 +54,12 @@ private:
    );
 
    template<class Sink> static void handle_statement(void* sink, const void* rs) {
-      const triple_t triple = convert_statement(rs);
-      reinterpret_cast<Sink*>(sink)->insert(triple);
+      reinterpret_cast<Sink*>(sink)->insert(rs);
    }
 
    template<class Sink> static bool stop_parsing(const void* sink) {
       return reinterpret_cast<const Sink*>(sink)->stop_parsing();
    }
-
-   static triple_t convert_statement(const void* rs);
 };
 
 

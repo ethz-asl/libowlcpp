@@ -98,7 +98,7 @@ void Rdf_parser::parse(
          BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("RDF error")
-               << Err::line_num_t(ln)
+               << Err::int1_t(ln)
 //               << Err::str1_t(str)
                << Err::nested_t(b::copy_exception(e))
          );
@@ -108,7 +108,6 @@ void Rdf_parser::parse(
 
 namespace{
 /**
-*******************************************************************************/
 inline Term convert_term(
       const raptor_term* rt
 ) {
@@ -124,10 +123,10 @@ inline Term convert_term(
       return Term(Unknown, "");
    }
 }
+*******************************************************************************/
 }//namespace anonymous
 
 /*
-*******************************************************************************/
 triple_t Rdf_parser::convert_statement(const void* rs) {
    const raptor_statement* stat = reinterpret_cast<const raptor_statement*>(rs);
    triple_t triple(
@@ -137,6 +136,7 @@ triple_t Rdf_parser::convert_statement(const void* rs) {
    );
    return triple;
 }
+*******************************************************************************/
 
 /**
 *******************************************************************************/

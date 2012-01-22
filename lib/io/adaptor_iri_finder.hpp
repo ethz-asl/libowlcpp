@@ -5,8 +5,12 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef ADAPTOR_IRI_FINDER_HPP_
 #define ADAPTOR_IRI_FINDER_HPP_
+#include "boost/assert.hpp"
 
 #include "raptor2.h"
+
+#include "owlcpp/terms/node_tags_owl.hpp"
+#include "owlcpp/terms/term_methods.hpp"
 
 namespace owlcpp{ namespace detail{
 
@@ -18,8 +22,37 @@ public:
 
    bool stop_parsing() const {return stop_parsing_;}
 
-   void insert(raptor_statement const* rs) {
+   void insert(void const* statement) {
+      const raptor_statement* rs = static_cast<const raptor_statement*>(statement);
+      std::cout
+      << raptor_term_to_string(rs->subject) << ' '
+      << raptor_term_to_string(rs->predicate) << ' '
+      << raptor_term_to_string(rs->object) << '\n'
+      ;
+      if(
+               rs->subject->type != RAPTOR_TERM_TYPE_URI ||
+               rs->predicate->type != RAPTOR_TERM_TYPE_URI ||
+               rs->object->type != RAPTOR_TERM_TYPE_URI
+      ) return;
+      std::size_t obj_len;
+      unsigned char const* obj =
+               raptor_uri_as_counted_string(rs->object->value.uri, &obj_len);
+      if( ! comparison(reinterpret_cast<char const*>(obj), obj_len, terms::T_owl_Ontology()) ) return;
+
+      std::size_t pred_len;
+      unsigned char const* pred =
+               raptor_uri_as_counted_string(rs->predicate->value.uri, &pred_len);
 /*
+      if(
+               rs->predicate->type == RAPTOR_TERM_TYPE_URI &&
+               comparison(
+//                        raptor_uri_as_counted_string(rs->predicate->value.uri->string,
+                        rs->predicate->value.uri->length,
+                        terms::T_owl_Ontology()
+               )
+      ) {
+
+      }
       if(
             triple.get<2>().type == Resource &&
             triple.get<2>().value == owl_Ontology() &&
@@ -62,18 +95,6 @@ private:
    std::string version_;
    bool stop_parsing_;
 
-   static const std::string& owl_Ontology() {
-      static const std::string s = full_name(ot::T_owl_Ontology());
-      return s;
-   }
-   static const std::string& rdf_type() {
-      static const std::string s = full_name(ot::T_rdf_type());
-      return s;
-   }
-   static const std::string& owl_versionIRI() {
-      static const std::string s = full_name(ot::T_owl_versionIRI());
-      return s;
-   }
 };
 
 }//namespace detail
