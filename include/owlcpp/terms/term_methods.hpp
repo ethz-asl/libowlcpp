@@ -6,6 +6,7 @@ part of owlcpp project.
 #ifndef TERM_METHODS_HPP_
 #define TERM_METHODS_HPP_
 #include <string>
+#include <cstring>
 
 namespace owlcpp{ namespace terms{
 
@@ -23,6 +24,56 @@ template<class T> inline std::string short_name(const T&) {
    return ns_t::prefix() + ":" + T::name();
 }
 
+/** compare strings with standard terms
+*******************************************************************************/
+template<class T> inline bool
+comparison(char const* str, const std::size_t len, T const&) {
+   typedef typename T::ns_type ns_t;
+   if( len != ns_t::iri().size() + T::name().size() + 1 ) return false;
+   if(
+            ns_t::iri().compare(
+                     0,
+                     ns_t::iri().size(),
+                     str,
+                     0,
+                     ns_t::iri().size()
+            ) != 0
+   ) return false;
+   if( str[ns_t::iri().size()] != '#' ) return false;
+   return T::name().compare(
+            0,
+            T::name().size(),
+            str,
+            ns_t::iri().size() + 1,
+            T::name().size()
+   ) == 0;
+}
+
+template<class T> inline bool comparison(std::string const& str, T const&) {
+   typedef typename T::ns_type ns_t;
+   if( str.size() != ns_t::iri().size() + T::name().size() + 1 ) return false;
+   if(
+            ns_t::iri().compare(
+                     0,
+                     ns_t::iri().size(),
+                     str,
+                     0,
+                     ns_t::iri().size()
+            ) != 0
+   ) return false;
+   if( str[ns_t::iri().size()] != '#' ) return false;
+   return T::name().compare(
+            0,
+            T::name().size(),
+            str,
+            ns_t::iri().size() + 1,
+            T::name().size()
+   ) == 0;
+}
+
+template<class T> inline bool comparison(char const* str, T const&) {
+   return comparison(str, std::strlen(str), T());
+}
 
 }//namespace terms
 }//namespace owlcpp

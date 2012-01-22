@@ -17,7 +17,6 @@ part of owlcpp project.
 
 #include "owlcpp/terms/detail/uri_typename_macro.hpp"
 #include "owlcpp/terms/detail/term_typename_macro.hpp"
-#include "owlcpp/config.hpp"
 
 /**@brief Generate light-weight type definition for standard OWL term
 @details OWLCPP_STD_TERM_TYPE( , , 2, (rdfs)(subClassOf))
