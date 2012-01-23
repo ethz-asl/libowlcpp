@@ -5,7 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_STORE_OWL_HPP_
 #define NODE_STORE_OWL_HPP_
-#include "owlcpp/rdf/node_store.hpp"
+#include "owlcpp/rdf/node_map.hpp"
 #include "owlcpp/rdf/config.hpp"
 
 namespace owlcpp{
@@ -14,7 +14,7 @@ namespace owlcpp{
 *******************************************************************************/
 class OWLCPP_RDF_DECL Node_store_owl {
 public:
-   typedef Node_store::iterator iterator;
+   typedef Node_map::iterator iterator;
    struct Err : public base_exception {};
    Node_store_owl();
    std::size_t size() const {return store_.size();}
@@ -34,7 +34,7 @@ public:
    Node_id insert(Node const& node);
 
 private:
-   Node_store store_;
+   Node_map store_;
 };
 
 }//namespace owlcpp

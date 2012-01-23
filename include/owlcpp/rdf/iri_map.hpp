@@ -1,10 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/rdf/iri_store.hpp"
+/** @file "/owlcpp/include/owlcpp/rdf/iri_map.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-@n Copyright Mikhail K Levin 2011-2
+@n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef IRI_STORE_HPP_
-#define IRI_STORE_HPP_
+#ifndef IRI_MAP_HPP_
+#define IRI_MAP_HPP_
 #include <string>
 #include "boost/assert.hpp"
 #include "boost/multi_index_container.hpp"
@@ -17,12 +17,14 @@ part of owlcpp project.
 #include "owlcpp/detail/id_tracker.hpp"
 
 namespace owlcpp{ namespace detail{
+
 class Iri_tag_inserter;
-}
+
+}//namespace detail
 
 /**@brief Store namespace IRIs
 *******************************************************************************/
-class OWLCPP_RDF_DECL Iri_store {
+class OWLCPP_RDF_DECL Iri_map {
 public:
    typedef Ns_id id_type;
 private:
@@ -58,7 +60,7 @@ public:
    typedef store_t::iterator iterator;
 
    struct Err : public base_exception {};
-   Iri_store();
+   Iri_map();
 
    std::size_t size() const {return store_iri_.size();}
 
@@ -177,6 +179,5 @@ protected:
    store_t store_iri_;
    store_t store_pref_;
 };
-
 }//namespace owlcpp
-#endif /* IRI_STORE_HPP_ */
+#endif /* IRI_MAP_HPP_ */

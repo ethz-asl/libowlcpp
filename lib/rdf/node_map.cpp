@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/rdf/node_store.cpp" 
+/** @file "/owlcpp/lib/rdf/node_map.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef OWLCPP_RDF_SOURCE
 #define OWLCPP_RDF_SOURCE
 #endif
-#include "owlcpp/rdf/node_store.hpp"
+#include "owlcpp/rdf/node_map.hpp"
 
 #include "boost/mpl/for_each.hpp"
 
@@ -17,14 +17,14 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-Node_store::Node_store() : tracker_(), store_() {
+Node_map::Node_map() : tracker_(), store_() {
    detail::Node_tag_inserter nti(*this);
    boost::mpl::for_each<terms::mpl_vector_nodes_system_t>(nti);
 }
 
 /*
 *******************************************************************************/
-void Node_store::insert(const Node_id id, Node const& node) {
+void Node_map::insert(const Node_id id, Node const& node) {
    BOOST_ASSERT(
             store_.get<id_tag>().find(id) == store_.get<id_tag>().end()
    );
@@ -37,7 +37,7 @@ void Node_store::insert(const Node_id id, Node const& node) {
 
 /*
 *******************************************************************************/
-void Node_store::remove(const id_type id) {
+void Node_map::remove(const id_type id) {
    id_index_t & id_index = store_.get<id_tag>();
    id_iter_t i = id_index.find(id);
    if( i == id_index.end() ) BOOST_THROW_EXCEPTION(
@@ -51,7 +51,7 @@ void Node_store::remove(const id_type id) {
 
 /*
 *******************************************************************************/
-void Node_store::remove(Node const& node) {
+void Node_map::remove(Node const& node) {
    node_index_t& node_index = store_.get<node_tag>();
    node_iter_t i = node_index.find(node);
    if( i == node_index.end() ) BOOST_THROW_EXCEPTION(

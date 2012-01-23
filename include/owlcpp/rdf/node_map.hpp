@@ -1,11 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/rdf/node_store.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/node_map.hpp" 
 part of owlcpp project.
-@n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+@n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef NODE_STORE_HPP_
-#define NODE_STORE_HPP_
-
+#ifndef NODE_MAP_HPP_
+#define NODE_MAP_HPP_
 #include "boost/assert.hpp"
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
@@ -18,12 +17,14 @@ part of owlcpp project.
 #include "owlcpp/detail/id_tracker.hpp"
 
 namespace owlcpp{ namespace detail{
+
 class Node_tag_inserter;
+
 }
 
 /**@brief Store RDF nodes
 *******************************************************************************/
-class OWLCPP_RDF_DECL Node_store {
+class OWLCPP_RDF_DECL Node_map {
 public:
    typedef Node_id id_type;
 private:
@@ -57,7 +58,7 @@ public:
    typedef store_t::iterator iterator;
 
    struct Err : public base_exception {};
-   Node_store();
+   Node_map();
    std::size_t size() const {return store_.size();}
 
    Node const& operator[](const Node_id id) const {
@@ -110,4 +111,4 @@ private:
 };
 
 }//namespace owlcpp
-#endif /* NODE_STORE_HPP_ */
+#endif /* NODE_MAP_HPP_ */

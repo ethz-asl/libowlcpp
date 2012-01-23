@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef NODE_TAG_INSERTER_HPP_
 #define NODE_TAG_INSERTER_HPP_
 
-#include "owlcpp/rdf/node_store.hpp"
+#include "owlcpp/rdf/node_map.hpp"
 
 namespace owlcpp{ namespace detail{
 
@@ -15,14 +15,14 @@ namespace owlcpp{ namespace detail{
 class Node_tag_inserter {
    Node_tag_inserter();
 public:
-   Node_tag_inserter(Node_store& store) : store_(&store) {}
+   Node_tag_inserter(Node_map& store) : store_(&store) {}
 
    template<class T> void operator()(T const&) const {
       store_->insert( T::id(), Node(T::ns_type::id(), T::name()) );
    }
 
 private:
-   mutable Node_store* store_;
+   mutable Node_map* store_;
 };
 
 }//namespace detail

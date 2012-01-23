@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/rdf/doc_info_store.cpp" 
+/** @file "/owlcpp/lib/rdf/doc_info_map.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -7,14 +7,14 @@ part of owlcpp project.
 #define OWLCPP_RDF_SOURCE
 #endif
 #include "boost/assert.hpp"
-#include "owlcpp/rdf/doc_info_store.hpp"
+#include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp {
 
 /*
 *******************************************************************************/
-Doc_store::id_type Doc_store::insert(
+Doc_map::id_type Doc_map::insert(
          std::string const& path,
          const Node_id iri,
          const Node_id ver
@@ -50,20 +50,20 @@ Doc_store::id_type Doc_store::insert(
 
 /*
 *******************************************************************************/
-Doc_store::id_type Doc_store::insert(std::string const& path, const Node_id iri) {
+Doc_map::id_type Doc_map::insert(std::string const& path, const Node_id iri) {
    return insert(path, iri, terms::T_empty_::id());
 }
 
 /*
 *******************************************************************************/
-Node_id Doc_store::iri(const id_type id) const {
+Node_id Doc_map::iri(const id_type id) const {
    BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
    return store_.get<id_tag>().find(id)->iri_id_;
 }
 
 /*
 *******************************************************************************/
-Node_id const* Doc_store::version(const id_type id) const {
+Node_id const* Doc_map::version(const id_type id) const {
    BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
    const id_iter_t i = store_.get<id_tag>().find(id);
    if( i->version_id_ == terms::T_empty_::id() ) return 0;
@@ -72,7 +72,7 @@ Node_id const* Doc_store::version(const id_type id) const {
 
 /*
 *******************************************************************************/
-std::string Doc_store::path(const id_type id) const {
+std::string Doc_map::path(const id_type id) const {
    BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
    return store_.get<id_tag>().find(id)->path_;
 }

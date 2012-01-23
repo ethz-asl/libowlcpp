@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/rdf/iri_store.cpp" 
+/** @file "/owlcpp/lib/rdf/iri_map.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef OWLCPP_RDF_SOURCE
 #define OWLCPP_RDF_SOURCE
 #endif
-#include "owlcpp/rdf/iri_store.hpp"
+#include "owlcpp/rdf/iri_map.hpp"
 
 #include "boost/mpl/for_each.hpp"
 
@@ -17,14 +17,14 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-Iri_store::Iri_store() {
+Iri_map::Iri_map() {
    detail::Iri_tag_inserter iti(*this);
    boost::mpl::for_each<terms::mpl_vector_iris_system_t>(iti);
 }
 
 /*
 *******************************************************************************/
-void Iri_store::insert(const id_type id, std::string const& iri, std::string const& prefix) {
+void Iri_map::insert(const id_type id, std::string const& iri, std::string const& prefix) {
    BOOST_ASSERT(
             store_iri_.get<id_tag>().find(id) == store_iri_.get<id_tag>().end()
    );
@@ -41,7 +41,7 @@ void Iri_store::insert(const id_type id, std::string const& iri, std::string con
 
 /*
 *******************************************************************************/
-void Iri_store::insert_prefix(const id_type iid, std::string const& prefix) {
+void Iri_map::insert_prefix(const id_type iid, std::string const& prefix) {
    id_index_t const& iri_i_i = store_iri_.get<id_tag>();
    const id_iter_t iri_i_iter = iri_i_i.find(iid);
    if( iri_i_iter == iri_i_i.end() ) BOOST_THROW_EXCEPTION(
@@ -68,7 +68,7 @@ void Iri_store::insert_prefix(const id_type iid, std::string const& prefix) {
 
 /*
 *******************************************************************************/
-void Iri_store::remove(const id_type id) {
+void Iri_map::remove(const id_type id) {
    id_index_t & id_index = store_iri_.get<id_tag>();
    id_iter_t i = id_index.find(id);
    if( i == id_index.end() ) BOOST_THROW_EXCEPTION(
@@ -83,7 +83,7 @@ void Iri_store::remove(const id_type id) {
 
 /*
 *******************************************************************************/
-void Iri_store::remove(std::string const& iri) {
+void Iri_map::remove(std::string const& iri) {
    string_index_t& string_index = store_iri_.get<string_tag>();
    string_iter_t i = string_index.find(iri);
    if( i == string_index.end() ) BOOST_THROW_EXCEPTION(
@@ -96,6 +96,5 @@ void Iri_store::remove(std::string const& iri) {
    store_pref_.get<id_tag>().erase(iid);
    tracker_.push(iid);
 }
-
 
 }//namespace owlcpp

@@ -8,9 +8,9 @@ part of owlcpp project.
 #include "boost/filesystem/path.hpp"
 
 #include "owlcpp/io/config.hpp"
-#include "owlcpp/rdf/iri_store.hpp"
-#include "owlcpp/rdf/node_store.hpp"
-#include "owlcpp/rdf/doc_info_store.hpp"
+#include "owlcpp/rdf/iri_map.hpp"
+#include "owlcpp/rdf/node_map.hpp"
+#include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/exception.hpp"
 
 namespace owlcpp{
@@ -57,9 +57,9 @@ public:
    Catalog& add(boost::filesystem::path const& path, const bool recurse = false);
 
 private:
-   Iri_store iri_;
-   Node_store node_;
-   Doc_store doc_;
+   Iri_map iri_;
+   Node_map node_;
+   Doc_map doc_;
 
    /**@brief if not already present, store IRI reference node
     @param iri node IRI string;

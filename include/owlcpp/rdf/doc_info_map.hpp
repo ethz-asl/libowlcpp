@@ -1,10 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/rdf/doc_info_store.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/doc_info_map.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef DOC_INFO_STORE_HPP_
-#define DOC_INFO_STORE_HPP_
+#ifndef DOC_INFO_MAP_HPP_
+#define DOC_INFO_MAP_HPP_
 #include <string>
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
@@ -22,7 +22,7 @@ namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-class OWLCPP_RDF_DECL Doc_store {
+class OWLCPP_RDF_DECL Doc_map {
 public:
    typedef Doc_id id_type;
 private:
@@ -93,7 +93,7 @@ public:
 
    typedef Member_iterator<store_t::iterator, const id_type, &entry_t::id_> id_iterator;
 
-   Doc_store() : tracker_(), store_() {}
+   Doc_map() : tracker_(), store_() {}
 
    std::size_t size() const {return store_.size();}
    id_type insert(std::string const& path, const Node_id iri, const Node_id ver);
@@ -131,4 +131,4 @@ private:
 };
 
 }//namespace owlcpp
-#endif /* DOC_INFO_STORE_HPP_ */
+#endif /* DOC_INFO_MAP_HPP_ */

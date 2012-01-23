@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef IRI_TAG_INSERTER_HPP_
 #define IRI_TAG_INSERTER_HPP_
 
-#include "owlcpp/rdf/iri_store.hpp"
+#include "owlcpp/rdf/iri_map.hpp"
 
 namespace owlcpp{ namespace detail{
 
@@ -15,13 +15,13 @@ namespace owlcpp{ namespace detail{
 class Iri_tag_inserter {
    Iri_tag_inserter();
 public:
-   Iri_tag_inserter(Iri_store& store) : store_(&store) {}
+   Iri_tag_inserter(Iri_map& store) : store_(&store) {}
 
    template<class T> void operator()(const T&) const {
       store_->insert(T::id(), T::iri(), T::prefix());
    }
 private:
-   mutable Iri_store* store_;
+   mutable Iri_map* store_;
 };
 
 }//namespace detail

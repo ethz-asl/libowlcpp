@@ -6,69 +6,37 @@ part of owlcpp project.
 #ifndef TRIPLE_STORE_HPP_
 #define TRIPLE_STORE_HPP_
 
+#include "owlcpp/rdf/node_store_iri_base.hpp"
+#include "owlcpp/rdf/node_store_aux_base.hpp"
+#include "owlcpp/rdf/doc_store_base.hpp"
 #include "owlcpp/rdf/triple_map.hpp"
 #include "owlcpp/rdf/node_store_owl.hpp"
-#include "owlcpp/rdf/iri_store_owl.hpp"
-#include "owlcpp/rdf/doc_info_store.hpp"
+#include "owlcpp/rdf/iri_map_owl.hpp"
+#include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/rdf/config.hpp"
 
 namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-class OWLCPP_RDF_DECL Triple_store {
+class OWLCPP_RDF_DECL Triple_store :
+public Node_store_iri_base<Triple_store>,
+public Node_store_aux_base<Triple_store>,
+public Doc_store_base<Triple_store>
+{
+   Iri_map_owl& iris() {return iri_;}
+   Node_store_owl& nodes() {return node_;}
+   Doc_map& documents() {return doc_;}
+   friend class Node_store_iri_base<Triple_store>;
+   friend class Node_store_aux_base<Triple_store>;
+   friend class Doc_store_base<Triple_store>;
+
 public:
 
-   Iri_store_owl const& iris() const {return iri_;}
+   Iri_map_owl const& iris() const {return iri_;}
    Node_store_owl const& nodes() const {return node_;}
-   Doc_store const& documents() const {return doc_;}
+   Doc_map const& documents() const {return doc_;}
    Triple_map const& triples() const {return triple_;}
-
-   /**@brief if not already present, store IRI reference node
-    @param iri node IRI string;
-    consistent uniform representation of non-ascii characters is assumed
-    (e.g., UTF-8, or %HH)
-    @return node ID
-   */
-   Node_id insert_iri_node(std::string const& iri);
-
-   /**@brief if not already present, store literal node
-    @param str literal node value
-    @return node ID
-   */
-   Node_id insert_lit_node(std::string const& str);
-
-   /**@brief if not already present, store blank node
-    @param name node name;
-    name is assumed to be unique across all documents stored in Triple_store
-    @return node ID
-   */
-   Node_id insert_blank_node(std::string const& name);
-
-   /**
-    @param path
-    @param iri
-    @param version
-    @return
-   */
-   Doc_id insert_doc(
-            std::string const& path,
-            std::string const& iri,
-            std::string const& version = std::string()
-   );
-
-   /**
-    @param iri node IRI
-    @return pointer to node ID or NULL if not found.
-   */
-   Node_id const* find_iri_node(std::string const& iri) const;
-
-   /**
-    @param iri OntologyIRI or VersionIRI
-    @return pointer to document ID for the first document that has specified VersionIRI or,
-    if not found, for the first document that has specified OntologyIRI, or NULL if not found.
-   */
-   Doc_id const* find_doc(std::string const& iri) const;
 
    void insert_triple(
             const Node_id subj,
@@ -82,13 +50,18 @@ public:
    Node const& operator[](const Node_id nid) const {return node_[nid];}
    std::string operator[](const Ns_id iid) const {return iri_[iid];}
    Node const& iri(const Doc_id did) const {return node_[doc_.iri(did)];}
-   Node const* version(const Doc_id did) const;
    std::string path(const Doc_id did) const {return doc_.path(did);}
 
+   Node const* version(const Doc_id did) const {
+      Node_id const* nid = doc_.version(did);
+      if( nid ) return &node_[*nid];
+      return 0;
+   }
+
 private:
-   Iri_store_owl iri_;
+   Iri_map_owl iri_;
    Node_store_owl node_;
-   Doc_store doc_;
+   Doc_map doc_;
    Triple_map triple_;
 };
 
