@@ -1,2 +1,6 @@
 TODO
-- separate modules (dirs, namespaces, libs): node_store, triple_store, parser, reasoner
+- rename current Iri_store, Node_store, Doc_store to *_map
+
+- make CRTP Node_store_base, Doc_store_base, Triple_store_base
+
+- implement Node_store, Triple_store, Doc_store, Catalog using CRTP bases
