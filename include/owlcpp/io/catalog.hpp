@@ -67,12 +67,16 @@ private:
     (e.g., UTF-8, or %HH)
     @return node ID
    */
+
    Node_id insert_iri_node(std::string const& iri);
+
+   Doc_id add_doc(boost::filesystem::path const& path);
 };
 
-   /**
-   *******************************************************************************/
-   std::pair<std::string,std::string> read_id(boost::filesystem::path const& path);
+/**@param file local path to ontology document
+@return ontologyIRI and VersionIRI strings
+*******************************************************************************/
+OWLCPP_IO_DECL std::pair<std::string,std::string> ontology_id(boost::filesystem::path const& file);
 
 }//namespace owlcpp
 #endif /* CATALOG_HPP_ */

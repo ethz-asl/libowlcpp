@@ -11,6 +11,7 @@ part of owlcpp project.
 
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/term_methods.hpp"
+#include "owlcpp/exception.hpp"
 
 namespace owlcpp{ namespace detail{
 
@@ -18,73 +19,44 @@ namespace owlcpp{ namespace detail{
 *******************************************************************************/
 class Iri_finder {
 public:
+   struct Err : public base_exception {};
    Iri_finder() : iri_(), version_(), stop_parsing_(false) {}
 
    bool stop_parsing() const {return stop_parsing_;}
 
    void insert(void const* statement) {
       const raptor_statement* rs = static_cast<const raptor_statement*>(statement);
-      std::cout
-      << raptor_term_to_string(rs->subject) << ' '
-      << raptor_term_to_string(rs->predicate) << ' '
-      << raptor_term_to_string(rs->object) << '\n'
-      ;
-      if(
-               rs->subject->type != RAPTOR_TERM_TYPE_URI ||
-               rs->predicate->type != RAPTOR_TERM_TYPE_URI ||
-               rs->object->type != RAPTOR_TERM_TYPE_URI
-      ) return;
-      std::size_t obj_len;
-      unsigned char const* obj =
-               raptor_uri_as_counted_string(rs->object->value.uri, &obj_len);
-      if( ! comparison(reinterpret_cast<char const*>(obj), obj_len, terms::T_owl_Ontology()) ) return;
+//      std::cout
+//      << raptor_term_to_string(rs->subject) << ' '
+//      << raptor_term_to_string(rs->predicate) << ' '
+//      << raptor_term_to_string(rs->object) << '\n'
+//      ;
 
-      std::size_t pred_len;
-      unsigned char const* pred =
-               raptor_uri_as_counted_string(rs->predicate->value.uri, &pred_len);
-/*
-      if(
-               rs->predicate->type == RAPTOR_TERM_TYPE_URI &&
-               comparison(
-//                        raptor_uri_as_counted_string(rs->predicate->value.uri->string,
-                        rs->predicate->value.uri->length,
-                        terms::T_owl_Ontology()
-               )
-      ) {
+      if( iri_.empty() && is_ontologyIRI(*rs) ) {
+         std::size_t len;
+         unsigned char const* term_uc =
+                  raptor_uri_as_counted_string(rs->subject->value.uri, &len);
+         char const* term = reinterpret_cast<char const*>(term_uc);
+         iri_.assign(term, len);
+         return;
+      }
 
-      }
-      if(
-            triple.get<2>().type == Resource &&
-            triple.get<2>().value == owl_Ontology() &&
-            triple.get<1>().type == Resource &&
-            triple.get<1>().value == rdf_type()
-      ) {
-         assert( triple.get<0>().type == Resource );
-         iri_ = triple.get<0>().value;
-      } else if(
-            triple.get<1>().type == Resource &&
-            triple.get<1>().value == owl_versionIRI()
-      ) {
-         assert( triple.get<0>().type == Resource );
-         if( triple.get<0>().value != iri_ ) BOOST_THROW_EXCEPTION(
-               Parse_err()
-               << Parse_err::msg_t("ontology IRI mismatch")
-               << Parse_err::str1_t(triple.get<0>().value)
-               << Parse_err::str2_t(iri_)
-            );
-         version_ = triple.get<2>().value;
+      if( is_versionIRI(*rs) ) {
+         std::size_t len;
+         unsigned char const* term_uc =
+                  raptor_uri_as_counted_string(rs->object->value.uri, &len);
+         char const* term = reinterpret_cast<char const*>(term_uc);
+         version_.assign(term, len);
          stop_parsing_ = true;
-      } else if( ! iri_.empty() && triple.get<0>().value != iri_ ) {
-         //Most ontologies have no version IRI.
-         //To avoid parsing entire ontology searching for version IRI
-         //take a short-cut.
-         //Assume there is only one owl:Ontology element.
-         //If iri_ is found and the subject of current triple is not iri_,
-         //we must be outside of owl:Ontology element and may stop searching for version.
-         //TODO: Make sure this is actually a good idea.
-         stop_parsing_ = true;
+         return;
       }
-*/
+
+      //TODO: Implement early termination of the search for versionIRI statement
+      // to avoid reading large ontologies.
+      // This is particularly important since most ontologies do not have versionIRIs.
+      // E.g., terminate search 1000 triples after last OntologyIRI IRI appeared
+      // in the subject.
+
    }
 
    const std::string& iri() const {return iri_;}
@@ -94,6 +66,53 @@ private:
    std::string iri_;
    std::string version_;
    bool stop_parsing_;
+
+   static bool is_ontologyIRI(raptor_statement const& rs) {
+      if(
+               rs.subject->type != RAPTOR_TERM_TYPE_URI ||
+               rs.predicate->type != RAPTOR_TERM_TYPE_URI ||
+               rs.object->type != RAPTOR_TERM_TYPE_URI
+      ) return false;
+      std::size_t len;
+      unsigned char const* term_uc =
+               raptor_uri_as_counted_string(rs.object->value.uri, &len);
+      char const* term = reinterpret_cast<char const*>(term_uc);
+      if( ! comparison(term, len, terms::T_owl_Ontology()) ) return false;
+
+      term_uc =
+               raptor_uri_as_counted_string(rs.predicate->value.uri, &len);
+      term = reinterpret_cast<char const*>(term_uc);
+      return comparison(term, len, terms::T_rdf_type());
+   }
+
+   bool is_versionIRI(raptor_statement const& rs) const {
+      if( iri_.empty() ) return false;
+      if(
+               rs.subject->type != RAPTOR_TERM_TYPE_URI ||
+               rs.predicate->type != RAPTOR_TERM_TYPE_URI ||
+               rs.object->type != RAPTOR_TERM_TYPE_URI
+      ) return false;
+
+      std::size_t len;
+      unsigned char const* term_uc =
+               raptor_uri_as_counted_string(rs.predicate->value.uri, &len);
+      char const* term = reinterpret_cast<char const*>(term_uc);
+      if( ! comparison(term, len, terms::T_owl_versionIRI()) ) return false;
+
+      term_uc =
+               raptor_uri_as_counted_string(rs.subject->value.uri, &len);
+      term = reinterpret_cast<char const*>(term_uc);
+      if( iri_.compare(0, iri_.size(), term, 0, len) != 0 ) {
+         const std::string iri_term(term, len);
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("invalid versionIRI statement")
+                  << Err::str1_t(iri_term)
+                  << Err::str2_t(iri_)
+         );
+      }
+      return true;
+   }
 
 };
 

@@ -7,6 +7,7 @@ part of owlcpp project.
 #define SAMPLE_DATA_HPP_
 #include <string>
 #include "boost/preprocessor/stringize.hpp"
+#include "boost/filesystem.hpp"
 
 #ifndef SAMPLE_DATA_DIR
 #error SAMPLE_DATA_DIR needs to be defined
@@ -18,10 +19,8 @@ part of owlcpp project.
 namespace owlcpp{ namespace test{
 
 inline std::string sample_file_path(const std::string& name) {
-   std::string sf( BOOST_PP_STRINGIZE(SAMPLE_DATA_DIR) );
-   sf += '/';
-   sf += name;
-   return sf;
+   static const boost::filesystem::path path(BOOST_PP_STRINGIZE(SAMPLE_DATA_DIR));
+   return (path / name).string();
 }
 
 inline std::string temp_file_path(const std::string& name) {

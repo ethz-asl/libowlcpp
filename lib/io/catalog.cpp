@@ -14,7 +14,27 @@ part of owlcpp project.
 #include "parse.hpp"
 #include "adaptor_iri_finder.hpp"
 
-namespace owlcpp {
+namespace owlcpp { namespace{
+
+/*
+*******************************************************************************/
+std::pair<std::string,std::string> ontology_id(
+         boost::filesystem::path const& file, Rdf_parser& parser) {
+   detail::Iri_finder irif;
+   boost::filesystem::ifstream is(file);
+   parser(is, irif, 0);
+   return make_pair(irif.iri(), irif.version());
+}
+
+}//namespace anonymous
+
+/*
+*******************************************************************************/
+std::pair<std::string,std::string> ontology_id(boost::filesystem::path const& file) {
+   const unsigned char base_iri[] = "IRI not found";
+   Rdf_parser parser = Rdf_parser::rdfxml(base_iri);
+   return ontology_id(file, parser);
+}
 
 /*
 *******************************************************************************/
@@ -52,13 +72,27 @@ Node_id Catalog::insert_iri_node(std::string const& iri) {
 /*
 *******************************************************************************/
 Catalog& Catalog::add(boost::filesystem::path const& path, const bool recurse) {
+   //TODO:
+   add_doc(path);
+   return *this;
+}
+
+/*
+*******************************************************************************/
+Doc_id Catalog::add_doc(boost::filesystem::path const& path) {
    const unsigned char base_iri[] = "IRI not found";
    Rdf_parser parser = Rdf_parser::rdfxml(base_iri);
    detail::Iri_finder irif;
-   boost::filesystem::ifstream is(path);
+   const boost::filesystem::path cpath = canonical(path);
+   boost::filesystem::ifstream is(cpath);
    parser(is, irif, 0);
+   return insert_doc(cpath.string(), irif.iri(), irif.version());
+}
+
+/*
+*******************************************************************************/
+Doc_id const* Catalog::find_doc(std::string const& iri) const {
    //TODO:
-   return *this;
 }
 
 
