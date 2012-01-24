@@ -14,33 +14,7 @@ part of owlcpp project.
 #include "parse.hpp"
 #include "adaptor_iri_finder.hpp"
 
-namespace owlcpp { namespace{
-
-/*
-*******************************************************************************/
-std::size_t add_to_catalog(boost::filesystem::path const& path, Catalog& cat) {
-   Rdf_parser parser = Rdf_parser::rdfxml("IRI not found");
-   detail::Iri_finder f;
-   const boost::filesystem::path cp = canonical(path);
-   boost::filesystem::ifstream is(cp);
-   try{ parser(is, f, 0); }
-   catch(Rdf_parser::Err const&) {
-      return 0;
-   }
-   return cat.insert_doc(cp.string(), f.iri(), f.version()).second ? 1 : 0;
-}
-
-template<class Iter> std::size_t add_to_catalog(Iter i1, Iter i2, Catalog& cat) {
-   std::size_t n = 0;
-   for( ; i1 != i2; ++i1 ) {
-      if( is_regular_file(*i1) ) {
-         n += add_to_catalog(i1->path(), cat);
-      }
-   }
-   return n;
-}
-
-}//namespace anonymous
+namespace owlcpp {
 
 /*
 *******************************************************************************/
@@ -48,9 +22,35 @@ std::pair<std::string,std::string> ontology_id(boost::filesystem::path const& fi
    Rdf_parser parser = Rdf_parser::rdfxml("IRI not found");
    detail::Iri_finder irif;
    boost::filesystem::ifstream is(file);
+   //TODO: catch and re-throw file info
    parser(is, irif, 0);
    return make_pair(irif.iri(), irif.version());
 }
+
+namespace{
+/*
+*******************************************************************************/
+inline std::size_t add_to_catalog(boost::filesystem::path const& path, Catalog& cat) {
+   const boost::filesystem::path cp = canonical(path);
+   try{
+      const std::pair<std::string,std::string> pair = ontology_id(cp);
+      return cat.insert_doc(cp.string(), pair.first, pair.second).second ? 1 : 0;
+   } catch(Rdf_parser::Err const&) {
+      //ignore
+   }
+   return 0;
+}
+
+template<class Iter> inline
+std::size_t add_to_catalog(Iter i1, Iter i2, Catalog& cat) {
+   std::size_t n = 0;
+   for( ; i1 != i2; ++i1 ) {
+      if( is_regular_file(*i1) ) n += add_to_catalog(i1->path(), cat);
+   }
+   return n;
+}
+
+}//namespace anonymous
 
 /*
 *******************************************************************************/
@@ -72,26 +72,6 @@ std::size_t Catalog::add(boost::filesystem::path const& path, const bool recurse
       return add_to_catalog(path, *this);
    }
    return 0;
-}
-
-/*
-*******************************************************************************/
-std::string Catalog::iri(const Doc_id did) const {
-   Node const& node = node_[iri_id(did)];
-   const std::string name = node.value_str();
-   if( name.empty() ) return iri_[node.ns_id()];
-   return iri_[node.ns_id()] + '#' + name;
-}
-
-/*
-*******************************************************************************/
-std::string Catalog::version(const Doc_id did) const {
-   Node_id const* nid = version_id(did);
-   if( ! nid ) return "";
-   Node const& node = node_[*nid];
-   const std::string name = node.value_str();
-   if( name.empty() ) return iri_[node.ns_id()];
-   return iri_[node.ns_id()] + '#' + name;
 }
 
 }//namespace owlcpp
