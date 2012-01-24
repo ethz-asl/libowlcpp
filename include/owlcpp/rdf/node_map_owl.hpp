@@ -1,10 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/rdf/node_store_owl.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/node_map_owl.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef NODE_STORE_OWL_HPP_
-#define NODE_STORE_OWL_HPP_
+#ifndef NODE_MAP_OWL_HPP_
+#define NODE_MAP_OWL_HPP_
 #include "owlcpp/rdf/node_map.hpp"
 #include "owlcpp/rdf/config.hpp"
 
@@ -12,11 +12,11 @@ namespace owlcpp{
 
 /**@brief Store RDF nodes including standard OWL/RDF nodes
 *******************************************************************************/
-class OWLCPP_RDF_DECL Node_store_owl {
+class OWLCPP_RDF_DECL Node_map_owl {
 public:
    typedef Node_map::iterator iterator;
    struct Err : public base_exception {};
-   Node_store_owl();
+   Node_map_owl();
    std::size_t size() const {return store_.size();}
    Node const& operator[](const Node_id id) const {return store_[id];}
    Node const& at(const Node_id id) const {return store_.at(id);}
@@ -38,4 +38,4 @@ private:
 };
 
 }//namespace owlcpp
-#endif /* NODE_STORE_OWL_HPP_ */
+#endif /* NODE_MAP_OWL_HPP_ */

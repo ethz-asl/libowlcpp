@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/rdf/node_store_owl.cpp" 
+/** @file "/owlcpp/lib/rdf/node_map_owl.cpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef OWLCPP_RDF_SOURCE
 #define OWLCPP_RDF_SOURCE
 #endif
-#include "owlcpp/rdf/node_store_owl.hpp"
+#include "owlcpp/rdf/node_map_owl.hpp"
 
 #include "boost/mpl/for_each.hpp"
 
@@ -18,7 +18,7 @@ namespace owlcpp{
 
 /*
 *******************************************************************************/
-Node_store_owl::Node_store_owl() {
+Node_map_owl::Node_map_owl() {
    detail::Node_tag_inserter nti(store_);
    boost::mpl::for_each<terms::mpl_vector_terms_rdfs_t>(nti);
    boost::mpl::for_each<terms::mpl_vector_terms_rdf_t>(nti);
@@ -28,7 +28,7 @@ Node_store_owl::Node_store_owl() {
 
 /*
 *******************************************************************************/
-Node_id Node_store_owl::insert(Node const& node) {
+Node_id Node_map_owl::insert(Node const& node) {
    Node_id const* id = find(node);
    if( id ) return *id;
    if( is_std_owl(node.ns_id()) ) BOOST_THROW_EXCEPTION(
