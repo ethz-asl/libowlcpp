@@ -18,8 +18,8 @@ template<class T> struct Doc_store_base {
     @return pointer to document ID for the first document that has specified VersionIRI or,
     if not found, for the first document that has specified OntologyIRI, or NULL if not found.
    */
-   Doc_id const* find_doc(std::string const& iri) const {
-      T const& self = static_cast<T const&>(*self);
+   Doc_id const* find_doc_iri(std::string const& iri) const {
+      T const& self = static_cast<T const&>(*this);
       Node_id const* nid = self.find_iri_node(iri);
       if( ! nid ) return 0;
       const Doc_map::version_range vr = self.documents().find_version(*nid);
@@ -35,7 +35,7 @@ template<class T> struct Doc_store_base {
     @param version
     @return
    */
-   Doc_id insert_doc(
+   std::pair<Doc_id,bool> insert_doc(
             std::string const& path,
             std::string const& iri,
             std::string const& version = std::string()

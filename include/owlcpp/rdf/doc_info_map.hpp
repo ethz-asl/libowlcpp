@@ -96,8 +96,8 @@ public:
    Doc_map() : tracker_(), store_() {}
 
    std::size_t size() const {return store_.size();}
-   id_type insert(std::string const& path, const Node_id iri, const Node_id ver);
-   id_type insert(std::string const& path, const Node_id iri);
+   std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri, const Node_id ver);
+   std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri);
    Node_id iri(const id_type id) const;
    Node_id const* version(const id_type id) const;
    std::string path(const id_type id) const;
@@ -120,6 +120,13 @@ public:
                version_iterator(v_ind.find(id)),
                version_iterator(v_ind.end())
       );
+   }
+
+   id_type const* find_path(std::string const& path) const {
+      path_index_t const& pi = store_.get<path_tag>();
+      const path_iter_t i = pi.find(path);
+      if( i == pi.end() ) return 0;
+      return &i->id_;
    }
 
    id_iterator begin() const {return id_iterator(store_.begin());}

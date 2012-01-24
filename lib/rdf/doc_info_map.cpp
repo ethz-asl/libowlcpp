@@ -14,7 +14,7 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-Doc_map::id_type Doc_map::insert(
+std::pair<Doc_id,bool> Doc_map::insert(
          std::string const& path,
          const Node_id iri,
          const Node_id ver
@@ -26,7 +26,7 @@ Doc_map::id_type Doc_map::insert(
       const id_type id = tracker_.get();
       BOOST_ASSERT(store_.get<id_tag>().find(id) == store_.get<id_tag>().end());
       store_.insert(entry_t(id, path, iri, ver));
-      return id;
+      return std::make_pair(id, true);
    }
    if( path_iter->iri_id_ != iri )
       BOOST_THROW_EXCEPTION(
@@ -45,12 +45,12 @@ Doc_map::id_type Doc_map::insert(
             << Err::int2_t(path_iter->version_id_())
       );
 
-   return path_iter->id_;
+   return std::make_pair(path_iter->id_, false);
 }
 
 /*
 *******************************************************************************/
-Doc_map::id_type Doc_map::insert(std::string const& path, const Node_id iri) {
+std::pair<Doc_id,bool> Doc_map::insert(std::string const& path, const Node_id iri) {
    return insert(path, iri, terms::T_empty_::id());
 }
 
