@@ -18,12 +18,26 @@ namespace owlcpp { namespace{
 
 /*
 *******************************************************************************/
-std::pair<std::string,std::string> ontology_id(
-         boost::filesystem::path const& file, Rdf_parser& parser) {
-   detail::Iri_finder irif;
-   boost::filesystem::ifstream is(file);
-   parser(is, irif, 0);
-   return make_pair(irif.iri(), irif.version());
+std::size_t add_to_catalog(boost::filesystem::path const& path, Catalog& cat) {
+   Rdf_parser parser = Rdf_parser::rdfxml("IRI not found");
+   detail::Iri_finder f;
+   const boost::filesystem::path cp = canonical(path);
+   boost::filesystem::ifstream is(cp);
+   try{ parser(is, f, 0); }
+   catch(Rdf_parser::Err const&) {
+      return 0;
+   }
+   return cat.insert_doc(cp.string(), f.iri(), f.version()).second ? 1 : 0;
+}
+
+template<class Iter> std::size_t add_to_catalog(Iter i1, Iter i2, Catalog& cat) {
+   std::size_t n = 0;
+   for( ; i1 != i2; ++i1 ) {
+      if( is_regular_file(*i1) ) {
+         n += add_to_catalog(i1->path(), cat);
+      }
+   }
+   return n;
 }
 
 }//namespace anonymous
@@ -31,69 +45,53 @@ std::pair<std::string,std::string> ontology_id(
 /*
 *******************************************************************************/
 std::pair<std::string,std::string> ontology_id(boost::filesystem::path const& file) {
-   const unsigned char base_iri[] = "IRI not found";
-   Rdf_parser parser = Rdf_parser::rdfxml(base_iri);
-   return ontology_id(file, parser);
+   Rdf_parser parser = Rdf_parser::rdfxml("IRI not found");
+   detail::Iri_finder irif;
+   boost::filesystem::ifstream is(file);
+   parser(is, irif, 0);
+   return make_pair(irif.iri(), irif.version());
 }
 
 /*
 *******************************************************************************/
-Doc_id Catalog::insert_doc(
-         std::string const& path,
-         std::string const& iri,
-         std::string const& version
-) {
-   const Node_id iid = insert_iri_node(iri);
-   if( version.empty() ) return doc_.insert(path, iid);
-   const Node_id vid = insert_iri_node(version);
-   return doc_.insert(path, iid, vid);
-}
-
-/*
-*******************************************************************************/
-Node const* Catalog::version(const Doc_id did) const {
-   Node_id const* nid = doc_.version(did);
-   if( nid ) return &node_[*nid];
+std::size_t Catalog::add(boost::filesystem::path const& path, const bool recurse) {
+   if( ! exists(path) ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("not found")
+            << Err::str1_t(path.string())
+   );
+   if( is_directory(path) ) {
+      if( recurse ) {
+         boost::filesystem::recursive_directory_iterator i1(path), i2;
+         return add_to_catalog(i1, i2, *this);
+      } else {
+         boost::filesystem::directory_iterator i1(path), i2;
+         return add_to_catalog(i1, i2, *this);
+      }
+   } else if( is_regular_file(path) ) {
+      return add_to_catalog(path, *this);
+   }
    return 0;
 }
 
 /*
 *******************************************************************************/
-Node_id Catalog::insert_iri_node(std::string const& iri) {
-   const std::size_t n = iri.find('#');
-   if( std::string::npos == n ) {
-      const Ns_id nid = iri_.insert(iri);
-      return node_.insert(Node(nid, ""));
-   }
-   const Ns_id nid = iri_.insert(iri.substr(0,n));
-   return node_.insert( Node(nid, iri.substr(n+1)) );
+std::string Catalog::iri(const Doc_id did) const {
+   Node const& node = node_[iri_id(did)];
+   const std::string name = node.value_str();
+   if( name.empty() ) return iri_[node.ns_id()];
+   return iri_[node.ns_id()] + '#' + name;
 }
 
 /*
 *******************************************************************************/
-Catalog& Catalog::add(boost::filesystem::path const& path, const bool recurse) {
-   //TODO:
-   add_doc(path);
-   return *this;
+std::string Catalog::version(const Doc_id did) const {
+   Node_id const* nid = version_id(did);
+   if( ! nid ) return "";
+   Node const& node = node_[*nid];
+   const std::string name = node.value_str();
+   if( name.empty() ) return iri_[node.ns_id()];
+   return iri_[node.ns_id()] + '#' + name;
 }
-
-/*
-*******************************************************************************/
-Doc_id Catalog::add_doc(boost::filesystem::path const& path) {
-   const unsigned char base_iri[] = "IRI not found";
-   Rdf_parser parser = Rdf_parser::rdfxml(base_iri);
-   detail::Iri_finder irif;
-   const boost::filesystem::path cpath = canonical(path);
-   boost::filesystem::ifstream is(cpath);
-   parser(is, irif, 0);
-   return insert_doc(cpath.string(), irif.iri(), irif.version());
-}
-
-/*
-*******************************************************************************/
-Doc_id const* Catalog::find_doc(std::string const& iri) const {
-   //TODO:
-}
-
 
 }//namespace owlcpp

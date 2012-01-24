@@ -47,8 +47,11 @@ Rdf_parser::~Rdf_parser() {
 
 /*
 *******************************************************************************/
-Rdf_parser Rdf_parser::rdfxml(const string_t& base_uri) {
-   return Rdf_parser("rdfxml", base_uri);
+Rdf_parser Rdf_parser::rdfxml(std::string const& base_uri) {
+   return Rdf_parser(
+            "rdfxml",
+            reinterpret_cast<unsigned char const*>(base_uri.c_str())
+   );
 }
 
 /*
@@ -60,7 +63,7 @@ void Rdf_parser::parse(
       stop_parsing_fun_t stop_parsing_fun,
       const unsigned base
 ) {
-   if( stream.fail() )
+   if( ! stream.good() )
       BOOST_THROW_EXCEPTION( Err() << Err::msg_t("read error") );
 
    raptor_parser_set_statement_handler(
@@ -106,38 +109,4 @@ void Rdf_parser::parse(
    }
 }
 
-namespace{
-/**
-inline Term convert_term(
-      const raptor_term* rt
-) {
-   switch (rt->type) {
-   case RAPTOR_TERM_TYPE_URI:
-      return Term(Resource, raptor_uri_as_string(rt->value.uri));
-   case RAPTOR_TERM_TYPE_LITERAL:
-      return Term(Literal, rt->value.literal.string);
-   case RAPTOR_TERM_TYPE_BLANK:
-      return Term(Anonymous, rt->value.blank.string);
-   case RAPTOR_TERM_TYPE_UNKNOWN:
-   default:
-      return Term(Unknown, "");
-   }
-}
-*******************************************************************************/
-}//namespace anonymous
-
-/*
-triple_t Rdf_parser::convert_statement(const void* rs) {
-   const raptor_statement* stat = reinterpret_cast<const raptor_statement*>(rs);
-   triple_t triple(
-         convert_term(stat->subject),
-         convert_term(stat->predicate),
-         convert_term(stat->object)
-   );
-   return triple;
-}
-*******************************************************************************/
-
-/**
-*******************************************************************************/
 }//namespace owlcpp

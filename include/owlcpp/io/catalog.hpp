@@ -8,6 +8,8 @@ part of owlcpp project.
 #include "boost/filesystem/path.hpp"
 
 #include "owlcpp/io/config.hpp"
+#include "owlcpp/rdf/node_store_iri_base.hpp"
+#include "owlcpp/rdf/doc_store_base.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/node_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
@@ -19,58 +21,43 @@ namespace owlcpp{
 @details Locations should unique; ontology IRIs may be repeated;
 non-empty verions IRIs should be unique.
 *******************************************************************************/
-class OWLCPP_IO_DECL Catalog {
+class OWLCPP_IO_DECL Catalog :
+public Doc_store_base<Catalog>, private Node_store_iri_base<Catalog> {
+   Iri_map& iris() {return iri_;}
+   Node_map& nodes() {return node_;}
+   Doc_map& documents() {return doc_;}
+   Iri_map const& iris() const {return iri_;}
+   Node_map const& nodes() const {return node_;}
+   Doc_map const& documents() const {return doc_;}
+   friend class Node_store_iri_base<Catalog>;
+   friend class Doc_store_base<Catalog>;
+
 public:
    struct Err : public base_exception {};
 
-   /**
-    @param path
-    @param iri
-    @param version
-    @return
-   */
-   Doc_id insert_doc(
-            std::string const& path,
-            std::string const& iri,
-            std::string const& version = std::string()
-   );
-
-   /**
-    @param iri OntologyIRI or VersionIRI
-    @return pointer to document ID for the first document that has specified VersionIRI or,
-    if not found, for the first document that has specified OntologyIRI, or NULL if not found.
-   */
-   Doc_id const* find_doc(std::string const& iri) const;
-
-   Node const& iri(const Doc_id did) const {return node_[doc_.iri(did)];}
-   Node const* version(const Doc_id did) const;
+   std::string iri(const Doc_id did) const;
+   std::string version(const Doc_id did) const;
    std::string path(const Doc_id did) const {return doc_.path(did);}
+   Node_id iri_id(const Doc_id did) const {return doc_.iri(did);}
+   Node_id const* version_id(const Doc_id did) const {return doc_.version(did);}
 
    /**@brief determine OntologyIRI and VersionIRI of ontology document(s)
-    and add it to the catalog
+    and add them to the catalog
     @param path symbolic path pointing to local file or directory;
     any type implicitly convertible to boost::path can be used, e.g., std::string, const char*
-    @param recurse if true and path is a directory, recurse
-    @return reference to self
-    @throw Err
+    @param recurse if true add to catalog files located in sub-directories
+    @return number of added files
+    @details
+    If path is a directory, an attempt will be made to parse and determine
+    OntologyIRI and VersionIRI of every file located in it.
+    The files that fail to parse will be ignored.
    */
-   Catalog& add(boost::filesystem::path const& path, const bool recurse = false);
+   std::size_t add(boost::filesystem::path const& path, const bool recurse = false);
 
 private:
    Iri_map iri_;
    Node_map node_;
    Doc_map doc_;
-
-   /**@brief if not already present, store IRI reference node
-    @param iri node IRI string;
-    consistent uniform representation of non-ascii characters is assumed
-    (e.g., UTF-8, or %HH)
-    @return node ID
-   */
-
-   Node_id insert_iri_node(std::string const& iri);
-
-   Doc_id add_doc(boost::filesystem::path const& path);
 };
 
 /**@param file local path to ontology document

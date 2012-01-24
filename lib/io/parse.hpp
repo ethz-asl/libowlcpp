@@ -27,7 +27,7 @@ public:
    typedef std::basic_string<unsigned char> string_t;
 
    struct Err : public base_exception {};
-   static Rdf_parser rdfxml(const string_t&);
+   static Rdf_parser rdfxml(std::string const& base_uri);
 
    ~Rdf_parser();
 
