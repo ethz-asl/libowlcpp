@@ -49,6 +49,15 @@ template<class T> struct Node_store_iri_base {
       }
    }
 
+   std::string string(const Node_id nid) const {
+      T const& self = static_cast<T const&>(*this);
+      Node const& node = self.nodes()[nid];
+      const std::string name = node.value_str();
+      if( name.empty() ) return self.iris()[node.ns_id()];
+      return self.iris()[node.ns_id()] + '#' + name;
+      //TODO: deal with blanks and literals
+   }
+
 };
 
 }//namespace owlcpp

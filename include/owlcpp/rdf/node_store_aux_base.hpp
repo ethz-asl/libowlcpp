@@ -26,7 +26,6 @@ template<class T> struct Node_store_aux_base {
    */
    Node_id insert_blank_node(std::string const& name); //TODO:
 
-
 };
 
 }//namespace owlcpp
