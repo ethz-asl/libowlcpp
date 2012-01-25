@@ -14,6 +14,15 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
+Doc_map::Doc_map() : tracker_(), store_() {
+   store_.insert(
+            entry_t(Doc_id(), "", terms::T_empty_::id(), terms::T_empty_::id())
+   );
+   tracker_.ensure_min(Doc_id());
+}
+
+/*
+*******************************************************************************/
 std::pair<Doc_id,bool> Doc_map::insert(
          std::string const& path,
          const Node_id iri,

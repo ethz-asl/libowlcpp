@@ -93,7 +93,7 @@ public:
 
    typedef Member_iterator<store_t::iterator, const id_type, &entry_t::id_> id_iterator;
 
-   Doc_map() : tracker_(), store_() {}
+   Doc_map();
 
    std::size_t size() const {return store_.size();}
    std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri, const Node_id ver);
