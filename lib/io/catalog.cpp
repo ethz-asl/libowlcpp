@@ -8,10 +8,9 @@ part of owlcpp project.
 #endif
 #include "owlcpp/io/catalog.hpp"
 
-#include "boost/filesystem/fstream.hpp"
 #include "boost/filesystem.hpp"
 
-#include "parse.hpp"
+#include "owlcpp/io/parser_triple.hpp"
 #include "adaptor_iri_finder.hpp"
 
 namespace owlcpp {
@@ -19,11 +18,10 @@ namespace owlcpp {
 /*
 *******************************************************************************/
 std::pair<std::string,std::string> ontology_id(boost::filesystem::path const& file) {
-   Rdf_parser parser = Rdf_parser::rdfxml("IRI not found");
+   Parser_triple parser;
    detail::Iri_finder irif;
-   boost::filesystem::ifstream is(file);
    //TODO: catch and re-throw file info
-   parser(is, irif, 0);
+   parser(file.string(), irif);
    return make_pair(irif.iri(), irif.version());
 }
 
@@ -35,7 +33,7 @@ inline std::size_t add_to_catalog(boost::filesystem::path const& path, Catalog& 
    try{
       const std::pair<std::string,std::string> pair = ontology_id(cp);
       return cat.insert_doc(cp.string(), pair.first, pair.second).second ? 1 : 0;
-   } catch(Rdf_parser::Err const&) {
+   } catch(Parser_triple::Err const&) {
       //ignore
    }
    return 0;

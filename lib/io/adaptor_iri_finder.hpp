@@ -9,6 +9,7 @@ part of owlcpp project.
 
 #include "raptor2.h"
 
+#include "boost/function.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/term_methods.hpp"
 #include "owlcpp/exception.hpp"
@@ -20,11 +21,9 @@ namespace owlcpp{ namespace detail{
 class Iri_finder {
 public:
    struct Err : public base_exception {};
-   Iri_finder() : iri_(), version_(), stop_parsing_(false) {}
+   Iri_finder() : iri_(), version_() {}
 
-   bool stop_parsing() const {return stop_parsing_;}
-
-   void insert(void const* statement) {
+   void insert(void const* statement, boost::function<void()> abort) {
       const raptor_statement* rs = static_cast<const raptor_statement*>(statement);
 //      std::cout
 //      << raptor_term_to_string(rs->subject) << ' '
@@ -47,7 +46,7 @@ public:
                   raptor_uri_as_counted_string(rs->object->value.uri, &len);
          char const* term = reinterpret_cast<char const*>(term_uc);
          version_.assign(term, len);
-         stop_parsing_ = true;
+         abort();
          return;
       }
 
@@ -65,7 +64,6 @@ public:
 private:
    std::string iri_;
    std::string version_;
-   bool stop_parsing_;
 
    static bool is_ontologyIRI(raptor_statement const& rs) {
       if(
