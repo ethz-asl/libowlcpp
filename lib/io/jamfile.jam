@@ -9,8 +9,7 @@ project lib/io
 
 lib owlcpp_io
    :  #sources
-#      [ glob *.cpp ]
-      catalog.cpp parse.cpp
+      [ glob *.cpp ]
    :  #requirements
       $(LIB_REQUIREMENTS)
       <include>.

@@ -85,7 +85,7 @@ void load(
       Triple_store& store
 ) {
    const unsigned char base_iri[] = "default_base_IRI";
-   Rdf_parser parser = Rdf_parser::rdfxml(base_iri);
+   Parser_triple parser = Parser_triple::rdfxml(base_iri);
    Triple_store_adaptor tsa(store);
    const unsigned n = num_ontologies(store);
    parser(stream, tsa, n);
@@ -182,7 +182,7 @@ private:
 b::tuple<std::string,std::string> ontology_id(const std::string& file) {
    bf::ifstream stream(file);
    const unsigned char base_iri[] = "IRI not found";
-   Rdf_parser parser = Rdf_parser::rdfxml(base_iri);
+   Parser_triple parser = Parser_triple::rdfxml(base_iri);
    Iri_finder irif;
    try{
       parser(stream, irif, 0);
@@ -228,7 +228,7 @@ void load_iri(
    Triple_store_adaptor tsa(store);
    try{
       bf::ifstream ifs(path);
-      Rdf_parser parser = Rdf_parser::rdfxml((const unsigned char*)iri.c_str());
+      Parser_triple parser = Parser_triple::rdfxml((const unsigned char*)iri.c_str());
       parser(ifs, tsa, num_ontologies(store));
       try{
          BOOST_FOREACH(const std::string& import, tsa.imports() ) {
