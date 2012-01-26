@@ -12,16 +12,16 @@ part of owlcpp project.
 #include "boost/function.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/term_methods.hpp"
-#include "owlcpp/exception.hpp"
+#include "owlcpp/io/exception.hpp"
 
 namespace owlcpp{ namespace detail{
 
 /**@brief 
 *******************************************************************************/
-class Iri_finder {
+class Adaptor_iri_finder {
 public:
-   struct Err : public base_exception {};
-   Iri_finder() : iri_(), version_() {}
+   struct Err : public Input_err {};
+   Adaptor_iri_finder() : iri_(), version_() {}
 
    void insert(void const* statement, boost::function<void()> abort) {
       const raptor_statement* rs = static_cast<const raptor_statement*>(statement);
@@ -40,7 +40,7 @@ public:
          return;
       }
 
-      if( is_versionIRI(*rs) ) {
+      if( is_versionIRI(*rs, iri_) ) {
          std::size_t len;
          unsigned char const* term_uc =
                   raptor_uri_as_counted_string(rs->object->value.uri, &len);
@@ -83,8 +83,8 @@ private:
       return comparison(term, len, terms::T_rdf_type());
    }
 
-   bool is_versionIRI(raptor_statement const& rs) const {
-      if( iri_.empty() ) return false;
+   static bool is_versionIRI(raptor_statement const& rs, std::string const& iri) {
+      if( iri.empty() ) return false;
       if(
                rs.subject->type != RAPTOR_TERM_TYPE_URI ||
                rs.predicate->type != RAPTOR_TERM_TYPE_URI ||
@@ -100,13 +100,13 @@ private:
       term_uc =
                raptor_uri_as_counted_string(rs.subject->value.uri, &len);
       term = reinterpret_cast<char const*>(term_uc);
-      if( iri_.compare(0, iri_.size(), term, 0, len) != 0 ) {
+      if( iri.compare(0, iri.size(), term, 0, len) != 0 ) {
          const std::string iri_term(term, len);
          BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("invalid versionIRI statement")
                   << Err::str1_t(iri_term)
-                  << Err::str2_t(iri_)
+                  << Err::str2_t(iri)
          );
       }
       return true;
