@@ -10,20 +10,9 @@ part of owlcpp project.
 
 #include "boost/filesystem.hpp"
 
-#include "owlcpp/io/parser_triple.hpp"
-#include "adaptor_iri_finder.hpp"
+#include "owlcpp/io/read_ontology_iri.hpp"
 
 namespace owlcpp {
-
-/*
-*******************************************************************************/
-std::pair<std::string,std::string> ontology_id(boost::filesystem::path const& file) {
-   Parser_triple parser;
-   detail::Iri_finder irif;
-   //TODO: catch and re-throw file info
-   parser(file.string(), irif);
-   return make_pair(irif.iri(), irif.version());
-}
 
 namespace{
 /*
@@ -31,9 +20,9 @@ namespace{
 inline std::size_t add_to_catalog(boost::filesystem::path const& path, Catalog& cat) {
    const boost::filesystem::path cp = canonical(path);
    try{
-      const std::pair<std::string,std::string> pair = ontology_id(cp);
+      const std::pair<std::string,std::string> pair = read_ontology_iri(cp);
       return cat.insert_doc(cp.string(), pair.first, pair.second).second ? 1 : 0;
-   } catch(Parser_triple::Err const&) {
+   } catch(Input_err const&) {
       //ignore
    }
    return 0;
