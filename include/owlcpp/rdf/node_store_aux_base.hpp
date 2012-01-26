@@ -14,10 +14,16 @@ namespace owlcpp{
 template<class T> struct Node_store_aux_base {
 
    /**@brief if not already present, store literal node
-    @param str literal node value
+    @param val literal node string value
+    @param type_iri datatype IRI
+    @param lang string value language
     @return node ID
    */
-   Node_id insert_lit_node(std::string const& str); //TODO:
+   Node_id insert_lit_node(
+            std::string const& val,
+            std::string const& type_iri = "",
+            std::string const& lang = ""
+   ); //TODO:
 
    /**@brief if not already present, store blank node
     @param name node name;
