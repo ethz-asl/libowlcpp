@@ -8,25 +8,44 @@ part of owlcpp project.
 #endif
 #include "owlcpp/io/input.hpp"
 
+#include "boost/filesystem.hpp"
+
+#include "owlcpp/io/read_ontology_iri.hpp"
+#include "owlcpp/io/parser_triple.hpp"
+#include "adaptor_triple_store.hpp"
+
 namespace owlcpp {
 
 /*
 *******************************************************************************/
 std::istream& operator>>(std::istream& is, Triple_store& ts) {
-   //TODO
+   Parser_triple parser;
+   detail::Adaptor_triple_store ats(ts);
+   parser(is, ats);
 
    return is;
 }
 
 /*
 *******************************************************************************/
-void load_file(std::string const& file, Triple_store& ts) {
+void load_file(boost::filesystem::path const& file, Triple_store& ts) {
+   const boost::filesystem::path cp = canonical(file);
+   std::pair<std::string,std::string> pair;
+   try{
+      pair = read_ontology_iri(cp);
+   } catch(Input_err const&) {
+      //ignore
+   }
+   const Doc_id did = ts.insert_doc(cp.string(), pair.first, pair.second).first;
+   Parser_triple parser;
+   detail::Adaptor_triple_store ats(ts);
+//   parser(is, ats);
    //TODO
 }
 
 /*
 *******************************************************************************/
-void load_file(std::string const& file, Triple_store& ts, Catalog const& cat) {
+void load_file(boost::filesystem::path const& file, Triple_store& ts, Catalog const& cat) {
    //TODO
 }
 
