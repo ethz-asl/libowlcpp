@@ -7,13 +7,15 @@ part of owlcpp project.
 #define INPUT_HPP_
 #include <iosfwd>
 #include <string>
+
+#include "boost/filesystem/path.hpp"
+
 #include "owlcpp/io/config.hpp"
-#include "owlcpp/exception.hpp"
+#include "owlcpp/io/exception.hpp"
 
 namespace owlcpp{
 class OWLCPP_IO_DECL Triple_store;
 class OWLCPP_IO_DECL Catalog;
-struct In_err : public base_exception {};
 
 /**@brief 
 *******************************************************************************/
@@ -23,12 +25,12 @@ std::istream& operator>>(std::istream& is, Triple_store& ts);
 /**@brief
 *******************************************************************************/
 OWLCPP_IO_DECL
-void load_file(std::string const& file, Triple_store& ts);
+void load_file(boost::filesystem::path const& file, Triple_store& ts);
 
 /**@brief
 *******************************************************************************/
 OWLCPP_IO_DECL
-void load_file(std::string const& file, Triple_store& ts, Catalog const& cat);
+void load_file(boost::filesystem::path& file, Triple_store& ts, Catalog const& cat);
 
 /**@brief
 *******************************************************************************/

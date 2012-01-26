@@ -13,7 +13,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/node_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
-#include "owlcpp/exception.hpp"
+#include "owlcpp/io/exception.hpp"
 
 namespace owlcpp{
 
@@ -33,7 +33,7 @@ public Doc_store_base<Catalog>, private Node_store_iri_base<Catalog> {
    friend class Doc_store_base<Catalog>;
 
 public:
-   struct Err : public base_exception {};
+   struct Err : public Input_err {};
 
    std::string iri(const Doc_id did) const {return string(iri_id(did));}
 
@@ -65,11 +65,6 @@ private:
    Node_map node_;
    Doc_map doc_;
 };
-
-/**@param file local path to ontology document
-@return ontologyIRI and VersionIRI strings
-*******************************************************************************/
-OWLCPP_IO_DECL std::pair<std::string,std::string> ontology_id(boost::filesystem::path const& file);
 
 }//namespace owlcpp
 #endif /* CATALOG_HPP_ */

@@ -11,8 +11,8 @@ part of owlcpp project.
 #include "boost/function.hpp"
 #include "boost/bind.hpp"
 #include "boost/shared_ptr.hpp"
-#include "owlcpp/exception.hpp"
 #include "owlcpp/io/config.hpp"
+#include "owlcpp/io/exception.hpp"
 
 typedef std::basic_string<unsigned char> ustring_t;
 
@@ -29,7 +29,7 @@ class OWLCPP_IO_DECL Parser_triple {
    typedef bool (*stop_parsing_fun_t)(const void *);
    typedef std::pair<void*,boost::function<void()> > handler_data_t;
 public:
-   struct Err : public base_exception {};
+   struct Err : public Input_err {};
 
    Parser_triple();
 
