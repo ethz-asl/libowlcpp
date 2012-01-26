@@ -26,16 +26,16 @@ public Doc_store_base<Triple_store>
    Iri_map_owl& iris() {return iri_;}
    Node_map_owl& nodes() {return node_;}
    Doc_map& documents() {return doc_;}
-   Iri_map_owl const& iris() const {return iri_;}
-   Node_map_owl const& nodes() const {return node_;}
-   Doc_map const& documents() const {return doc_;}
    friend class Node_store_iri_base<Triple_store>;
    friend class Node_store_aux_base<Triple_store>;
    friend class Doc_store_base<Triple_store>;
 
 public:
-
    Triple_map const& triples() const {return triple_;}
+
+   Iri_map_owl const& iris() const {return iri_;}
+   Node_map_owl const& nodes() const {return node_;}
+   Doc_map const& documents() const {return doc_;}
 
    void insert_triple(
             const Node_id subj,
