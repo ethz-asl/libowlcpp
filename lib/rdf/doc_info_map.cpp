@@ -37,10 +37,11 @@ std::pair<Doc_id,bool> Doc_map::insert(
       store_.insert(entry_t(id, path, iri, ver));
       return std::make_pair(id, true);
    }
+   //TODO: allow duplicate empty path
    if( path_iter->iri_id_ != iri )
       BOOST_THROW_EXCEPTION(
             Err()
-            << Err::msg_t("different IRI in same location")
+            << Err::msg_t("different IRI at same location")
             << Err::str1_t(path)
             << Err::int1_t(iri())
             << Err::int2_t(path_iter->iri_id_())

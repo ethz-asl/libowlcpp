@@ -49,7 +49,7 @@ private:
                      entry_t, id_type, &entry_t::id_
                   >
                >,
-               boost::multi_index::hashed_unique<
+               boost::multi_index::hashed_non_unique<
                   boost::multi_index::tag<struct path_tag>,
                   boost::multi_index::member<
                      entry_t, std::string, &entry_t::path_
@@ -85,6 +85,9 @@ private:
 public:
    struct Err : public base_exception {};
 
+   typedef Member_iterator<path_iter_t, const id_type, &entry_t::id_> path_iterator;
+   typedef boost::iterator_range<path_iterator> path_range;
+
    typedef Member_iterator<iri_iter_t, const id_type, &entry_t::id_> iri_iterator;
    typedef boost::iterator_range<iri_iterator> iri_range;
 
@@ -96,7 +99,34 @@ public:
    Doc_map();
 
    std::size_t size() const {return store_.size();}
-   std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri, const Node_id ver);
+
+   /**@brief Add document info: location, ontologyIRI, and versionIRI.
+    @param path document location
+    @param iri ontologyIRI
+    @param version versionIRI
+    @return document ID and whether new document info was actually added
+    @throw Err if an entry with the same non-empty @a path and different @a iri or @a version
+    is already present.
+    @details
+    Duplicate document info entries are not allowed.
+
+    If document info with same @a path, @a iri, and @a version already present,
+    new info is not inserted and the ID of the existing document is returned.
+
+    Since documents with same ontologyIRI and versionIRI may be found
+    at different paths,
+    multiple entries with different @a path and same @a iri or @a version can be added.
+
+    Sometimes, document path is not known.
+    Therefore multiple entries with empty @a path and different @a iri or @a version
+    are allowed.
+   */
+   std::pair<Doc_id,bool> insert(
+            std::string const& path,
+            const Node_id iri,
+            const Node_id version
+   );
+
    std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri);
    Node_id iri(const id_type id) const;
    Node_id const* version(const id_type id) const;
@@ -122,11 +152,12 @@ public:
       );
    }
 
-   id_type const* find_path(std::string const& path) const {
+   version_range find_path(std::string const& path) const {
       path_index_t const& pi = store_.get<path_tag>();
-      const path_iter_t i = pi.find(path);
-      if( i == pi.end() ) return 0;
-      return &i->id_;
+      return boost::make_iterator_range(
+               path_iterator(pi.find(id)),
+               path_iterator(pi.end())
+      );
    }
 
    id_iterator begin() const {return id_iterator(store_.begin());}
