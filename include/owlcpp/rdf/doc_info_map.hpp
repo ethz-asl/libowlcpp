@@ -152,10 +152,10 @@ public:
       );
    }
 
-   version_range find_path(std::string const& path) const {
+   path_range find_path(std::string const& path) const {
       path_index_t const& pi = store_.get<path_tag>();
       return boost::make_iterator_range(
-               path_iterator(pi.find(id)),
+               path_iterator(pi.find(path)),
                path_iterator(pi.end())
       );
    }
@@ -166,6 +166,18 @@ public:
 private:
    detail::Id_tracker<id_type> tracker_;
    store_t store_;
+
+   std::pair<Doc_id,bool> insert_private(
+            std::string const& path,
+            const Node_id iri,
+            const Node_id version
+   ) {
+      const id_type id = tracker_.get();
+      BOOST_ASSERT(store_.get<id_tag>().find(id) == store_.get<id_tag>().end());
+      store_.insert(entry_t(id, path, iri, version));
+      return std::make_pair(id, true);
+   }
+
 };
 
 }//namespace owlcpp

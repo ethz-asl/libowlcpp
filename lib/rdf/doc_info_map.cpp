@@ -26,34 +26,41 @@ Doc_map::Doc_map() : tracker_(), store_() {
 std::pair<Doc_id,bool> Doc_map::insert(
          std::string const& path,
          const Node_id iri,
-         const Node_id ver
+         const Node_id version
 ) {
+   if( iri == terms::T_empty_::id() ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("empty ontologyIRI is not allowed")
+   );
+
+   //multiple entries with empty paths are allowed
+   if( path.empty() ) {
+      iri_index_t const& ii = store_.get<iri_tag>();
+      for(iri_iter_t i = ii.find(iri); i != ii.end(); ++i) {
+         if( i->path_.empty() && i->version_id_ == version )
+            return std::make_pair(i->id_, false);
+      }
+      return insert_private(path, iri, version);
+   }
+
    path_index_t const& path_index = store_.get<path_tag>();
    path_iter_t path_iter = path_index.find(path);
+   if( path_iter == path_index.end() ) return insert_private(path, iri, version);
 
-   if( path_iter == path_index.end() ) {
-      const id_type id = tracker_.get();
-      BOOST_ASSERT(store_.get<id_tag>().find(id) == store_.get<id_tag>().end());
-      store_.insert(entry_t(id, path, iri, ver));
-      return std::make_pair(id, true);
-   }
-   //TODO: allow duplicate empty path
-   if( path_iter->iri_id_ != iri )
-      BOOST_THROW_EXCEPTION(
+   if( path_iter->iri_id_ != iri ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("different IRI at same location")
             << Err::str1_t(path)
             << Err::int1_t(iri())
             << Err::int2_t(path_iter->iri_id_())
-      );
-   if( path_iter->version_id_ != ver )
-      BOOST_THROW_EXCEPTION(
+   );
+   if( path_iter->version_id_ != version ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("different ontology version in same location")
             << Err::str1_t(path)
-            << Err::int1_t(ver())
+            << Err::int1_t(version())
             << Err::int2_t(path_iter->version_id_())
-      );
+   );
 
    return std::make_pair(path_iter->id_, false);
 }
