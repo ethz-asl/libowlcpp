@@ -6,13 +6,13 @@ part of owlcpp project.
 #ifndef QUERY_IRIS_HPP_
 #define QUERY_IRIS_HPP_
 
-#include "owlcpp/terms/iri_tags_owl.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
 
 namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-inline bool is_std_owl(const Ns_id ns) {
+inline bool is_standard(const Ns_id ns) {
    switch ( ns() ) {
       case terms::N_owl::index:
       case terms::N_rdf::index:

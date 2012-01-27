@@ -5,7 +5,9 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_STORE_AUX_BASE_HPP_
 #define NODE_STORE_AUX_BASE_HPP_
-#include "owlcpp/rdf/node_map.hpp"
+#include <string>
+#include "owlcpp/node.hpp"
+#include "owlcpp/node_id.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp{
@@ -22,7 +24,7 @@ template<class T> struct Node_store_aux_base {
    */
    Node_id insert_lit_node(
             std::string const& val,
-            std::string const& type_iri = "",
+            std::string const& datatype = "",
             std::string const& lang = ""
    ) {
       T& self = static_cast<T&>(*this);

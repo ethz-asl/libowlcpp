@@ -159,7 +159,7 @@ The last element---either second or third---is used as string value of the term.
 /* */
 
 #include "owlcpp/terms/term_macro.hpp"
-#include "owlcpp/terms/iri_tags_owl.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
 #include "owlcpp/node_id.hpp"
 
 namespace owlcpp{ namespace terms{

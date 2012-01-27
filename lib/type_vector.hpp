@@ -8,8 +8,7 @@ part of owlcpp project.
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "type_vector_macro.hpp"
-#include "rdf/iri_tag_vector_system.hpp"
-#include "rdf/iri_tag_vector_owl.hpp"
+#include "rdf/iri_tag_vector.hpp"
 #include "rdf/node_tag_vector_system.hpp"
 #include "rdf/node_tag_vector_owl.hpp"
 

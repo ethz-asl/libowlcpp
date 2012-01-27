@@ -19,7 +19,7 @@ const std::string iri3("http://iri3");
 
 /**
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( iri_store01_case01 ) {
+BOOST_AUTO_TEST_CASE( case01 ) {
    Iri_map im;
    const Ns_id id1 = im.insert(iri1);
    BOOST_CHECK_MESSAGE( id1 == im.insert(iri1), "same ID from inserting duplicates" );
@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE( iri_store01_case01 ) {
 
 /**
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( iri_store01_case02 ) {
+BOOST_AUTO_TEST_CASE( case02 ) {
    Iri_map im;
    const Ns_id id1 = im.insert(iri1, "iri1");
    BOOST_REQUIRE( im.find_iri(iri1) );
@@ -47,6 +47,15 @@ BOOST_AUTO_TEST_CASE( iri_store01_case02 ) {
    BOOST_CHECK_EQUAL( id1, *im.find_prefix("iri1") );
    BOOST_CHECK( ! im.find_iri(iri2) );
 }
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case03 ) {
+   Iri_map im;
+   BOOST_CHECK_EQUAL( im[terms::N_owl::id()], terms::N_owl::iri() );
+   BOOST_CHECK_EQUAL( im.find_prefix(terms::N_owl::id()), terms::N_owl::prefix() );
+}
+
 
 }//namespace test
 }//namespace owlcpp

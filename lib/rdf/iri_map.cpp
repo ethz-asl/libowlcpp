@@ -10,7 +10,7 @@ part of owlcpp project.
 
 #include "boost/mpl/for_each.hpp"
 
-#include "iri_tag_vector_system.hpp"
+#include "iri_tag_vector.hpp"
 #include "owlcpp/rdf/detail/iri_tag_inserter.hpp"
 
 namespace owlcpp {
@@ -19,7 +19,7 @@ namespace owlcpp {
 *******************************************************************************/
 Iri_map::Iri_map() {
    detail::Iri_tag_inserter iti(*this);
-   boost::mpl::for_each<terms::mpl_vector_iris_system_t>(iti);
+   boost::mpl::for_each<terms::mpl_vector_iris_t>(iti);
 }
 
 /*

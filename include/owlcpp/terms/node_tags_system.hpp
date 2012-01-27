@@ -14,7 +14,7 @@ part of owlcpp project.
 /* */
 
 #include "owlcpp/terms/term_macro.hpp"
-#include "owlcpp/terms/iri_tags_system.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
 #include "owlcpp/node_id.hpp"
 
 namespace owlcpp{ namespace terms{

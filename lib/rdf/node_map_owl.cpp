@@ -31,7 +31,7 @@ Node_map_owl::Node_map_owl() {
 Node_id Node_map_owl::insert(Node const& node) {
    Node_id const* id = find(node);
    if( id ) return *id;
-   if( is_std_owl(node.ns_id()) ) BOOST_THROW_EXCEPTION(
+   if( is_standard(node.ns_id()) ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("inserting unknown term into standard OWL namespace")
             << Err::str1_t( node.value_str() )

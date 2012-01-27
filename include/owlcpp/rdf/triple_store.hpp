@@ -11,7 +11,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/doc_store_base.hpp"
 #include "owlcpp/rdf/triple_map.hpp"
 #include "owlcpp/rdf/node_map_owl.hpp"
-#include "owlcpp/rdf/iri_map_owl.hpp"
+#include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
 
 namespace owlcpp{
@@ -23,7 +23,7 @@ public Node_store_iri_base<Triple_store>,
 public Node_store_aux_base<Triple_store>,
 public Doc_store_base<Triple_store>
 {
-   Iri_map_owl& iris() {return iri_;}
+   Iri_map& iris() {return iri_;}
    Node_map_owl& nodes() {return node_;}
    Doc_map& documents() {return doc_;}
    friend class Node_store_iri_base<Triple_store>;
@@ -33,7 +33,7 @@ public Doc_store_base<Triple_store>
 public:
    Triple_map const& triples() const {return triple_;}
 
-   Iri_map_owl const& iris() const {return iri_;}
+   Iri_map const& iris() const {return iri_;}
    Node_map_owl const& nodes() const {return node_;}
    Doc_map const& documents() const {return doc_;}
 
@@ -58,7 +58,7 @@ public:
    }
 
 private:
-   Iri_map_owl iri_;
+   Iri_map iri_;
    Node_map_owl node_;
    Doc_map doc_;
    Triple_map triple_;

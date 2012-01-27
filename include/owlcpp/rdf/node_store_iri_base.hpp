@@ -5,7 +5,9 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_STORE_IRI_BASE_HPP_
 #define NODE_STORE_IRI_BASE_HPP_
-#include "owlcpp/rdf/node_map.hpp"
+#include <string>
+#include "owlcpp/node.hpp"
+#include "owlcpp/node_id.hpp"
 
 namespace owlcpp{
 
