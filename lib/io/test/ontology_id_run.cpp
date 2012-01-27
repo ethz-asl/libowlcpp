@@ -7,7 +7,7 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "test/sample_data.hpp"
-#include "owlcpp/io/catalog.hpp"
+#include "owlcpp/io/read_ontology_iri.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -54,51 +54,51 @@ const std::string iri12 = "http://www.ifomis.org/bfo/union";
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   const std::pair<std::string,std::string> p1 = ontology_id(path1);
+   const std::pair<std::string,std::string> p1 = read_ontology_iri(path1);
    BOOST_CHECK_EQUAL(p1.first, iri1);
    BOOST_CHECK_EQUAL(p1.second, version1);
 
-   const std::pair<std::string,std::string> p2 = ontology_id(path2);
+   const std::pair<std::string,std::string> p2 = read_ontology_iri(path2);
    BOOST_CHECK_EQUAL(p2.first, iri2);
    BOOST_CHECK(p2.second.empty());
 
-   const std::pair<std::string,std::string> p3 = ontology_id(path3);
+   const std::pair<std::string,std::string> p3 = read_ontology_iri(path3);
    BOOST_CHECK_EQUAL(p3.first, iri3);
    BOOST_CHECK(p3.second.empty());
 
-   const std::pair<std::string,std::string> p4 = ontology_id(path4);
+   const std::pair<std::string,std::string> p4 = read_ontology_iri(path4);
    BOOST_CHECK_EQUAL(p4.first, iri4);
    BOOST_CHECK(p4.second.empty());
 
-   const std::pair<std::string,std::string> p5 = ontology_id(path5);
+   const std::pair<std::string,std::string> p5 = read_ontology_iri(path5);
    BOOST_CHECK_EQUAL(p5.first, iri5);
    BOOST_CHECK(p5.second.empty());
 
-   const std::pair<std::string,std::string> p6 = ontology_id(path6);
+   const std::pair<std::string,std::string> p6 = read_ontology_iri(path6);
    BOOST_CHECK_EQUAL(p6.first, iri6);
    BOOST_CHECK(p6.second.empty());
 
-   const std::pair<std::string,std::string> p7 = ontology_id(path7);
+   const std::pair<std::string,std::string> p7 = read_ontology_iri(path7);
    BOOST_CHECK_EQUAL(p7.first, iri7);
    BOOST_CHECK(p7.second.empty());
 
-   const std::pair<std::string,std::string> p8 = ontology_id(path8);
+   const std::pair<std::string,std::string> p8 = read_ontology_iri(path8);
    BOOST_CHECK_EQUAL(p8.first, iri8);
    BOOST_CHECK(p8.second.empty());
 
-   const std::pair<std::string,std::string> p9 = ontology_id(path9);
+   const std::pair<std::string,std::string> p9 = read_ontology_iri(path9);
    BOOST_CHECK_EQUAL(p9.first, iri9);
    BOOST_CHECK(p9.second.empty());
 
-   const std::pair<std::string,std::string> p10 = ontology_id(path10);
+   const std::pair<std::string,std::string> p10 = read_ontology_iri(path10);
    BOOST_CHECK_EQUAL(p10.first, iri10);
    BOOST_CHECK_EQUAL(p10.second, version10);
 
-   const std::pair<std::string,std::string> p11 = ontology_id(path11);
+   const std::pair<std::string,std::string> p11 = read_ontology_iri(path11);
    BOOST_CHECK_EQUAL(p11.first, iri11);
    BOOST_CHECK(p11.second.empty());
 
-   const std::pair<std::string,std::string> p12 = ontology_id(path12);
+   const std::pair<std::string,std::string> p12 = read_ontology_iri(path12);
    BOOST_CHECK_EQUAL(p12.first, iri12);
    BOOST_CHECK(p12.second.empty());
 }
