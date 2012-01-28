@@ -15,7 +15,7 @@ namespace owlcpp{ namespace detail{
 class Iri_tag_inserter {
    Iri_tag_inserter();
 public:
-   Iri_tag_inserter(Iri_map& store) : store_(&store) {}
+   explicit Iri_tag_inserter(Iri_map& store) : store_(&store) {}
 
    template<class T> void operator()(const T&) const {
       store_->insert(T::id(), T::iri(), T::prefix());

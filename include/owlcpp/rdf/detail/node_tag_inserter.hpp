@@ -15,7 +15,7 @@ namespace owlcpp{ namespace detail{
 class Node_tag_inserter {
    Node_tag_inserter();
 public:
-   Node_tag_inserter(Node_map& store) : store_(&store) {}
+   explicit Node_tag_inserter(Node_map& store) : store_(&store) {}
 
    template<class T> void operator()(T const&) const {
       store_->insert( T::id(), Node(T::ns_type::id(), T::name()) );

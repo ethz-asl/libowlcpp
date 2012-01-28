@@ -140,6 +140,7 @@ part of owlcpp project.
 /**@brief OWL terms in XSD namespace
 *******************************************************************************/
 #define OWLCPP_TERMS_XSD \
+         ((xsd)(string)) \
 /* */
 
 /**@brief Combined set of supported OWL terms

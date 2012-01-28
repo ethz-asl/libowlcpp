@@ -13,6 +13,7 @@ part of owlcpp project.
 #include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_RDF)
 #include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_OWL1)
 #include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_OWL2)
+#include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_TERMS_XSD)
 
 namespace owlcpp{ namespace terms{
 
@@ -31,6 +32,11 @@ typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TERMS_RDF) mpl_vector_terms_rdf_t;
 *******************************************************************************/
 typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TERMS_OWL1) mpl_vector_terms_owl1_t;
 typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TERMS_OWL2) mpl_vector_terms_owl2_t;
+
+/**
+@brief typelist of OWL term tags from XSD namespace
+*******************************************************************************/
+typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_TERMS_XSD) mpl_vector_terms_xsd_t;
 
 }//namespace keywords
 }//namespace owlcpp

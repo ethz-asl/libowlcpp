@@ -22,8 +22,7 @@ public:
    Id_tracker() : counter_(0), stack_() {}
 
    void ensure_min(const id_type id) {
-      if( counter_ > id() ) return;
-      counter_ = id() + 1;
+      if( counter_ <= id() ) counter_ = id() + 1;
    }
 
    id_type get() {

@@ -7,7 +7,6 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_translator.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
-#include "owlcpp/rdf/node_map_owl.hpp"
 
 namespace owlcpp{ namespace test{
 

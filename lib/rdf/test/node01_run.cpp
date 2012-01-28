@@ -6,16 +6,16 @@ Distributed under GNU General Public License; see doc/license.txt.
 #define BOOST_TEST_MODULE node01_run
 #include <iostream>
 #include "boost/test/unit_test.hpp"
-#include "test/exception_translator.hpp"
+#include "test/exception_fixture.hpp"
 #include "owlcpp/node.hpp"
 #include "type_vector.hpp"
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_translator );
+BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 /**
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( node01_run_case01 ) {
+BOOST_AUTO_TEST_CASE( case01 ) {
    const Node n1 = Node(
             terms::T_owl_Nothing::ns_type::id(),
             terms::T_owl_Nothing::name()

@@ -26,10 +26,10 @@ template<class T> struct Node_store_iri_base {
       const std::size_t n = iri.find('#');
       if( std::string::npos == n ) {
          const Ns_id nid = self.iris().insert(iri);
-         return self.nodes().insert(Node(nid, ""));
+         return self.nodes().insert_iri(nid, "");
       }
       const Ns_id nid = self.iris().insert(iri.substr(0,n));
-      return self.nodes().insert( Node(nid, iri.substr(n+1)) );
+      return self.nodes().insert_iri( nid, iri.substr(n+1) );
    }
 
    /**
