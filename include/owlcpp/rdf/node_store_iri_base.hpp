@@ -24,12 +24,25 @@ template<class T> struct Node_store_iri_base {
    Node_id insert_iri_node(std::string const& iri) {
       T& self = static_cast<T&>(*this);
       const std::size_t n = iri.find('#');
-      if( std::string::npos == n ) {
-         const Ns_id nid = self.iris().insert(iri);
-         return self.nodes().insert_iri(nid, "");
+      const Ns_id iid =
+               std::string::npos == n ?
+                        self.iris().insert(iri) :
+                        self.iris().insert(iri.substr(0,n));
+      const std::string name = std::string::npos == n ? "" : iri.substr(n+1);
+
+      //prohibit inserting nodes into standard namespaces
+      if( T::is_constant(iid) ) {
+         Node_id const* nid = self.nodes().find(Node(iid, name));
+         if( nid ) return *nid;
+         typedef typename T::Err Err;
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << typename Err::msg_t("term cannot be inserted into namespace")
+                  << typename Err::str1_t( name )
+                  << typename Err::str2_t( self.iris()[iid] )
+         );
       }
-      const Ns_id nid = self.iris().insert(iri.substr(0,n));
-      return self.nodes().insert_iri( nid, iri.substr(n+1) );
+      return self.nodes().insert_iri( iid, name );
    }
 
    /**

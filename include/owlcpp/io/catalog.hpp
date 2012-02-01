@@ -22,7 +22,9 @@ namespace owlcpp{
 non-empty verions IRIs should be unique.
 *******************************************************************************/
 class OWLCPP_IO_DECL Catalog :
-public Doc_store_base<Catalog>, private Node_store_iri_base<Catalog> {
+public Doc_store_base<Catalog>,
+private Node_store_iri_base<Catalog>
+{
    Iri_map& iris() {return iri_;}
    Node_map& nodes() {return node_;}
    Doc_map& documents() {return doc_;}
@@ -32,9 +34,19 @@ public Doc_store_base<Catalog>, private Node_store_iri_base<Catalog> {
    friend class Node_store_iri_base<Catalog>;
    friend class Doc_store_base<Catalog>;
 
+   /** indicate which namespaces should remain constant */
+   static bool is_constant(const Ns_id ns) {
+      switch ( ns() ) {
+         case terms::N_blank::index:
+         case terms::N_empty::index:
+            return true;
+         default:
+            return false;
+      }
+   }
+
 public:
    struct Err : public Input_err {};
-
    std::string iri(const Doc_id did) const {return string(iri_id(did));}
 
    std::string version(const Doc_id did) const {

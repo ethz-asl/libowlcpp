@@ -23,9 +23,17 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    const Node_id nid1 = nm.insert_iri(
             terms::T_owl_Class::ns_type::id(), terms::T_owl_Class::name()
    );
-//   BOOST_CHECK_EQUAL(nid1, terms::T_owl_Class::id());
 
-//   BOOST_CHECK_EQUAL( nm[terms::T_rdfs_range::id()], Node(terms::T_rdfs_range()) );
+   const Node_id nid2 = nm.insert_iri(Ns_id(42), "node2");
+   BOOST_CHECK_EQUAL(nm[nid2].value_str(), "node2");
+   BOOST_CHECK( ! nm.datatype(nid2));
+   BOOST_CHECK(nm.language(nid2).empty());
+
+   const Node_id nid3 = nm.insert_literal("some string", nid2, "en");
+   BOOST_CHECK_EQUAL(nm[nid3].value_str(), "some string");
+   BOOST_REQUIRE(nm.datatype(nid3));
+   BOOST_CHECK_EQUAL(*nm.datatype(nid3), nid2);
+   BOOST_CHECK_EQUAL(nm.language(nid3), "en");
 }
 
 }//namespace test

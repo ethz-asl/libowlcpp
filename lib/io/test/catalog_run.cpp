@@ -31,9 +31,37 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(cat.path(*did1), boost::filesystem::canonical(path1).string());
 }
 
-/**
+/** Test inserting new nodes into OWL namespace
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
+   Catalog cat;
+
+   //standard term as document IRI
+   BOOST_CHECK_NO_THROW(
+            cat.insert_doc("path1", terms::N_owl::iri() + "#Ontology")
+   );
+
+   //wrong term in standard namespace as ontologyIRI
+   BOOST_CHECK_NO_THROW(
+            cat.insert_doc("path2", terms::N_owl::iri() + "#Blah")
+   );
+
+   //blank node as ontologyIRI
+   BOOST_CHECK_THROW(
+            cat.insert_doc("path3", "_#Blah"),
+            Catalog::Err
+   );
+
+   //empty namespace node as ontologyIRI
+   BOOST_CHECK_THROW(
+            cat.insert_doc("path3", "#Blah"),
+            Catalog::Err
+   );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case03 ) {
    Catalog cat;
    BOOST_CHECK_EQUAL(cat.add(dir1), 12u);
 

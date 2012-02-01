@@ -18,7 +18,6 @@ part of owlcpp project.
 #include "owlcpp/rdf/config.hpp"
 #include "owlcpp/exception.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
-#include "owlcpp/rdf/query_iris.hpp"
 
 namespace owlcpp{ namespace detail{
 
@@ -101,7 +100,6 @@ public:
       return i->second;
    }
 
-   //TODO: literal node should include datatype and language
    //TODO: implement range_t find(const Ns_id) const;
    Node_id const* find(Node const& node) const {
       node_index_t const& node_index = store_.get<node_tag>();
@@ -136,12 +134,6 @@ public:
       const Node node(nsid, name);
       const node_iter_t n_iter = n_index.find(node);
       if( n_iter != n_index.end() ) return n_iter->first;
-      if( is_standard(node.ns_id()) ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("inserting unknown term into standard namespace")
-               << Err::str1_t( name )
-               << Err::int1_t( nsid() )
-      );
       const id_type id = tracker_.get();
       insert(id, node);
       return id;

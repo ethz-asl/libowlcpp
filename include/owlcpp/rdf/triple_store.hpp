@@ -14,6 +14,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/rdf/config.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
 
 namespace owlcpp{
 
@@ -31,7 +32,22 @@ public Doc_store_base<Triple_store>
    friend class Node_store_aux_base<Triple_store>;
    friend class Doc_store_base<Triple_store>;
 
+   /** indicate which namespaces should remain constant */
+   static bool is_constant(const Ns_id ns) {
+      switch ( ns() ) {
+         case terms::N_owl::index:
+         case terms::N_rdf::index:
+         case terms::N_rdfs::index:
+         case terms::N_xsd::index:
+            return true;
+         default:
+            return false;
+      }
+   }
+
 public:
+   struct Err : public base_exception {};
+
    Triple_store();
 
    Triple_map const& triples() const {return triple_;}
