@@ -26,6 +26,9 @@ class Node_tag_inserter;
 }
 
 /**@brief Store RDF nodes
+@details
+Validity of node IDs is assumed and asserted in debug mode.
+Calling node map methods with invalid node IDs results in undefined behavior.
 *******************************************************************************/
 class OWLCPP_RDF_DECL Node_map {
 public:
@@ -90,9 +93,9 @@ public:
     @param id literal node's ID
     @return language tag string for the literal node or
     "" if the node is not literal or no language is defined for it.
-    @details The tag string format MAY be according to RFC 5646.
+    @details The tag string format MAY be according to RFC 5646
+    (http://tools.ietf.org/html/rfc5646).
     This is not, however, currently enforced by the library.
-    (http://tools.ietf.org/html/rfc5646)
    */
    std::string language(const Node_id id) const {
       const lang_iter_t i = lang_.find(id);
@@ -101,6 +104,7 @@ public:
    }
 
    //TODO: implement range_t find(const Ns_id) const;
+
    Node_id const* find(Node const& node) const {
       node_index_t const& node_index = store_.get<node_tag>();
       const node_iter_t node_iter = node_index.find(node);
@@ -108,6 +112,11 @@ public:
       return &node_iter->first;
    }
 
+   /**
+    @param id node ID
+    @return immutable reference to node object with specified ID
+    @throw Node_map::Err if @b id does not exist
+   */
    Node const& at(const Node_id id) const {
       id_index_t const& index = store_.get<id_tag>();
       const id_iter_t iter = index.find(id);
@@ -119,7 +128,13 @@ public:
       return iter->second;
    }
 
+   /**@brief Remove node with specified ID
+    @param id node ID
+    @details
+    If node with ID @b id does not exist, behavior is undefined.
+   */
    void remove(const id_type id);
+
    void remove(Node const& node);
    iterator begin() const {return store_.begin();}
    iterator end() const {return store_.end();}
@@ -152,9 +167,9 @@ public:
     @param datatype
     @param lang language tag string for the literal node or
     "" if the language is not defined.
-    The tag string format SHOULD be according to RFC 5646.
+    The tag string format SHOULD be according to RFC 5646
+    (http://tools.ietf.org/html/rfc5646).
     This is not, however, currently enforced by the library.
-    (http://tools.ietf.org/html/rfc5646)
     @return node ID
    */
    id_type insert_literal(

@@ -27,12 +27,8 @@ Node_map::Node_map() : tracker_(), store_() {
 void Node_map::remove(const id_type id) {
    id_index_t & id_index = store_.get<id_tag>();
    id_iter_t i = id_index.find(id);
-   if( i == id_index.end() ) BOOST_THROW_EXCEPTION(
-            Err()
-            << Err::msg_t("removing non-existing node ID")
-            << Err::int1_t(id())
-   );
-   id_index.erase(id);
+   BOOST_ASSERT( i != id_index.end() );
+   id_index.erase(i);
    tracker_.push(id);
 }
 
