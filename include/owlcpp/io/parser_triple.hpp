@@ -8,6 +8,7 @@ part of owlcpp project.
 #include <iosfwd>
 #include <string>
 #include "boost/assert.hpp"
+#include "boost/bind.hpp"
 #include "boost/function.hpp"
 #include "boost/shared_ptr.hpp"
 #include "owlcpp/io/config.hpp"
@@ -26,7 +27,6 @@ namespace owlcpp{
 class OWLCPP_IO_DECL Parser_triple {
    typedef void (*handle_statement_fun_t)(void *, const void*);
    typedef bool (*stop_parsing_fun_t)(const void *);
-   typedef std::pair<void*,boost::function<void()> > handler_data_t;
 public:
    struct Err : public Input_err {};
 
@@ -38,6 +38,7 @@ public:
    ) {
       setup(&sink, &handle_statement<Sink>);
       parse(stream);
+      sink.finalize();
    }
 
    template<class Sink> void operator()(
@@ -46,12 +47,16 @@ public:
    ) {
       setup(&sink, &handle_statement<Sink>);
       parse(file_name);
+      sink.finalize();
+   }
+
+   const boost::function<void()> abort_call() {
+      return boost::bind(&Parser_triple::abort_parse, this);
    }
 
 private:
    boost::shared_ptr<raptor_world> world_;
    boost::shared_ptr<raptor_parser> parser_;
-   handler_data_t data_;
    bool abort_requested_;
 
    void abort_parse();
@@ -63,9 +68,7 @@ private:
    void parse(std::string const&);
 
    template<class Sink> static void handle_statement(void* data, const void* rs) {
-      typedef std::pair<Sink*,boost::function<void()> > handler_data_t;
-      handler_data_t* pair = static_cast<handler_data_t*>(data);
-      pair->first->insert(rs, pair->second);
+      static_cast<Sink*>(data)->insert(rs);
    }
 
 };

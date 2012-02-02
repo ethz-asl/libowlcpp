@@ -21,9 +21,10 @@ namespace owlcpp{ namespace detail{
 class Adaptor_iri_finder {
 public:
    struct Err : public Input_err {};
-   Adaptor_iri_finder() : iri_(), version_() {}
+   Adaptor_iri_finder(const boost::function<void()> abort_call)
+   : iri_(), version_(), abort_call_(abort_call) {}
 
-   void insert(void const* statement, boost::function<void()> abort) {
+   void insert(void const* statement) {
       const raptor_statement* rs = static_cast<const raptor_statement*>(statement);
       /*
       std::cout
@@ -48,7 +49,7 @@ public:
                   raptor_uri_as_counted_string(rs->object->value.uri, &len);
          char const* term = reinterpret_cast<char const*>(term_uc);
          version_.assign(term, len);
-         abort();
+         abort_call_();
          return;
       }
 
@@ -62,10 +63,12 @@ public:
 
    const std::string& iri() const {return iri_;}
    const std::string& version() const {return version_;}
+   void finalize() const {}
 
 private:
    std::string iri_;
    std::string version_;
+   const boost::function<void()> abort_call_;
 
    static bool is_ontologyIRI(raptor_statement const& rs) {
       if(

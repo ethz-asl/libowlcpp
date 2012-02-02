@@ -16,7 +16,7 @@ namespace owlcpp {
 *******************************************************************************/
 std::pair<std::string,std::string> read_ontology_iri(boost::filesystem::path const& file) {
    Parser_triple parser;
-   detail::Adaptor_iri_finder irif;
+   detail::Adaptor_iri_finder irif(parser.abort_call());
    //TODO: catch and re-throw file info
 
    parser(file.string(), irif);
