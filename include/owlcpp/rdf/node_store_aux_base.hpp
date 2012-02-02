@@ -18,7 +18,7 @@ template<class T> struct Node_store_aux_base {
 
    /**@brief if not already present, store literal node
     @param val literal node string value
-    @param type_iri datatype IRI
+    @param datatype datatype IRI
     @param lang string value language
     @return node ID
    */

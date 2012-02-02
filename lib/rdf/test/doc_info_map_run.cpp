@@ -5,12 +5,12 @@ part of owlcpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE doc_info_map_run
 #include "boost/test/unit_test.hpp"
-#include "test/exception_translator.hpp"
+#include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_translator );
+BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 const std::string path1 = "path1";
 const std::string path2 = "path2";

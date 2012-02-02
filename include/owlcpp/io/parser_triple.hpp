@@ -9,7 +9,6 @@ part of owlcpp project.
 #include <string>
 #include "boost/assert.hpp"
 #include "boost/function.hpp"
-#include "boost/bind.hpp"
 #include "boost/shared_ptr.hpp"
 #include "owlcpp/io/config.hpp"
 #include "owlcpp/io/exception.hpp"

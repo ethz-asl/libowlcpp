@@ -17,10 +17,15 @@ namespace owlcpp{
 class OWLCPP_IO_DECL Triple_store;
 class OWLCPP_IO_DECL Catalog;
 
-/**@brief 
+/**@brief Load ontology from input stream into triple store
+@details
+
+@param stream STL input stream
+@param store triple store
+@param path optional path to ontology document, used for identification only
 *******************************************************************************/
 OWLCPP_IO_DECL
-std::istream& operator>>(std::istream& is, Triple_store& ts);
+void load(std::istream& stream, Triple_store& store, std::string const& path = "");
 
 /**@brief
 *******************************************************************************/

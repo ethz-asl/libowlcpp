@@ -5,48 +5,73 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef ADAPTOR_TRIPLE_STORE_HPP_
 #define ADAPTOR_TRIPLE_STORE_HPP_
+#include <deque>
 #include "boost/assert.hpp"
 #include "boost/lexical_cast.hpp"
+#include "boost/function.hpp"
+#include "boost/array.hpp"
 
 #include "raptor2.h"
 
-#include "boost/function.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/term_methods.hpp"
 #include "owlcpp/io/exception.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
+#include "adaptor_iri_finder.hpp"
 
 namespace owlcpp{ namespace detail{
 
 /**@brief 
 *******************************************************************************/
 class Adaptor_triple_store {
+   typedef boost::array<Node_id,3> triple_t;
+   typedef std::deque<triple_t> triple_stor_t;
 public:
    struct Err : public Input_err {};
-   Adaptor_triple_store(Triple_store& ts) : ts_(ts), current_doc_() {}
+   Adaptor_triple_store(Triple_store& ts, const Doc_id did)
+   : ts_(ts),
+     current_doc_(did),
+     doc_str_("Doc" + boost::lexical_cast<std::string>(did()) + "_"),
+     id_found_(false)
+   {}
 
    void insert(void const* statement, boost::function<void()> abort) {
+      if( ! id_found_ ) aif_.insert(
+               statement,
+               boost::bind(&Adaptor_triple_store::id_found, this)
+      );
       const raptor_statement* rs = static_cast<const raptor_statement*>(statement);
 //      std::cout
 //      << raptor_term_to_string(rs->subject) << ' '
 //      << raptor_term_to_string(rs->predicate) << ' '
 //      << raptor_term_to_string(rs->object) << '\n'
 //      ;
-      const Node_id subj = insert_node(*rs->subject);
-      const Node_id pred = insert_node(*rs->predicate);
-      const Node_id obj  = insert_node(*rs->object);
-      ts_.insert_triple(subj, pred, obj, current_doc_);
+
+      triple_t triple;
+      triple[0] = insert_node(*rs->subject);
+      triple[1] = insert_node(*rs->predicate);
+      triple[2]  = insert_node(*rs->object);
+      if( id_found ) {
+         ts_.insert_triple(triple[0], triple[1], triple[2], current_doc_);
+      } else {
+         triples_.push_back(triple);
+      }
    }
 
-   void current_doc(const Doc_id did) {
-      current_doc_ = did;
-      doc_str_ = "Doc" + boost::lexical_cast<std::string>(did()) + "_";
-   }
+   const std::string& iri() const {return aif_.iri();}
+   const std::string& version() const {return aif_.version();}
 
 private:
    Triple_store& ts_;
-   Doc_id current_doc_;
-   std::string doc_str_;
+   const Doc_id current_doc_;
+   const std::string doc_str_;
+   Adaptor_iri_finder aif_;
+   bool id_found_;
+   triple_stor_t triples_;
+
+   void id_found() {
+      id_found_ = true;
+   }
 
    Node_id insert_node(raptor_term const& node) {
       switch (node.type) {

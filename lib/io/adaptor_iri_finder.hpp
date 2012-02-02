@@ -25,11 +25,13 @@ public:
 
    void insert(void const* statement, boost::function<void()> abort) {
       const raptor_statement* rs = static_cast<const raptor_statement*>(statement);
-//      std::cout
-//      << raptor_term_to_string(rs->subject) << ' '
-//      << raptor_term_to_string(rs->predicate) << ' '
-//      << raptor_term_to_string(rs->object) << '\n'
-//      ;
+      /*
+      std::cout
+      << raptor_term_to_string(rs->subject) << ' '
+      << raptor_term_to_string(rs->predicate) << ' '
+      << raptor_term_to_string(rs->object) << '\n'
+      ;
+       */
 
       if( iri_.empty() && is_ontologyIRI(*rs) ) {
          std::size_t len;

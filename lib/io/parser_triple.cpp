@@ -9,6 +9,7 @@ part of owlcpp project.
 #include "owlcpp/io/parser_triple.hpp"
 #include <iostream>
 #include "boost/lexical_cast.hpp"
+#include "boost/bind.hpp"
 #include "raptor2.h"
 
 namespace owlcpp { namespace{
