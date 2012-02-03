@@ -73,6 +73,34 @@ std::pair<Doc_id,bool> Doc_map::insert(std::string const& path, const Node_id ir
 
 /*
 *******************************************************************************/
+std::pair<Doc_id,bool> Doc_map::insert_new() {
+   return insert_private("", terms::T_empty_::id(), terms::T_empty_::id());
+}
+
+/*
+*******************************************************************************/
+void Doc_map::modify(
+         const Doc_id did,
+         std::string const& path,
+         const Node_id iri,
+         const Node_id version
+) {
+   BOOST_ASSERT(store_.get<id_tag>().find(did) != store_.get<id_tag>().end());
+
+}
+
+/*
+*******************************************************************************/
+void Doc_map::remove(const id_type id) {
+   id_index_t & id_index = store_.get<id_tag>();
+   id_iter_t i = id_index.find(id);
+   BOOST_ASSERT( i != id_index.end() );
+   id_index.erase(i);
+   tracker_.push(id);
+}
+
+/*
+*******************************************************************************/
 Node_id Doc_map::iri(const id_type id) const {
    BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
    return store_.get<id_tag>().find(id)->iri_id_;

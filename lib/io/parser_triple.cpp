@@ -9,7 +9,6 @@ part of owlcpp project.
 #include "owlcpp/io/parser_triple.hpp"
 #include <iostream>
 #include "boost/lexical_cast.hpp"
-#include "boost/bind.hpp"
 #include "raptor2.h"
 
 namespace owlcpp { namespace{
@@ -33,7 +32,6 @@ void handle_error(void* data, raptor_log_message* msg) {
 Parser_triple::Parser_triple()
 : world_(raptor_new_world(), &raptor_free_world),
   parser_(raptor_new_parser(world_.get(), "rdfxml"), &raptor_free_parser),
-  data_(),
   abort_requested_(false)
 {
    if( ! world_ ) BOOST_THROW_EXCEPTION(
@@ -61,15 +59,11 @@ void Parser_triple::abort_parse() {
 /*
 *******************************************************************************/
 void Parser_triple::setup(void* sink, handle_statement_fun_t hs_fun) {
-   data_.first = sink;
-   data_.second = boost::bind(&Parser_triple::abort_parse, this);
-
    raptor_parser_set_statement_handler(
          parser_.get(),
-         &data_,
+         sink,
          reinterpret_cast<raptor_statement_handler>(hs_fun)
    );
-
 }
 
 /*

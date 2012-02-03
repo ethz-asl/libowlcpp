@@ -17,14 +17,12 @@ part of owlcpp project.
 namespace owlcpp {
 
 /*
-std::istream& operator>>(std::istream& is, Triple_store& ts) {
-   Parser_triple parser;
-   detail::Adaptor_triple_store ats(ts);
-   parser(is, ats);
-
-   return is;
-}
 *******************************************************************************/
+void load(std::istream& stream, Triple_store& store, std::string const& path) {
+   Parser_triple parser;
+   detail::Adaptor_triple_store ats(store, "");
+   parser(stream, ats);
+}
 
 /*
 *******************************************************************************/
@@ -38,7 +36,7 @@ void load_file(boost::filesystem::path const& file, Triple_store& ts) {
    }
    const Doc_id did = ts.insert_doc(cp.string(), pair.first, pair.second).first;
    Parser_triple parser;
-   detail::Adaptor_triple_store ats(ts, did);
+   detail::Adaptor_triple_store ats(ts, file.string());
 //   parser(is, ats);
    //TODO
 }

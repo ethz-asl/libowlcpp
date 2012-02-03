@@ -27,7 +27,6 @@ public Doc_store_base<Triple_store>
 {
    Iri_map& iris() {return iri_;}
    Node_map& nodes() {return node_;}
-   Doc_map& documents() {return doc_;}
    friend class Node_store_iri_base<Triple_store>;
    friend class Node_store_aux_base<Triple_store>;
    friend class Doc_store_base<Triple_store>;
@@ -54,6 +53,7 @@ public:
    Iri_map const& iris() const {return iri_;}
    Node_map const& nodes() const {return node_;}
    Doc_map const& documents() const {return doc_;}
+   Doc_map& documents() {return doc_;}
 
    void insert_triple(
             const Node_id subj,

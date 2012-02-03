@@ -127,10 +127,19 @@ public:
             const Node_id version
    );
 
+   void modify(
+            const Doc_id did,
+            std::string const& path,
+            const Node_id iri,
+            const Node_id version
+   );
+
    std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri);
+   Doc_id insert_new();
    Node_id iri(const id_type id) const;
    Node_id const* version(const id_type id) const;
    std::string path(const id_type id) const;
+   void remove(const id_type id);
 
    /**
     @param id node ID of document's OntologyIRI
