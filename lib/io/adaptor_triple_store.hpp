@@ -43,23 +43,13 @@ public:
             std::string const& import_iri = "" /**< expected versionIRI or ontologyIRI */
    ) :
       ts_(ts),
-      current_doc_(ts_.documents().insert_new()),
-      doc_str_(blank_name_prefix(current_doc_)),
+      current_doc_(get_doc_id(ts, path, import_iri)),
+      blank_pref_(blank_name_prefix(current_doc_)),
+      path_(path),
+      import_iri_(import_iri),
       aif_(boost::bind(&Adaptor_triple_store::id_found, this)),
-      check_doc_(false),
       id_found_(false)
-   {
-      if( import_iri.empty() ) {
-         current_doc_ = ts_.documents().insert_new(path);
-      } else {
-         if( ts_.find_doc_iri(import_iri) ) BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("document already loaded")
-                  << Err::str1_t(import_iri)
-         );
-
-      }
-   }
+   {}
 
    /**
     Use this when path, expected ontologyIRI, and expected versionIRI for the
@@ -72,25 +62,13 @@ public:
             std::string const& version_iri /**< expected versionIRI (may be empty) */
    ) :
       ts_(ts),
-      current_doc_(),
-      doc_str_(),
+      current_doc_(get_doc_id(ts, path, ontology_iri, version_iri)),
+      blank_pref_(blank_name_prefix(current_doc_)),
+      path_(),
+      import_iri_(),
       aif_(boost::bind(&Adaptor_triple_store::id_found, this)),
-      check_doc_(true),
       id_found_(false)
-   {
-      if( ontology_iri.empty() ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("valid ontologyIRI is required")
-      );
-      std::pair<Doc_id,bool> p = ts_.insert_doc(path, ontology_iri, version_iri);
-      if( ! p.second ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("document already loaded")
-               << Err::str1_t(ontology_iri)
-      );
-      current_doc_ = p.first;
-      doc_str_ = blank_name_prefix(current_doc_);
-   }
+   {}
 
    void insert(void const* statement) {
       if( ! id_found_ ) aif_.insert(statement);
@@ -114,31 +92,62 @@ public:
 
    const std::string& iri() const {return aif_.iri();}
    const std::string& version() const {return aif_.version();}
-   void finalize() {
-
-   }
+   void finalize() { if(! id_found_ ) id_found(); }
 
 private:
    Triple_store& ts_;
-   Doc_id current_doc_;
-   std::string doc_str_;
+   const Doc_id current_doc_;
+   const std::string blank_pref_;
+   const std::string path_;
+   const std::string import_iri_;
    Adaptor_iri_finder aif_;
-   const bool check_doc_;
    bool id_found_;
    triple_stor_t triples_;
 
    void id_found() {
+      check_iri();
       id_found_ = true;
-
    }
 
    /** Check whether expected ontology IRI is compatible with the declared IRIs.
    Add document info entry to triple store.
    */
    void check_iri() {
-//      if( ! iri_.empty() ) {
-//
-//      }
+      const Node_id nid = ts_.documents().iri(current_doc_);
+      if( nid == terms::T_empty_::id() ) { //document entry is incomplete
+         if( ! import_iri_.empty() && import_iri_ != iri() && import_iri_ != version() ) {
+            BOOST_THROW_EXCEPTION(
+                     Err()
+                     << Err::msg_t("ontology IRI mismatch")
+                     << Err::str1_t(import_iri_)
+                     << Err::str2_t(iri())
+                     << Err::str3_t(version())
+            );
+         }
+         ts_.documents().modify(
+                  current_doc_,
+                  path_,
+                  ts_.insert_iri_node(iri()),
+                  ts_.insert_iri_node(version())
+         );
+      } else { //document entry is complete
+         Node_id const* iri_nid = ts_.find_iri_node(iri());
+         if( ! iri_nid || *iri_nid != nid ) {
+            BOOST_THROW_EXCEPTION(
+                     Err()
+                     << Err::msg_t("ontology IRI mismatch")
+                     << Err::str1_t(ts_.string(nid))
+                     << Err::str2_t(iri())
+            );
+         }
+         const Node_id vid = ts_.documents().version(current_doc_);
+         if( version() != ts_.string(vid) ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("ontology versionIRI mismatch")
+                  << Err::str1_t(ts_.string(vid))
+                  << Err::str2_t(version())
+         );
+      }
    }
 
    Node_id insert_node(raptor_term const& node) {
@@ -185,7 +194,47 @@ private:
 
    Node_id insert_node(raptor_term_blank_value const& val) {
       char const* val_str = reinterpret_cast<char const*>(val.string);
-      return ts_.insert_blank_node( doc_str_ + std::string(val_str,val.string_len) );
+      return ts_.insert_blank_node( blank_pref_ + std::string(val_str,val.string_len) );
+   }
+
+   static Doc_id get_doc_id(
+            Triple_store& ts, /**< destination triple store */
+            std::string const& path, /**< document location (may be empty) */
+            std::string const& import_iri /**< expected ontologyIRI */
+   ) {
+      if( ! path.empty() && ts.documents().find_path(path) )
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("document already loaded")
+                  << Err::str1_t(path)
+         );
+      if( ! import_iri.empty() && ts.find_doc_iri(import_iri) ) {
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("document already loaded")
+                  << Err::str1_t(import_iri)
+         );
+      }
+      return ts.documents().insert_new();
+   }
+
+   static Doc_id get_doc_id(
+            Triple_store& ts, /**< destination triple store */
+            std::string const& path, /**< document location (may be empty) */
+            std::string const& ontology_iri, /**< expected ontologyIRI */
+            std::string const& version_iri /**< expected versionIRI (may be empty) */
+   ) {
+      if( ontology_iri.empty() ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("valid ontologyIRI is required")
+      );
+      std::pair<Doc_id,bool> p = ts.insert_doc(path, ontology_iri, version_iri);
+      if( ! p.second ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("document already loaded")
+      << Err::str1_t(ontology_iri)
+      );
+      return p.first;
    }
 };
 

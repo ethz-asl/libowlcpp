@@ -125,19 +125,42 @@ public:
             std::string const& path,
             const Node_id iri,
             const Node_id version
-   );
+   ) {
+      Doc_id const* did = find_existing(path, iri, version);
+      if( did ) return std::make_pair(*did, false);
+      return std::make_pair(insert_private(path, iri, version), true);
+   }
 
    void modify(
             const Doc_id did,
             std::string const& path,
             const Node_id iri,
             const Node_id version
-   );
+   ) {
+      id_index_t& index = store_.get<id_tag>();
+      id_iter_t i = index.find(did);
+      BOOST_ASSERT(i != index.end());
+      const entry_t entry = *i;
+      index.erase(i);
+      try {
+         if( find_existing(path, iri, version) ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("document already exists")
+                  << Err::str1_t(path)
+                  << Err::int1_t(iri())
+                  << Err::int2_t(version())
+         );
+      } catch(Err const& e) {
+         store_.insert(entry);
+         throw;
+      }
+      store_.insert(entry_t(did, path, iri, version));
+   }
 
    std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri);
    Doc_id insert_new();
    Node_id iri(const id_type id) const;
-   Node_id const* version(const id_type id) const;
+   Node_id version(const id_type id) const;
    std::string path(const id_type id) const;
    void remove(const id_type id);
 
@@ -176,7 +199,13 @@ private:
    detail::Id_tracker<id_type> tracker_;
    store_t store_;
 
-   std::pair<Doc_id,bool> insert_private(
+   Doc_id const* find_existing(
+            std::string const& path,
+            const Node_id iri,
+            const Node_id version
+   ) const;
+
+   Doc_id insert_private(
             std::string const& path,
             const Node_id iri,
             const Node_id version
@@ -184,7 +213,7 @@ private:
       const id_type id = tracker_.get();
       BOOST_ASSERT(store_.get<id_tag>().find(id) == store_.get<id_tag>().end());
       store_.insert(entry_t(id, path, iri, version));
-      return std::make_pair(id, true);
+      return id;
    }
 
 };

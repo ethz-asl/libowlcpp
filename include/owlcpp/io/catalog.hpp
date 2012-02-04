@@ -48,16 +48,10 @@ private Node_store_iri_base<Catalog>
 public:
    struct Err : public Input_err {};
    std::string iri(const Doc_id did) const {return string(iri_id(did));}
-
-   std::string version(const Doc_id did) const {
-      Node_id const* nid = version_id(did);
-      if( nid ) return string(*nid);
-      return "";
-   }
-
+   std::string version(const Doc_id did) const { return string(version_id(did)); }
    std::string path(const Doc_id did) const {return doc_.path(did);}
    Node_id iri_id(const Doc_id did) const {return doc_.iri(did);}
-   Node_id const* version_id(const Doc_id did) const {return doc_.version(did);}
+   Node_id version_id(const Doc_id did) const {return doc_.version(did);}
 
    /**@brief determine OntologyIRI and VersionIRI of ontology document(s)
     and add them to the catalog

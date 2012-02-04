@@ -66,14 +66,14 @@ public:
 
    Node const& operator[](const Node_id nid) const {return node_[nid];}
    std::string operator[](const Ns_id iid) const {return iri_[iid];}
-   Node const& iri(const Doc_id did) const {return node_[doc_.iri(did)];}
-   std::string path(const Doc_id did) const {return doc_.path(did);}
-
-   Node const* version(const Doc_id did) const {
-      Node_id const* nid = doc_.version(did);
-      if( nid ) return &node_[*nid];
-      return 0;
-   }
+//   Node const& iri(const Doc_id did) const {return node_[doc_.iri(did)];}
+//   std::string path(const Doc_id did) const {return doc_.path(did);}
+//
+//   Node const* version(const Doc_id did) const {
+//      Node_id const* nid = doc_.version(did);
+//      if( nid ) return &node_[*nid];
+//      return 0;
+//   }
 
 private:
    Iri_map iri_;

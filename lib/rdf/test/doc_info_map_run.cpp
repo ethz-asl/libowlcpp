@@ -7,6 +7,7 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
+#include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -55,8 +56,8 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(Node_id(13), dm.iri(id1));
 
    //document versionIRI is returned by pointer
-   BOOST_REQUIRE_MESSAGE(dm.version(id1), "versionIRI exists");
-   BOOST_CHECK_EQUAL(Node_id(1), *dm.version(id1));
+   BOOST_REQUIRE_MESSAGE(dm.version(id1) != terms::T_empty_::id(), "versionIRI exists");
+   BOOST_CHECK_EQUAL(Node_id(1), dm.version(id1));
 }
 
 }//namespace test

@@ -23,11 +23,11 @@ Doc_map::Doc_map() : tracker_(), store_() {
 
 /*
 *******************************************************************************/
-std::pair<Doc_id,bool> Doc_map::insert(
+Doc_id const* Doc_map::find_existing(
          std::string const& path,
          const Node_id iri,
          const Node_id version
-) {
+) const {
    if( iri == terms::T_empty_::id() ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("empty ontologyIRI is not allowed")
@@ -38,14 +38,14 @@ std::pair<Doc_id,bool> Doc_map::insert(
       iri_index_t const& ii = store_.get<iri_tag>();
       for(iri_iter_t i = ii.find(iri); i != ii.end(); ++i) {
          if( i->path_.empty() && i->version_id_ == version )
-            return std::make_pair(i->id_, false);
+            return &i->id_;
       }
-      return insert_private(path, iri, version);
+      return 0;
    }
 
    path_index_t const& path_index = store_.get<path_tag>();
    path_iter_t path_iter = path_index.find(path);
-   if( path_iter == path_index.end() ) return insert_private(path, iri, version);
+   if( path_iter == path_index.end() ) return 0;
 
    if( path_iter->iri_id_ != iri ) BOOST_THROW_EXCEPTION(
             Err()
@@ -62,7 +62,7 @@ std::pair<Doc_id,bool> Doc_map::insert(
             << Err::int2_t(path_iter->version_id_())
    );
 
-   return std::make_pair(path_iter->id_, false);
+   return &path_iter->id_;
 }
 
 /*
@@ -73,20 +73,8 @@ std::pair<Doc_id,bool> Doc_map::insert(std::string const& path, const Node_id ir
 
 /*
 *******************************************************************************/
-std::pair<Doc_id,bool> Doc_map::insert_new() {
+Doc_id Doc_map::insert_new() {
    return insert_private("", terms::T_empty_::id(), terms::T_empty_::id());
-}
-
-/*
-*******************************************************************************/
-void Doc_map::modify(
-         const Doc_id did,
-         std::string const& path,
-         const Node_id iri,
-         const Node_id version
-) {
-   BOOST_ASSERT(store_.get<id_tag>().find(did) != store_.get<id_tag>().end());
-
 }
 
 /*
@@ -108,11 +96,10 @@ Node_id Doc_map::iri(const id_type id) const {
 
 /*
 *******************************************************************************/
-Node_id const* Doc_map::version(const id_type id) const {
+Node_id Doc_map::version(const id_type id) const {
    BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
    const id_iter_t i = store_.get<id_tag>().find(id);
-   if( i->version_id_ == terms::T_empty_::id() ) return 0;
-   return &i->version_id_;
+   return i->version_id_;
 }
 
 /*

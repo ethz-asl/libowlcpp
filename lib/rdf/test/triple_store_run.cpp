@@ -54,5 +54,14 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    );
 }
 
+/** Empty IRI node maps to T_empty_::id() ID
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case03 ) {
+   Triple_store ts;
+   Node_id const* nid = ts.find_iri_node("");
+   BOOST_REQUIRE(nid);
+   BOOST_CHECK_EQUAL(*nid, terms::T_empty_::id());
+}
+
 }//namespace test
 }//namespace owlcpp
