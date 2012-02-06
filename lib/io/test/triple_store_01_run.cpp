@@ -24,7 +24,7 @@ const std::string path1 = sample_file_path("version_test_b.owl");
 BOOST_AUTO_TEST_CASE( case01 ) {
    Triple_store ts;
    boost::filesystem::ifstream ifs(path1);
-//   ifs >> ts;
+   load(ifs, ts);
    BOOST_CHECK_EQUAL( ts.triples().size(), 15u );
 }
 

@@ -20,7 +20,7 @@ namespace owlcpp {
 *******************************************************************************/
 void load(std::istream& stream, Triple_store& store, std::string const& path) {
    Parser_triple parser;
-   detail::Adaptor_triple_store ats(store, "");
+   detail::Adaptor_triple_store ats(store, path);
    parser(stream, ats);
 }
 

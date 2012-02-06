@@ -10,6 +10,7 @@ part of owlcpp project.
 #include "boost/lexical_cast.hpp"
 #include "boost/function.hpp"
 #include "boost/array.hpp"
+#include "boost/foreach.hpp"
 
 #include "raptor2.h"
 
@@ -106,6 +107,10 @@ private:
 
    void id_found() {
       check_iri();
+      BOOST_FOREACH( triple_t const& t, triples_) {
+         ts_.insert_triple(t[0], t[1], t[2], current_doc_);
+      }
+      triples_.clear();
       id_found_ = true;
    }
 
