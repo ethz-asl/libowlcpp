@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef CATALOG_HPP_
 #define CATALOG_HPP_
+#include <limits>
 #include "boost/filesystem/path.hpp"
 
 #include "owlcpp/io/config.hpp"
@@ -58,13 +59,18 @@ public:
     @param path symbolic path pointing to local file or directory;
     any type implicitly convertible to boost::path can be used, e.g., std::string, const char*
     @param recurse if true add to catalog files located in sub-directories
+    @param search_depth
     @return number of added files
     @details
     If path is a directory, an attempt will be made to parse and determine
     OntologyIRI and VersionIRI of every file located in it.
     The files that fail to parse will be ignored.
    */
-   std::size_t add(boost::filesystem::path const& path, const bool recurse = false);
+   std::size_t add(
+            boost::filesystem::path const& path,
+            const bool recurse = false,
+            const std::size_t search_depth = std::numeric_limits<std::size_t>::max()
+   );
 
 private:
    Iri_map iri_;

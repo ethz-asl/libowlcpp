@@ -14,9 +14,12 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-std::pair<std::string,std::string> read_ontology_iri(boost::filesystem::path const& file) {
+std::pair<std::string,std::string> read_ontology_iri(
+         boost::filesystem::path const& file,
+         const std::size_t search_depth
+) {
    Parser_triple parser;
-   detail::Adaptor_iri_finder irif(parser.abort_call());
+   detail::Adaptor_iri_finder irif(parser.abort_call(), search_depth);
    //TODO: catch and re-throw file info
 
    parser(file.string(), irif);

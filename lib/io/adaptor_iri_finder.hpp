@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef ADAPTOR_IRI_FINDER_HPP_
 #define ADAPTOR_IRI_FINDER_HPP_
+#include <limits>
 #include "boost/assert.hpp"
 
 #include "raptor2.h"
@@ -21,18 +22,19 @@ namespace owlcpp{ namespace detail{
 class Adaptor_iri_finder {
 public:
    struct Err : public Input_err {};
-   Adaptor_iri_finder(const boost::function<void()> abort_call)
-   : iri_(), version_(), abort_call_(abort_call) {}
+   Adaptor_iri_finder(
+            const boost::function<void()> abort_call,
+            const std::size_t search_depth = std::numeric_limits<std::size_t>::max()
+   )
+   : iri_(),
+     version_(),
+     abort_call_(abort_call),
+     max_depth_(search_depth),
+     n_(0)
+   {}
 
    void insert(void const* statement) {
       const raptor_statement* rs = static_cast<const raptor_statement*>(statement);
-      /*
-      std::cout
-      << raptor_term_to_string(rs->subject) << ' '
-      << raptor_term_to_string(rs->predicate) << ' '
-      << raptor_term_to_string(rs->object) << '\n'
-      ;
-       */
 
       if( iri_.empty() && is_ontologyIRI(*rs) ) {
          std::size_t len;
@@ -40,6 +42,7 @@ public:
                   raptor_uri_as_counted_string(rs->subject->value.uri, &len);
          char const* term = reinterpret_cast<char const*>(term_uc);
          iri_.assign(term, len);
+         n_ = 0;
          return;
       }
 
@@ -52,6 +55,8 @@ public:
          abort_call_();
          return;
       }
+
+      if( ++n_ == max_depth_ ) abort_call_();
 
       //TODO: Implement early termination of the search for versionIRI statement
       // to avoid reading large ontologies.
@@ -69,6 +74,8 @@ private:
    std::string iri_;
    std::string version_;
    const boost::function<void()> abort_call_;
+   const std::size_t max_depth_;
+   std::size_t n_;
 
    static bool is_ontologyIRI(raptor_statement const& rs) {
       if(

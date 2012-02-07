@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef READ_ONTOLOGY_IRI_HPP_
 #define READ_ONTOLOGY_IRI_HPP_
+#include <limits>
 #include <string>
 #include <utility>
 
@@ -14,11 +15,16 @@ part of owlcpp project.
 
 namespace owlcpp{
 
-/**@param file local path to ontology document
+/**
+@param file local path to ontology document
+@param search_depth
 @return ontologyIRI and versionIRI strings
 *******************************************************************************/
 OWLCPP_IO_DECL std::pair<std::string,std::string>
-read_ontology_iri(boost::filesystem::path const& file);
+read_ontology_iri(
+         boost::filesystem::path const& file,
+         const std::size_t search_depth = std::numeric_limits<std::size_t>::max()
+);
 
 }//namespace owlcpp
 #endif /* READ_ONTOLOGY_IRI_HPP_ */
