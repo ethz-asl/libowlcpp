@@ -47,7 +47,7 @@ public:
       current_doc_(get_doc_id(ts, path, import_iri)),
       blank_pref_(blank_name_prefix(current_doc_)),
       path_(path),
-      import_iri_(import_iri),
+      expected_iri_(import_iri),
       aif_(boost::bind(&Adaptor_triple_store::id_found, this)),
       id_found_(false)
    {}
@@ -66,24 +66,19 @@ public:
       current_doc_(get_doc_id(ts, path, ontology_iri, version_iri)),
       blank_pref_(blank_name_prefix(current_doc_)),
       path_(),
-      import_iri_(),
+      expected_iri_(),
       aif_(boost::bind(&Adaptor_triple_store::id_found, this)),
       id_found_(false)
    {}
 
    void insert(void const* statement) {
       if( ! id_found_ ) aif_.insert(statement);
-      const raptor_statement* rs = static_cast<const raptor_statement*>(statement);
-//      std::cout
-//      << raptor_term_to_string(rs->subject) << ' '
-//      << raptor_term_to_string(rs->predicate) << ' '
-//      << raptor_term_to_string(rs->object) << '\n'
-//      ;
-
+      raptor_statement const& rs = *static_cast<raptor_statement const*>(statement);
+      check_import(rs);
       triple_t triple;
-      triple[0] = insert_node(*rs->subject);
-      triple[1] = insert_node(*rs->predicate);
-      triple[2]  = insert_node(*rs->object);
+      triple[0] = insert_node(*rs.subject);
+      triple[1] = insert_node(*rs.predicate);
+      triple[2]  = insert_node(*rs.object);
       if( id_found_ ) {
          ts_.insert_triple(triple[0], triple[1], triple[2], current_doc_);
       } else {
@@ -94,16 +89,45 @@ public:
    const std::string& iri() const {return aif_.iri();}
    const std::string& version() const {return aif_.version();}
    void finalize() { if(! id_found_ ) id_found(); }
+   std::deque<std::string> const& imports() const {return imports_;}
 
 private:
    Triple_store& ts_;
    const Doc_id current_doc_;
    const std::string blank_pref_;
    const std::string path_;
-   const std::string import_iri_;
+   const std::string expected_iri_;
    Adaptor_iri_finder aif_;
    bool id_found_;
    triple_stor_t triples_;
+   std::deque<std::string> imports_;
+
+   void check_import(raptor_statement const& rs) {
+      if(
+               rs.subject->type != RAPTOR_TERM_TYPE_URI ||
+               rs.predicate->type != RAPTOR_TERM_TYPE_URI ||
+               rs.object->type != RAPTOR_TERM_TYPE_URI
+      ) return;
+
+      std::size_t len;
+      unsigned char const* term_uc =
+               raptor_uri_as_counted_string(rs.predicate->value.uri, &len);
+      char const* term = reinterpret_cast<char const*>(term_uc);
+      if( ! comparison(term, len, terms::T_owl_imports()) ) return;
+
+      term_uc = raptor_uri_as_string(rs.subject->value.uri);
+      term = reinterpret_cast<char const*>(term_uc);
+      if( iri() != term ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("invalid import statement")
+               << Err::str1_t(iri())
+               << Err::str2_t(term)
+      );
+
+      term_uc = raptor_uri_as_counted_string(rs.object->value.uri, &len);
+      term = reinterpret_cast<char const*>(term_uc);
+      imports_.push_back(std::string(term, len));
+   }
 
    void id_found() {
       check_iri();
@@ -120,15 +144,17 @@ private:
    void check_iri() {
       const Node_id nid = ts_.documents().iri(current_doc_);
       if( nid == terms::T_empty_::id() ) { //document entry is incomplete
-         if( ! import_iri_.empty() && import_iri_ != iri() && import_iri_ != version() ) {
-            BOOST_THROW_EXCEPTION(
-                     Err()
-                     << Err::msg_t("ontology IRI mismatch")
-                     << Err::str1_t(import_iri_)
-                     << Err::str2_t(iri())
-                     << Err::str3_t(version())
-            );
-         }
+         if(
+                  ! expected_iri_.empty() &&
+                  expected_iri_ != iri() &&
+                  expected_iri_ != version()
+         ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("ontology IRI mismatch")
+                  << Err::str1_t(expected_iri_)
+                  << Err::str2_t(iri())
+                  << Err::str3_t(version())
+         );
          ts_.documents().modify(
                   current_doc_,
                   path_,

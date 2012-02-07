@@ -9,9 +9,11 @@ part of owlcpp project.
 #include "owlcpp/io/input.hpp"
 
 #include "boost/filesystem.hpp"
+#include "boost/foreach.hpp"
 
 #include "owlcpp/io/read_ontology_iri.hpp"
 #include "owlcpp/io/parser_triple.hpp"
+#include "owlcpp/io/catalog.hpp"
 #include "adaptor_triple_store.hpp"
 
 namespace owlcpp {
@@ -27,30 +29,59 @@ void load(std::istream& stream, Triple_store& store, std::string const& path) {
 /*
 *******************************************************************************/
 void load_file(boost::filesystem::path const& file, Triple_store& ts) {
-   const boost::filesystem::path cp = canonical(file);
-   std::pair<std::string,std::string> pair;
-   try{
-      pair = read_ontology_iri(cp);
-   } catch(Input_err const&) {
-      //ignore
-   }
-   const Doc_id did = ts.insert_doc(cp.string(), pair.first, pair.second).first;
+   const std::string cp = canonical(file).string();
    Parser_triple parser;
-   detail::Adaptor_triple_store ats(ts, file.string());
-//   parser(is, ats);
-   //TODO
+   detail::Adaptor_triple_store ats(ts, cp);
+   parser(cp, ats);
 }
 
 /*
 *******************************************************************************/
 void load_file(boost::filesystem::path const& file, Triple_store& ts, Catalog const& cat) {
-   //TODO
+   detail::Adaptor_triple_store ats(ts, file.string());
+   Parser_triple parser;
+   parser(file.string(), ats);
+
+   try{
+      BOOST_FOREACH(std::string const& iiri, ats.imports()) {
+         if( ts.find_doc_iri(iiri) ) continue;
+         load_iri(iiri, ts, cat);
+      }
+   } catch(Input_err&) {
+      BOOST_THROW_EXCEPTION(
+                  Input_err()
+                  << Input_err::msg_t("import error")
+                  << Input_err::nested_t(boost::current_exception())
+      );
+   }
 }
 
 /*
 *******************************************************************************/
 void load_iri(std::string const& iri, Triple_store& ts, Catalog const& cat) {
-   //TODO
+   Doc_id const* did = cat.find_doc_iri(iri);
+   if( ! did ) BOOST_THROW_EXCEPTION(
+            Input_err()
+            << Input_err::msg_t("ontology not found")
+            << Input_err::str1_t(iri)
+   );
+
+   detail::Adaptor_triple_store ats(ts, cat.path(*did), cat.iri(*did), cat.version(*did));
+   Parser_triple parser;
+   parser(cat.path(*did), ats);
+
+   try{
+      BOOST_FOREACH(std::string const& iiri, ats.imports()) {
+         if( ts.find_doc_iri(iiri) ) continue;
+         load_iri(iiri, ts, cat);
+      }
+   } catch(Input_err&) {
+      BOOST_THROW_EXCEPTION(
+                  Input_err()
+                  << Input_err::msg_t("import error")
+                  << Input_err::nested_t(boost::current_exception())
+      );
+   }
 }
 
 

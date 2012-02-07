@@ -35,7 +35,7 @@ void load_file(boost::filesystem::path const& file, Triple_store& ts);
 /**@brief
 *******************************************************************************/
 OWLCPP_IO_DECL
-void load_file(boost::filesystem::path& file, Triple_store& ts, Catalog const& cat);
+void load_file(boost::filesystem::path const& file, Triple_store& ts, Catalog const& cat);
 
 /**@brief
 *******************************************************************************/
