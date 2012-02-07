@@ -6,13 +6,13 @@ part of owlcpp project.
 #define BOOST_TEST_MODULE triple_map_run
 #include "boost/test/unit_test.hpp"
 #include "boost/range.hpp"
-#include "test/exception_translator.hpp"
+#include "test/exception_fixture.hpp"
 
 #include "owlcpp/rdf/triple_map.hpp"
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_translator );
+BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 template<class Seq> void insert(Triple_map& tm, Seq const& s) {
    tm.insert(Triple(Node_id(s[0]), Node_id(s[1]), Node_id(s[2]), Doc_id(s[3])));

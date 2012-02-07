@@ -7,7 +7,7 @@ part of owlcpp project.
 #define OWLCPP_IO_SOURCE
 #endif
 #include "owlcpp/io/parser_triple.hpp"
-#include <iostream>
+#include <istream>
 #include "boost/lexical_cast.hpp"
 #include "raptor2.h"
 
@@ -73,18 +73,16 @@ void Parser_triple::parse(std::string const& fn) {
             raptor_uri_filename_to_uri_string(fn.c_str()),
             &raptor_free_memory
    );
+
    boost::shared_ptr<raptor_uri> uri(
             raptor_new_uri(world_.get(), uri_str.get()),
             &raptor_free_uri
    );
-   boost::shared_ptr<raptor_uri> base_uri(
-            raptor_uri_copy(uri.get()),
-            &raptor_free_uri
-   );
+
    try{
       const int i = raptor_parser_parse_file(parser_.get(), uri.get(), 0);
       //exceptions should originate from Raptor log handler
-      if( i != 0 ) BOOST_THROW_EXCEPTION(
+      if( i != 0 && ! abort_requested_ ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unknown error")
       );
@@ -93,7 +91,6 @@ void Parser_triple::parse(std::string const& fn) {
             Err()
             << Err::msg_t("RDF error")
             << Err::str1_t(fn)
-//               << Err::str1_t(str)
             << Err::nested_t(boost::copy_exception(e))
       );
    }
@@ -129,7 +126,7 @@ void Parser_triple::parse(std::istream& stream) {
                      stream ? 0 : 1
          );
          //exceptions should originate from Raptor log handler
-         if( i != 0 ) BOOST_THROW_EXCEPTION(
+         if( i != 0 && ! abort_requested_ ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("unknown error")
          );
@@ -138,7 +135,7 @@ void Parser_triple::parse(std::istream& stream) {
                Err()
                << Err::msg_t("RDF error")
                << Err::int1_t(ln)
-//               << Err::str1_t(str)
+               //<< Err::str1_t(str)
                << Err::nested_t(boost::copy_exception(e))
          );
       }

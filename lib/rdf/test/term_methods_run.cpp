@@ -5,13 +5,13 @@ part of owlcpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE term_methods_run
 #include "boost/test/unit_test.hpp"
-#include "test/exception_translator.hpp"
+#include "test/exception_fixture.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/term_methods.hpp"
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_translator );
+BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 /**
 *******************************************************************************/

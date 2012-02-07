@@ -42,27 +42,20 @@ public:
                   raptor_uri_as_counted_string(rs->subject->value.uri, &len);
          char const* term = reinterpret_cast<char const*>(term_uc);
          iri_.assign(term, len);
-         n_ = 0;
-         return;
-      }
 
-      if( is_versionIRI(*rs, iri_) ) {
+      } else if( is_versionIRI(*rs, iri_) ) {
          std::size_t len;
          unsigned char const* term_uc =
                   raptor_uri_as_counted_string(rs->object->value.uri, &len);
          char const* term = reinterpret_cast<char const*>(term_uc);
          version_.assign(term, len);
          abort_call_();
-         return;
-      }
 
-      if( ++n_ == max_depth_ ) abort_call_();
-
-      //TODO: Implement early termination of the search for versionIRI statement
+      } else if( max_depth_ == n_++ ) {
+      //Early termination of the search for versionIRI triple
       // to avoid reading large ontologies.
-      // This is particularly important since most ontologies do not have versionIRIs.
-      // E.g., terminate search 1000 triples after last OntologyIRI IRI appeared
-      // in the subject.
+         abort_call_();
+      }
 
    }
 

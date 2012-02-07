@@ -5,13 +5,13 @@ part of %owlcpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE iri_map_run
 #include "boost/test/unit_test.hpp"
-#include "test/exception_translator.hpp"
+#include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
 #include "type_vector.hpp"
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_translator );
+BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 const std::string iri1("http://iri1");
 const std::string iri2("http://iri2");

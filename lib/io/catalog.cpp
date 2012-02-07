@@ -23,13 +23,19 @@ inline std::size_t add_to_catalog(
          const std::size_t search_depth
 ) {
    const boost::filesystem::path cp = canonical(path);
+   std::pair<std::string,std::string> pair;
    try{
-      const std::pair<std::string,std::string> pair = read_ontology_iri(cp, search_depth);
-      return cat.insert_doc(cp.string(), pair.first, pair.second).second ? 1 : 0;
+      pair = read_ontology_iri(cp, search_depth);
    } catch(Input_err const&) {
       //ignore
+      return 0;
    }
-   return 0;
+   if( pair.first.empty() ) BOOST_THROW_EXCEPTION(
+            Input_err()
+            << Input_err::msg_t("ontologyIRI not found")
+            << Input_err::str1_t(path.string())
+   );
+   return cat.insert_doc(cp.string(), pair.first, pair.second).second ? 1 : 0;
 }
 
 template<class Iter> inline

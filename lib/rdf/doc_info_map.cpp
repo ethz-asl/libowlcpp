@@ -15,9 +15,9 @@ namespace owlcpp {
 /*
 *******************************************************************************/
 Doc_map::Doc_map() : tracker_(), store_() {
-   store_.insert(
-            entry_t(Doc_id(), "", terms::T_empty_::id(), terms::T_empty_::id())
-   );
+//   store_.insert(
+//            entry_t(Doc_id(), "", terms::T_empty_::id(), terms::T_empty_::id())
+//   );
    tracker_.ensure_min(Doc_id());
 }
 

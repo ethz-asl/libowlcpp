@@ -47,7 +47,11 @@ private Node_store_iri_base<Catalog>
    }
 
 public:
+   typedef Doc_map::id_iterator iterator;
+   typedef iterator const_iterator;
    struct Err : public Input_err {};
+   const_iterator begin() const {return doc_.begin();}
+   const_iterator end() const {return doc_.end();}
    std::string iri(const Doc_id did) const {return string(iri_id(did));}
    std::string version(const Doc_id did) const { return string(version_id(did)); }
    std::string path(const Doc_id did) const {return doc_.path(did);}
