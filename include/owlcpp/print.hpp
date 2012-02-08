@@ -14,8 +14,7 @@ namespace b = boost;
 
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/triple.hpp"
-#include "owlcpp/rdf/query_nodes.hpp"
-#include "owlcpp/terms/iri_tags_system.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
 namespace ot = owlcpp::terms;
 
 namespace owlcpp{

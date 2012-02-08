@@ -7,6 +7,7 @@ project apps
    :  build-dir $(OUT)/apps
    :  requirements
       <link>static
+      <library>/boost/program_options
       <library>/owlcpp//rdf
       <library>/owlcpp//io
 #      <library>/owlcpp//reasoner

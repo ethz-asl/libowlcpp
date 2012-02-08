@@ -21,6 +21,7 @@ exe print_triples
    : #sources
       print_triples.cpp
    : #requirements
+      <library>/boost/program_options
       <library>/owlcpp//rdf
       <library>/owlcpp//io
 ;

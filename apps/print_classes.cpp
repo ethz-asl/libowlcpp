@@ -10,10 +10,9 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "boost/filesystem.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/query_triples.hpp"
-#include "owlcpp/io/parse_to_triple_store.hpp"
-#include "owlcpp/print.hpp"
-#include "owlcpp/terms/term_tags.hpp"
+#include "owlcpp/io/input.hpp"
+#include "owlcpp/io/catalog.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
 
 /**
 Parse OWL ontology file and its imports located in the same folder
@@ -28,6 +27,7 @@ int main(int argc, char* argv[]) {
       return 0;
    }
    try {
+/*
       boost::filesystem::path file(argv[1]);
 
       //catalog ontologies in the same directory
@@ -59,6 +59,7 @@ int main(int argc, char* argv[]) {
             std::cout << short_name(nid, store) << '\n';
          }
       }
+*/
    } catch(...) {
       std::cerr << boost::current_exception_diagnostic_information() << std::endl;
       return 1;
