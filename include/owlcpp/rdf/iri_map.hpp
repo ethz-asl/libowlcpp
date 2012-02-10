@@ -7,6 +7,7 @@ part of owlcpp project.
 #define IRI_MAP_HPP_
 #include <string>
 #include "boost/assert.hpp"
+#include "boost/foreach.hpp"
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/member.hpp"
@@ -27,22 +28,21 @@ class Iri_tag_inserter;
 class OWLCPP_RDF_DECL Iri_map {
 public:
    typedef Ns_id id_type;
+   typedef std::pair<id_type, std::string> value_t;
 private:
-   typedef std::pair<id_type, std::string> entry_t;
-
    typedef boost::multi_index_container<
-         entry_t,
+         value_t,
          boost::multi_index::indexed_by<
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct id_tag>,
                boost::multi_index::member<
-                  entry_t, id_type, &entry_t::first
+                  value_t, id_type, &value_t::first
                >
             >,
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct string_tag>,
                boost::multi_index::member<
-                  entry_t, std::string, &entry_t::second
+                  value_t, std::string, &value_t::second
                >
             >
          >
@@ -58,6 +58,7 @@ private:
 
 public:
    typedef store_t::iterator iterator;
+   typedef iterator const_iterator;
 
    struct Err : public base_exception {};
    Iri_map();
@@ -132,52 +133,34 @@ public:
       return iri_s_iter->first;
    }
 
-   id_type insert(std::string const& iri, std::string const& prefix) {
-      string_index_t const& iri_i = store_iri_.get<string_tag>();
-      const string_iter_t iri_s_iter = iri_i.find(iri);
-      string_index_t const& pref_i = store_pref_.get<string_tag>();
-      const string_iter_t pref_s_iter = pref_i.find(prefix);
-      if( iri_s_iter == iri_i.end() ) {
-         const id_type iid = tracker_.get();
-         BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) == store_iri_.get<id_tag>().end());
-         BOOST_ASSERT(store_pref_.get<id_tag>().find(iid) == store_pref_.get<id_tag>().end());
-
-         if( pref_s_iter != pref_i.end() ) BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("same prefix for two IRIs")
-                  << Err::str1_t(prefix)
-                  << Err::str2_t(iri)
-                  << Err::str3_t((*this)[pref_s_iter->first])
-         );
-         store_iri_.insert(std::make_pair(iid, iri));
-         store_pref_.insert(std::make_pair(iid, prefix));
-         return iid;
-      }
-      const id_type iid = iri_s_iter->first;
-      if( pref_s_iter == pref_i.end() ) {
-         store_pref_.insert(std::make_pair(iid, prefix));
-      } else {
-         const id_type id2 = pref_s_iter->first;
-         if( iid != id2 ) BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("inserting prefix used for another IRI")
-                  << Err::str1_t(prefix)
-                  << Err::str2_t(iri)
-                  << Err::str3_t((*this)[id2])
-         );
-      }
-      return iid;
-   }
-
    void remove(const id_type id);
    void remove(std::string const& iri);
-   iterator begin() const {return store_iri_.begin();}
-   iterator end() const {return store_iri_.end();}
+   const_iterator begin() const {return store_iri_.begin();}
+   const_iterator end() const {return store_iri_.end();}
 
 protected:
    detail::Id_tracker<id_type> tracker_;
    store_t store_iri_;
    store_t store_pref_;
 };
+
+
+/** Copy IRIs and prefixes from one IRI map to another and insert pairs of
+ old and new IRI IDs into @b id_map.
+ @param im IRI map to copy from
+ @param id_map an IRI ID map to insert IRI ID pairs
+*******************************************************************************/
+template<class IriMap1, class IriMap2, class IriIdMap> inline void
+copy_iris(IriMap1 const& im1, IriMap2& im2, IriIdMap& id_map) {
+   typedef typename IriMap1::value_t pair_t;
+   typedef typename IriMap2::id_type id_t;
+   BOOST_FOREACH(pair_t const& p, im1) {
+      const id_t id = im2.insert(p.second);
+      const std::string pref = im1.find_prefix(p.first);
+      if( ! pref.empty() && im2.find_prefix(id).empty() ) im2.insert_prefix(id, pref);
+      id_map.insert(std::make_pair(p.first, id));
+   }
+}
+
 }//namespace owlcpp
 #endif /* IRI_MAP_HPP_ */

@@ -41,26 +41,21 @@ void Iri_map::insert(const id_type id, std::string const& iri, std::string const
 
 /*
 *******************************************************************************/
-void Iri_map::insert_prefix(const id_type iid, std::string const& prefix) {
-   id_index_t const& iri_i_i = store_iri_.get<id_tag>();
-   const id_iter_t iri_i_iter = iri_i_i.find(iid);
-   if( iri_i_iter == iri_i_i.end() ) BOOST_THROW_EXCEPTION(
-            Err()
-            << Err::msg_t("inserting prefix for unknown IRI ID")
-            << Err::str1_t(prefix)
-            << Err::int1_t(iid())
+void Iri_map::insert_prefix(const id_type id, std::string const& prefix) {
+   BOOST_ASSERT(
+            store_iri_.get<id_tag>().find(id) != store_iri_.get<id_tag>().end()
    );
    string_index_t const& pref_s_i = store_pref_.get<string_tag>();
    const string_iter_t pref_s_iter = pref_s_i.find(prefix);
    if( pref_s_iter == pref_s_i.end() ) {
-      store_pref_.insert(std::make_pair(iid, prefix));
+      store_pref_.insert(std::make_pair(id, prefix));
    } else {
       const id_type id2 = pref_s_iter->first;
-      if( iid != id2 ) BOOST_THROW_EXCEPTION(
+      if( id != id2 ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("inserting prefix used for another IRI")
                << Err::str1_t(prefix)
-               << Err::str2_t((*this)[iid])
+               << Err::str2_t((*this)[id])
                << Err::str3_t((*this)[id2])
       );
    }

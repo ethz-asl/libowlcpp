@@ -5,6 +5,7 @@ part of %owlcpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE iri_map_run
 #include "boost/test/unit_test.hpp"
+#include <map>
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
 #include "type_vector.hpp"
@@ -40,7 +41,8 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
    Iri_map im;
-   const Ns_id id1 = im.insert(iri1, "iri1");
+   const Ns_id id1 = im.insert(iri1);
+   im.insert_prefix(id1, "iri1");
    BOOST_REQUIRE( im.find_iri(iri1) );
    BOOST_CHECK_EQUAL( id1, *im.find_iri(iri1) );
    BOOST_REQUIRE( im.find_prefix("iri1") );
@@ -56,6 +58,25 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    BOOST_CHECK_EQUAL( im.find_prefix(terms::N_owl::id()), terms::N_owl::prefix() );
 }
 
+/** Copying IRIs from one IRI map to another
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case04 ) {
+   Iri_map im1, im2;
+   const Ns_id id11 = im1.insert(iri1);
+   const Ns_id id23 = im2.insert(iri3);
+   const Ns_id id21 = im2.insert(iri1);
+   const Ns_id id22 = im2.insert(iri2);
+   im2.insert_prefix(id22, "iri2");
+   BOOST_CHECK_EQUAL(im1[id11], im2[id21]);
+   BOOST_CHECK_THROW(im1.at(id22), Iri_map::Err);
+   std::map<Ns_id,Ns_id> idmap;
+   copy_iris(im2, im1, idmap);
+   BOOST_CHECK_EQUAL(im1[id11], im2[id21]);
+   BOOST_CHECK_EQUAL(idmap[id21], id11);
+   BOOST_CHECK_EQUAL(im1[idmap[id23]], im2[id23]);
+   BOOST_CHECK_EQUAL(im1[idmap[id22]], im2[id22]);
+   BOOST_CHECK_EQUAL(im1.find_prefix(idmap[id22]), "iri2");
+}
 
 }//namespace test
 }//namespace owlcpp
