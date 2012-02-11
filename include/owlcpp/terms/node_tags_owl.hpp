@@ -141,7 +141,9 @@ part of owlcpp project.
 *******************************************************************************/
 #define OWLCPP_TERMS_XSD \
          ((xsd)(string)) \
+         ((xsd)(int)) \
 /* */
+//TODO: add datatypes
 
 /**@brief Combined set of supported OWL terms
 @details Define sequence of standard OWL terms.
