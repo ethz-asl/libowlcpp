@@ -21,11 +21,11 @@ namespace owlcpp{
 /**@brief Store, index, and search RDF triples
 *******************************************************************************/
 class Triple_map {
-//   template<bool,bool,bool,bool> friend class Query;
    typedef query_detail::triple_map_store_t store_t;
 
 public:
    typedef store_t::iterator iterator;
+   typedef iterator const_iterator;
 
    /**@brief Insert a new triple
     @param triple
@@ -61,8 +61,8 @@ public:
       return q_type::range(store_, subj, pred, obj, doc);
    }
 
-   iterator begin() const {return store_.begin();}
-   iterator end() const {return store_.end();}
+   const_iterator begin() const {return store_.begin();}
+   const_iterator end() const {return store_.end();}
 
 private:
    store_t store_;

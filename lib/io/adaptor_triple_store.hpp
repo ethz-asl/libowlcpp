@@ -71,6 +71,11 @@ public:
       id_found_(false)
    {}
 
+   /*
+    TODO: Make temporary storage for IRIs, nodes, and triples
+    Move them to main triple store after parsing is complete.
+    IRI IDs, node IDs, and blank node names will have to be translated.
+    */
    void insert(void const* statement) {
       if( ! id_found_ ) aif_.insert(statement);
       raptor_statement const& rs = *static_cast<raptor_statement const*>(statement);

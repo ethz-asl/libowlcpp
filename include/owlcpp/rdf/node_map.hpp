@@ -6,12 +6,16 @@ part of owlcpp project.
 #ifndef NODE_MAP_HPP_
 #define NODE_MAP_HPP_
 #include "boost/assert.hpp"
+#include "boost/foreach.hpp"
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/member.hpp"
+#include "boost/multi_index/global_fun.hpp"
 #include "boost/unordered_map.hpp"
+#include "boost/range.hpp"
 
 #include "owlcpp/node.hpp"
+#include "owlcpp/rdf/doc_id.hpp"
 #include "owlcpp/terms/iri_tags.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/node_id.hpp"
@@ -33,22 +37,30 @@ Calling node map methods with invalid node IDs results in undefined behavior.
 class OWLCPP_RDF_DECL Node_map {
 public:
    typedef Node_id id_type;
+   typedef std::pair<id_type, Node> value_t;
 private:
-   typedef std::pair<id_type, Node> entry_t;
+   static Ns_id ns_id(value_t const& v) {return v.second.ns_id();}
 
    typedef boost::multi_index_container<
-         entry_t,
+         value_t,
          boost::multi_index::indexed_by<
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct id_tag>,
                boost::multi_index::member<
-                  entry_t, id_type, &entry_t::first
+                  value_t, id_type, &value_t::first
                >
             >,
+            //blank and literal nodes may be non-unique
             boost::multi_index::hashed_non_unique<
                boost::multi_index::tag<struct node_tag>,
                boost::multi_index::member<
-                  entry_t, Node, &entry_t::second
+                  value_t, Node, &value_t::second
+               >
+            >,
+            boost::multi_index::hashed_non_unique<
+               boost::multi_index::tag<struct iri_tag>,
+               boost::multi_index::global_fun<
+                  value_t const&, Ns_id, &ns_id
                >
             >
          >
@@ -57,6 +69,7 @@ private:
    typedef id_index_t::iterator id_iter_t;
    typedef store_t::index<node_tag>::type node_index_t;
    typedef node_index_t::iterator node_iter_t;
+   typedef store_t::index<iri_tag>::type iri_index_t;
 
    friend class detail::Node_tag_inserter;
 
@@ -68,6 +81,9 @@ private:
 
 public:
    typedef store_t::iterator iterator;
+   typedef iterator const_iterator;
+   typedef iri_index_t::iterator iri_iterator;
+   typedef boost::iterator_range<iri_iterator> iri_range;
 
    struct Err : public base_exception {};
    Node_map();
@@ -103,7 +119,21 @@ public:
       return i->second;
    }
 
-   //TODO: implement range_t find(const Ns_id) const;
+   /**@brief Find nodes in a given namespace
+    @param iid namespace IRI ID
+    @return iterator range for nodes in namespace iid
+    @details For example:
+    @code
+    find(terms::N_owl::id()) //returns range of all nodes in OWL namespace
+    find(terms::N_empty::id()) //returns range of all literal nodes
+    find(terms::N_blank::id()) //returns range of all blank nodes
+    @endcode
+   */
+   iri_range find(const Ns_id iid) const {
+      return boost::make_iterator_range(
+               store_.get<iri_tag>().equal_range(iid)
+      );
+   }
 
    Node_id const* find(Node const& node) const {
       node_index_t const& node_index = store_.get<node_tag>();
@@ -136,8 +166,8 @@ public:
    void remove(const id_type id);
 
    void remove(Node const& node);
-   iterator begin() const {return store_.begin();}
-   iterator end() const {return store_.end();}
+   const_iterator begin() const {return store_.begin();}
+   const_iterator end() const {return store_.end();}
 
    /**@brief Insert IRI node
     @param nsid namespace IRI id
@@ -158,7 +188,7 @@ public:
     @param name
     @return node ID
    */
-   id_type insert_blank(std::string const& name) {
+   id_type insert_blank(std::string const& name, const Doc_id doc) {
       return insert_iri(terms::N_blank::id(), name);
    }
 
@@ -208,6 +238,34 @@ private:
    }
 
 };
+
+/** Copy nodes from one map to another taking into account changed IRI IDs
+and insert pairs of old and new node IDs into @b id_map
+
+template<class NodeMap1, class NodeMap2, class IriIdMap, class NodeIdMap> inline void
+copy_nodes(
+         NodeMap1 const& nm1,
+         NodeMap2& nm2,
+         IriIdMap const& iid_map,
+         NodeIdMap& nid_map
+) {
+   typedef typename NodeMap1::value_t pair_t;
+   typedef typename NodeMap2::id_type id_t;
+   BOOST_FOREACH(pair_t const& p, nm1) {
+      Node const& node = p.second;
+      switch (node.ns_id()()) {
+         case terms::N_blank::index: {
+
+         }
+            break;
+         default:
+            break;
+      }
+      const id_t id = nm2.insert_iri(iid_map[node.ns_id()], node.value_str());
+
+   }
+}
+*******************************************************************************/
 
 }//namespace owlcpp
 #endif /* NODE_MAP_HPP_ */

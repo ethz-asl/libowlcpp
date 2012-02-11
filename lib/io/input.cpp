@@ -8,6 +8,9 @@ part of owlcpp project.
 #endif
 #include "owlcpp/io/input.hpp"
 
+#include <iostream>
+#include <set>
+#include "boost/filesystem/fstream.hpp"
 #include "boost/filesystem.hpp"
 #include "boost/foreach.hpp"
 
@@ -16,7 +19,21 @@ part of owlcpp project.
 #include "owlcpp/io/catalog.hpp"
 #include "adaptor_triple_store.hpp"
 
-namespace owlcpp {
+namespace owlcpp { namespace{
+/*
+*******************************************************************************/
+void load_file(
+         std::string const& path,
+         Triple_store& ts,
+         std::set<std::string>& imports,
+         std::string const& iri,
+         std::string const& version
+) {
+//   if( iri.impty() )
+//   detail::Adaptor_triple_store ats(ts, path);
+}
+
+}//namespace anonymous
 
 /*
 *******************************************************************************/
@@ -68,6 +85,9 @@ void load_iri(std::string const& iri, Triple_store& ts, Catalog const& cat) {
 
    detail::Adaptor_triple_store ats(ts, cat.path(*did), cat.iri(*did), cat.version(*did));
    Parser_triple parser;
+   std::cout << cat.path(*did) << std::endl;
+//   boost::filesystem::ifstream ifs(cat.path(*did));
+//   parser(ifs, ats);
    parser(cat.path(*did), ats);
 
    try{

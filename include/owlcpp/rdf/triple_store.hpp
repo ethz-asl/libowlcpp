@@ -14,7 +14,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/rdf/config.hpp"
-#include "owlcpp/terms/iri_tags.hpp"
+//#include "owlcpp/terms/iri_tags.hpp"
 
 namespace owlcpp{
 
@@ -25,8 +25,6 @@ public Node_store_iri_base<Triple_store>,
 public Node_store_aux_base<Triple_store>,
 public Doc_store_base<Triple_store>
 {
-   Iri_map& iris() {return iri_;}
-   Node_map& nodes() {return node_;}
    friend class Node_store_iri_base<Triple_store>;
    friend class Node_store_aux_base<Triple_store>;
    friend class Doc_store_base<Triple_store>;
@@ -49,11 +47,13 @@ public:
 
    Triple_store();
 
-   Triple_map const& triples() const {return triple_;}
+   Iri_map& iris() {return iri_;}
    Iri_map const& iris() const {return iri_;}
+   Node_map& nodes() {return node_;}
    Node_map const& nodes() const {return node_;}
    Doc_map const& documents() const {return doc_;}
    Doc_map& documents() {return doc_;}
+   Triple_map const& triples() const {return triple_;}
 
    void insert_triple(
             const Node_id subj,
@@ -66,14 +66,6 @@ public:
 
    Node const& operator[](const Node_id nid) const {return node_[nid];}
    std::string operator[](const Ns_id iid) const {return iri_[iid];}
-//   Node const& iri(const Doc_id did) const {return node_[doc_.iri(did)];}
-//   std::string path(const Doc_id did) const {return doc_.path(did);}
-//
-//   Node const* version(const Doc_id did) const {
-//      Node_id const* nid = doc_.version(did);
-//      if( nid ) return &node_[*nid];
-//      return 0;
-//   }
 
 private:
    Iri_map iri_;

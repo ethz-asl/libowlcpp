@@ -147,8 +147,9 @@ protected:
 
 /** Copy IRIs and prefixes from one IRI map to another and insert pairs of
  old and new IRI IDs into @b id_map.
- @param im IRI map to copy from
- @param id_map an IRI ID map to insert IRI ID pairs
+ @param im1 source IRI map
+ @param im2 destination IRI map
+ @param id_map an IRI ID map for tracking IRI ID changes
 *******************************************************************************/
 template<class IriMap1, class IriMap2, class IriIdMap> inline void
 copy_iris(IriMap1 const& im1, IriMap2& im2, IriIdMap& id_map) {

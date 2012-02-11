@@ -43,20 +43,39 @@ int main(int argc, char* argv[]) {
    }
 
    owlcpp::Triple_store store;
-   const bfs::path in(vm["input-file"].as<std::string>());
+   const bfs::path in( vm["input-file"].as<std::string>());
    try {
-      if( vm.count("include") ) {
+      if( vm.count("include") ) { //load input-file and its includes
          owlcpp::Catalog cat;
          std::vector<std::string> const& vin = vm["include"].as<std::vector<std::string> >();
          if( vin.empty() ) {
-            cat.add(in.parent_path());
+            cat.add(in.parent_path(), true, 100);
          } else {
-            BOOST_FOREACH(std::string const& p, vin) cat.add(p);
+            BOOST_FOREACH(std::string const& p, vin) cat.add(p, true, 100);
          }
          load_file(in, store, cat);
-      } else {
+      } else { //load just input-file
          load_file(in, store);
       }
+      if( vm.count("count") ) {
+         std::cout
+         << store.triples().size() << " triples" << '\n'
+         << store.nodes().size() << " nodes" << '\n'
+         << distance(store.nodes().find(owlcpp::terms::N_empty::id())) << " literal nodes" << '\n'
+         << distance(store.nodes().find(owlcpp::terms::N_blank::id())) << " blank nodes" << '\n'
+         << store.iris().size() << " namespace IRIs" << '\n'
+         ;
+      } else {
+         BOOST_FOREACH( owlcpp::Triple const& t, store.triples() ) {
+            std::cout
+            << '\"'
+            << store.string(t.subject()) << "\"\t\""
+            << store.string(t.predicate()) << "\"\t\""
+            << store.string(t.object()) << "\"\t\n"
+            ;
+         }
+      }
+
    } catch(...) {
       std::cerr << boost::current_exception_diagnostic_information() << std::endl;
       return 1;

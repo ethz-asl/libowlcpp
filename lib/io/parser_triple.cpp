@@ -12,17 +12,23 @@ part of owlcpp project.
 #include "raptor2.h"
 
 namespace owlcpp { namespace{
-/**@brief error message handler
-*******************************************************************************/
-void handle_error(void* data, raptor_log_message* msg) {
+
+Parser_triple::Err make_exception(char const* msg, raptor_locator* locator) {
    Parser_triple::Err e;
-   e << Parser_triple::Err::msg_t(msg->text);
-   if( msg->locator ) {
-      const int n = raptor_locator_line(msg->locator);
+   if( msg ) e << Parser_triple::Err::msg_t(msg);
+   if( locator ) {
+      const int n = raptor_locator_line(locator);
       if( n >= 0 ) e << Parser_triple::Err::int1_t(n);
-      const char* file = raptor_locator_file(msg->locator);
+      const char* file = raptor_locator_file(locator);
       if( file ) e << Parser_triple::Err::str1_t(file);
    }
+   return e;
+}
+
+/**@brief error message handler
+*******************************************************************************/
+void handle_error(void*, raptor_log_message* msg) {
+   Parser_triple::Err e = make_exception(msg->text, msg->locator);
    BOOST_THROW_EXCEPTION(e);
 }
 }//namespace anonymous
@@ -79,20 +85,29 @@ void Parser_triple::parse(std::string const& fn) {
             &raptor_free_uri
    );
 
+/*
+   boost::shared_ptr<unsigned char> base_uri_str(
+            raptor_uri_filename_to_uri_string("/"),
+            &raptor_free_memory
+   );
+
+   boost::shared_ptr<raptor_uri> base_uri(
+            raptor_new_uri(world_.get(), base_uri_str.get()),
+            &raptor_free_uri
+   );
+*/
+
    try{
-      const int i = raptor_parser_parse_file(parser_.get(), uri.get(), 0);
+      /*const int i =*/ raptor_parser_parse_file(parser_.get(), uri.get(), 0/*base_uri.get()*/);
       //exceptions should originate from Raptor log handler
-      if( i != 0 && ! abort_requested_ ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("unknown error")
-      );
-   } catch(Err& e) {
-      BOOST_THROW_EXCEPTION(
-            Err()
-            << Err::msg_t("RDF error")
-            << Err::str1_t(fn)
-            << Err::nested_t(boost::copy_exception(e))
-      );
+//      if( i != 0 && ! abort_requested_ ) BOOST_THROW_EXCEPTION(
+//               Err()
+//               << Err::msg_t("unknown error")
+//      );
+   } catch(Err&) {
+      Err e = make_exception("RDF error", raptor_parser_get_locator(parser_.get()));
+      e << Err::nested_t(boost::current_exception());
+      BOOST_THROW_EXCEPTION(e);
    }
 }
 
