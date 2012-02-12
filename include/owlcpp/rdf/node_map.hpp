@@ -36,8 +36,7 @@ Calling node map methods with invalid node IDs results in undefined behavior.
 *******************************************************************************/
 class OWLCPP_RDF_DECL Node_map {
 public:
-   typedef Node_id id_type;
-   typedef std::pair<id_type, Node> value_t;
+   typedef std::pair<Node_id, Node> value_t;
 private:
    static Ns_id ns_id(value_t const& v) {return v.second.ns_id();}
 
@@ -47,7 +46,7 @@ private:
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct id_tag>,
                boost::multi_index::member<
-                  value_t, id_type, &value_t::first
+                  value_t, Node_id, &value_t::first
                >
             >,
             //blank and literal nodes may be non-unique
@@ -64,34 +63,37 @@ private:
                >
             >
          >
-      > store_t;
-   typedef store_t::index<id_tag>::type id_index_t;
+      > nodes_t;
+   typedef nodes_t::index<id_tag>::type id_index_t;
    typedef id_index_t::iterator id_iter_t;
-   typedef store_t::index<node_tag>::type node_index_t;
+   typedef nodes_t::index<node_tag>::type node_index_t;
    typedef node_index_t::iterator node_iter_t;
-   typedef store_t::index<iri_tag>::type iri_index_t;
+   typedef nodes_t::index<iri_tag>::type iri_index_t;
 
    friend class detail::Node_tag_inserter;
 
-   typedef boost::unordered_map<id_type,id_type> datatype_stor_t;
-   typedef datatype_stor_t::const_iterator datatype_iter_t;
+   typedef boost::unordered_map<Node_id,Node_id> datatypes_t;
+   typedef datatypes_t::const_iterator datatype_iter_t;
 
-   typedef boost::unordered_map<id_type,const std::string> lang_stor_t;
-   typedef lang_stor_t::const_iterator lang_iter_t;
+   typedef boost::unordered_map<Node_id,const std::string> langs_t;
+   typedef langs_t::const_iterator lang_iter_t;
+
+   typedef boost::unordered_map<Node_id,Doc_id> docs_t;
+   typedef docs_t::const_iterator doc_iter_t;
 
 public:
-   typedef store_t::iterator iterator;
+   typedef nodes_t::iterator iterator;
    typedef iterator const_iterator;
    typedef iri_index_t::iterator iri_iterator;
    typedef boost::iterator_range<iri_iterator> iri_range;
 
    struct Err : public base_exception {};
    Node_map();
-   std::size_t size() const {return store_.size();}
+   std::size_t size() const {return nodes_.size();}
 
    Node const& operator[](const Node_id id) const {
-      BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
-      return store_.get<id_tag>().find(id)->second;
+      BOOST_ASSERT(nodes_.get<id_tag>().find(id) != nodes_.get<id_tag>().end());
+      return nodes_.get<id_tag>().find(id)->second;
    }
 
    /**@brief Find the datatype of the literal node
@@ -100,8 +102,8 @@ public:
     NULL if the node is not literal or no datatype is defined for it.
    */
    Node_id const* datatype(const Node_id id) const {
-      const datatype_iter_t i = datatype_.find(id);
-      if( i == datatype_.end() ) return 0;
+      const datatype_iter_t i = dtypes_.find(id);
+      if( i == dtypes_.end() ) return 0;
       return &i->second;
    }
 
@@ -114,8 +116,8 @@ public:
     This is not, however, currently enforced by the library.
    */
    std::string language(const Node_id id) const {
-      const lang_iter_t i = lang_.find(id);
-      if( i == lang_.end() ) return "";
+      const lang_iter_t i = langs_.find(id);
+      if( i == langs_.end() ) return "";
       return i->second;
    }
 
@@ -131,12 +133,12 @@ public:
    */
    iri_range find(const Ns_id iid) const {
       return boost::make_iterator_range(
-               store_.get<iri_tag>().equal_range(iid)
+               nodes_.get<iri_tag>().equal_range(iid)
       );
    }
 
    Node_id const* find(Node const& node) const {
-      node_index_t const& node_index = store_.get<node_tag>();
+      node_index_t const& node_index = nodes_.get<node_tag>();
       const node_iter_t node_iter = node_index.find(node);
       if( node_iter == node_index.end() ) return 0;
       return &node_iter->first;
@@ -148,7 +150,7 @@ public:
     @throw Node_map::Err if @b id does not exist
    */
    Node const& at(const Node_id id) const {
-      id_index_t const& index = store_.get<id_tag>();
+      id_index_t const& index = nodes_.get<id_tag>();
       const id_iter_t iter = index.find(id);
       if(iter == index.end()) BOOST_THROW_EXCEPTION(
                Err()
@@ -163,33 +165,44 @@ public:
     @details
     If node with ID @b id does not exist, behavior is undefined.
    */
-   void remove(const id_type id);
+   void remove(const Node_id id);
 
    void remove(Node const& node);
-   const_iterator begin() const {return store_.begin();}
-   const_iterator end() const {return store_.end();}
+   const_iterator begin() const {return nodes_.begin();}
+   const_iterator end() const {return nodes_.end();}
 
    /**@brief Insert IRI node
     @param nsid namespace IRI id
     @param name fragment name
     @return node ID
    */
-   id_type insert_iri(const Ns_id nsid, std::string const& name) {
-      node_index_t const& n_index = store_.get<node_tag>();
+   Node_id insert_iri(const Ns_id nsid, std::string const& name) {
+      node_index_t const& n_index = nodes_.get<node_tag>();
       const Node node(nsid, name);
       const node_iter_t n_iter = n_index.find(node);
       if( n_iter != n_index.end() ) return n_iter->first;
-      const id_type id = tracker_.get();
+      const Node_id id = tracker_.get();
       insert(id, node);
       return id;
    }
 
    /**@brief Insert blank node
-    @param name
+    @param did document ID
+    @param name blank node name (MUST be unique within the document)
     @return node ID
    */
-   id_type insert_blank(std::string const& name, const Doc_id doc) {
-      return insert_iri(terms::N_blank::id(), name);
+   Node_id insert_blank(const Doc_id did, std::string const& name) {
+      node_index_t const& n_index = nodes_.get<node_tag>();
+      const Node node(terms::N_blank::id(), name);
+      const node_iter_t n_iter = n_index.find(node);
+      if( n_iter != n_index.end() ) {
+         const Node_id id = n_iter->first;
+         BOOST_ASSERT(docs_.find(id) != docs_.end());
+         if( docs_[id] == did ) return id;
+      }
+      const Node_id id = insert_iri(terms::N_blank::id(), name);
+      docs_.insert(std::make_pair(id, did));
+      return id;
    }
 
    /**@brief Insert literal node
@@ -202,70 +215,59 @@ public:
     This is not, however, currently enforced by the library.
     @return node ID
    */
-   id_type insert_literal(
+   Node_id insert_literal(
             std::string const& value,
-            const id_type datatype = terms::T_empty_::id(),
+            const Node_id datatype = terms::T_empty_::id(),
             std::string const& lang = ""
    );
 
+   /**
+    @param id ID of a blank node
+    @return ID of the document to which the blank node belongs
+    @throw Err if @b id is not for a blank node
+   */
+   Doc_id blank_node_doc(const Node_id id) const {
+      //BOOST_ASSERT(docs_.find(id) != docs_.end());
+      const doc_iter_t i = docs_.find(id);
+      if( i == docs_.end() ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("document unknown")
+               << Err::int1_t(id())
+      );
+      return i->second;
+   }
+
 private:
-   detail::Id_tracker<id_type> tracker_;
-   store_t store_;
-   datatype_stor_t datatype_;
-   lang_stor_t lang_;
+   detail::Id_tracker<Node_id> tracker_;
+   nodes_t nodes_;
+   docs_t docs_;
+   datatypes_t dtypes_;
+   langs_t langs_;
 
    void insert(const Node_id id, Node const& node) {
       BOOST_ASSERT(
-               store_.get<id_tag>().find(id) == store_.get<id_tag>().end()
+               nodes_.get<id_tag>().find(id) == nodes_.get<id_tag>().end()
       );
       BOOST_ASSERT(
-               store_.get<node_tag>().find(node) == store_.get<node_tag>().end()
+               nodes_.get<node_tag>().find(node) == nodes_.get<node_tag>().end()
       );
-      store_.insert( std::make_pair(id, node) );
+      nodes_.insert( std::make_pair(id, node) );
       tracker_.ensure_min(id);
    }
 
-   id_type insert_literal_private(
+   Node_id insert_literal_private(
             Node const& node,
-            const id_type dt,
+            const Node_id dt,
             std::string const& lang
    ) {
-      const id_type id = tracker_.get();
+      const Node_id id = tracker_.get();
       insert(id, node);
-      if( dt != terms::T_empty_::id() ) datatype_.insert(std::make_pair(id, dt));
-      if( ! lang.empty() ) lang_.insert(std::make_pair(id, lang));
+      if( dt != terms::T_empty_::id() ) dtypes_.insert(std::make_pair(id, dt));
+      if( ! lang.empty() ) langs_.insert(std::make_pair(id, lang));
       return id;
    }
 
 };
-
-/** Copy nodes from one map to another taking into account changed IRI IDs
-and insert pairs of old and new node IDs into @b id_map
-
-template<class NodeMap1, class NodeMap2, class IriIdMap, class NodeIdMap> inline void
-copy_nodes(
-         NodeMap1 const& nm1,
-         NodeMap2& nm2,
-         IriIdMap const& iid_map,
-         NodeIdMap& nid_map
-) {
-   typedef typename NodeMap1::value_t pair_t;
-   typedef typename NodeMap2::id_type id_t;
-   BOOST_FOREACH(pair_t const& p, nm1) {
-      Node const& node = p.second;
-      switch (node.ns_id()()) {
-         case terms::N_blank::index: {
-
-         }
-            break;
-         default:
-            break;
-      }
-      const id_t id = nm2.insert_iri(iid_map[node.ns_id()], node.value_str());
-
-   }
-}
-*******************************************************************************/
 
 }//namespace owlcpp
 #endif /* NODE_MAP_HPP_ */
