@@ -18,6 +18,7 @@ part of owlcpp project.
    ((owl)("owl")("http://www.w3.org/2002/07/owl")) \
 /* */
 
+#include <string>
 #include "owlcpp/terms/uri_macro.hpp"
 #include "owlcpp/ns_id.hpp"
 

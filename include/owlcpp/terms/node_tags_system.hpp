@@ -13,6 +13,7 @@ part of owlcpp project.
       ((empty)()) \
 /* */
 
+#include <string>
 #include "owlcpp/terms/term_macro.hpp"
 #include "owlcpp/terms/iri_tags.hpp"
 #include "owlcpp/node_id.hpp"

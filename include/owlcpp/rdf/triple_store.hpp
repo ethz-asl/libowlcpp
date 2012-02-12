@@ -13,14 +13,13 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_map.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
-#include "owlcpp/rdf/config.hpp"
-//#include "owlcpp/terms/iri_tags.hpp"
+#include "owlcpp/rdf/owl_terms.hpp"
 
 namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-class OWLCPP_RDF_DECL Triple_store :
+class Triple_store :
 public Node_store_iri_base<Triple_store>,
 public Node_store_aux_base<Triple_store>,
 public Doc_store_base<Triple_store>
@@ -29,23 +28,13 @@ public Doc_store_base<Triple_store>
    friend class Node_store_aux_base<Triple_store>;
    friend class Doc_store_base<Triple_store>;
 
-   /** indicate which namespaces should remain constant */
-   static bool is_constant(const Ns_id ns) {
-      switch ( ns() ) {
-         case terms::N_owl::index:
-         case terms::N_rdf::index:
-         case terms::N_rdfs::index:
-         case terms::N_xsd::index:
-            return true;
-         default:
-            return false;
-      }
-   }
+   /** indicate into which namespaces new terms should not be inserted */
+   static bool is_constant(const Ns_id ns) {return is_owl(ns);}
 
 public:
    struct Err : public base_exception {};
 
-   Triple_store();
+   Triple_store() {insert_owl_terms(node_);}
 
    Iri_map& iris() {return iri_;}
    Iri_map const& iris() const {return iri_;}
