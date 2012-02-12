@@ -141,9 +141,49 @@ part of owlcpp project.
 *******************************************************************************/
 #define OWLCPP_TERMS_XSD \
          ((xsd)(string)) \
+         ((xsd)(boolean)) \
+         ((xsd)(decimal)) \
+         ((xsd)(float)) \
+         ((xsd)(double)) \
+         ((xsd)(duration)) \
+         ((xsd)(dateTime)) \
+         ((xsd)(time)) \
+         ((xsd)(date)) \
+         ((xsd)(gYearMonth)) \
+         ((xsd)(gYear)) \
+         ((xsd)(gMonthDay)) \
+         ((xsd)(gDay)) \
+         ((xsd)(gMonth)) \
+         ((xsd)(hexBinary)) \
+         ((xsd)(base64Binary)) \
+         ((xsd)(anyURI)) \
+         ((xsd)(QName)) \
+         ((xsd)(NOTATION)) \
+         ((xsd)(normalizedString)) \
+         ((xsd)(token)) \
+         ((xsd)(language)) \
+         ((xsd)(NMTOKEN)) \
+         ((xsd)(Name)) \
+         ((xsd)(NCName)) \
+         ((xsd)(ID)) \
+         ((xsd)(IDREF)) \
+         ((xsd)(IDREFS)) \
+         ((xsd)(ENTITY)) \
+         ((xsd)(ENTITIES)) \
+         ((xsd)(integer)) \
+         ((xsd)(nonPositiveInteger)) \
+         ((xsd)(negativeInteger)) \
+         ((xsd)(long)) \
          ((xsd)(int)) \
+         ((xsd)(short)) \
+         ((xsd)(byte)) \
+         ((xsd)(nonNegativeInteger)) \
+         ((xsd)(unsignedLong)) \
+         ((xsd)(unsignedInt)) \
+         ((xsd)(unsignedShort)) \
+         ((xsd)(unsignedByte)) \
+         ((xsd)(positiveInteger)) \
 /* */
-//TODO: add datatypes
 
 /**@brief Combined set of supported OWL terms
 @details Define sequence of standard OWL terms.
@@ -161,6 +201,7 @@ The last element---either second or third---is used as string value of the term.
       OWLCPP_TERMS_XSD \
 /* */
 
+#include <string>
 #include "owlcpp/terms/term_macro.hpp"
 #include "owlcpp/terms/iri_tags.hpp"
 #include "owlcpp/node_id.hpp"
