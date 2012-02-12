@@ -38,7 +38,7 @@ struct blank{};
 namespace query_detail{
 namespace mpl = boost::mpl;
 namespace fusion = boost::fusion;
-
+//TODO: check that ranges form through equal_range method, where appropriate
 /**
 *******************************************************************************/
 template<class Subj, class Pred, class Obj, class Doc> class Query_type {
