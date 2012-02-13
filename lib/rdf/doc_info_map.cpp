@@ -79,7 +79,7 @@ Doc_id Doc_map::insert_new() {
 
 /*
 *******************************************************************************/
-void Doc_map::remove(const id_type id) {
+void Doc_map::remove(const Doc_id id) {
    id_index_t & id_index = store_.get<id_tag>();
    id_iter_t i = id_index.find(id);
    BOOST_ASSERT( i != id_index.end() );
@@ -89,14 +89,14 @@ void Doc_map::remove(const id_type id) {
 
 /*
 *******************************************************************************/
-Node_id Doc_map::iri(const id_type id) const {
+Node_id Doc_map::iri(const Doc_id id) const {
    BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
    return store_.get<id_tag>().find(id)->iri_id_;
 }
 
 /*
 *******************************************************************************/
-Node_id Doc_map::version(const id_type id) const {
+Node_id Doc_map::version(const Doc_id id) const {
    BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
    const id_iter_t i = store_.get<id_tag>().find(id);
    return i->version_id_;
@@ -104,7 +104,7 @@ Node_id Doc_map::version(const id_type id) const {
 
 /*
 *******************************************************************************/
-std::string Doc_map::path(const id_type id) const {
+std::string Doc_map::path(const Doc_id id) const {
    BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
    return store_.get<id_tag>().find(id)->path_;
 }

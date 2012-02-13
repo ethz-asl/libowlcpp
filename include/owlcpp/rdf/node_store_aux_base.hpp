@@ -9,7 +9,7 @@ part of owlcpp project.
 #include "owlcpp/node.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
-#include "owlcpp/rdf/doc_id.hpp"
+#include "owlcpp/doc_id.hpp"
 
 namespace owlcpp{
 

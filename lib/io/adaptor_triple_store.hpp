@@ -19,8 +19,78 @@ part of owlcpp project.
 #include "owlcpp/io/exception.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "adaptor_iri_finder.hpp"
+#include "triple_store_temp.hpp"
 
 namespace owlcpp{ namespace detail{
+
+/**
+*******************************************************************************/
+template<class TS> inline Node_id insert_node(TS& ts, raptor_uri* val) {
+   std::size_t len;
+   char const* str = reinterpret_cast<char const*>(
+            raptor_uri_as_counted_string(val, &len)
+   );
+   return ts.insert_iri_node(std::string(str, len));
+}
+
+/**
+*******************************************************************************/
+template<class TS> inline Node_id insert_node(TS& ts, raptor_term_literal_value const& val) {
+   std::string type;
+   if( val.datatype ) {
+      std::size_t len;
+      char const* str = reinterpret_cast<char const*>(
+               raptor_uri_as_counted_string(val.datatype, &len)
+      );
+      type.assign(str, len);
+   }
+
+   char const* lang_str = reinterpret_cast<char const*>(val.language);
+   const std::string lang =
+            val.language ? std::string(lang_str, val.language_len) : "";
+
+   char const* val_str = reinterpret_cast<char const*>(val.string);
+   return ts.insert_lit_node( std::string(val_str, val.string_len), type, lang );
+}
+
+/**
+*******************************************************************************/
+template<class TS> inline Node_id insert_node(
+         TS& ts, raptor_term_blank_value const& val, const Doc_id did
+) {
+   char const* val_str = reinterpret_cast<char const*>(val.string);
+   return ts.insert_blank_node(did, std::string(val_str, val.string_len));
+}
+
+/**
+*******************************************************************************/
+template<class TS> inline Node_id insert_node(TS& ts, raptor_term const& node, const Doc_id did) {
+   switch (node.type) {
+   case RAPTOR_TERM_TYPE_URI:
+      return insert_node(ts, node.value.uri);
+   case RAPTOR_TERM_TYPE_LITERAL:
+      return insert_node(ts, node.value.literal);
+   case RAPTOR_TERM_TYPE_BLANK:
+      return insert_node(ts, node.value.blank, did);
+   default:
+      BOOST_THROW_EXCEPTION(
+               Input_err()
+               << Input_err::msg_t("unknown node type")
+         );
+   }
+}
+
+/**
+*******************************************************************************/
+template<class TS> inline void insert_triple(
+         TS& ts, raptor_statement const& rs, const Doc_id did
+) {
+   const Node_id subj = insert_node(ts, *rs.subject, did);
+   const Node_id pred = insert_node(ts, *rs.predicate, did);
+   const Node_id obj = insert_node(ts, *rs.object, did);
+   ts.insert_triple(subj, pred, obj, did);
+}
+
 
 /**@brief 
 *******************************************************************************/
@@ -29,10 +99,6 @@ class Adaptor_triple_store {
    typedef std::deque<triple_t> triple_stor_t;
 public:
    struct Err : public Input_err {};
-
-   static std::string blank_name_prefix(const Doc_id did) {
-      return "doc" + boost::lexical_cast<std::string>(did()) + "_";
-   }
 
    /**
     Use this when path and ontology import IRI (ontologyIRI or versionIRI) for the
@@ -44,8 +110,7 @@ public:
             std::string const& import_iri = "" /**< expected versionIRI or ontologyIRI */
    ) :
       ts_(ts),
-      current_doc_(get_doc_id(ts, path, import_iri)),
-      blank_pref_(blank_name_prefix(current_doc_)),
+      current_doc_(Doc_id()),
       path_(path),
       expected_iri_(import_iri),
       aif_(boost::bind(&Adaptor_triple_store::id_found, this)),
@@ -63,8 +128,7 @@ public:
             std::string const& version_iri /**< expected versionIRI (may be empty) */
    ) :
       ts_(ts),
-      current_doc_(get_doc_id(ts, path, ontology_iri, version_iri)),
-      blank_pref_(blank_name_prefix(current_doc_)),
+      current_doc_(Doc_id()),
       path_(),
       expected_iri_(),
       aif_(boost::bind(&Adaptor_triple_store::id_found, this)),
@@ -80,14 +144,11 @@ public:
       if( ! id_found_ ) aif_.insert(statement);
       raptor_statement const& rs = *static_cast<raptor_statement const*>(statement);
       check_import(rs);
-      triple_t triple;
-      triple[0] = insert_node(*rs.subject);
-      triple[1] = insert_node(*rs.predicate);
-      triple[2]  = insert_node(*rs.object);
+
       if( id_found_ ) {
-         ts_.insert_triple(triple[0], triple[1], triple[2], current_doc_);
+         insert_triple(ts_, rs, current_doc_);
       } else {
-         triples_.push_back(triple);
+         insert_triple(tst_, rs, current_doc_);
       }
    }
 
@@ -97,6 +158,7 @@ public:
    std::deque<std::string> const& imports() const {return imports_;}
 
 private:
+   Triple_store_temp tst_;
    Triple_store& ts_;
    const Doc_id current_doc_;
    const std::string blank_pref_;
@@ -186,92 +248,6 @@ private:
       }
    }
 
-   Node_id insert_node(raptor_term const& node) {
-      switch (node.type) {
-      case RAPTOR_TERM_TYPE_URI:
-         return insert_node(node.value.uri);
-      case RAPTOR_TERM_TYPE_LITERAL:
-         return insert_node(node.value.literal);
-      case RAPTOR_TERM_TYPE_BLANK:
-         return insert_node(node.value.blank);
-      default:
-         BOOST_THROW_EXCEPTION(
-                     Err()
-                     << Err::msg_t("unknown node type")
-            );
-      }
-   }
-
-   Node_id insert_node(raptor_uri* val) {
-      std::size_t len;
-      char const* str = reinterpret_cast<char const*>(
-               raptor_uri_as_counted_string(val, &len)
-      );
-      return ts_.insert_iri_node(std::string(str, len));
-   }
-
-   Node_id insert_node(raptor_term_literal_value const& val) {
-      std::string type;
-      if( val.datatype ) {
-         std::size_t len;
-         char const* str = reinterpret_cast<char const*>(
-                  raptor_uri_as_counted_string(val.datatype, &len)
-         );
-         type.assign(str, len);
-      }
-
-      char const* lang_str = reinterpret_cast<char const*>(val.language);
-      const std::string lang =
-               val.language ? std::string(lang_str, val.language_len) : "";
-
-      char const* val_str = reinterpret_cast<char const*>(val.string);
-      return ts_.insert_lit_node( std::string(val_str, val.string_len), type, lang );
-   }
-
-   Node_id insert_node(raptor_term_blank_value const& val) {
-      char const* val_str = reinterpret_cast<char const*>(val.string);
-      return ts_.insert_blank_node( blank_pref_ + std::string(val_str,val.string_len) );
-   }
-
-   static Doc_id get_doc_id(
-            Triple_store& ts, /**< destination triple store */
-            std::string const& path, /**< document location (may be empty) */
-            std::string const& import_iri /**< expected ontologyIRI */
-   ) {
-      if( ! path.empty() && ts.documents().find_path(path) )
-         BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("document already loaded")
-                  << Err::str1_t(path)
-         );
-      if( ! import_iri.empty() && ts.find_doc_iri(import_iri) ) {
-         BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("document already loaded")
-                  << Err::str1_t(import_iri)
-         );
-      }
-      return ts.documents().insert_new();
-   }
-
-   static Doc_id get_doc_id(
-            Triple_store& ts, /**< destination triple store */
-            std::string const& path, /**< document location (may be empty) */
-            std::string const& ontology_iri, /**< expected ontologyIRI */
-            std::string const& version_iri /**< expected versionIRI (may be empty) */
-   ) {
-      if( ontology_iri.empty() ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("valid ontologyIRI is required")
-      );
-      std::pair<Doc_id,bool> p = ts.insert_doc(path, ontology_iri, version_iri);
-      if( ! p.second ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("document already loaded")
-      << Err::str1_t(ontology_iri)
-      );
-      return p.first;
-   }
 };
 
 }//namespace detail

@@ -11,28 +11,41 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_map.hpp"
 #include "owlcpp/rdf/node_map.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
-#include "owlcpp/rdf/doc_info_map.hpp"
+#include "owlcpp/terms/node_tags_system.hpp"
+#include "owlcpp/rdf/owl_terms.hpp"
 
 namespace owlcpp{ namespace detail{
 
-/**@brief 
+/**@brief Storage for RDF triples coming from a single document
 *******************************************************************************/
 class Triple_store_temp :
 public Node_store_iri_base<Triple_store_temp>,
-public Node_store_aux_base<Triple_store_temp>,
-public Doc_store_base<Triple_store_temp>
+public Node_store_aux_base<Triple_store_temp>
 {
 public:
+
+   /** indicate into which namespaces new terms should not be inserted */
+   static bool is_constant(const Ns_id ns) {return is_owl(ns);}
+   struct Err : public base_exception {};
    Iri_map& iris() {return iri_;}
    Iri_map const& iris() const {return iri_;}
    Node_map& nodes() {return node_;}
    Node_map const& nodes() const {return node_;}
-   Doc_map const& documents() const {return doc_;}
-   Doc_map& documents() {return doc_;}
    Triple_map const& triples() const {return triple_;}
 
-private:
+   void insert_triple(
+            const Node_id subj,
+            const Node_id pred,
+            const Node_id obj,
+            const Doc_id doc
+   ) {
+      triple_.insert(Triple(subj, pred, obj, doc));
+   }
 
+private:
+   Iri_map iri_;
+   Node_map node_;
+   Triple_map triple_;
 };
 
 }//namespace detail

@@ -15,7 +15,7 @@ part of owlcpp project.
 #include "boost/range.hpp"
 
 #include "owlcpp/node.hpp"
-#include "owlcpp/rdf/doc_id.hpp"
+#include "owlcpp/doc_id.hpp"
 #include "owlcpp/terms/iri_tags.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/node_id.hpp"

@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef TRIPLE_HPP_
 #define TRIPLE_HPP_
 
-#include "owlcpp/rdf/doc_id.hpp"
+#include "owlcpp/doc_id.hpp"
 #include "owlcpp/node_id.hpp"
 
 namespace owlcpp{

@@ -14,6 +14,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/rdf/owl_terms.hpp"
+#include "owlcpp/rdf/copy_triples.hpp"
 
 namespace owlcpp{
 
@@ -33,6 +34,10 @@ public Doc_store_base<Triple_store>
 
 public:
    struct Err : public base_exception {};
+   typedef Iri_map iri_map_t;
+   typedef Node_map node_map_t;
+   typedef Doc_map doc_map_t;
+   typedef Triple_map triple_map_t;
 
    Triple_store() {insert_owl_terms(node_);}
 

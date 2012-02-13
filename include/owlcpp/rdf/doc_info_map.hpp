@@ -14,7 +14,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/config.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/exception.hpp"
-#include "owlcpp/rdf/doc_id.hpp"
+#include "owlcpp/doc_id.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
 
@@ -28,13 +28,13 @@ public:
 private:
    struct entry_t {
       entry_t(
-               const id_type id,
+               const Doc_id id,
                std::string const& path,
                const Node_id iri_id,
                const Node_id version_id
       ) : id_(id), path_(path), iri_id_(iri_id), version_id_(version_id)
       {}
-      id_type id_;
+      Doc_id id_;
       std::string path_;
       Node_id iri_id_;
       Node_id version_id_;
@@ -46,7 +46,7 @@ private:
                boost::multi_index::hashed_unique<
                   boost::multi_index::tag<struct id_tag>,
                   boost::multi_index::member<
-                     entry_t, id_type, &entry_t::id_
+                     entry_t, Doc_id, &entry_t::id_
                   >
                >,
                boost::multi_index::hashed_non_unique<
@@ -85,16 +85,16 @@ private:
 public:
    struct Err : public base_exception {};
 
-   typedef Member_iterator<path_iter_t, const id_type, &entry_t::id_> path_iterator;
+   typedef Member_iterator<path_iter_t, const Doc_id, &entry_t::id_> path_iterator;
    typedef boost::iterator_range<path_iterator> path_range;
 
-   typedef Member_iterator<iri_iter_t, const id_type, &entry_t::id_> iri_iterator;
+   typedef Member_iterator<iri_iter_t, const Doc_id, &entry_t::id_> iri_iterator;
    typedef boost::iterator_range<iri_iterator> iri_range;
 
-   typedef Member_iterator<version_iter_t, const id_type, &entry_t::id_> version_iterator;
+   typedef Member_iterator<version_iter_t, const Doc_id, &entry_t::id_> version_iterator;
    typedef boost::iterator_range<version_iterator> version_range;
 
-   typedef Member_iterator<store_t::iterator, const id_type, &entry_t::id_> id_iterator;
+   typedef Member_iterator<store_t::iterator, const Doc_id, &entry_t::id_> id_iterator;
 
    Doc_map();
 
@@ -159,10 +159,10 @@ public:
 
    std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri);
    Doc_id insert_new();
-   Node_id iri(const id_type id) const;
-   Node_id version(const id_type id) const;
-   std::string path(const id_type id) const;
-   void remove(const id_type id);
+   Node_id iri(const Doc_id id) const;
+   Node_id version(const Doc_id id) const;
+   std::string path(const Doc_id id) const;
+   void remove(const Doc_id id);
 
    /**
     @param id node ID of document's OntologyIRI
@@ -196,7 +196,7 @@ public:
    id_iterator end() const {return id_iterator(store_.end());}
 
 private:
-   detail::Id_tracker<id_type> tracker_;
+   detail::Id_tracker<Doc_id> tracker_;
    store_t store_;
 
    Doc_id const* find_existing(
@@ -210,7 +210,7 @@ private:
             const Node_id iri,
             const Node_id version
    ) {
-      const id_type id = tracker_.get();
+      const Doc_id id = tracker_.get();
       BOOST_ASSERT(store_.get<id_tag>().find(id) == store_.get<id_tag>().end());
       store_.insert(entry_t(id, path, iri, version));
       return id;

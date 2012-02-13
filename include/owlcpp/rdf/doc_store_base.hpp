@@ -38,7 +38,7 @@ template<class T> struct Doc_store_base {
    std::pair<Doc_id,bool> insert_doc(
             std::string const& path,
             std::string const& iri,
-            std::string const& version = std::string()
+            std::string const& version = ""
    ) {
       T& self = static_cast<T&>(*this);
       const Node_id iid = self.insert_iri_node(iri);
