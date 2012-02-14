@@ -16,7 +16,9 @@ public:
    typedef T value_type;
    bool operator==(const Comparable_value& t) const {return val_ == t.val_;}
    bool operator<(const Comparable_value& t) const {return val_< t.val_;}
+   bool operator<=(const Comparable_value& t) const {return val_<= t.val_;}
    bool operator>(const Comparable_value& t) const {return val_ > t.val_;}
+   bool operator>=(const Comparable_value& t) const {return val_ >= t.val_;}
    bool operator!=(const Comparable_value& t) const {return val_ != t.val_;}
    T operator()() const {return val_;}
 

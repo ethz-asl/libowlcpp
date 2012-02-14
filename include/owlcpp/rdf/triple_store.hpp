@@ -29,9 +29,6 @@ public Doc_store_base<Triple_store>
    friend class Node_store_aux_base<Triple_store>;
    friend class Doc_store_base<Triple_store>;
 
-   /** indicate into which namespaces new terms should not be inserted */
-   static bool is_constant(const Ns_id ns) {return is_owl(ns);}
-
 public:
    struct Err : public base_exception {};
    typedef Iri_map iri_map_t;

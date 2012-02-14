@@ -8,19 +8,7 @@ part of owlcpp project.
 #endif
 #include "owlcpp/rdf/node_map.hpp"
 
-#include "boost/mpl/for_each.hpp"
-
-#include "node_tag_vector_system.hpp"
-#include "owlcpp/rdf/detail/node_tag_inserter.hpp"
-
 namespace owlcpp {
-
-/*
-*******************************************************************************/
-Node_map::Node_map() : tracker_(), nodes_() {
-   detail::Node_tag_inserter nti(*this);
-   boost::mpl::for_each<terms::mpl_vector_nodes_system_t>(nti);
-}
 
 /*
 *******************************************************************************/

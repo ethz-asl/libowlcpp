@@ -5,14 +5,11 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_MAP_HPP_
 #define TRIPLE_MAP_HPP_
-#include "owlcpp/rdf/detail/triple_store_types.hpp"
-#include "boost/assert.hpp"
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/sequenced_index.hpp"
 //#include "boost/multi_index/random_access_index.hpp"
 #include "boost/multi_index/mem_fun.hpp"
-
 #include "owlcpp/rdf/detail/triple_store_types.hpp"
 #include "owlcpp/rdf/detail/triple_store_query.hpp"
 

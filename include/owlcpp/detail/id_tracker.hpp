@@ -16,10 +16,10 @@ template<class Id> class Id_tracker {
 public:
    typedef Id id_type;
 private:
-   typedef typename id_type::value_type value_type;
+   typedef typename id_type::value_type counter_type;
 
 public:
-   Id_tracker() : counter_(0), stack_() {}
+   explicit Id_tracker(const id_type id0 = id_type(0)) : counter_(id0()), stack_() {}
 
    void ensure_min(const id_type id) {
       if( counter_ <= id() ) counter_ = id() + 1;
@@ -38,7 +38,7 @@ public:
    }
 
 private:
-   value_type counter_;
+   counter_type counter_;
    std::stack<id_type> stack_;
 };
 

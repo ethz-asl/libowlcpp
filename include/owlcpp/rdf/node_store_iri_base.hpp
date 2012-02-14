@@ -29,20 +29,17 @@ template<class T> struct Node_store_iri_base {
                         self.iris().insert(iri) :
                         self.iris().insert(iri.substr(0,n));
       const std::string name = std::string::npos == n ? "" : iri.substr(n+1);
-
-      //prohibit inserting nodes into standard namespaces
-      if( T::is_constant(iid) ) {
-         Node_id const* nid = self.nodes().find(Node(iid, name));
-         if( nid ) return *nid;
-         typedef typename T::Err Err;
+      try{
+         return self.nodes().insert_iri( iid, name );
+      } catch(...) {
          BOOST_THROW_EXCEPTION(
                   Err()
-                  << typename Err::msg_t("term cannot be inserted into namespace")
+                  << typename Err::msg_t("error inserting IRI")
                   << typename Err::str1_t( name )
                   << typename Err::str2_t( self.iris()[iid] )
+                  << typename Err::nested_t(boost::current_exception())
          );
       }
-      return self.nodes().insert_iri( iid, name );
    }
 
    /**

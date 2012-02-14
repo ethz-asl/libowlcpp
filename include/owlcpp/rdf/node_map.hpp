@@ -23,11 +23,7 @@ part of owlcpp project.
 #include "owlcpp/exception.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
 
-namespace owlcpp{ namespace detail{
-
-class Node_tag_inserter;
-
-}
+namespace owlcpp{
 
 /**@brief Store RDF nodes
 @details
@@ -70,8 +66,6 @@ private:
    typedef node_index_t::iterator node_iter_t;
    typedef nodes_t::index<iri_tag>::type iri_index_t;
 
-   friend class detail::Node_tag_inserter;
-
    typedef boost::unordered_map<Node_id,Node_id> datatypes_t;
    typedef datatypes_t::const_iterator datatype_iter_t;
 
@@ -88,12 +82,37 @@ public:
    typedef boost::iterator_range<iri_iterator> iri_range;
 
    struct Err : public base_exception {};
-   Node_map();
+
+   Node_map(const Node_id id0 = Node_id(0))
+   : tracker_(id0)
+   {
+      insert(
+               terms::T_empty_::id(),
+               Node(terms::T_empty_::ns_type::id(), terms::T_empty_::name())
+      );
+   }
+
    std::size_t size() const {return nodes_.size();}
 
    Node const& operator[](const Node_id id) const {
       BOOST_ASSERT(nodes_.get<id_tag>().find(id) != nodes_.get<id_tag>().end());
       return nodes_.get<id_tag>().find(id)->second;
+   }
+
+   /**
+    @param id node ID
+    @return immutable reference to node object with specified ID
+    @throw Node_map::Err if @b id does not exist
+   */
+   Node const& at(const Node_id id) const {
+      id_index_t const& index = nodes_.get<id_tag>();
+      const id_iter_t iter = index.find(id);
+      if(iter == index.end()) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("unknown node ID")
+               << Err::int1_t(id())
+      );
+      return iter->second;
    }
 
    /**@brief Find the datatype of the literal node
@@ -142,22 +161,6 @@ public:
       const node_iter_t node_iter = node_index.find(node);
       if( node_iter == node_index.end() ) return 0;
       return &node_iter->first;
-   }
-
-   /**
-    @param id node ID
-    @return immutable reference to node object with specified ID
-    @throw Node_map::Err if @b id does not exist
-   */
-   Node const& at(const Node_id id) const {
-      id_index_t const& index = nodes_.get<id_tag>();
-      const id_iter_t iter = index.find(id);
-      if(iter == index.end()) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("unknown node ID")
-               << Err::int1_t(id())
-      );
-      return iter->second;
    }
 
    /**@brief Remove node with specified ID
