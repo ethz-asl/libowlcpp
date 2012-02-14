@@ -11,7 +11,6 @@ part of owlcpp project.
 namespace owlcpp {
 
 /*
-*******************************************************************************/
 void Node_map::remove(const Node_id id) {
    id_index_t & id_index = nodes_.get<id_tag>();
    id_iter_t i = id_index.find(id);
@@ -19,9 +18,9 @@ void Node_map::remove(const Node_id id) {
    id_index.erase(i);
    tracker_.push(id);
 }
+*******************************************************************************/
 
 /*
-*******************************************************************************/
 void Node_map::remove(Node const& node) {
    node_index_t& node_index = nodes_.get<node_tag>();
    node_iter_t i = node_index.find(node);
@@ -34,9 +33,9 @@ void Node_map::remove(Node const& node) {
    node_index.erase(i);
    tracker_.push(id);
 }
+*******************************************************************************/
 
 /*
-*******************************************************************************/
 Node_id Node_map::insert_literal(
          std::string const& value,
          const Node_id dt,
@@ -53,6 +52,7 @@ Node_id Node_map::insert_literal(
    if( lang != language(id) ) return insert_literal_private(node, dt, lang);
    return id;
 }
+*******************************************************************************/
 
 
 }//namespace owlcpp

@@ -96,7 +96,9 @@ public:
 
    typedef Member_iterator<store_t::iterator, const Doc_id, &entry_t::id_> id_iterator;
 
-   Doc_map();
+//   Doc_map() : tracker_(), store_() {
+//         tracker_.reserve(Doc_id());
+//      }
 
    std::size_t size() const {return store_.size();}
 
