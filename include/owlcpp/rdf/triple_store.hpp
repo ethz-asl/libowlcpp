@@ -10,7 +10,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_store_aux_base.hpp"
 #include "owlcpp/rdf/doc_store_base.hpp"
 #include "owlcpp/rdf/triple_map.hpp"
-#include "owlcpp/rdf/node_map.hpp"
+#include "owlcpp/rdf/node_map_owl.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/rdf/owl_terms.hpp"
@@ -36,12 +36,10 @@ public:
    typedef Doc_map doc_map_t;
    typedef Triple_map triple_map_t;
 
-   Triple_store() {insert_owl_terms(node_);}
-
    Iri_map& iris() {return iri_;}
    Iri_map const& iris() const {return iri_;}
-   Node_map& nodes() {return node_;}
-   Node_map const& nodes() const {return node_;}
+   Node_map_owl& nodes() {return node_;}
+   Node_map_owl const& nodes() const {return node_;}
    Doc_map const& documents() const {return doc_;}
    Doc_map& documents() {return doc_;}
    Triple_map const& triples() const {return triple_;}
@@ -60,7 +58,7 @@ public:
 
 private:
    Iri_map iri_;
-   Node_map node_;
+   Node_map_owl node_;
    Doc_map doc_;
    Triple_map triple_;
 };

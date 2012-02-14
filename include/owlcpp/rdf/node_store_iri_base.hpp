@@ -6,6 +6,7 @@ part of owlcpp project.
 #ifndef NODE_STORE_IRI_BASE_HPP_
 #define NODE_STORE_IRI_BASE_HPP_
 #include <string>
+#include "boost/exception_ptr.hpp"
 #include "owlcpp/node.hpp"
 #include "owlcpp/node_id.hpp"
 
@@ -32,6 +33,7 @@ template<class T> struct Node_store_iri_base {
       try{
          return self.nodes().insert_iri( iid, name );
       } catch(...) {
+         typedef typename T::Err Err;
          BOOST_THROW_EXCEPTION(
                   Err()
                   << typename Err::msg_t("error inserting IRI")
