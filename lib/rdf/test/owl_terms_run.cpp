@@ -23,6 +23,8 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK( Owl_terms::is_owl(terms::N_owl::id()));
    BOOST_CHECK( Owl_terms::is_owl(terms::N_rdfs::id()));
 
+   BOOST_CHECK( Owl_terms::is_owl(terms::T_xsd_positiveInteger::id()));
+
    Owl_terms const& ot = Owl_terms::get();
    BOOST_CHECK_THROW(ot.at(Node_id(3000)), Owl_terms::Err);
    BOOST_CHECK_THROW(ot.at(Node_id(3)), Owl_terms::Err);

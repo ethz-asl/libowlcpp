@@ -36,7 +36,7 @@ void Iri_map::insert(const id_type id, std::string const& iri, std::string const
 
    store_iri_.insert(std::make_pair(id, iri));
    store_pref_.insert(std::make_pair(id, prefix));
-   tracker_.ensure_min(id);
+   tracker_.reserve(id);
 }
 
 /*

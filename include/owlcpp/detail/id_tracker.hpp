@@ -19,9 +19,12 @@ private:
    typedef typename id_type::value_type counter_type;
 
 public:
-   explicit Id_tracker(const id_type id0 = id_type(0)) : counter_(id0()), stack_() {}
+   Id_tracker() : counter_(0), stack_() {}
 
-   void ensure_min(const id_type id) {
+   /** Indicate that IDs @b id and below are not available
+    @param id
+   */
+   void reserve(const id_type id) {
       if( counter_ <= id() ) counter_ = id() + 1;
    }
 

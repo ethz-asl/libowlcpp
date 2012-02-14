@@ -24,6 +24,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    const Node_id nid1 = ts.insert_iri_node(ni1);
    const Node_id nid1a = ts.insert_iri_node(ni1);
    BOOST_CHECK_EQUAL(nid1, nid1a);
+   BOOST_CHECK_EQUAL(ts.string(nid1), ni1);
    const Node_id nid2 = ts.insert_iri_node(ni2);
    BOOST_CHECK_NE(nid1, nid2);
 

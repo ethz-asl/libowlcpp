@@ -15,7 +15,7 @@ namespace owlcpp{ namespace test{
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( id_tracker_run_case01 ) {
    detail::Id_tracker<Ns_id> tracker;
-   tracker.ensure_min(Ns_id(12));
+   tracker.reserve(Ns_id(12));
    BOOST_CHECK_EQUAL(tracker.get(), Ns_id(13));
    BOOST_CHECK_EQUAL(tracker.get(), Ns_id(14));
    tracker.push(Ns_id(14));
