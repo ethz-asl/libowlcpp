@@ -19,14 +19,9 @@ private:
    typedef typename id_type::value_type counter_type;
 
 public:
-   Id_tracker() : counter_(0), stack_() {}
+   Id_tracker() : counter_(0) {}
 
-   /** Indicate that IDs @b id and below are not available
-    @param id
-   */
-   void reserve(const id_type id) {
-      if( counter_ <= id() ) counter_ = id() + 1;
-   }
+   Id_tracker(const id_type id) : counter_(id() + 1) {}
 
    id_type get() {
       if( stack_.empty() ) return id_type(counter_++);
