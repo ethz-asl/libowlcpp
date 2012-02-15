@@ -21,6 +21,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/config.hpp"
 #include "owlcpp/exception.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
+#include "owlcpp/detail/member_iterator.hpp"
 
 namespace owlcpp{
 
@@ -66,26 +67,24 @@ protected:
    typedef nodes_t::index<iri_tag>::type iri_index_t;
 
 public:
-   typedef nodes_t::iterator iterator;
-   typedef iterator const_iterator;
-   typedef iri_index_t::iterator iri_iterator;
+   typedef Member_iterator<nodes_t::const_iterator, const Node_id, &value_t::first> const_iterator;
+   typedef const_iterator iterator;
+   typedef boost::iterator_range<const_iterator> range;
+   typedef Member_iterator<iri_index_t::const_iterator, const Node_id, &value_t::first> iri_iterator;
    typedef boost::iterator_range<iri_iterator> iri_range;
 
    struct Err : public base_exception {};
 
-   Node_iri_map() {
-      insert(
-               terms::T_empty_::id(),
-               Node(terms::T_empty_::ns_type::id(), terms::T_empty_::name())
-      );
+   Node_iri_map() : tracker_(terms::T_empty_::id()) {
+      const Node node = Node(terms::T_empty_::ns_type::id(), terms::T_empty_::name());
+      nodes_.insert(std::make_pair(terms::T_empty_::id(), node));
    }
 
-   explicit Node_iri_map(const Node_id id0) {
-      insert(
-               terms::T_empty_::id(),
-               Node(terms::T_empty_::ns_type::id(), terms::T_empty_::name())
-      );
-      tracker_.reserve(id0);
+   explicit Node_iri_map(const Node_id id0)
+   : tracker_(std::max(id0, terms::T_empty_::id()))
+   {
+      const Node node = Node(terms::T_empty_::ns_type::id(), terms::T_empty_::name());
+      nodes_.insert(std::make_pair(terms::T_empty_::id(), node));
    }
 
    std::size_t size() const {return nodes_.size();}
@@ -122,17 +121,19 @@ public:
     @endcode
    */
    iri_range find(const Ns_id iid) const {
+      std::pair<iri_index_t::const_iterator,iri_index_t::const_iterator> p =
+               nodes_.get<iri_tag>().equal_range(iid);
       return boost::make_iterator_range(
-               nodes_.get<iri_tag>().equal_range(iid)
+               iri_iterator(p.first), iri_iterator(p.second)
       );
    }
 
-   // use equal_range()
-   Node_id const* find(Node const& node) const {
-      node_index_t const& node_index = nodes_.get<node_tag>();
-      const node_iter_t node_iter = node_index.find(node);
-      if( node_iter == node_index.end() ) return 0;
-      return &node_iter->first;
+   range find(Node const& node) const {
+      std::pair<node_index_t::const_iterator,node_index_t::const_iterator> p =
+               nodes_.get<node_tag>().equal_range(node);
+      return boost::make_iterator_range(
+               const_iterator(p.first), const_iterator(p.second)
+      );
    }
 
    /**@brief Remove node with specified ID
@@ -182,7 +183,7 @@ public:
                   << Err::msg_t("blank namespace for IRI node")
                   << Err::str1_t("_" + name)
          );
-      return insert(nsid, name);
+      return insert(Node(nsid, name));
    }
 
 private:
@@ -191,25 +192,16 @@ private:
 
 protected:
 
-   Node_id insert(const Ns_id nsid, std::string const& name) {
+   Node_id insert(Node const& node) {
       node_index_t const& n_index = nodes_.get<node_tag>();
-      const Node node(nsid, name);
       const node_iter_t n_iter = n_index.find(node);
       if( n_iter != n_index.end() ) return n_iter->first;
       const Node_id id = tracker_.get();
-      insert(id, node);
-      return id;
-   }
-
-   void insert(const Node_id id, Node const& node) {
       BOOST_ASSERT(
                nodes_.get<id_tag>().find(id) == nodes_.get<id_tag>().end()
       );
-      BOOST_ASSERT(
-               nodes_.get<node_tag>().find(node) == nodes_.get<node_tag>().end()
-      );
       nodes_.insert( std::make_pair(id, node) );
-      tracker_.reserve(id);
+      return id;
    }
 
 };
