@@ -7,22 +7,24 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/node_map.hpp"
+#include "owlcpp/rdf/node_owl_map.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
 namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/** Regular node map
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Node_map nm;
+   Node_map<> nm;
 
    BOOST_CHECK_EQUAL(nm.size(), 1u);
-
+   BOOST_CHECK_THROW(nm.at(terms::T_owl_Class::id()), Rdf_err);
    const Node_id nid1 = nm.insert_iri(
             terms::T_owl_Class::ns_type::id(), terms::T_owl_Class::name()
    );
+   BOOST_CHECK_NE(nid1, terms::T_owl_Class::id());
 
    const Node_id nid2 = nm.insert_iri(Ns_id(42), "node2");
    BOOST_CHECK_EQUAL(nm[nid2].value_str(), "node2");
@@ -34,6 +36,13 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_REQUIRE(nm.datatype(nid3));
    BOOST_CHECK_EQUAL(*nm.datatype(nid3), nid2);
    BOOST_CHECK_EQUAL(nm.language(nid3), "en");
+}
+
+/** OWL-aware node map
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case02 ) {
+   Node_map<> nm;
+
 }
 
 }//namespace test

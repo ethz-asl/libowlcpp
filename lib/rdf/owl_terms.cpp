@@ -10,7 +10,6 @@ part of owlcpp project.
 
 #include "boost/mpl/for_each.hpp"
 
-#include "owlcpp/rdf/node_map.hpp"
 #include "node_tag_vector_owl.hpp"
 
 namespace owlcpp {

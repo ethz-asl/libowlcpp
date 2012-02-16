@@ -52,9 +52,32 @@ private:
    typedef store_t::index<string_tag>::type string_index_t;
    typedef string_index_t::iterator string_iter_t;
 
-   void insert(const id_type iid, std::string const& iri, std::string const& prefix);
+   class Iri_tag_inserter {
+      Iri_tag_inserter();
+   public:
+      explicit Iri_tag_inserter(Iri_map& store) : store_(&store) {}
 
-   friend class detail::Iri_tag_inserter;
+      template<class T> void operator()(const T&) const {
+         insert(T::id(), T::iri(), T::prefix());
+      }
+   private:
+      mutable Iri_map* store_;
+
+      void insert(const Ns_id id, std::string const& iri, std::string const& pref) const {
+         BOOST_ASSERT(
+                  store_->store_iri_.get<id_tag>().find(id) == store_->store_iri_.get<id_tag>().end()
+         );
+         BOOST_ASSERT( ! store_->find_iri(iri) );
+         BOOST_ASSERT(
+                  store_->store_pref_.get<id_tag>().find(id) == store_->store_pref_.get<id_tag>().end()
+         );
+         BOOST_ASSERT( ! store_->find_prefix(pref) );
+
+         store_->store_iri_.insert(std::make_pair(id, iri));
+         store_->store_pref_.insert(std::make_pair(id, pref));
+
+      }
+   };
 
 public:
    typedef store_t::iterator iterator;

@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef OWLCPP_RDF_SOURCE
 #define OWLCPP_RDF_SOURCE
 #endif
-#include "boost/assert.hpp"
+#include "boost/foreach.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
@@ -14,7 +14,7 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-Doc_id const* Doc_map::find_existing(
+Doc_id const* Doc_map::find(
          std::string const& path,
          const Node_id iri,
          const Node_id version
@@ -26,6 +26,13 @@ Doc_id const* Doc_map::find_existing(
 
    //multiple entries with empty paths are allowed
    if( path.empty() ) {
+      if( version == terms::T_empty_::id() ) {
+         BOOST_FOREACH(const Doc_id id, find_iri(iri)) {
+//            if( path(id).empty() && version(id) == terms::T_empty_::id() )
+         }
+      }
+
+/*
       iri_index_t const& ii = store_.get<iri_tag>();
       for(iri_iter_t i = ii.find(iri); i != ii.end(); ++i) {
          if( i->path_.empty() && i->version_id_ == version )
@@ -54,6 +61,8 @@ Doc_id const* Doc_map::find_existing(
    );
 
    return &path_iter->id_;
+*/
+   }
 }
 
 /*
@@ -63,10 +72,10 @@ std::pair<Doc_id,bool> Doc_map::insert(std::string const& path, const Node_id ir
 }
 
 /*
-*******************************************************************************/
 Doc_id Doc_map::insert_new() {
    return insert_private("", terms::T_empty_::id(), terms::T_empty_::id());
 }
+*******************************************************************************/
 
 /*
 *******************************************************************************/
@@ -76,28 +85,6 @@ void Doc_map::remove(const Doc_id id) {
    BOOST_ASSERT( i != id_index.end() );
    id_index.erase(i);
    tracker_.push(id);
-}
-
-/*
-*******************************************************************************/
-Node_id Doc_map::iri(const Doc_id id) const {
-   BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
-   return store_.get<id_tag>().find(id)->iri_id_;
-}
-
-/*
-*******************************************************************************/
-Node_id Doc_map::version(const Doc_id id) const {
-   BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
-   const id_iter_t i = store_.get<id_tag>().find(id);
-   return i->version_id_;
-}
-
-/*
-*******************************************************************************/
-std::string Doc_map::path(const Doc_id id) const {
-   BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
-   return store_.get<id_tag>().find(id)->path_;
 }
 
 }//namespace owlcpp

@@ -11,32 +11,14 @@ part of owlcpp project.
 #include "boost/mpl/for_each.hpp"
 
 #include "iri_tag_vector.hpp"
-#include "owlcpp/rdf/detail/iri_tag_inserter.hpp"
 
 namespace owlcpp {
 
 /*
 *******************************************************************************/
 Iri_map::Iri_map() {
-   detail::Iri_tag_inserter iti(*this);
+   Iri_tag_inserter iti(*this);
    boost::mpl::for_each<terms::mpl_vector_iris_t>(iti);
-}
-
-/*
-*******************************************************************************/
-void Iri_map::insert(const id_type id, std::string const& iri, std::string const& prefix) {
-   BOOST_ASSERT(
-            store_iri_.get<id_tag>().find(id) == store_iri_.get<id_tag>().end()
-   );
-   BOOST_ASSERT( ! find_iri(iri) );
-   BOOST_ASSERT(
-            store_pref_.get<id_tag>().find(id) == store_pref_.get<id_tag>().end()
-   );
-   BOOST_ASSERT( ! find_prefix(prefix) );
-
-   store_iri_.insert(std::make_pair(id, iri));
-   store_pref_.insert(std::make_pair(id, prefix));
-   tracker_.reserve(id);
 }
 
 /*

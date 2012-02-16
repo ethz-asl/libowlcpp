@@ -6,6 +6,7 @@ part of owlcpp project.
 #ifndef DOC_INFO_MAP_HPP_
 #define DOC_INFO_MAP_HPP_
 #include <string>
+#include "boost/assert.hpp"
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/member.hpp"
@@ -125,7 +126,7 @@ public:
             const Node_id iri,
             const Node_id version
    ) {
-      Doc_id const* did = find_existing(path, iri, version);
+      Doc_id const* did = find(path, iri, version);
       if( did ) return std::make_pair(*did, false);
       return std::make_pair(insert_private(path, iri, version), true);
    }
@@ -142,7 +143,7 @@ public:
       const entry_t entry = *i;
       index.erase(i);
       try {
-         if( find_existing(path, iri, version) ) BOOST_THROW_EXCEPTION(
+         if( find(path, iri, version) ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("document already exists")
                   << Err::str1_t(path)
@@ -157,10 +158,20 @@ public:
    }
 
    std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri);
-   Doc_id insert_new();
-   Node_id iri(const Doc_id id) const;
-   Node_id version(const Doc_id id) const;
-   std::string path(const Doc_id id) const;
+//   Doc_id insert_new();
+   Node_id iri(const Doc_id id) const {
+      BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
+      return store_.get<id_tag>().find(id)->iri_id_;
+   }
+   Node_id version(const Doc_id id) const {
+      BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
+      const id_iter_t i = store_.get<id_tag>().find(id);
+      return i->version_id_;
+   }
+   std::string path(const Doc_id id) const {
+      BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
+      return store_.get<id_tag>().find(id)->path_;
+   }
    void remove(const Doc_id id);
 
    /**
@@ -201,7 +212,7 @@ private:
    detail::Id_tracker<Doc_id> tracker_;
    store_t store_;
 
-   Doc_id const* find_existing(
+   Doc_id const* find(
             std::string const& path,
             const Node_id iri,
             const Node_id version

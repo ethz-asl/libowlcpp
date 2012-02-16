@@ -16,7 +16,7 @@ namespace owlcpp{ namespace terms{
 
 /**@brief typelist of system node tags
 *******************************************************************************/
-typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_NODE_LIST_SYSTEM) mpl_vector_nodes_system_t;
+typedef OWLCPP_TERM_MPL_VECTOR(OWLCPP_NODE_LIST_SYSTEM) mpl_vector_terms_system_t;
 
 }//namespace keywords
 }//namespace owlcpp

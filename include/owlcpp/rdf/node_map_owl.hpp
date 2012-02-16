@@ -15,9 +15,10 @@ namespace owlcpp{
 class Node_map_owl {
 public:
    typedef Node_map::iterator iterator;
-   typedef iterator const_iterator;
+   typedef Node_map::const_iterator const_iterator;
+   typedef Node_map::range range;
    typedef Node_map::iri_iterator iri_iterator;
-   typedef boost::iterator_range<iri_iterator> iri_range;
+   typedef Node_map::iri_range iri_range;
 
    struct Err : public base_exception {};
 
