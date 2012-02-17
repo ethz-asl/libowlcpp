@@ -18,18 +18,38 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_map_base.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
 
-namespace owlcpp{
+namespace owlcpp{ namespace detail{
 
-struct No_nodes {
-
+class No_nodes {
+   static Node const& empty() {
+      static const Node node((terms::T_empty_())); //extra brackets to distinguish from function
+      return node;
+   }
+public:
+   Node_id max_id() const {return terms::T_empty_::id();}
+   bool have(const Node_id nid) const {return nid == terms::T_empty_::id();}
+   bool have(const Ns_id iid) const {return false;}
+   Node const& operator[](const Node_id id) const {return at(id);}
+   Node const& at(const Node_id nid) const {
+      if(nid != terms::T_empty_::id()) BOOST_THROW_EXCEPTION(
+               Rdf_err()
+               << Rdf_err::msg_t("unknown node ID")
+               << Rdf_err::int1_t(nid())
+      );
+      return empty();
+   }
+   Node_map_base::ns_range find(const Ns_id iid) const {return Node_map_base::ns_range();}
+   Node_map_base::node_range find(Node const& node) const {return Node_map_base::node_range();}
 };
+
+}//namespace detail
 
 /**@brief Store RDF nodes
 @details
 Validity of node IDs is assumed and asserted in debug mode.
 Calling node map methods with invalid node IDs results in undefined behavior.
 *******************************************************************************/
-template<class StdNodes = No_nodes> class Node_map {
+template<class StdNodes = detail::No_nodes> class Node_map {
 
    typedef boost::unordered_map<Node_id,Node_id> datatypes_t;
    typedef datatypes_t::const_iterator datatype_iter_t;
@@ -50,19 +70,27 @@ public:
    typedef Node_map_base::ns_range ns_range;
    typedef Rdf_err Err;
 
-   Node_map() {}
+   Node_map()
+   : std_nodes_(),
+     tracker_(std_nodes_.max_id())
+   {}
 
    std::size_t size() const {return nodes_.size();}
    const_iterator begin() const {return nodes_.begin();}
    const_iterator end() const {return nodes_.end();}
-   Node const& operator[](const Node_id id) const {return nodes_[id];}
+
+   Node const& operator[](const Node_id id) const {
+      return std_nodes_.have(id) ? std_nodes_[id] : nodes_[id];
+   }
 
    /**
     @param id node ID
     @return immutable reference to node object with specified ID
     @throw Rdf_err if @b id does not exist
    */
-   Node const& at(const Node_id id) const {return nodes_.at(id);}
+   Node const& at(const Node_id id) const {
+      return std_nodes_.have(id) ? std_nodes_.at(id) : nodes_.at(id);
+   }
 
    /**@brief Find nodes in a given namespace
     @param iid namespace IRI ID
@@ -74,8 +102,13 @@ public:
     find(terms::N_blank::id()) //returns range of all blank nodes
     @endcode
    */
-   ns_range find(const Ns_id iid) const {return nodes_.find(iid);}
-   node_range find(Node const& node) const {return nodes_.find(node);}
+   ns_range find(const Ns_id iid) const {
+      return std_nodes_.have(iid) ? std_nodes_.find(iid) : nodes_.find(iid);
+   }
+
+   node_range find(Node const& node) const {
+      return std_nodes_.have(node.ns_id()) ? std_nodes_.find(node) : nodes_.find(node);
+   }
 
    /**@brief Find the datatype of the literal node
     @param id literal node's ID
@@ -121,6 +154,15 @@ public:
                   << Err::str1_t("_" + name)
          );
       const Node node(nsid, name);
+      if( std_nodes_.have(nsid) ) {
+         const node_range r = std_nodes_.find(node);
+         if( r ) return r.front();
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << typename Err::msg_t("new term cannot be inserted into standard namespace")
+                  << typename Err::str1_t( name )
+         );
+      }
       const node_range nr = nodes_.find(node);
       if( nr ) return nr.front();
       const Node_id id = tracker_.get();
@@ -195,6 +237,7 @@ public:
    }
 
 private:
+   const StdNodes std_nodes_;
    detail::Id_tracker<Node_id> tracker_;
    Node_map_base nodes_;
    docs_t docs_;

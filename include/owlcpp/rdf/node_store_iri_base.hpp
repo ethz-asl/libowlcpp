@@ -44,6 +44,7 @@ template<class T> struct Node_store_iri_base {
       }
    }
 
+
    /**
     @param iri node IRI
     @return pointer to node ID or NULL if not found.
@@ -52,15 +53,19 @@ template<class T> struct Node_store_iri_base {
       T const& self = static_cast<T const&>(*this);
       const std::size_t n = iri.find('#');
       Ns_id const * iid;
+      typedef typename T::node_map_t::node_range node_range;
+      node_range r;
       if( std::string::npos == n ) {
          iid = self.iris().find_iri(iri);
          if( ! iid ) return 0;
-         return self.nodes().find( Node(*iid, ""));
+         r = self.nodes().find( Node(*iid, ""));
       } else {
          iid = self.iris().find_iri(iri.substr(0, n));
          if( ! iid ) return 0;
-         return self.nodes().find( Node(*iid, iri.substr(n+1)));
+         r = self.nodes().find( Node(*iid, iri.substr(n+1)));
       }
+      if( r ) return &r.front();
+      return 0;
    }
 
    std::string string(const Node_id nid) const {

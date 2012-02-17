@@ -19,7 +19,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 BOOST_AUTO_TEST_CASE( case01 ) {
    Node_map<> nm;
 
-   BOOST_CHECK_EQUAL(nm.size(), 1u);
+   BOOST_CHECK_EQUAL(nm.size(), 0U);
    BOOST_CHECK_THROW(nm.at(terms::T_owl_Class::id()), Rdf_err);
    const Node_id nid1 = nm.insert_iri(
             terms::T_owl_Class::ns_type::id(), terms::T_owl_Class::name()
@@ -41,7 +41,9 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 /** OWL-aware node map
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   Node_map<> nm;
+   Node_map<Owl_nodes> nm;
+   BOOST_CHECK_EQUAL(nm.size(), 0U);
+   BOOST_CHECK_NO_THROW(nm.at(terms::T_owl_Class::id()));
 
 }
 

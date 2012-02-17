@@ -10,10 +10,10 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_store_aux_base.hpp"
 #include "owlcpp/rdf/doc_store_base.hpp"
 #include "owlcpp/rdf/triple_map.hpp"
-#include "owlcpp/rdf/node_map_owl.hpp"
+#include "owlcpp/rdf/node_map.hpp"
+#include "owlcpp/rdf/node_owl_map.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
-#include "owlcpp/rdf/owl_terms.hpp"
 #include "owlcpp/rdf/copy_triples.hpp"
 
 namespace owlcpp{
@@ -32,14 +32,14 @@ public Doc_store_base<Triple_store>
 public:
    struct Err : public base_exception {};
    typedef Iri_map iri_map_t;
-   typedef Node_map node_map_t;
+   typedef Node_map<Owl_nodes> node_map_t;
    typedef Doc_map doc_map_t;
    typedef Triple_map triple_map_t;
 
    Iri_map& iris() {return iri_;}
    Iri_map const& iris() const {return iri_;}
-   Node_map_owl& nodes() {return node_;}
-   Node_map_owl const& nodes() const {return node_;}
+   node_map_t& nodes() {return node_;}
+   node_map_t const& nodes() const {return node_;}
    Doc_map const& documents() const {return doc_;}
    Doc_map& documents() {return doc_;}
    Triple_map const& triples() const {return triple_;}
@@ -58,7 +58,7 @@ public:
 
 private:
    Iri_map iri_;
-   Node_map_owl node_;
+   node_map_t node_;
    Doc_map doc_;
    Triple_map triple_;
 };

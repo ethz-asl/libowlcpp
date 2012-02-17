@@ -14,6 +14,7 @@ namespace owlcpp{
 *******************************************************************************/
 class OWLCPP_RDF_DECL Node_owl_map {
    Node_owl_map();
+   Node_owl_map(Node_owl_map const&);
 public:
    typedef Node_map_base::const_iterator const_iterator;
    typedef Node_map_base::iterator iterator;
@@ -28,7 +29,8 @@ public:
       return map;
    }
 
-   bool is_owl(const Node_id id) const {return id <= max_;}
+   bool is_owl(const Node_id nid) const {return nid <= max_;}
+   bool is_owl(const Ns_id iid) const {return is_owl(iid);}
    Node_id max_id() const {return max_;}
 
    std::size_t size() const {return map_.size();}
@@ -42,6 +44,18 @@ public:
 private:
    Node_map_base map_;
    Node_id max_;
+};
+
+/**@brief
+*******************************************************************************/
+struct Owl_nodes {
+   Node_id max_id() const {return Node_owl_map::get().max_id();}
+   bool have(const Node_id nid) const {return Node_owl_map::get().is_owl(nid);}
+   bool have(const Ns_id iid) const {return Node_owl_map::get().is_owl(iid);}
+   Node const& operator[](const Node_id id) const {return Node_owl_map::get()[id];}
+   Node const& at(const Node_id id) const {return Node_owl_map::get().at(id);}
+   Node_map_base::ns_range find(const Ns_id iid) const {return Node_owl_map::get().find(iid);}
+   Node_map_base::node_range find(Node const& node) const {return Node_owl_map::get().find(node);}
 };
 
 }//namespace owlcpp

@@ -26,11 +26,16 @@ class OWLCPP_IO_DECL Catalog :
 public Doc_store_base<Catalog>,
 private Node_store_iri_base<Catalog>
 {
+public:
+   typedef Iri_map iri_map_t;
+   typedef Node_map<> node_map_t;
+   typedef Doc_map doc_map_t;
+private:
    Iri_map& iris() {return iri_;}
-   Node_map& nodes() {return node_;}
+   node_map_t& nodes() {return node_;}
    Doc_map& documents() {return doc_;}
    Iri_map const& iris() const {return iri_;}
-   Node_map const& nodes() const {return node_;}
+   node_map_t const& nodes() const {return node_;}
    Doc_map const& documents() const {return doc_;}
    friend class Node_store_iri_base<Catalog>;
    friend class Doc_store_base<Catalog>;
@@ -78,7 +83,7 @@ public:
 
 private:
    Iri_map iri_;
-   Node_map node_;
+   node_map_t node_;
    Doc_map doc_;
 };
 

@@ -134,7 +134,7 @@ public:
    }
 
    template<class Tag> void insert_tag(Tag const&) {
-      insert( Tag::id(), Node(Tag::ns_type::id(), Tag::name()) );
+      insert( Tag::id(), Node(Tag()) );
    }
 
 private:

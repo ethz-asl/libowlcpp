@@ -9,10 +9,10 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_store_aux_base.hpp"
 #include "owlcpp/rdf/doc_store_base.hpp"
 #include "owlcpp/rdf/triple_map.hpp"
-#include "owlcpp/rdf/node_map_owl.hpp"
+#include "owlcpp/rdf/node_map.hpp"
+#include "owlcpp/rdf/node_owl_map.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
-#include "owlcpp/rdf/owl_terms.hpp"
 
 namespace owlcpp{ namespace detail{
 
@@ -24,11 +24,12 @@ public Node_store_aux_base<Triple_store_temp>
 {
 public:
 
+   typedef Node_map<Owl_nodes> node_map_t;
    struct Err : public base_exception {};
    Iri_map& iris() {return iri_;}
    Iri_map const& iris() const {return iri_;}
-   Node_map_owl& nodes() {return node_;}
-   Node_map_owl const& nodes() const {return node_;}
+   node_map_t& nodes() {return node_;}
+   node_map_t const& nodes() const {return node_;}
    Triple_map const& triples() const {return triple_;}
 
    void insert_triple(
@@ -42,7 +43,7 @@ public:
 
 private:
    Iri_map iri_;
-   Node_map_owl node_;
+   node_map_t node_;
    Triple_map triple_;
 };
 
