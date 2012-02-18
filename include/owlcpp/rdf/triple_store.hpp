@@ -11,7 +11,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/doc_store_base.hpp"
 #include "owlcpp/rdf/triple_map.hpp"
 #include "owlcpp/rdf/node_map.hpp"
-#include "owlcpp/rdf/node_owl_map.hpp"
+#include "owlcpp/rdf/node_map_owl.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/rdf/copy_triples.hpp"

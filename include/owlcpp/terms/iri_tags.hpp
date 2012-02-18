@@ -19,6 +19,8 @@ part of owlcpp project.
 /* */
 
 #include <string>
+#include "boost/preprocessor/seq/size.hpp"
+#include "boost/preprocessor/arithmetic/add.hpp"
 #include "owlcpp/terms/uri_macro.hpp"
 #include "owlcpp/ns_id.hpp"
 
@@ -42,6 +44,7 @@ struct N_rdfs {
 }; @endcode
 *******************************************************************************/
 OWLCPP_GENERATE_IRI_TAGS(OWLCPP_IRI_LIST, 0)
+#define OWLCPP_IRIS_NUMBER BOOST_PP_ADD(BOOST_PP_SEQ_SIZE(OWLCPP_IRI_LIST), 0)
 
 }//namespace terms
 

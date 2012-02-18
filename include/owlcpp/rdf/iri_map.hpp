@@ -5,16 +5,8 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef IRI_MAP_HPP_
 #define IRI_MAP_HPP_
-#include <string>
-#include "boost/assert.hpp"
-#include "boost/foreach.hpp"
-#include "boost/multi_index_container.hpp"
-#include "boost/multi_index/hashed_index.hpp"
-#include "boost/multi_index/member.hpp"
-
-#include "owlcpp/ns_id.hpp"
 #include "owlcpp/rdf/config.hpp"
-#include "owlcpp/exception.hpp"
+#include "owlcpp/rdf/iri_map_base.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
 
 namespace owlcpp{ namespace detail{

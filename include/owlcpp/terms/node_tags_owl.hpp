@@ -202,8 +202,6 @@ The last element---either second or third---is used as string value of the term.
 /* */
 
 #include <string>
-#include "boost/preprocessor/seq/size.hpp"
-#include "boost/preprocessor/arithmetic/add.hpp"
 #include "owlcpp/terms/term_macro.hpp"
 #include "owlcpp/terms/iri_tags.hpp"
 #include "owlcpp/node_id.hpp"
@@ -225,8 +223,6 @@ struct T_empty_ {
 
 *******************************************************************************/
 OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_ALL, 5)
-
-#define OWLCPP_TERMS_NUMBER BOOST_PP_ADD(BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_ALL), 5)
 
 }//namespace terms
 }//namespace owlcpp

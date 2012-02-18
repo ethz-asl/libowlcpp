@@ -6,7 +6,7 @@ part of owlcpp project.
 #define BOOST_TEST_MODULE node_owl_map_run
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
-#include "owlcpp/rdf/node_owl_map.hpp"
+#include "owlcpp/rdf/node_map_owl.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
@@ -23,9 +23,9 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK( is_owl(terms::N_owl::id()));
    BOOST_CHECK( is_owl(terms::N_rdfs::id()));
 
-   BOOST_CHECK( Node_owl_map::get().is_owl(terms::T_xsd_positiveInteger::id()));
+   BOOST_CHECK( Node_map_owl::get().is_owl(terms::T_xsd_positiveInteger::id()));
 
-   Node_owl_map const& nom = Node_owl_map::get();
+   Node_map_owl const& nom = Node_map_owl::get();
    BOOST_CHECK_THROW(nom.at(Node_id(3000)), Rdf_err);
    BOOST_CHECK_THROW(nom.at(Node_id(3)), Rdf_err);
    BOOST_CHECK_NO_THROW(nom.at(terms::T_empty_::id()));

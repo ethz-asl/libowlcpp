@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/rdf/node_owl_map.cpp" 
+/** @file "/owlcpp/lib/rdf/node_map_owl.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef OWLCPP_RDF_SOURCE
 #define OWLCPP_RDF_SOURCE
 #endif
-#include "owlcpp/rdf/node_owl_map.hpp"
+#include "owlcpp/rdf/node_map_owl.hpp"
 
 #include "boost/mpl/for_each.hpp"
 
@@ -32,7 +32,7 @@ private:
 
 /*
 *******************************************************************************/
-Node_owl_map::Node_owl_map()
+Node_map_owl::Node_map_owl()
 : map_(), max_(0)
 {
    Node_tag_inserter nti(map_, max_);
@@ -43,5 +43,4 @@ Node_owl_map::Node_owl_map()
    boost::mpl::for_each<terms::mpl_vector_terms_owl1_t>(nti);
    boost::mpl::for_each<terms::mpl_vector_terms_owl2_t>(nti);
 }
-
 }//namespace owlcpp

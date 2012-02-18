@@ -38,7 +38,7 @@ template<class T> struct Node_store_iri_base {
                   Err()
                   << typename Err::msg_t("error inserting IRI")
                   << typename Err::str1_t( name )
-                  << typename Err::str2_t( self.iris()[iid] )
+                  << typename Err::str2_t( self.iris().at(iid) )
                   << typename Err::nested_t(boost::current_exception())
          );
       }
@@ -52,15 +52,13 @@ template<class T> struct Node_store_iri_base {
    Node_id const* find_iri_node(std::string const& iri) const {
       T const& self = static_cast<T const&>(*this);
       const std::size_t n = iri.find('#');
-      Ns_id const * iid;
-      typedef typename T::node_map_t::node_range node_range;
-      node_range r;
+      typename T::node_map_t::node_range r;
       if( std::string::npos == n ) {
-         iid = self.iris().find_iri(iri);
+         Ns_id const*const iid = self.iris().find_iri(iri);
          if( ! iid ) return 0;
          r = self.nodes().find( Node(*iid, ""));
       } else {
-         iid = self.iris().find_iri(iri.substr(0, n));
+         Ns_id const*const iid = self.iris().find_iri(iri.substr(0, n));
          if( ! iid ) return 0;
          r = self.nodes().find( Node(*iid, iri.substr(n+1)));
       }

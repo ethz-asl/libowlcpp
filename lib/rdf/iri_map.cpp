@@ -16,7 +16,7 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-Iri_map::Iri_map() {
+Iri_map::Iri_map() : tracker_(Ns_id(OWLCPP_IRIS_NUMBER)) {
    Iri_tag_inserter iti(*this);
    boost::mpl::for_each<terms::mpl_vector_iris_t>(iti);
 }
@@ -46,6 +46,7 @@ void Iri_map::insert_prefix(const id_type id, std::string const& prefix) {
 /*
 *******************************************************************************/
 void Iri_map::remove(const id_type id) {
+   if( is_owl(id) ) return;
    id_index_t & id_index = store_iri_.get<id_tag>();
    id_iter_t i = id_index.find(id);
    if( i == id_index.end() ) BOOST_THROW_EXCEPTION(
@@ -69,6 +70,7 @@ void Iri_map::remove(std::string const& iri) {
             << Err::str1_t(iri)
    );
    const id_type iid = i->first;
+   if( is_owl(iid) ) return;
    string_index.erase(i);
    store_pref_.get<id_tag>().erase(iid);
    tracker_.push(iid);

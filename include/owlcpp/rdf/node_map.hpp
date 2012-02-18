@@ -207,7 +207,11 @@ public:
          const Node_id dt = dtp ? *dtp : terms::T_empty_::id();
          if( dtype == dt && lang == language(id) ) return id;
       }
-      return insert_literal_private(node, dtype, lang);
+      const Node_id id = tracker_.get();
+      nodes_.insert(id, node);
+      if( dtype != terms::T_empty_::id() ) dtypes_.insert(std::make_pair(id, dtype));
+      if( ! lang.empty() ) langs_.insert(std::make_pair(id, lang));
+      return id;
    }
 
    /**
@@ -243,19 +247,6 @@ private:
    docs_t docs_;
    datatypes_t dtypes_;
    langs_t langs_;
-
-   Node_id insert_literal_private(
-            Node const& node,
-            const Node_id dt,
-            std::string const& lang
-   ) {
-      const Node_id id = tracker_.get();
-      nodes_.insert(id, node);
-      if( dt != terms::T_empty_::id() ) dtypes_.insert(std::make_pair(id, dt));
-      if( ! lang.empty() ) langs_.insert(std::make_pair(id, lang));
-      return id;
-   }
-
 };
 
 }//namespace owlcpp
