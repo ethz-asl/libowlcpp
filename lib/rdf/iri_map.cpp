@@ -16,13 +16,6 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-Iri_map::Iri_map() : tracker_(Ns_id(OWLCPP_IRIS_NUMBER)) {
-   Iri_tag_inserter iti(*this);
-   boost::mpl::for_each<terms::mpl_vector_iris_t>(iti);
-}
-
-/*
-*******************************************************************************/
 void Iri_map::insert_prefix(const id_type id, std::string const& prefix) {
    BOOST_ASSERT(
             store_iri_.get<id_tag>().find(id) != store_iri_.get<id_tag>().end()

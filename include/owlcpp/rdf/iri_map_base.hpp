@@ -48,7 +48,7 @@ private:
    typedef string_index_t::iterator string_iter_t;
 
 public:
-   typedef Member_iterator<store_t::const_iterator, const id_type, &value_t::first> const_iterator;
+   typedef Member_iterator<store_t::const_iterator, const Ns_id, &value_t::first> const_iterator;
    typedef const_iterator iterator;
 
    struct Err : public Rdf_err {};
@@ -57,12 +57,12 @@ public:
    const_iterator begin() const {return store_iri_.begin();}
    const_iterator end() const {return store_iri_.end();}
 
-   std::string operator[](const id_type iid) const {
+   std::string operator[](const Ns_id iid) const {
       BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) != store_iri_.get<id_tag>().end());
       return store_iri_.get<id_tag>().find(iid)->second;
    }
 
-   std::string at(const id_type iid) const {
+   std::string at(const Ns_id iid) const {
       id_index_t const& index = store_iri_.get<id_tag>();
       const id_iter_t iter = index.find(iid);
       if(iter == index.end()) BOOST_THROW_EXCEPTION(
@@ -77,7 +77,7 @@ public:
     @param iri namespace IRI string
     @return pointer to namespace IRI ID or NULL if iri is unknown
    */
-   id_type const* find_iri(std::string const& iri) const {
+   Ns_id const* find_iri(std::string const& iri) const {
       string_index_t const& s_index = store_iri_.get<string_tag>();
       const string_iter_t s_iter = s_index.find(iri);
       if( s_iter == s_index.end() ) return 0;
@@ -88,7 +88,7 @@ public:
     @param iid namespace IRI ID
     @return IRI prefix string or "" if no prefix was defined
    */
-   std::string find_prefix(const id_type iid) const {
+   std::string prefix(const Ns_id iid) const {
       id_index_t const& id_index = store_pref_.get<id_tag>();
       id_iter_t id_iter = id_index.find(iid);
       if( id_iter == id_index.end() ) return "";
@@ -99,7 +99,7 @@ public:
     @param pref prefix for namespace IRI
     @return pointer to namespace IRI ID or NULL if prefix is unknown
    */
-   id_type const* find_prefix(std::string const& pref) const {
+   Ns_id const* find_prefix(std::string const& pref) const {
       string_index_t const& s_index = store_pref_.get<string_tag>();
       const string_iter_t s_iter = s_index.find(pref);
       if( s_iter == s_index.end() ) return 0;
@@ -110,7 +110,7 @@ public:
       return &s_iter->first;
    }
 
-   void insert_prefix(const id_type id, std::string const& prefix) {
+   void insert_prefix(const Ns_id id, std::string const& prefix) {
       BOOST_ASSERT(
                store_iri_.get<id_tag>().find(id) != store_iri_.get<id_tag>().end()
       );
@@ -128,13 +128,18 @@ public:
       store_pref_.insert(std::make_pair(id, prefix));
    }
 
-   void insert(const id_type iid, std::string const& iri) {
+   void insert(const Ns_id iid, std::string const& iri) {
       BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) == store_iri_.get<id_tag>().end());
       BOOST_ASSERT(store_pref_.get<id_tag>().find(iid) == store_pref_.get<id_tag>().end());
       store_iri_.insert(std::make_pair(iid, iri));
    }
 
-   void remove(const id_type id) {
+   template<class Tag> void insert_tag(Tag const&) {
+      insert( Tag::id(), Tag::iri() );
+      insert_prefix( Tag::id(), Tag::prefix() );
+   }
+
+   void remove(const Ns_id id) {
       id_index_t & id_index = store_iri_.get<id_tag>();
       id_iter_t i = id_index.find(id);
       if( i == id_index.end() ) BOOST_THROW_EXCEPTION(

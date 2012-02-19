@@ -8,77 +8,24 @@ part of owlcpp project.
 #include "owlcpp/rdf/config.hpp"
 #include "owlcpp/rdf/iri_map_base.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
+#include "owlcpp/rdf/node_map_std.hpp"
+#include "owlcpp/rdf/std_nodes.hpp"
 
-namespace owlcpp{ namespace detail{
-
-class Iri_tag_inserter;
-
-}//namespace detail
+namespace owlcpp{
 
 /**@brief Store namespace IRIs
 *******************************************************************************/
 class OWLCPP_RDF_DECL Iri_map {
 public:
    typedef Ns_id id_type;
-   typedef std::pair<id_type, std::string> value_t;
-private:
-   typedef boost::multi_index_container<
-         value_t,
-         boost::multi_index::indexed_by<
-            boost::multi_index::hashed_unique<
-               boost::multi_index::tag<struct id_tag>,
-               boost::multi_index::member<
-                  value_t, id_type, &value_t::first
-               >
-            >,
-            boost::multi_index::hashed_unique<
-               boost::multi_index::tag<struct string_tag>,
-               boost::multi_index::member<
-                  value_t, std::string, &value_t::second
-               >
-            >
-         >
-      > store_t;
-   typedef store_t::index<id_tag>::type id_index_t;
-   typedef id_index_t::iterator id_iter_t;
-   typedef store_t::index<string_tag>::type string_index_t;
-   typedef string_index_t::iterator string_iter_t;
+   typedef Iri_map_base::iterator iterator;
+   typedef Iri_map_base::const_iterator const_iterator;
+   typedef Iri_map_base::Err Err;
 
-   class Iri_tag_inserter {
-      Iri_tag_inserter();
-   public:
-      explicit Iri_tag_inserter(Iri_map& store) : store_(&store) {}
+   Iri_map(Node_map_std const& std_map = Node_map_std::get(Nodes_system()))
+   : smap_(std_map), tracker_(smap_.ns_id_next()), map_() {}
 
-      template<class T> void operator()(const T&) const {
-         insert(T::id(), T::iri(), T::prefix());
-      }
-   private:
-      mutable Iri_map* store_;
-
-      void insert(const Ns_id id, std::string const& iri, std::string const& pref) const {
-         BOOST_ASSERT(
-                  store_->store_iri_.get<id_tag>().find(id) == store_->store_iri_.get<id_tag>().end()
-         );
-         BOOST_ASSERT( ! store_->find_iri(iri) );
-         BOOST_ASSERT(
-                  store_->store_pref_.get<id_tag>().find(id) == store_->store_pref_.get<id_tag>().end()
-         );
-         BOOST_ASSERT( ! store_->find_prefix(pref) );
-
-         store_->store_iri_.insert(std::make_pair(id, iri));
-         store_->store_pref_.insert(std::make_pair(id, pref));
-
-      }
-   };
-
-public:
-   typedef store_t::iterator iterator;
-   typedef iterator const_iterator;
-
-   struct Err : public base_exception {};
-   Iri_map();
-
-   std::size_t size() const {return store_iri_.size();}
+   std::size_t size() const {return map_.size();}
 
    std::string operator[](const id_type iid) const {
       BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) != store_iri_.get<id_tag>().end());
@@ -154,9 +101,9 @@ public:
    const_iterator end() const {return store_iri_.end();}
 
 protected:
+   Node_map_std const& smap_;
    detail::Id_tracker<id_type> tracker_;
-   store_t store_iri_;
-   store_t store_pref_;
+   Iri_map_base map_;
 };
 
 

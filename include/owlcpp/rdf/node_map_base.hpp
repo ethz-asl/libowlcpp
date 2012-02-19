@@ -29,6 +29,7 @@ Calling node map methods with invalid node IDs results in undefined behavior.
 *******************************************************************************/
 class Node_map_base {
 public:
+   typedef Node_id id_type;
    typedef std::pair<Node_id, Node> value_t;
 protected:
    static Ns_id ns_id(value_t const& v) {return v.second.ns_id();}

@@ -7,21 +7,40 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/node_map_std.hpp"
+#include "owlcpp/rdf/std_nodes.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
+#include "owlcpp/terms/node_tags_system.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
 
 namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-struct Empty {
-   static Ns_id fill(Iri_map_base& map) {return Ns_id(0);}
-   static Node_id fill(Node_map_base& map) {return Node_id(0);}
-};
-
-
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Node_map_std const& nms = Node_map_std::get(Empty());
+   Node_map_std const& nms0 = Node_map_std::get(Insert_none());
+   Node_map_std const& nms1 = Node_map_std::get(Nodes_owl());
+   Node_map_std const& nms2 = Node_map_std::get(Nodes_system());
+
+   BOOST_CHECK_EQUAL(nms0.ns_id_next(), Ns_id(0));
+   BOOST_CHECK_EQUAL(nms0.node_id_next(), Node_id(0));
+
+   BOOST_CHECK_EQUAL(nms1.ns_id_next()(), terms::N_owl::index + 1 );
+   BOOST_CHECK_EQUAL(nms1.node_id_next()(), terms::T_xsd_positiveInteger::index + 1);
+
+   BOOST_CHECK_EQUAL(nms2.ns_id_next()(), terms::N_blank::index + 1 );
+   BOOST_CHECK_EQUAL(nms2.node_id_next()(), terms::T_empty_::index + 1);
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case02 ) {
+   Node_map_std const& nms0 = Node_map_std::get(Insert_none());
+   Node_map_std const& nms1 = Node_map_std::get(Nodes_owl());
+   Node_map_std const& nms2 = Node_map_std::get(Nodes_owl());
+   BOOST_CHECK_NE(&nms0, &nms1); //different instances
+   BOOST_CHECK_EQUAL(&nms1, &nms2); //same instance
 }
 
 }//namespace test

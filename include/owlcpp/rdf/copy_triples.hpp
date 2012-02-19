@@ -15,7 +15,7 @@ namespace owlcpp{
 @details IRIs, nodes, document info-s are also copied
 @param ts1 source of triples
 @param ts2 destination
-@throw base_exception if @b ts1 contains document already present in @ts2
+@throw base_exception if @b ts1 contains document already present in @b ts2
 *******************************************************************************/
 template<class TS1, class TS2> inline void copy_triples(TS1 const& ts1, TS2& ts2) {
    typedef typename TS1::doc_map_t doc_map_t;

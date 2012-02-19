@@ -188,7 +188,7 @@ public:
 
    /**@brief Insert literal node
     @param value
-    @param datatype
+    @param dtype datatype node ID
     @param lang language tag string for the literal node or
     "" if the language is not defined.
     The tag string format SHOULD be according to RFC 5646
