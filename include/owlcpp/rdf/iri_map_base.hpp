@@ -57,6 +57,10 @@ public:
    const_iterator begin() const {return store_iri_.begin();}
    const_iterator end() const {return store_iri_.end();}
 
+   bool have(const Ns_id iid) const {
+      return store_iri_.get<id_tag>().find(iid) != store_iri_.get<id_tag>().end();
+   }
+
    std::string operator[](const Ns_id iid) const {
       BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) != store_iri_.get<id_tag>().end());
       return store_iri_.get<id_tag>().find(iid)->second;
@@ -110,28 +114,31 @@ public:
       return &s_iter->first;
    }
 
-   void insert_prefix(const Ns_id id, std::string const& prefix) {
-      BOOST_ASSERT(
-               store_iri_.get<id_tag>().find(id) != store_iri_.get<id_tag>().end()
-      );
-      Ns_id const* id0 = find_prefix(prefix);
-      if( id0 ) {
-         if( id != *id0 ) BOOST_THROW_EXCEPTION(
+   /**
+    @param iid namespace IRI ID; the IRI is not necessarily defined in this map
+    @param pref namespace IRI prefix;
+    @throw Err if prefix is already defined for for a different namespace IRI
+   */
+   void insert_prefix(const Ns_id iid, std::string const& pref) {
+      Ns_id const*const iid0 = find_prefix(pref);
+      if( iid0 ) {
+         if( iid == *iid0 ) return;
+         BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("prefix reserved for another IRI")
-                  << Err::str1_t(prefix)
-                  << Err::str2_t((*this)[id])
-                  << Err::str3_t((*this)[*id0])
+                  << Err::str1_t(pref)
+                  << Err::str2_t(at(iid))
+                  << Err::str3_t(at(*iid0))
          );
-         return;
       }
-      store_pref_.insert(std::make_pair(id, prefix));
+      store_pref_.insert(std::make_pair(iid, pref));
    }
 
-   void insert(const Ns_id iid, std::string const& iri) {
+   Ns_id insert(const Ns_id iid, std::string const& iri) {
       BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) == store_iri_.get<id_tag>().end());
       BOOST_ASSERT(store_pref_.get<id_tag>().find(iid) == store_pref_.get<id_tag>().end());
       store_iri_.insert(std::make_pair(iid, iri));
+      return iid;
    }
 
    template<class Tag> void insert_tag(Tag const&) {
