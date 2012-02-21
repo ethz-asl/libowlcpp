@@ -44,8 +44,6 @@ BOOST_AUTO_TEST_CASE( case02 ) {
 BOOST_AUTO_TEST_CASE( case03 ) {
    Node_map_std const& nms = Node_map_std::get(Nodes_owl());
 
-   BOOST_CHECK( nms.have(terms::T_xsd_positiveInteger::id()));
-
    BOOST_CHECK_THROW(nms.at(Node_id(3000)), Rdf_err);
    BOOST_CHECK_THROW(nms.at(Node_id(3)), Rdf_err);
    BOOST_CHECK_NO_THROW(nms.at(terms::T_empty_::id()));

@@ -16,7 +16,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 const std::string ni1 = "http://example.xyz/example#n1";
 const std::string ni2 = "http://example.xyz/example#n2";
 
-/**
+/** OWL-unaware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Triple_store ts;
@@ -32,15 +32,20 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(ts[nid1].ns_id(), ts[nid2].ns_id());
    //different fragment names
    BOOST_CHECK_NE(ts[nid1].value_str(), ts[nid2].value_str());
+
+   const Node_id nid3 = ts.insert_iri_node(terms::N_owl::iri() + "#Ontology");
+   BOOST_CHECK_NE(nid3, terms::T_owl_Ontology::id()); //non-standard ID
+   ts.insert_iri_node(terms::N_owl::iri() + "#blah"); //inserting new node into standard namespace
 }
 
-/** Test inserting new nodes into OWL namespace
+/** OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   Triple_store ts;
+   Triple_store ts(Node_map_std::get(Nodes_owl()));
 
    //correct term
-   BOOST_CHECK_NO_THROW( ts.insert_iri_node(terms::N_owl::iri() + "#Ontology") );
+   const Node_id nid3 = ts.insert_iri_node(terms::N_owl::iri() + "#Ontology");
+   BOOST_CHECK_EQUAL(nid3, terms::T_owl_Ontology::id());
 
    //misspelled term
    BOOST_CHECK_THROW(
