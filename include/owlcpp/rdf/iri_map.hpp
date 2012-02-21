@@ -21,7 +21,7 @@ public:
    typedef Iri_map_base::const_iterator const_iterator;
    typedef Iri_map_base::Err Err;
 
-   Iri_map(Node_map_std const& std_map = Node_map_std::get(Nodes_system()))
+   Iri_map(Node_map_std const& std_map = Node_map_std::get(Nodes_none()))
    : smap_(std_map), tracker_(smap_.ns_id_next()), map_() {}
 
    std::size_t size() const {return map_.size();}
@@ -29,11 +29,11 @@ public:
    const_iterator end() const {return map_.end();}
 
    std::string operator[](const Ns_id iid) const {
-      return smap_.have(iid) ? smap_[iid] : map_[iid];
+      return iid < smap_.ns_id_next() ? smap_[iid] : map_[iid];
    }
 
    std::string at(const Ns_id iid) const {
-      return smap_.have(iid) ? smap_.at(iid) : map_.at(iid);
+      return iid < smap_.ns_id_next() ? smap_.at(iid) : map_.at(iid);
    }
 
    /**
@@ -70,7 +70,7 @@ public:
     namespace IRI.
    */
    void insert_prefix(const Ns_id iid, std::string const& pref) {
-      BOOST_ASSERT( smap_.have(iid) || map_.have(iid) );
+      BOOST_ASSERT( smap_.is_constant(iid) || map_.have(iid) );
       Ns_id const*const iid0 = find_prefix(pref);
       if( iid0 ) {
          if( *iid0 == iid ) return; //prefix already defined for same IRI
@@ -91,7 +91,7 @@ public:
    }
 
    void remove(const Ns_id iid) {
-      if( smap_.have(iid) ) return;
+      if( iid < smap_.ns_id_next() ) return;
       map_.remove(iid);
       tracker_.push(iid);
    }
@@ -101,25 +101,6 @@ protected:
    detail::Id_tracker<Ns_id> tracker_;
    Iri_map_base map_;
 };
-
-
-/** Copy IRIs and prefixes from one IRI map to another and insert pairs of
- old and new IRI IDs into @b id_map.
- @param im1 source IRI map
- @param im2 destination IRI map
- @param id_map an IRI ID map for tracking IRI ID changes
-*******************************************************************************/
-template<class IriMap1, class IriMap2, class IriIdMap> inline void
-copy_iris(IriMap1 const& im1, IriMap2& im2, IriIdMap& id_map) {
-   typedef typename IriMap1::value_t pair_t;
-   typedef typename IriMap2::id_type id_t;
-   BOOST_FOREACH(pair_t const& p, im1) {
-      const id_t id = im2.insert(p.second);
-      const std::string pref = im1.find_prefix(p.first);
-      if( ! pref.empty() && im2.find_prefix(id).empty() ) im2.insert_prefix(id, pref);
-      id_map.insert(std::make_pair(p.first, id));
-   }
-}
 
 }//namespace owlcpp
 #endif /* IRI_MAP_HPP_ */

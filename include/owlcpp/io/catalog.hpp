@@ -28,7 +28,7 @@ private Node_store_iri_base<Catalog>
 {
 public:
    typedef Iri_map iri_map_t;
-   typedef Node_map<> node_map_t;
+   typedef Node_map node_map_t;
    typedef Doc_map doc_map_t;
 private:
    Iri_map& iris() {return iri_;}

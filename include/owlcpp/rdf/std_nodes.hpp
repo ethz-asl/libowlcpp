@@ -15,23 +15,16 @@ class Node_map_base;
 
 /**@brief 
 *******************************************************************************/
-struct Insert_none {
-   Ns_id operator()(Iri_map_base& map) const {return Ns_id(0);}
-   Node_id operator()(Node_map_base& map) const {return Node_id(0);}
-};
-
-/**@brief
-*******************************************************************************/
-struct OWLCPP_RDF_DECL Nodes_system {
-   Ns_id operator()(Iri_map_base& map) const;
-   Node_id operator()(Node_map_base& map) const;
+struct Nodes_none {
+   void operator()(Iri_map_base& map) const {}
+   void operator()(Node_map_base& map) const {}
 };
 
 /**@brief
 *******************************************************************************/
 struct OWLCPP_RDF_DECL Nodes_owl {
-   Ns_id operator()(Iri_map_base& map) const;
-   Node_id operator()(Node_map_base& map) const;
+   void operator()(Iri_map_base& map) const;
+   void operator()(Node_map_base& map) const;
 };
 
 

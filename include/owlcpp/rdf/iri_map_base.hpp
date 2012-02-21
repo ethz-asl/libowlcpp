@@ -142,7 +142,7 @@ public:
    }
 
    template<class Tag> void insert_tag(Tag const&) {
-      insert( Tag::id(), Tag::iri() );
+      store_iri_.insert( std::make_pair(Tag::id(), Tag::iri()) );
       insert_prefix( Tag::id(), Tag::prefix() );
    }
 

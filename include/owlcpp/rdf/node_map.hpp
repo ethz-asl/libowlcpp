@@ -9,48 +9,16 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "boost/unordered_map.hpp"
 
-#include "owlcpp/node.hpp"
-#include "owlcpp/doc_id.hpp"
-#include "owlcpp/terms/iri_tags.hpp"
-#include "owlcpp/terms/node_tags_system.hpp"
-#include "owlcpp/node_id.hpp"
-#include "owlcpp/rdf/exception.hpp"
-#include "owlcpp/rdf/node_map_base.hpp"
-#include "owlcpp/detail/id_tracker.hpp"
+#include "owlcpp/rdf/node_map_iri.hpp"
 
-namespace owlcpp{ namespace detail{
-
-class No_nodes {
-   static Node const& empty() {
-      static const Node node((terms::T_empty_())); //extra brackets to distinguish from function
-      return node;
-   }
-public:
-   Node_id max_id() const {return terms::T_empty_::id();}
-   bool have(const Node_id nid) const {return nid == terms::T_empty_::id();}
-   bool have(const Ns_id iid) const {return false;}
-   Node const& operator[](const Node_id id) const {return at(id);}
-   Node const& at(const Node_id nid) const {
-      if(nid != terms::T_empty_::id()) BOOST_THROW_EXCEPTION(
-               Rdf_err()
-               << Rdf_err::msg_t("unknown node ID")
-               << Rdf_err::int1_t(nid())
-      );
-      return empty();
-   }
-   Node_map_base::ns_range find(const Ns_id iid) const {return Node_map_base::ns_range();}
-   Node_map_base::node_range find(Node const& node) const {return Node_map_base::node_range();}
-};
-
-}//namespace detail
+namespace owlcpp{
 
 /**@brief Store RDF nodes
 @details
 Validity of node IDs is assumed and asserted in debug mode.
 Calling node map methods with invalid node IDs results in undefined behavior.
 *******************************************************************************/
-template<class StdNodes = detail::No_nodes> class Node_map {
-
+class Node_map {
    typedef boost::unordered_map<Node_id,Node_id> datatypes_t;
    typedef datatypes_t::const_iterator datatype_iter_t;
 
@@ -61,36 +29,31 @@ template<class StdNodes = detail::No_nodes> class Node_map {
    typedef docs_t::const_iterator doc_iter_t;
 
 public:
-   typedef Node_map_base::const_iterator const_iterator;
-   typedef Node_map_base::iterator iterator;
-   typedef Node_map_base::range range;
-   typedef Node_map_base::node_iterator node_iterator;
-   typedef Node_map_base::node_range node_range;
-   typedef Node_map_base::ns_iterator ns_iterator;
-   typedef Node_map_base::ns_range ns_range;
+   typedef Node_map_iri::const_iterator const_iterator;
+   typedef Node_map_iri::iterator iterator;
+   typedef Node_map_iri::range range;
+   typedef Node_map_iri::node_iterator node_iterator;
+   typedef Node_map_iri::node_range node_range;
+   typedef Node_map_iri::ns_iterator ns_iterator;
+   typedef Node_map_iri::ns_range ns_range;
    typedef Rdf_err Err;
 
-   Node_map()
-   : std_nodes_(),
-     tracker_(std_nodes_.max_id())
+   Node_map(Node_map_std const& snodes = Node_map_std::get(Nodes_none()))
+   : nodes_(snodes)
    {}
 
    std::size_t size() const {return nodes_.size();}
    const_iterator begin() const {return nodes_.begin();}
    const_iterator end() const {return nodes_.end();}
 
-   Node const& operator[](const Node_id id) const {
-      return std_nodes_.have(id) ? std_nodes_[id] : nodes_[id];
-   }
+   Node const& operator[](const Node_id id) const {return nodes_[id];}
 
    /**
     @param id node ID
     @return immutable reference to node object with specified ID
     @throw Rdf_err if @b id does not exist
    */
-   Node const& at(const Node_id id) const {
-      return std_nodes_.have(id) ? std_nodes_.at(id) : nodes_.at(id);
-   }
+   Node const& at(const Node_id id) const {return nodes_.at(id);}
 
    /**@brief Find nodes in a given namespace
     @param iid namespace IRI ID
@@ -102,13 +65,9 @@ public:
     find(terms::N_blank::id()) //returns range of all blank nodes
     @endcode
    */
-   ns_range find(const Ns_id iid) const {
-      return std_nodes_.have(iid) ? std_nodes_.find(iid) : nodes_.find(iid);
-   }
+   ns_range find(const Ns_id iid) const {return nodes_.find(iid);}
 
-   node_range find(Node const& node) const {
-      return std_nodes_.have(node.ns_id()) ? std_nodes_.find(node) : nodes_.find(node);
-   }
+   node_range find(Node const& node) const {return nodes_.find(node);}
 
    /**@brief Find the datatype of the literal node
     @param id literal node's ID
@@ -141,33 +100,7 @@ public:
     @return node ID
    */
    Node_id insert_iri(const Ns_id nsid, std::string const& name) {
-      if( nsid == terms::N_empty::id() )
-         BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("empty namespace for IRI node")
-                  << Err::str1_t(name)
-         );
-      if( nsid == terms::N_blank::id() )
-         BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("blank namespace for IRI node")
-                  << Err::str1_t("_" + name)
-         );
-      const Node node(nsid, name);
-      if( std_nodes_.have(nsid) ) {
-         const node_range r = std_nodes_.find(node);
-         if( r ) return r.front();
-         BOOST_THROW_EXCEPTION(
-                  Err()
-                  << typename Err::msg_t("new term cannot be inserted into standard namespace")
-                  << typename Err::str1_t( name )
-         );
-      }
-      const node_range nr = nodes_.find(node);
-      if( nr ) return nr.front();
-      const Node_id id = tracker_.get();
-      nodes_.insert(id, node);
-      return id;
+      return nodes_.insert_iri(nsid, name);
    }
 
    /**@brief Insert blank node
@@ -180,9 +113,8 @@ public:
       BOOST_FOREACH(const Node_id id, find(node)) {
          if( blank_node_doc(id) == did ) return id;
       }
-      const Node_id id = tracker_.get();
-      nodes_.insert(id, node);
-      docs_.insert(std::make_pair(id, did));
+      const Node_id id = nodes_.insert(terms::N_blank::id(), name);
+      docs_.emplace(id, did);
       return id;
    }
 
@@ -207,10 +139,9 @@ public:
          const Node_id dt = dtp ? *dtp : terms::T_empty_::id();
          if( dtype == dt && lang == language(id) ) return id;
       }
-      const Node_id id = tracker_.get();
-      nodes_.insert(id, node);
-      if( dtype != terms::T_empty_::id() ) dtypes_.insert(std::make_pair(id, dtype));
-      if( ! lang.empty() ) langs_.insert(std::make_pair(id, lang));
+      const Node_id id = nodes_.insert(terms::N_empty::id(), value);
+      if( dtype != terms::T_empty_::id() ) dtypes_.emplace(id, dtype);
+      if( ! lang.empty() ) langs_.emplace(id, lang);
       return id;
    }
 
@@ -236,14 +167,17 @@ public:
     If node with ID @b id does not exist, behavior is undefined.
    */
    void remove(const Node_id id) {
+      Node const& node = nodes_[id];
+      if( node.ns_id() == terms::N_blank::id() ) docs_.erase(id);
+      else if( node.ns_id() == terms::N_empty::id() ) {
+         dtypes_.erase(id);
+         langs_.erase(id);
+      }
       nodes_.remove(id);
-      tracker_.push(id);
    }
 
 private:
-   const StdNodes std_nodes_;
-   detail::Id_tracker<Node_id> tracker_;
-   Node_map_base nodes_;
+   Node_map_iri nodes_;
    docs_t docs_;
    datatypes_t dtypes_;
    langs_t langs_;
