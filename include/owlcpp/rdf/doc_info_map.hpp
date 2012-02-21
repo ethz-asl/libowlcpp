@@ -11,19 +11,20 @@ part of owlcpp project.
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/member.hpp"
 #include "boost/range.hpp"
+#include "boost/foreach.hpp"
 
-#include "owlcpp/rdf/config.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/exception.hpp"
 #include "owlcpp/doc_id.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
+#include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-class OWLCPP_RDF_DECL Doc_map {
+class Doc_map {
 public:
    typedef Doc_id id_type;
 private:
@@ -92,13 +93,12 @@ public:
    typedef Member_iterator<version_index_t::const_iterator, const Doc_id, &entry_t::id_> version_iterator;
    typedef boost::iterator_range<version_iterator> version_range;
 
-   typedef Member_iterator<store_t::iterator, const Doc_id, &entry_t::id_> id_iterator;
-
-//   Doc_map() : tracker_(), store_() {
-//         tracker_.reserve(Doc_id());
-//      }
+   typedef Member_iterator<store_t::const_iterator, const Doc_id, &entry_t::id_> const_iterator;
+   typedef const_iterator iterator;
 
    std::size_t size() const {return store_.size();}
+   id_iterator begin() const {return id_iterator(store_.begin());}
+   id_iterator end() const {return id_iterator(store_.end());}
 
    /**@brief Add document info: location, ontologyIRI, and versionIRI.
     @param path document location
@@ -126,7 +126,7 @@ public:
             const Node_id iri,
             const Node_id version
    ) {
-      Doc_id const* did = find(path, iri, version);
+      Doc_id const* did = check_existing(path, iri, version);
       if( did ) return std::make_pair(*did, false);
       return std::make_pair(insert_private(path, iri, version), true);
    }
@@ -143,7 +143,7 @@ public:
       const entry_t entry = *i;
       index.erase(i);
       try {
-         if( find(path, iri, version) ) BOOST_THROW_EXCEPTION(
+         if( check_existing(path, iri, version) ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("document already exists")
                   << Err::str1_t(path)
@@ -157,8 +157,10 @@ public:
       store_.insert(entry_t(did, path, iri, version));
    }
 
-   std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri);
-//   Doc_id insert_new();
+   std::pair<Doc_id,bool> insert(std::string const& path, const Node_id iri) {
+      return insert(path, iri, terms::T_empty_::id());
+   }
+
    Node_id iri(const Doc_id id) const {
       BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
       return store_.get<id_tag>().find(id)->iri_id_;
@@ -172,7 +174,13 @@ public:
       BOOST_ASSERT(store_.get<id_tag>().find(id) != store_.get<id_tag>().end());
       return store_.get<id_tag>().find(id)->path_;
    }
-   void remove(const Doc_id id);
+   void remove(const Doc_id id) {
+      id_index_t & id_index = store_.get<id_tag>();
+      id_iter_t i = id_index.find(id);
+      BOOST_ASSERT( i != id_index.end() );
+      id_index.erase(i);
+      tracker_.push(id);
+   }
 
    /**
     @param id node ID of document's OntologyIRI
@@ -205,18 +213,61 @@ public:
       );
    }
 
-   id_iterator begin() const {return id_iterator(store_.begin());}
-   id_iterator end() const {return id_iterator(store_.end());}
 
 private:
    detail::Id_tracker<Doc_id> tracker_;
    store_t store_;
 
-   Doc_id const* find(
+   Doc_id const* check_existing(
             std::string const& path,
             const Node_id iri,
             const Node_id version
-   ) const;
+   ) const {
+      if( iri == terms::T_empty_::id() ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("empty ontologyIRI is not allowed")
+      );
+
+      //multiple entries with empty paths are allowed
+      if( path.empty() ) {
+         if( version == terms::T_empty_::id() ) {
+            BOOST_FOREACH(const Doc_id id, find_iri(iri)) {
+   //            if( path(id).empty() && version(id) == terms::T_empty_::id() )
+            }
+         }
+
+   /*
+         iri_index_t const& ii = store_.get<iri_tag>();
+         for(iri_iter_t i = ii.find(iri); i != ii.end(); ++i) {
+            if( i->path_.empty() && i->version_id_ == version )
+               return &i->id_;
+         }
+         return 0;
+      }
+
+      path_index_t const& path_index = store_.get<path_tag>();
+      path_iter_t path_iter = path_index.find(path);
+      if( path_iter == path_index.end() ) return 0;
+
+      if( path_iter->iri_id_ != iri ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("different IRI at same location")
+               << Err::str1_t(path)
+               << Err::int1_t(iri())
+               << Err::int2_t(path_iter->iri_id_())
+      );
+      if( path_iter->version_id_ != version ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("different ontology version in same location")
+               << Err::str1_t(path)
+               << Err::int1_t(version())
+               << Err::int2_t(path_iter->version_id_())
+      );
+
+      return &path_iter->id_;
+   */
+      }
+   }
 
    Doc_id insert_private(
             std::string const& path,
