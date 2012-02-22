@@ -38,12 +38,12 @@ template<class T> struct Doc_store_base {
    std::pair<Doc_id,bool> insert_doc(
             std::string const& path,
             std::string const& iri,
-            std::string const& version = ""
+            std::string const& vers = ""
    ) {
       T& self = static_cast<T&>(*this);
       const Node_id iid = self.insert_iri_node(iri);
-      if( version.empty() ) return self.documents().insert(path, iid);
-      const Node_id vid = self.insert_iri_node(version);
+      if( vers.empty() ) return self.documents().insert(path, iid, terms::T_empty_::id());
+      const Node_id vid = self.insert_iri_node(vers);
       return self.documents().insert(path, iid, vid);
    }
 

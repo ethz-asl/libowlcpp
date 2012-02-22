@@ -52,16 +52,16 @@ private:
    }
 
 public:
-   typedef Doc_map::id_iterator iterator;
-   typedef iterator const_iterator;
+   typedef Doc_map::iterator iterator;
+   typedef Doc_map::const_iterator const_iterator;
    struct Err : public Input_err {};
    const_iterator begin() const {return doc_.begin();}
    const_iterator end() const {return doc_.end();}
-   std::string iri(const Doc_id did) const {return string(iri_id(did));}
-   std::string version(const Doc_id did) const { return string(version_id(did)); }
+   std::string ontology_iri(const Doc_id did) const {return string(ontology_iri_id(did));}
+   std::string version_iri(const Doc_id did) const { return string(version_iri_id(did)); }
    std::string path(const Doc_id did) const {return doc_.path(did);}
-   Node_id iri_id(const Doc_id did) const {return doc_.iri(did);}
-   Node_id version_id(const Doc_id did) const {return doc_.version(did);}
+   Node_id ontology_iri_id(const Doc_id did) const {return doc_.ontology_iri(did);}
+   Node_id version_iri_id(const Doc_id did) const {return doc_.version_iri(did);}
 
    /**@brief determine OntologyIRI and VersionIRI of ontology document(s)
     and add them to the catalog

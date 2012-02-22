@@ -26,8 +26,8 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    cat.add(path1);
    Doc_id const* did1 = cat.find_doc_iri(iri1);
    BOOST_REQUIRE(did1);
-   BOOST_CHECK_EQUAL(cat.iri(*did1), iri1);
-   BOOST_CHECK_EQUAL(cat.version(*did1), version1);
+   BOOST_CHECK_EQUAL(cat.ontology_iri(*did1), iri1);
+   BOOST_CHECK_EQUAL(cat.version_iri(*did1), version1);
    BOOST_CHECK_EQUAL(cat.path(*did1), boost::filesystem::canonical(path1).string());
 }
 

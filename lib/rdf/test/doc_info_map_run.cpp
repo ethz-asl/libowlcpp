@@ -49,15 +49,17 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK(p3.second);
    BOOST_CHECK_NE(p1.first, p3.first);
 
-   dm.insert(path2, Node_id(13), Node_id(1));
-   Doc_map::iri_range ir1 = dm.find_iri(Node_id(13));
+   const Node_id nid1(13);
+   const Node_id nid2(42);
+   dm.insert(path2, nid1, nid2);
+   Doc_map::iri_range ir1 = dm.find_iri(nid1);
    BOOST_CHECK(ir1);
    const Doc_id id1 = ir1.front();
-   BOOST_CHECK_EQUAL(Node_id(13), dm.iri(id1));
+   BOOST_CHECK_EQUAL(nid1, dm.ontology_iri(id1));
 
    //document versionIRI is returned by pointer
-   BOOST_REQUIRE_MESSAGE(dm.version(id1) != terms::T_empty_::id(), "versionIRI exists");
-   BOOST_CHECK_EQUAL(Node_id(1), dm.version(id1));
+   BOOST_REQUIRE_MESSAGE(dm.version_iri(id1) != terms::T_empty_::id(), "versionIRI exists");
+   BOOST_CHECK_EQUAL(nid2, dm.version_iri(id1));
 }
 
 }//namespace test

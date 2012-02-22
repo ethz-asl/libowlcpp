@@ -209,7 +209,7 @@ private:
    Add document info entry to triple store.
    */
    void check_iri() {
-      const Node_id nid = ts_.documents().iri(current_doc_);
+      const Node_id nid = ts_.documents().ontology_iri(current_doc_);
       if( nid == terms::T_empty_::id() ) { //document entry is incomplete
          if(
                   ! expected_iri_.empty() &&
@@ -238,7 +238,7 @@ private:
                      << Err::str2_t(iri())
             );
          }
-         const Node_id vid = ts_.documents().version(current_doc_);
+         const Node_id vid = ts_.documents().version_iri(current_doc_);
          if( version() != ts_.string(vid) ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("ontology versionIRI mismatch")

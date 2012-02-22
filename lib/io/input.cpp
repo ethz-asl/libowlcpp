@@ -83,7 +83,7 @@ void load_iri(std::string const& iri, Triple_store& ts, Catalog const& cat) {
             << Input_err::str1_t(iri)
    );
 
-   detail::Adaptor_triple_store ats(ts, cat.path(*did), cat.iri(*did), cat.version(*did));
+   detail::Adaptor_triple_store ats(ts, cat.path(*did), cat.ontology_iri(*did), cat.version_iri(*did));
    Parser_triple parser;
    std::cout << cat.path(*did) << std::endl;
 //   boost::filesystem::ifstream ifs(cat.path(*did));
