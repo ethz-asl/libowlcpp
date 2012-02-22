@@ -84,13 +84,15 @@ public:
     @return node ID
    */
    Node_id insert_iri(const Ns_id nsid, std::string const& name) {
-      if( nsid == terms::N_empty::id() )
+      if( is_empty(nsid)  ) {
+         if( name.empty() ) return terms::T_empty_::id();
          BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("empty namespace for IRI node")
                   << Err::str1_t(name)
          );
-      if( nsid == terms::N_blank::id() )
+      }
+      if( is_blank(nsid) )
          BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("blank namespace for IRI node")

@@ -37,5 +37,10 @@ struct T_empty_ {
 OWLCPP_GENERATE_NODE_TAGS(OWLCPP_NODE_LIST_SYSTEM, 0)
 
 }//namespace terms
+
+/**
+*******************************************************************************/
+inline bool is_empty(const Node_id id) {return id == terms::T_empty_::id();}
+
 }//namespace owlcpp
 #endif /* NODE_TAGS_SYSTEM_HPP_ */

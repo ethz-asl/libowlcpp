@@ -47,17 +47,12 @@ OWLCPP_GENERATE_IRI_TAGS(OWLCPP_IRI_LIST, 0)
 
 /**
 *******************************************************************************/
-inline bool is_owl(const Ns_id ns) {
-   switch ( ns() ) {
-   case terms::N_owl::index:
-   case terms::N_rdf::index:
-   case terms::N_rdfs::index:
-   case terms::N_xsd::index:
-      return true;
-   default:
-      return false;
-   }
-}
+inline bool is_empty(const Ns_id id) {return id == terms::N_empty::id();}
+
+/**
+*******************************************************************************/
+inline bool is_blank(const Ns_id id) {return id == terms::N_blank::id();}
+
 
 }//namespace owlcpp
 #endif /* IRI_TAGS_HPP_ */
