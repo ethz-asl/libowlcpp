@@ -29,13 +29,12 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    const Node_id nid2 = nm.insert_iri(Ns_id(42), "node2");
    Node const& n2 = nm.at(nid2);
    BOOST_CHECK_EQUAL(n2.value_str(), "node2");
-   BOOST_CHECK( ! nm.datatype(nid2));
+   BOOST_CHECK( is_empty(nm.datatype(nid2)) );
    BOOST_CHECK(nm.language(nid2).empty());
 
    const Node_id nid3 = nm.insert_literal("some string", nid2, "en");
    BOOST_CHECK_EQUAL(nm[nid3].value_str(), "some string");
-   BOOST_REQUIRE(nm.datatype(nid3));
-   BOOST_CHECK_EQUAL(*nm.datatype(nid3), nid2);
+   BOOST_CHECK_EQUAL(nm.datatype(nid3), nid2);
    BOOST_CHECK_EQUAL(nm.language(nid3), "en");
 }
 

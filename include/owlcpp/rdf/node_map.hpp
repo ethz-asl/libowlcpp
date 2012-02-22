@@ -74,10 +74,10 @@ public:
     @return pointer to the datatype node's ID for the literal node or
     NULL if the node is not literal or no datatype is defined for it.
    */
-   Node_id const* datatype(const Node_id id) const {
+   Node_id datatype(const Node_id id) const {
       const datatype_iter_t i = dtypes_.find(id);
-      if( i == dtypes_.end() ) return 0;
-      return &i->second;
+      if( i == dtypes_.end() ) return terms::T_empty_::id();
+      return i->second;
    }
 
    /**@brief Find the language of the literal node
@@ -135,9 +135,8 @@ public:
    ) {
       const Node node(terms::N_empty::id(), value);
       BOOST_FOREACH(const Node_id id, find(node)) {
-         Node_id const* dtp = datatype(id);
-         const Node_id dt = dtp ? *dtp : terms::T_empty_::id();
-         if( dtype == dt && lang == language(id) ) return id;
+         const Node_id dtype0 = datatype(id);
+         if( dtype == dtype0 && lang == language(id) ) return id;
       }
       const Node_id id = nodes_.insert(terms::N_empty::id(), value);
       if( dtype != terms::T_empty_::id() ) dtypes_.emplace(id, dtype);
