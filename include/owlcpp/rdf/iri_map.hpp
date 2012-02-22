@@ -70,6 +70,7 @@ public:
     namespace IRI.
    */
    void insert_prefix(const Ns_id iid, std::string const& pref) {
+      if( pref.empty() ) return;
       BOOST_ASSERT( smap_.is_constant(iid) || map_.have(iid) );
       Ns_id const*const iid0 = find_prefix(pref);
       if( iid0 ) {
