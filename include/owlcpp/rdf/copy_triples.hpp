@@ -7,7 +7,6 @@ part of owlcpp project.
 #define COPY_TRIPLES_HPP_
 #include "boost/foreach.hpp"
 #include "boost/unordered_map.hpp"
-#include <iostream>
 
 #include "owlcpp/rdf/triple.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
@@ -54,7 +53,6 @@ public:
    Ns_id operator()(const Ns_id nsid0) {
       const ns_map_t::const_iterator i = nsm_.find(nsid0);
       if( i != nsm_.end() ) return i->second;
-      std::cout << '\"' << src_[nsid0] << '\"' << std::endl;
       const Ns_id nsid1 = dest_.iris().insert(src_[nsid0]);
       dest_.iris().insert_prefix(nsid1, src_.iris().prefix(nsid0));
       nsm_.emplace(nsid0, nsid1);
