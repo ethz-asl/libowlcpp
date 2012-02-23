@@ -139,9 +139,10 @@ public:
          if( dtype == dtype0 && lang == language(id) ) return id;
       }
       const Node_id id = nodes_.insert(terms::N_empty::id(), value);
-      if( dtype != terms::T_empty_::id() ) dtypes_.emplace(id, dtype);
+      if( ! is_empty(dtype) ) dtypes_.emplace(id, dtype);
       if( ! lang.empty() ) langs_.emplace(id, lang);
       return id;
+
    }
 
    /**
@@ -180,6 +181,38 @@ private:
    docs_t docs_;
    datatypes_t dtypes_;
    langs_t langs_;
+};
+}//namespace owlcpp
+
+#include "owlcpp/rdf/node_iter_crtp.hpp"
+#include "owlcpp/rdf/std_nodes_crtp.hpp"
+
+namespace owlcpp{
+
+/**@brief Store RDF nodes
+@details
+Validity of node IDs is assumed and asserted in debug mode.
+Calling node map methods with invalid node IDs results in undefined behavior.
+*******************************************************************************/
+class Node_map1 :
+   public Std_nodes_crtp<Node_map1>,
+   public Node_iter_crtp<Node_map1>
+   {
+   friend class Std_nodes_crtp<Node_map1>;
+   friend class Node_iter_crtp<Node_map1>;
+
+   Node_map_base& base_map() {return nodes_;}
+   Node_map_base const& base_map() const {return nodes_;}
+
+public:
+   Node_map1(Node_map_std const& snodes = Node_map_std::get(Nodes_none()))
+   : Std_nodes_crtp<Node_map1>(snodes)
+     {}
+
+private:
+   detail::Id_tracker<Node_id> tracker_;
+   Node_map_base nodes_;
+
 };
 
 }//namespace owlcpp

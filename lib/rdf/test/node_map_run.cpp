@@ -56,5 +56,23 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    BOOST_CHECK_EQUAL(nid1, terms::T_owl_Class::id());
 }
 
+/** OWL-aware node map
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case03 ) {
+   Node_map1 nm( Node_map_std::get(Nodes_owl()) );
+   BOOST_CHECK_EQUAL(nm.size(), 0U);
+
+   Node const& node1 = nm.at(terms::T_owl_Class::id());
+   BOOST_CHECK_EQUAL(node1.ns_id(), terms::N_owl::id());
+
+   Node_map::ns_range r1 = nm.find(terms::N_owl::id());
+
+   const Node_id nid1 = nm.insert_iri(
+            terms::T_owl_Class::ns_type::id(), terms::T_owl_Class::name()
+   );
+   BOOST_CHECK_EQUAL(nm.size(), 0U);
+   BOOST_CHECK_EQUAL(nid1, terms::T_owl_Class::id());
+}
+
 }//namespace test
 }//namespace owlcpp
