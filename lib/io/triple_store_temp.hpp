@@ -36,13 +36,21 @@ public:
    void insert_triple(
             const Node_id subj,
             const Node_id pred,
-            const Node_id obj,
-            const Doc_id doc
+            const Node_id obj
    ) {
-      triple_.insert(Triple(subj, pred, obj, doc));
+      triple_.insert(Triple(subj, pred, obj, did_));
    }
 
+   Node_id ontology_iri(const Doc_id = Doc_id(0)) const {return ontology_iri_;}
+   Node_id version_iri(const Doc_id) const {return version_iri_;}
+   std::string path(const Doc_id) const {return path_;}
+
+
 private:
+   const Doc_id did_;
+   Node_id ontology_iri_;
+   Node_id version_iri_;
+   std::string path_;
    Iri_map iri_;
    node_map_t node_;
    Triple_map triple_;

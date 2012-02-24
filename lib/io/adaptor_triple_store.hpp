@@ -92,11 +92,9 @@ template<class TS> inline void insert_triple(
 }
 
 
-/**@brief 
+/**@brief Accept RDF triples from a parser
 *******************************************************************************/
 class Adaptor_triple_store {
-   typedef boost::array<Node_id,3> triple_t;
-   typedef std::deque<triple_t> triple_stor_t;
 public:
    struct Err : public Input_err {};
 
@@ -105,12 +103,9 @@ public:
     document are known.
    */
    Adaptor_triple_store(
-            Triple_store& ts, /**< destination triple store */
             std::string const& path, /**< document location (may be empty) */
             std::string const& import_iri = "" /**< expected versionIRI or ontologyIRI */
    ) :
-      ts_(ts),
-      current_doc_(Doc_id()),
       path_(path),
       expected_iri_(import_iri),
       aif_(boost::bind(&Adaptor_triple_store::id_found, this)),
@@ -122,13 +117,10 @@ public:
     document that is going to be loaded are known exactly.
    */
    Adaptor_triple_store(
-            Triple_store& ts, /**< destination triple store */
             std::string const& path, /**< document location (may be empty) */
             std::string const& ontology_iri, /**< expected ontologyIRI */
             std::string const& version_iri /**< expected versionIRI (may be empty) */
    ) :
-      ts_(ts),
-      current_doc_(Doc_id()),
       path_(),
       expected_iri_(),
       aif_(boost::bind(&Adaptor_triple_store::id_found, this)),
@@ -144,12 +136,7 @@ public:
       if( ! id_found_ ) aif_.insert(statement);
       raptor_statement const& rs = *static_cast<raptor_statement const*>(statement);
       check_import(rs);
-
-      if( id_found_ ) {
-         insert_triple(ts_, rs, current_doc_);
-      } else {
-         insert_triple(tst_, rs, current_doc_);
-      }
+      insert_triple(tst_, rs);
    }
 
    const std::string& iri() const {return aif_.iri();}
@@ -159,14 +146,10 @@ public:
 
 private:
    Triple_store_temp tst_;
-   Triple_store& ts_;
-   const Doc_id current_doc_;
-   const std::string blank_pref_;
    const std::string path_;
    const std::string expected_iri_;
    Adaptor_iri_finder aif_;
    bool id_found_;
-   triple_stor_t triples_;
    std::deque<std::string> imports_;
 
    void check_import(raptor_statement const& rs) {
@@ -209,8 +192,8 @@ private:
    Add document info entry to triple store.
    */
    void check_iri() {
-      const Node_id nid = ts_.documents().ontology_iri(current_doc_);
-      if( nid == terms::T_empty_::id() ) { //document entry is incomplete
+      const Node_id nid = tst_.ontology_iri();
+      if( is_empty(nid) ) { //document entry is incomplete
          if(
                   ! expected_iri_.empty() &&
                   expected_iri_ != iri() &&

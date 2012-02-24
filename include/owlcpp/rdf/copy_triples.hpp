@@ -41,10 +41,10 @@ public:
    Doc_id operator()(const Doc_id did0) {
       const doc_map_t::const_iterator i = dm_.find(did0);
       if( i != dm_.end() ) return i->second;
-      const Doc_id did1 = dest_.documents().insert(
-               src_.documents().path(did0),
-               insert_iri(src_.documents().ontology_iri(did0)),
-               insert_iri(src_.documents().version_iri(did0))
+      const Doc_id did1 = dest_.insert_doc(
+               src_.path(did0),
+               src_.ontology_iri(did0),
+               src_.version_iri(did0)
       ).first;
       dm_.emplace(did0, did1);
       return did1;

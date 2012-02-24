@@ -1,28 +1,28 @@
-/** @file "/owlcpp/lib/io/adaptor_iri_finder.hpp" 
+/** @file "/owlcpp/lib/io/raptor_to_iri.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef ADAPTOR_IRI_FINDER_HPP_
-#define ADAPTOR_IRI_FINDER_HPP_
-#include <limits>
+#ifndef RAPTOR_TO_IRI_HPP_
+#define RAPTOR_TO_IRI_HPP_
 #include "boost/assert.hpp"
+#include "boost/function.hpp"
 
 #include "raptor2.h"
 
-#include "boost/function.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/term_methods.hpp"
 #include "owlcpp/io/exception.hpp"
 
 namespace owlcpp{ namespace detail{
 
-/**@brief 
+/**@brief Find ontologyIRI and versionIRI from Raptor parser statements
 *******************************************************************************/
-class Adaptor_iri_finder {
+class Raptor_to_iri {
 public:
-   struct Err : public Input_err {};
-   Adaptor_iri_finder(
+   typedef Input_err Err;
+
+   Raptor_to_iri(
             const boost::function<void()> abort_call,
             const std::size_t search_depth = std::numeric_limits<std::size_t>::max()
    )
@@ -116,9 +116,7 @@ private:
       }
       return true;
    }
-
 };
-
 }//namespace detail
 }//namespace owlcpp
-#endif /* ADAPTOR_IRI_FINDER_HPP_ */
+#endif /* RAPTOR_TO_IRI_HPP_ */

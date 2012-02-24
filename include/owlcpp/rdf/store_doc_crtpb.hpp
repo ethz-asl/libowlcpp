@@ -11,7 +11,12 @@ namespace owlcpp{
 
 /**@brief CRTP base for document info stores
 *******************************************************************************/
-template<class T> struct Store_doc_crtpb {
+template<class T> class Store_doc_crtpb {
+public:
+   typedef Doc_map doc_map_t;
+
+   doc_map_t const& documents() const {return docs_;}
+//   Doc_map& documents() {return doc_;}
 
    /**
     @param iri OntologyIRI or VersionIRI
@@ -22,9 +27,9 @@ template<class T> struct Store_doc_crtpb {
       T const& self = static_cast<T const&>(*this);
       Node_id const* nid = self.find_iri_node(iri);
       if( ! nid ) return 0;
-      const Doc_map::version_range vr = self.documents().find_version(*nid);
+      const Doc_map::version_range vr = docs_.find_version(*nid);
       if( vr ) return &vr.front();
-      const Doc_map::iri_range ir = self.documents().find_iri(*nid);
+      const Doc_map::iri_range ir = docs_.find_iri(*nid);
       if( ir ) return &ir.front();
       return 0;
    }
@@ -42,11 +47,32 @@ template<class T> struct Store_doc_crtpb {
    ) {
       T& self = static_cast<T&>(*this);
       const Node_id iid = self.insert_iri_node(iri);
-      if( vers.empty() ) return self.documents().insert(path, iid, terms::T_empty_::id());
+      if( vers.empty() ) return docs_.insert(path, iid, terms::T_empty_::id());
       const Node_id vid = self.insert_iri_node(vers);
-      return self.documents().insert(path, iid, vid);
+      return docs_.insert(path, iid, vid);
    }
 
+   /**
+    @param did document ID; invalid @b id results in undefined behavior
+    @return node ID for ontology IRI
+   */
+   Node_id ontology_iri(const Doc_id did) const {return docs_.ontology_iri(did);}
+
+   /**
+    @param did document ID
+    @return node ID for document version or empty node ID if version is not defined
+   */
+   Node_id version_iri(const Doc_id did) const {return docs_.version_iri(did);}
+
+   /**
+    @param did document ID
+    @return document's path or empty string if not defined
+   */
+   std::string path(const Doc_id did) const {return docs_.path(did);}
+
+
+private:
+   doc_map_t docs_;
 };
 
 }//namespace owlcpp

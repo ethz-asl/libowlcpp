@@ -13,7 +13,6 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_map.hpp"
 #include "owlcpp/rdf/node_map.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
-#include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/rdf/copy_triples.hpp"
 #include "owlcpp/rdf/exception.hpp"
 
@@ -38,19 +37,16 @@ public:
    struct Err : public Rdf_err {};
    typedef Iri_map iri_map_t;
    typedef Node_map node_map_t;
-   typedef Doc_map doc_map_t;
    typedef Triple_map triple_map_t;
 
    Triple_store(Node_map_std const& snodes = Node_map_std::get(Nodes_none()))
-   : iri_(snodes), node_(snodes), doc_(), triple_()
+   : iri_(snodes), node_(snodes), triple_()
    {}
 
    Iri_map& iris() {return iri_;}
    Iri_map const& iris() const {return iri_;}
    node_map_t& nodes() {return node_;}
    node_map_t const& nodes() const {return node_;}
-   Doc_map const& documents() const {return doc_;}
-   Doc_map& documents() {return doc_;}
    Triple_map const& triples() const {return triple_;}
 
    void insert_triple(
@@ -68,7 +64,6 @@ public:
 private:
    Iri_map iri_;
    node_map_t node_;
-   Doc_map doc_;
    Triple_map triple_;
 };
 
