@@ -1,17 +1,17 @@
-/** @file "/owlcpp/include/owlcpp/rdf/doc_store_base.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/store_doc_crtpb.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef DOC_STORE_BASE_HPP_
-#define DOC_STORE_BASE_HPP_
+#ifndef STORE_DOC_CRTPB_HPP_
+#define STORE_DOC_CRTPB_HPP_
 #include "owlcpp/rdf/doc_info_map.hpp"
 
 namespace owlcpp{
 
 /**@brief CRTP base for document info stores
 *******************************************************************************/
-template<class T> struct Doc_store_base {
+template<class T> struct Store_doc_crtpb {
 
    /**
     @param iri OntologyIRI or VersionIRI
@@ -50,4 +50,4 @@ template<class T> struct Doc_store_base {
 };
 
 }//namespace owlcpp
-#endif /* DOC_STORE_BASE_HPP_ */
+#endif /* STORE_DOC_CRTPB_HPP_ */

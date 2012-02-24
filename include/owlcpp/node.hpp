@@ -8,7 +8,7 @@ part of owlcpp project.
 #include <string>
 #include <iosfwd>
 #include "boost/functional/hash.hpp"
-#include "owlcpp/ns_id.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
 
 namespace owlcpp{
 
@@ -43,6 +43,8 @@ public:
       boost::hash_combine(x, boost::hash_value(val_));
       return x;
    }
+
+   bool empty() const {return is_empty(ns_) && val_.empty();}
 
 private:
    const std::string val_;

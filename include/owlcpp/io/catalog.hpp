@@ -9,8 +9,8 @@ part of owlcpp project.
 #include "boost/filesystem/path.hpp"
 
 #include "owlcpp/io/config.hpp"
-#include "owlcpp/rdf/node_store_iri_base.hpp"
-#include "owlcpp/rdf/doc_store_base.hpp"
+#include "owlcpp/rdf/store_node_iri_crtpb.hpp"
+#include "owlcpp/rdf/store_doc_crtpb.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/rdf/node_map.hpp"
 #include "owlcpp/rdf/doc_info_map.hpp"
@@ -23,8 +23,8 @@ namespace owlcpp{
 non-empty verions IRIs should be unique.
 *******************************************************************************/
 class OWLCPP_IO_DECL Catalog :
-public Doc_store_base<Catalog>,
-private Node_store_iri_base<Catalog>
+public Store_doc_crtpb<Catalog>,
+private Store_node_iri_crtpb<Catalog>
 {
 public:
    typedef Iri_map iri_map_t;
@@ -37,8 +37,8 @@ private:
    Iri_map const& iris() const {return iri_;}
    node_map_t const& nodes() const {return node_;}
    Doc_map const& documents() const {return doc_;}
-   friend class Node_store_iri_base<Catalog>;
-   friend class Doc_store_base<Catalog>;
+   friend class Store_node_iri_crtpb<Catalog>;
+   friend class Store_doc_crtpb<Catalog>;
 
    /** indicate which namespaces should remain constant */
    static bool is_constant(const Ns_id ns) {

@@ -5,9 +5,10 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_STORE_TEMP_HPP_
 #define TRIPLE_STORE_TEMP_HPP_
-#include "owlcpp/rdf/node_store_iri_base.hpp"
-#include "owlcpp/rdf/node_store_aux_base.hpp"
-#include "owlcpp/rdf/doc_store_base.hpp"
+#include "owlcpp/rdf/store_node_iri_crtpb.hpp"
+#include "owlcpp/rdf/store_node_blank_crtpb.hpp"
+#include "owlcpp/rdf/store_node_literal_crtpb.hpp"
+#include "owlcpp/rdf/store_doc_crtpb.hpp"
 #include "owlcpp/rdf/triple_map.hpp"
 #include "owlcpp/rdf/node_map.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
@@ -18,8 +19,9 @@ namespace owlcpp{ namespace detail{
 /**@brief Storage for RDF triples coming from a single document
 *******************************************************************************/
 class Triple_store_temp :
-public Node_store_iri_base<Triple_store_temp>,
-public Node_store_aux_base<Triple_store_temp>
+public Store_node_iri_crtpb<Triple_store>,
+public Store_node_blank_crtpb<Triple_store>,
+public Store_node_literal_crtpb<Triple_store>
 {
 public:
 

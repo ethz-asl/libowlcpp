@@ -1,10 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/rdf/node_store_iri_base.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/store_node_iri_crtpb.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef NODE_STORE_IRI_BASE_HPP_
-#define NODE_STORE_IRI_BASE_HPP_
+#ifndef STORE_NODE_IRI_CRTPB_HPP_
+#define STORE_NODE_IRI_CRTPB_HPP_
 #include <string>
 #include "boost/exception_ptr.hpp"
 #include "owlcpp/node.hpp"
@@ -14,7 +14,7 @@ namespace owlcpp{
 
 /** CRTP base for RDF node stores
 *******************************************************************************/
-template<class T> struct Node_store_iri_base {
+template<class T> struct Store_node_iri_crtpb {
 
    /**@brief if not already present, store IRI reference node
     @param iri node IRI string;
@@ -77,5 +77,6 @@ template<class T> struct Node_store_iri_base {
 
 };
 
+
 }//namespace owlcpp
-#endif /* NODE_STORE_IRI_BASE_HPP_ */
+#endif /* STORE_NODE_IRI_CRTPB_HPP_ */
