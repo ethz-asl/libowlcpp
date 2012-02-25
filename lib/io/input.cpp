@@ -17,7 +17,7 @@ part of owlcpp project.
 #include "owlcpp/io/read_ontology_iri.hpp"
 #include "owlcpp/io/parser_triple.hpp"
 #include "owlcpp/io/catalog.hpp"
-#include "adaptor_triple_store.hpp"
+#include "raptor_to_store.hpp"
 
 namespace owlcpp { namespace{
 /*
@@ -39,7 +39,7 @@ void load_file(
 *******************************************************************************/
 void load(std::istream& stream, Triple_store& store, std::string const& path) {
    Parser_triple parser;
-   detail::Adaptor_triple_store ats(store, path);
+   detail::Raptor_to_store ats(store, path);
    parser(stream, ats);
 }
 
@@ -48,14 +48,14 @@ void load(std::istream& stream, Triple_store& store, std::string const& path) {
 void load_file(boost::filesystem::path const& file, Triple_store& ts) {
    const std::string cp = canonical(file).string();
    Parser_triple parser;
-   detail::Adaptor_triple_store ats(ts, cp);
+   detail::Raptor_to_store ats(ts, cp);
    parser(cp, ats);
 }
 
 /*
 *******************************************************************************/
 void load_file(boost::filesystem::path const& file, Triple_store& ts, Catalog const& cat) {
-   detail::Adaptor_triple_store ats(ts, file.string());
+   detail::Raptor_to_store ats(ts, file.string());
    Parser_triple parser;
    parser(file.string(), ats);
 
@@ -83,7 +83,7 @@ void load_iri(std::string const& iri, Triple_store& ts, Catalog const& cat) {
             << Input_err::str1_t(iri)
    );
 
-   detail::Adaptor_triple_store ats(ts, cat.path(*did), cat.ontology_iri(*did), cat.version_iri(*did));
+   detail::Raptor_to_store ats(ts, cat.path(*did), cat.ontology_iri(*did), cat.version_iri(*did));
    Parser_triple parser;
    std::cout << cat.path(*did) << std::endl;
 //   boost::filesystem::ifstream ifs(cat.path(*did));

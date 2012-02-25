@@ -10,6 +10,8 @@ part of owlcpp project.
 
 #include "owlcpp/io/exception.hpp"
 #include "raptor_to_iri.hpp"
+#include "triple_store_temp.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 
 namespace owlcpp{ namespace detail{
 
@@ -18,6 +20,7 @@ namespace owlcpp{ namespace detail{
 struct Ontology_id_checker {
    struct Err : public Input_err {};
    virtual void operator()(std::string const& iri, std::string const& ver) const = 0;
+   virtual ~Ontology_id_checker() {}
 };
 
 /**@brief
@@ -95,6 +98,8 @@ private:
    const std::string path_;
    Raptor_to_iri rti_;
    bool id_found_;
+   Triple_store_temp tst_;
+   Triple_store& ts_;
 
    void id_found() {
 
