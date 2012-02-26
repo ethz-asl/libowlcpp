@@ -158,6 +158,11 @@ public:
       store_pref_.get<id_tag>().erase(id);
    }
 
+   void clear() {
+      store_pref_.clear();
+      store_iri_.clear();
+   }
+
 private:
    store_t store_iri_;
    store_t store_pref_;

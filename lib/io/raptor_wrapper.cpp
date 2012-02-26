@@ -1,26 +1,24 @@
-/** @file "/owlcpp/lib/io/parser_triple.cpp" 
+/** @file "/owlcpp/lib/io/raptor_wrapper.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef OWLCPP_IO_SOURCE
-#define OWLCPP_IO_SOURCE
-#endif
-#include "owlcpp/io/parser_triple.hpp"
+
+#include "raptor_wrapper.hpp"
 #include <istream>
 #include "boost/lexical_cast.hpp"
 #include "raptor2.h"
 
 namespace owlcpp { namespace{
 
-Parser_triple::Err make_exception(char const* msg, raptor_locator* locator) {
-   Parser_triple::Err e;
-   if( msg ) e << Parser_triple::Err::msg_t(msg);
+Raptor_wrapper::Err make_exception(char const* msg, raptor_locator* locator) {
+   Raptor_wrapper::Err e;
+   if( msg ) e << Raptor_wrapper::Err::msg_t(msg);
    if( locator ) {
       const int n = raptor_locator_line(locator);
-      if( n >= 0 ) e << Parser_triple::Err::int1_t(n);
+      if( n >= 0 ) e << Raptor_wrapper::Err::int1_t(n);
       const char* file = raptor_locator_file(locator);
-      if( file ) e << Parser_triple::Err::str1_t(file);
+      if( file ) e << Raptor_wrapper::Err::str1_t(file);
    }
    return e;
 }
@@ -28,14 +26,14 @@ Parser_triple::Err make_exception(char const* msg, raptor_locator* locator) {
 /**@brief error message handler
 *******************************************************************************/
 void handle_error(void*, raptor_log_message* msg) {
-   Parser_triple::Err e = make_exception(msg->text, msg->locator);
+   Raptor_wrapper::Err e = make_exception(msg->text, msg->locator);
    BOOST_THROW_EXCEPTION(e);
 }
 }//namespace anonymous
 
 /*
 *******************************************************************************/
-Parser_triple::Parser_triple()
+Raptor_wrapper::Raptor_wrapper()
 : world_(raptor_new_world(), &raptor_free_world),
   parser_(raptor_new_parser(world_.get(), "rdfxml"), &raptor_free_parser),
   abort_requested_(false)
@@ -57,14 +55,14 @@ Parser_triple::Parser_triple()
 
 /*
 *******************************************************************************/
-void Parser_triple::abort_parse() {
+void Raptor_wrapper::abort_parse() {
    abort_requested_ = true;
    raptor_parser_parse_abort(parser_.get());
 }
 
 /*
 *******************************************************************************/
-void Parser_triple::setup(void* sink, handle_statement_fun_t hs_fun) {
+void Raptor_wrapper::setup(void* sink, handle_statement_fun_t hs_fun) {
    raptor_parser_set_statement_handler(
          parser_.get(),
          sink,
@@ -74,7 +72,7 @@ void Parser_triple::setup(void* sink, handle_statement_fun_t hs_fun) {
 
 /*
 *******************************************************************************/
-void Parser_triple::parse(std::string const& fn) {
+void Raptor_wrapper::parse(std::string const& fn) {
    boost::shared_ptr<unsigned char> uri_str(
             raptor_uri_filename_to_uri_string(fn.c_str()),
             &raptor_free_memory
@@ -113,7 +111,7 @@ void Parser_triple::parse(std::string const& fn) {
 
 /*
 *******************************************************************************/
-void Parser_triple::parse(std::istream& stream) {
+void Raptor_wrapper::parse(std::istream& stream) {
    if( ! stream.good() )
       BOOST_THROW_EXCEPTION( Err() << Err::msg_t("read error") );
 

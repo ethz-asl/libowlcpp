@@ -138,6 +138,8 @@ public:
       insert( Tag::id(), Node(Tag()) );
    }
 
+   void clear() { nodes_.clear(); }
+
 private:
    nodes_t nodes_;
 };

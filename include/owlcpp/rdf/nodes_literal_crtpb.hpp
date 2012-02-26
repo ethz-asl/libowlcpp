@@ -88,6 +88,12 @@ protected:
       dtypes_.erase(nid);
       langs_.erase(nid);
    }
+
+   void clear_literal() {
+      dtypes_.clear();
+      langs_.clear();
+   }
+
 private:
    datatypes_t dtypes_;
    langs_t langs_;

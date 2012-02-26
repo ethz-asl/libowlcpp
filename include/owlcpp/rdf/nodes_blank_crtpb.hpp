@@ -62,6 +62,8 @@ protected:
       docs_.erase(nid);
    }
 
+   void clear_blank() { docs_.clear(); }
+
 private:
    docs_t docs_;
 

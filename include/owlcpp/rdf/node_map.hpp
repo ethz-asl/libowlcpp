@@ -67,6 +67,13 @@ public:
       tracker_.push(id);
    }
 
+   void clear() {
+      clear_blank();
+      clear_literal();
+      nodes_.clear();
+      tracker_ = tracker_t(snode_id_next());
+   }
+
 private:
    tracker_t tracker_;
    Node_map_base nodes_;

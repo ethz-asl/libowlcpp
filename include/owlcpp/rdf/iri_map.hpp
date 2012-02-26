@@ -97,9 +97,15 @@ public:
       tracker_.push(iid);
    }
 
-protected:
+   void clear() {
+      map_.clear();
+      tracker_ = tracker_t(smap_.ns_id_next());
+   }
+
+private:
+   typedef detail::Id_tracker<id_type> tracker_t;
    Node_map_std const& smap_;
-   detail::Id_tracker<Ns_id> tracker_;
+   tracker_t tracker_;
    Iri_map_base map_;
 };
 

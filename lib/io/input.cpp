@@ -15,7 +15,6 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 
 #include "owlcpp/io/read_ontology_iri.hpp"
-#include "owlcpp/io/parser_triple.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "raptor_to_store.hpp"
 
@@ -38,9 +37,8 @@ void load_file(
 /*
 *******************************************************************************/
 void load(std::istream& stream, Triple_store& store, std::string const& path) {
-   Parser_triple parser;
    detail::Raptor_to_store ats(store, path);
-   parser(stream, ats);
+   ats.parse(stream);
 }
 
 /*

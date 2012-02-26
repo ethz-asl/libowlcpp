@@ -24,15 +24,19 @@ public:
    typedef store_t::iterator iterator;
    typedef iterator const_iterator;
 
+   /**
+    @return number of stored triples
+   */
+   std::size_t size() const {return store_.size();}
+   const_iterator begin() const {return store_.begin();}
+   const_iterator end() const {return store_.end();}
+   void clear() {store_.clear();}
+
    /**@brief Insert a new triple
     @param triple
    */
    void insert(Triple const& triple) { store_.push_back(triple); }
 
-   /**
-    @return number of stored triples
-   */
-   std::size_t size() const {return store_.size();}
 
    /**@brief Search triples by subject, predicate, object, or document IDs.
     @details Polymorphically search stored triples to find ones with matching
@@ -57,9 +61,6 @@ public:
       typedef typename query_detail::Query_type<Subj, Pred, Obj, Doc> q_type;
       return q_type::range(store_, subj, pred, obj, doc);
    }
-
-   const_iterator begin() const {return store_.begin();}
-   const_iterator end() const {return store_.end();}
 
 private:
    store_t store_;

@@ -1,10 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/io/parser_triple.hpp" 
+/** @file "/owlcpp/lib/io/raptor_wrapper.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef PARSER_TRIPLE_HPP_
-#define PARSER_TRIPLE_HPP_
+#ifndef RAPTOR_WRAPPER_HPP_
+#define RAPTOR_WRAPPER_HPP_
 #include <iosfwd>
 #include <string>
 #include "boost/assert.hpp"
@@ -14,23 +14,21 @@ part of owlcpp project.
 #include "owlcpp/io/config.hpp"
 #include "owlcpp/io/exception.hpp"
 
-typedef std::basic_string<unsigned char> ustring_t;
-
 typedef struct raptor_parser_s raptor_parser;
 typedef struct raptor_world_s raptor_world;
 typedef struct raptor_uri_s raptor_uri;
 
 namespace owlcpp{
 
-/**
+/**@brief 
 *******************************************************************************/
-class OWLCPP_IO_DECL Parser_triple {
+class Raptor_wrapper {
    typedef void (*handle_statement_fun_t)(void *, const void*);
    typedef bool (*stop_parsing_fun_t)(const void *);
 public:
    struct Err : public Input_err {};
 
-   Parser_triple();
+   Raptor_wrapper();
 
    template<class Sink> void operator()(
          std::istream& stream,
@@ -38,7 +36,6 @@ public:
    ) {
       setup(&sink, &handle_statement<Sink>);
       parse(stream);
-      sink.finalize();
    }
 
    template<class Sink> void operator()(
@@ -47,11 +44,10 @@ public:
    ) {
       setup(&sink, &handle_statement<Sink>);
       parse(file_name);
-      sink.finalize();
    }
 
    const boost::function<void()> abort_call() {
-      return boost::bind(&Parser_triple::abort_parse, this);
+      return boost::bind(&Raptor_wrapper::abort_parse, this);
    }
 
 private:
@@ -74,4 +70,4 @@ private:
 };
 
 }//namespace owlcpp
-#endif /* PARSER_TRIPLE_HPP_ */
+#endif /* RAPTOR_WRAPPER_HPP_ */
