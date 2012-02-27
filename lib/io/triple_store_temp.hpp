@@ -19,9 +19,9 @@ namespace owlcpp{ namespace detail{
 /**@brief Storage for RDF triples coming from a single document
 *******************************************************************************/
 class Triple_store_temp :
-public Store_node_iri_crtpb<Triple_store>,
-public Store_node_blank_crtpb<Triple_store>,
-public Store_node_literal_crtpb<Triple_store>
+public Store_node_iri_crtpb<Triple_store_temp>,
+public Store_node_blank_crtpb<Triple_store_temp>,
+public Store_node_literal_crtpb<Triple_store_temp>
 {
 public:
 

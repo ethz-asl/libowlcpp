@@ -75,6 +75,16 @@ template<class T> struct Store_node_iri_crtpb {
       //TODO: deal with blanks and literals
    }
 
+   std::string operator[](const Ns_id iid) const {
+      T const& self = static_cast<T const&>(*this);
+      return self.iris()[iid];
+   }
+
+   Node const& operator[](const Node_id nid) const {
+      T const& self = static_cast<T const&>(*this);
+      return self.nodes()[nid];
+   }
+
 };
 
 

@@ -49,7 +49,21 @@ public:
       const Node_id iid = self.insert_iri_node(iri);
       if( vers.empty() ) return docs_.insert(path, iid, terms::T_empty_::id());
       const Node_id vid = self.insert_iri_node(vers);
-      return docs_.insert(path, iid, vid);
+      return insert_doc(path, iid, vid);
+   }
+
+   /**
+    @param path
+    @param iri
+    @param version
+    @return
+   */
+   std::pair<Doc_id,bool> insert_doc(
+            std::string const& path,
+            const Node_id iri,
+            const Node_id vers
+   ) {
+      return docs_.insert(path, iri, vers);
    }
 
    /**

@@ -58,9 +58,6 @@ public:
       triple_.insert(Triple(subj, pred, obj, doc));
    }
 
-   Node const& operator[](const Node_id nid) const {return node_[nid];}
-   std::string operator[](const Ns_id iid) const {return iri_[iid];}
-
 private:
    Iri_map iri_;
    node_map_t node_;
