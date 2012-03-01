@@ -11,9 +11,9 @@ part of owlcpp project.
 #include "test/sample_data.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/io/input.hpp"
-#include "owlcpp/io/parser_triple.hpp"
+#include "owlcpp/io/raptor_wrapper.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "adaptor_triple_store.hpp"
+#include "raptor_to_store.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -36,8 +36,8 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
    Triple_store ts;
-   owlcpp::detail::Adaptor_triple_store ats(ts, path2);
-   Parser_triple parser;
+   owlcpp::detail::Raptor_to_store ats(ts, path2);
+   Raptor_wrapper parser;
    parser(path2, ats);
    BOOST_CHECK_EQUAL(ats.imports().size(), 1u);
    BOOST_CHECK_EQUAL(ats.imports().at(0), iri3);

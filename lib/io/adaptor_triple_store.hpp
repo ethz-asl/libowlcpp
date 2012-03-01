@@ -18,7 +18,7 @@ part of owlcpp project.
 #include "owlcpp/terms/term_methods.hpp"
 #include "owlcpp/io/exception.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "adaptor_iri_finder.hpp"
+#include "raptor_to_iri.hpp"
 #include "triple_store_temp.hpp"
 
 namespace owlcpp{ namespace detail{
