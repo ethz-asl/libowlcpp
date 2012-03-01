@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/io/raptor_wrapper.hpp" 
+/** @file "/owlcpp/include/owlcpp/io/raptor_wrapper.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -22,7 +22,7 @@ namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-class Raptor_wrapper {
+class OWLCPP_IO_DECL Raptor_wrapper {
    typedef void (*handle_statement_fun_t)(void *, const void*);
    typedef bool (*stop_parsing_fun_t)(const void *);
 public:
@@ -68,6 +68,5 @@ private:
    }
 
 };
-
 }//namespace owlcpp
 #endif /* RAPTOR_WRAPPER_HPP_ */

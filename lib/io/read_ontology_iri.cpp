@@ -8,7 +8,7 @@ part of owlcpp project.
 #endif
 #include "boost/filesystem/fstream.hpp"
 #include "owlcpp/io/read_ontology_iri.hpp"
-#include "owlcpp/io/parser_triple.hpp"
+#include "owlcpp/io/raptor_wrapper.hpp"
 #include "raptor_to_iri.hpp"
 
 namespace owlcpp {
@@ -19,7 +19,7 @@ std::pair<std::string,std::string> read_ontology_iri(
          boost::filesystem::path const& file,
          const std::size_t search_depth
 ) {
-   Parser_triple parser;
+   Raptor_wrapper parser;
    detail::Raptor_to_iri rti(parser.abort_call(), search_depth);
 //   boost::filesystem::ifstream ifs(file);
 //   parser(ifs, rti);

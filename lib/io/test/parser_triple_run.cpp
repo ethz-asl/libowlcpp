@@ -7,8 +7,8 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "test/sample_data.hpp"
-#include "triple_sink_printer.hpp"
-#include "owlcpp/io/parser_triple.hpp"
+#include "triple_printer.hpp"
+#include "owlcpp/io/raptor_wrapper.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -19,8 +19,8 @@ const std::string path1 = sample_file_path("imports_test_01.owl");
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Parser_triple parser;
-   Triple_sink_printer tsp;
+   Raptor_wrapper parser;
+   Triple_printer tsp;
    parser(path1, tsp);
 
 //   BOOST_ERROR("");
