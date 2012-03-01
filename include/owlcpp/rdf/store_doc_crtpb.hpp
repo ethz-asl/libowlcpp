@@ -84,7 +84,6 @@ public:
    */
    std::string path(const Doc_id did) const {return docs_.path(did);}
 
-
 private:
    doc_map_t docs_;
 };

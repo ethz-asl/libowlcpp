@@ -19,21 +19,34 @@ const std::string iri1 = "http://purl.obolibrary.org/obo/ido/dev/version_test.ow
 const std::string version1 = "http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl";
 const std::string dir1 = sample_file_path();
 
-/**
+/** Insert doc info manually
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Catalog cat;
+   BOOST_CHECK_EQUAL(cat.size(), 0U);
+   cat.insert_doc("some/path", Node_id(13), terms::T_empty_::id());
+   BOOST_CHECK_EQUAL(cat.size(), 1U);
+   cat.insert_doc(path1, iri1, version1);
+   BOOST_CHECK_EQUAL(cat.size(), 2U);
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case02 ) {
+   Catalog cat;
+   BOOST_CHECK_EQUAL(cat.size(), 0U);
    cat.add(path1);
+   BOOST_CHECK_EQUAL(cat.size(), 1U);
    Doc_id const* did1 = cat.find_doc_iri(iri1);
    BOOST_REQUIRE(did1);
-   BOOST_CHECK_EQUAL(cat.ontology_iri(*did1), iri1);
-   BOOST_CHECK_EQUAL(cat.version_iri(*did1), version1);
+   BOOST_CHECK_EQUAL(cat.ontology_iri_str(*did1), iri1);
+   BOOST_CHECK_EQUAL(cat.version_iri_str(*did1), version1);
    BOOST_CHECK_EQUAL(cat.path(*did1), boost::filesystem::canonical(path1).string());
 }
 
 /** Test inserting new nodes into OWL namespace
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02 ) {
+BOOST_AUTO_TEST_CASE( case03 ) {
    Catalog cat;
 
    //standard term as document IRI
@@ -61,7 +74,7 @@ BOOST_AUTO_TEST_CASE( case02 ) {
 
 /**
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case03 ) {
+BOOST_AUTO_TEST_CASE( case04 ) {
    Catalog cat;
    BOOST_CHECK_EQUAL(cat.add(dir1), 12u);
 

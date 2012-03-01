@@ -15,6 +15,7 @@ part of owlcpp project.
 namespace owlcpp {
 
 namespace{
+
 /*
 *******************************************************************************/
 inline std::size_t add_to_catalog(
@@ -38,6 +39,8 @@ inline std::size_t add_to_catalog(
    return cat.insert_doc(cp.string(), pair.first, pair.second).second ? 1 : 0;
 }
 
+/*
+*******************************************************************************/
 template<class Iter> inline
 std::size_t add_to_catalog(Iter i1, Iter i2, Catalog& cat, const std::size_t search_depth) {
    std::size_t n = 0;

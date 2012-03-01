@@ -33,35 +33,20 @@ public:
 private:
    Iri_map& iris() {return iri_;}
    node_map_t& nodes() {return node_;}
-   Doc_map& documents() {return doc_;}
    Iri_map const& iris() const {return iri_;}
    node_map_t const& nodes() const {return node_;}
-   Doc_map const& documents() const {return doc_;}
    friend class Store_node_iri_crtpb<Catalog>;
    friend class Store_doc_crtpb<Catalog>;
-
-   /** indicate which namespaces should remain constant */
-   static bool is_constant(const Ns_id ns) {
-      switch ( ns() ) {
-         case terms::N_blank::index:
-         case terms::N_empty::index:
-            return true;
-         default:
-            return false;
-      }
-   }
 
 public:
    typedef Doc_map::iterator iterator;
    typedef Doc_map::const_iterator const_iterator;
    struct Err : public Input_err {};
-   const_iterator begin() const {return doc_.begin();}
-   const_iterator end() const {return doc_.end();}
-   std::string ontology_iri(const Doc_id did) const {return string(ontology_iri_id(did));}
-   std::string version_iri(const Doc_id did) const { return string(version_iri_id(did)); }
-   std::string path(const Doc_id did) const {return doc_.path(did);}
-   Node_id ontology_iri_id(const Doc_id did) const {return doc_.ontology_iri(did);}
-   Node_id version_iri_id(const Doc_id did) const {return doc_.version_iri(did);}
+   std::size_t size() const {return documents().size();}
+   const_iterator begin() const {return documents().begin();}
+   const_iterator end() const {return documents().end();}
+   std::string ontology_iri_str(const Doc_id did) const {return string(ontology_iri(did));}
+   std::string version_iri_str(const Doc_id did) const { return string(version_iri(did)); }
 
    /**@brief determine OntologyIRI and VersionIRI of ontology document(s)
     and add them to the catalog
@@ -84,7 +69,6 @@ public:
 private:
    Iri_map iri_;
    node_map_t node_;
-   Doc_map doc_;
 };
 
 }//namespace owlcpp
