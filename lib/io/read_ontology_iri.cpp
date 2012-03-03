@@ -21,9 +21,9 @@ std::pair<std::string,std::string> read_ontology_iri(
 ) {
    Raptor_wrapper parser;
    detail::Raptor_to_iri rti(parser.abort_call(), search_depth);
-//   boost::filesystem::ifstream ifs(file);
-//   parser(ifs, rti);
-   parser(file.string(), rti);
+   boost::filesystem::ifstream ifs(file);
+   parser(ifs, rti);
+//   parser(file.string(), rti);
    return make_pair(rti.iri(), rti.version());
 }
 
