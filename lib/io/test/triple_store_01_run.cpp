@@ -19,9 +19,18 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-const std::string path1 = sample_file_path("version_test_b.owl");
-const std::string path2 = sample_file_path("imports_test_01.owl");
-const std::string iri3 = "http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl";
+const std::string path1 = sample_files()[13].path;
+const std::string path2 = sample_files()[0].path;
+const std::string iri1 = sample_files()[13].version;
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case00 ) {
+   Triple_store ts;
+   owlcpp::detail::Raptor_to_store rts(ts, path1);
+   rts.parse();
+   BOOST_CHECK_EQUAL( ts.triples().size(), 15u );
+}
 
 /**
 *******************************************************************************/
@@ -36,11 +45,10 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
    Triple_store ts;
-   owlcpp::detail::Raptor_to_store ats(ts, path2);
-   Raptor_wrapper parser;
-   parser(path2, ats);
-   BOOST_CHECK_EQUAL(ats.imports().size(), 1u);
-   BOOST_CHECK_EQUAL(ats.imports().at(0), iri3);
+   owlcpp::detail::Raptor_to_store rts(ts, path2);
+   rts.parse();
+   BOOST_CHECK_EQUAL(rts.imports().size(), 1u);
+   BOOST_CHECK_EQUAL(rts.imports().at(0), iri1);
    BOOST_CHECK_EQUAL( ts.triples().size(), 3u );
 }
 
@@ -50,7 +58,7 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    Triple_store ts;
    Catalog cat;
    cat.add(sample_file_path());
-   load_file(path2, ts, cat);
+//   load_file(path2, ts, cat);
 
    BOOST_CHECK_EQUAL( ts.triples().size(), 18u );
 }

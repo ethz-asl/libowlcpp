@@ -14,7 +14,7 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/** Check that every ontology IRI and version is read correctly
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_FOREACH(Sample_info const si, sample_files()) {

@@ -103,7 +103,7 @@ public:
    /**@brief Add document info: location, ontologyIRI, and versionIRI.
     @param path document location
     @param iri ontologyIRI
-    @param version versionIRI
+    @param vers versionIRI
     @return document ID and whether new document info was actually added
     @throw Err if an entry with the same non-empty @a path and different @a iri or @a version
     is already present.

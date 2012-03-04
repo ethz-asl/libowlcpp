@@ -20,7 +20,6 @@ namespace owlcpp{ namespace detail{
 *******************************************************************************/
 class Triple_store_temp :
 public Store_node_iri_crtpb<Triple_store_temp>,
-public Store_node_blank_crtpb<Triple_store_temp>,
 public Store_node_literal_crtpb<Triple_store_temp>
 {
 public:
@@ -40,6 +39,10 @@ public:
    node_map_t const& nodes() const {return node_;}
    Triple_map const& triples() const {return triple_;}
 
+   Node_id insert_blank_node(std::string const& name) {
+      return node_.insert_blank(did_, name);
+   }
+
    void insert_triple(
             const Node_id subj,
             const Node_id pred,
@@ -49,6 +52,12 @@ public:
    }
 
    Node_id ontology_iri(const Doc_id = Doc_id(0)) const {return ontology_iri_;}
+
+   void set_ids(std::string const& ontologyIRI, std::string const& versionIRI) {
+      ontology_iri_ = insert_iri_node(ontologyIRI);
+      version_iri_ = insert_iri_node(versionIRI);
+   }
+
    Node_id version_iri(const Doc_id) const {return version_iri_;}
    std::string path(const Doc_id) const {return path_;}
    void clear() {

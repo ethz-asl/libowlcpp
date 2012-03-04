@@ -44,20 +44,20 @@ struct Sample_info {
 
 std::vector<Sample_info> const& sample_files() {
    static const std::vector<Sample_info> v = boost::assign::list_of<Sample_info>
-   ("version_test_b.owl", "http://purl.obolibrary.org/obo/ido/dev/version_test.owl", "http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl")
-   ("imports_test_01.owl", "http://purl.obolibrary.org/obo/ido/dev/imports_test_01.owl", "")
-   ("negative_property_assertion_01.owl", "http://owl.semanticweb.org/page/New-Feature-NegativeObjectPropertyAssertion-001", "")
-   ("one_eq_two_01.owl", "http://example.com/one_eq_two_01.owl", "")
-   ("owl2-rl-rules-fp-differentFrom.owl", "http://owl.semanticweb.org/page/Owl2-rl-rules-fp-differentFrom", "")
-   ("owl2-rl-rules-fp-sameAs.owl", "http://owl.semanticweb.org/page/Owl2-rl-rules-fp-sameAs", "")
-   ("owl2-rl-rules-ifp-differentFrom.owl", "http://owl.semanticweb.org/page/Owl2-rl-rules-ifp-differentFrom", "")
-   ("owl2-rl-rules-ifp-sameAs.owl", "http://owl2.test/rules/owl2-rl-rules-ifp-sameAs", "")
-   ("propertyChain_01.owl", "http://owl.semanticweb.org/page/New-Feature-ObjectPropertyChain-001", "")
-   ("test_01.owl", "http://purl.obolibrary.org/obo/ido/dev/test_01.owl", "http://purl.obolibrary.org/obo/ido/dev/test_01a.owl")
-   ("transitive_property.owl", "http://purl.org/obo/owl/transitive_property", "")
-   ("union_01.owl", "http://www.ifomis.org/bfo/union", "")
-   ("og_01.owl", "og_01.owl", "")
-//   ("", "", "")
+   /* 0 */("imports_test_01.owl", "http://purl.obolibrary.org/obo/ido/dev/imports_test_01.owl", "")
+   /* 1 */("negative_property_assertion_01.owl", "http://owl.semanticweb.org/page/New-Feature-NegativeObjectPropertyAssertion-001", "")
+   /* 2 */("og_01.owl", "og_01.owl", "")
+   /* 3 */("og_02.owl", "og_02.owl", "")
+   /* 4 */("one_eq_two_01.owl", "http://example.com/one_eq_two_01.owl", "")
+   /* 5 */("owl2-rl-rules-fp-differentFrom.owl", "http://owl.semanticweb.org/page/Owl2-rl-rules-fp-differentFrom", "")
+   /* 6 */("owl2-rl-rules-fp-sameAs.owl", "http://owl.semanticweb.org/page/Owl2-rl-rules-fp-sameAs", "")
+   /* 7 */("owl2-rl-rules-ifp-differentFrom.owl", "http://owl.semanticweb.org/page/Owl2-rl-rules-ifp-differentFrom", "")
+   /* 8 */("owl2-rl-rules-ifp-sameAs.owl", "http://owl2.test/rules/owl2-rl-rules-ifp-sameAs", "")
+   /* 9 */("propertyChain_01.owl", "http://owl.semanticweb.org/page/New-Feature-ObjectPropertyChain-001", "")
+   /* 10 */("test_01.owl", "http://purl.obolibrary.org/obo/ido/dev/test_01.owl", "http://purl.obolibrary.org/obo/ido/dev/test_01a.owl")
+   /* 11 */("transitive_property.owl", "http://purl.org/obo/owl/transitive_property", "")
+   /* 12 */("union_01.owl", "http://www.ifomis.org/bfo/union", "")
+   /* 13 */("version_test_b.owl", "http://purl.obolibrary.org/obo/ido/dev/version_test.owl", "http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl")
    ;
    return v;
 }

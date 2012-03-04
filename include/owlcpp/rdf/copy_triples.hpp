@@ -125,8 +125,8 @@ template<class Range, class Src, class Dest> inline void copy_triples(
 
 /**@brief copy all triples from one store to another
 @details IRIs, nodes, document info-s are also copied
-@param ts1 source of triples
-@param ts2 destination
+@param src source of triples
+@param dest destination
 @throw base_exception if @b ts1 contains document already present in @b ts2
 *******************************************************************************/
 template<class Src, class Dest> inline void copy_triples(Src const& src, Dest& dest) {

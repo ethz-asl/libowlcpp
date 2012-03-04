@@ -42,20 +42,18 @@ void load(std::istream& stream, Triple_store& store, std::string const& path) {
 }
 
 /*
+*******************************************************************************/
 void load_file(boost::filesystem::path const& file, Triple_store& ts) {
    const std::string cp = canonical(file).string();
-   Parser_triple parser;
    detail::Raptor_to_store ats(ts, cp);
-   parser(cp, ats);
+   ats.parse();
 }
-*******************************************************************************/
 
 /*
+*******************************************************************************/
 void load_file(boost::filesystem::path const& file, Triple_store& ts, Catalog const& cat) {
    detail::Raptor_to_store ats(ts, file.string());
-   Parser_triple parser;
-   parser(file.string(), ats);
-
+   ats.parse();
    try{
       BOOST_FOREACH(std::string const& iiri, ats.imports()) {
          if( ts.find_doc_iri(iiri) ) continue;
@@ -69,9 +67,9 @@ void load_file(boost::filesystem::path const& file, Triple_store& ts, Catalog co
       );
    }
 }
-*******************************************************************************/
 
 /*
+*******************************************************************************/
 void load_iri(std::string const& iri, Triple_store& ts, Catalog const& cat) {
    Doc_id const* did = cat.find_doc_iri(iri);
    if( ! did ) BOOST_THROW_EXCEPTION(
@@ -80,13 +78,9 @@ void load_iri(std::string const& iri, Triple_store& ts, Catalog const& cat) {
             << Input_err::str1_t(iri)
    );
 
-   detail::Raptor_to_store ats(ts, cat.path(*did), cat.ontology_iri(*did), cat.version_iri(*did));
-   Parser_triple parser;
-   std::cout << cat.path(*did) << std::endl;
-//   boost::filesystem::ifstream ifs(cat.path(*did));
-//   parser(ifs, ats);
-   parser(cat.path(*did), ats);
-
+   detail::Check_both check(cat.ontology_iri(*did), cat.version_iri(*did));
+   detail::Raptor_to_store rts(ts, cat.path(*did), check);
+   rts.parse();
    try{
       BOOST_FOREACH(std::string const& iiri, ats.imports()) {
          if( ts.find_doc_iri(iiri) ) continue;
@@ -100,7 +94,6 @@ void load_iri(std::string const& iri, Triple_store& ts, Catalog const& cat) {
       );
    }
 }
-*******************************************************************************/
 
 
 

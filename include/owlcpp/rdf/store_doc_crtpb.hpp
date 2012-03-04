@@ -37,7 +37,7 @@ public:
    /**
     @param path
     @param iri
-    @param version
+    @param vers
     @return
    */
    std::pair<Doc_id,bool> insert_doc(
@@ -55,7 +55,7 @@ public:
    /**
     @param path
     @param iri
-    @param version
+    @param vers
     @return
    */
    std::pair<Doc_id,bool> insert_doc(
