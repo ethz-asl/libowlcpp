@@ -18,11 +18,15 @@ namespace owlcpp{
 class OWLCPP_IO_DECL Triple_store;
 class OWLCPP_IO_DECL Catalog;
 
-/**@brief Load ontology from input stream into triple store
+/**@brief Load ontology from input stream ignoring imports
 @param stream STL input stream
 @param store triple store
 @param path optional path to ontology document, used for identification only
-@param check
+@param check reference to a polymorphic class that checks that the input ontology
+has the expected ontologyIRI and versionIRI.
+@throw Input_err if input ontology contains an error or an ontology with the same
+ID has already been loaded into the triple store.
+If an exception is thrown, the destination triple store SHOULD remain unchanged.
 *******************************************************************************/
 OWLCPP_IO_DECL
 void load(
@@ -32,12 +36,16 @@ void load(
          Check_id const& check = Check_id()
 );
 
-/**@brief Load ontology from input stream into triple store
+/**@brief Load ontology from input stream and its imports from the file system
 @param stream STL input stream
 @param store triple store
-@param cat
+@param cat catalog of ontology documents used for locating imports
 @param path optional path to ontology document, used for identification only
-@param check
+@param check reference to a polymorphic class that checks that the input ontology
+has the expected ontologyIRI and versionIRI.
+@throw Input_err if input ontology contains an error or an ontology with the same
+ID has already been loaded into the triple store.
+If an exception is thrown, the destination triple store SHOULD remain unchanged.
 *******************************************************************************/
 OWLCPP_IO_DECL
 void load(
@@ -48,7 +56,14 @@ void load(
          Check_id const& check = Check_id()
 );
 
-/**@brief
+/**@brief Load ontology from file ignoring imports
+@param file filesystem path to ontology document
+@param store triple store
+@param check reference to a polymorphic class that checks that the input ontology
+has the expected ontologyIRI and versionIRI.
+@throw Input_err if input ontology contains an error or an ontology with the same
+ID has already been loaded into the triple store.
+If an exception is thrown, the destination triple store SHOULD remain unchanged.
 *******************************************************************************/
 OWLCPP_IO_DECL
 void load_file(
@@ -57,7 +72,15 @@ void load_file(
          Check_id const& check = Check_id()
 );
 
-/**@brief
+/**@brief Load ontology from file ignoring imports
+@param file filesystem path to ontology document
+@param store triple store
+@param cat catalog of ontology documents used for locating imports
+@param check reference to a polymorphic class that checks that the input ontology
+has the expected ontologyIRI and versionIRI.
+@throw Input_err if input ontology contains an error or an ontology with the same
+ID has already been loaded into the triple store.
+If an exception is thrown, the destination triple store SHOULD remain unchanged.
 *******************************************************************************/
 OWLCPP_IO_DECL
 void load_file(
@@ -67,7 +90,13 @@ void load_file(
          Check_id const& check = Check_id()
 );
 
-/**@brief
+/**@brief Load ontology identified by versionIRI or ontologyIRI and its imports
+@param iri ontology versionIRI or ontologyIRI
+@param store triple store
+@param cat catalog of ontology documents used for locating imports
+@throw Input_err if input ontology contains an error or an ontology with the same
+ID has already been loaded into the triple store.
+If an exception is thrown, the destination triple store SHOULD remain unchanged.
 *******************************************************************************/
 OWLCPP_IO_DECL
 void load_iri(std::string const& iri, Triple_store& store, Catalog const& cat);
