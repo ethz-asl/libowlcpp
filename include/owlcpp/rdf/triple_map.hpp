@@ -66,5 +66,7 @@ private:
    store_t store_;
 };
 
+using query_detail::Query;
+
 }//namespace owlcpp
 #endif /* TRIPLE_MAP_HPP_ */

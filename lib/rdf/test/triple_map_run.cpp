@@ -34,12 +34,23 @@ BOOST_AUTO_TEST_CASE( case01 ) {
             {0,3,0,0}
    };
    const Triple_map tm = sample_tm(t);
-   BOOST_CHECK( tm.find(blank(), blank(), blank(), blank()) );
-   BOOST_CHECK( tm.find(Node_id(0), blank(), blank(), blank()) );
-   BOOST_CHECK( tm.find(Node_id(0), blank(), Node_id(0), blank()) );
-   BOOST_CHECK( tm.find(blank(), blank(), blank(), Doc_id(0)) );
-   BOOST_CHECK( tm.find(Node_id(0), Node_id(2), Node_id(0), Doc_id(0)) );
-   BOOST_CHECK( ! tm.find(Node_id(0), blank(), Node_id(1), blank()) );
+   Query<0,0,0,0>::range_t r1 = tm.find(blank(), blank(), blank(), blank());
+   BOOST_CHECK( r1 );
+
+   Query<1,0,0,0>::range_t r2 = tm.find(Node_id(0), blank(), blank(), blank());
+   BOOST_CHECK( r2 );
+
+   Query<1,0,1,0>::range_t r3 = tm.find(Node_id(0), blank(), Node_id(0), blank());
+   BOOST_CHECK( r3 );
+
+   Query<0,0,0,1>::range_t r4 = tm.find(blank(), blank(), blank(), Doc_id(0));
+   BOOST_CHECK( r4 );
+
+   Query<1,1,1,1>::range_t r5 = tm.find(Node_id(0), Node_id(2), Node_id(0), Doc_id(0));
+   BOOST_CHECK( r5 );
+
+   Query<1,0,1,0>::range_t r6 = tm.find(Node_id(0), blank(), Node_id(1), blank());
+   BOOST_CHECK( ! r6 );
 }
 
 }//namespace test

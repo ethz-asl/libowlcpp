@@ -180,6 +180,17 @@ template<> struct Query_type<blank,blank,blank,blank> {
    }
 };
 
+template<bool S, bool P, bool O, bool D> class Query {
+   typedef typename boost::mpl::if_<boost::mpl::bool_<S>, Node_id, blank>::type subj_t;
+   typedef typename boost::mpl::if_<boost::mpl::bool_<P>, Node_id, blank>::type pred_t;
+   typedef typename boost::mpl::if_<boost::mpl::bool_<O>, Node_id, blank>::type obj_t;
+   typedef typename boost::mpl::if_<boost::mpl::bool_<D>, Doc_id, blank>::type doc_t;
+   typedef Query_type<subj_t, pred_t, obj_t, doc_t> query_t;
+public:
+   typedef typename query_t::iterator_t iterator_t;
+   typedef typename query_t::range_t range_t;
+};
+
 }//namespace query_detail
 }//namespace owlcpp
 #endif /* TRIPLE_STORE_QUERY_HPP_ */
