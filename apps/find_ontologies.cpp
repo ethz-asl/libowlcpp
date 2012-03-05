@@ -25,8 +25,8 @@ int main(int argc, char* argv[]) {
       BOOST_FOREACH(const owlcpp::Doc_id id, cat) {
          std::cout
          << '\"' << cat.path(id) << "\"\t\""
-         << cat.ontology_iri(id) << "\"\t\""
-         << cat.version_iri(id) << "\"\n"
+         << cat.ontology_iri_str(id) << "\"\t\""
+         << cat.version_iri_str(id) << "\"\n"
          ;
       }
    } catch(...) {

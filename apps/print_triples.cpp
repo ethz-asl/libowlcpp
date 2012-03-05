@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
             ("include,i",
                      bpo::value<std::vector<std::string> >()->zero_tokens()
                      ->composing(), "search paths")
-            ("count,c", "count triples")
+            ("count,c", "only print the number of triples")
             ;
    bpo::positional_options_description pod;
    pod.add("input-file", -1);
