@@ -14,50 +14,38 @@ part of owlcpp project.
 #include "boost/filesystem.hpp"
 #include "boost/foreach.hpp"
 
-#include "owlcpp/io/read_ontology_iri.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "raptor_to_store.hpp"
 
-namespace owlcpp { namespace{
+namespace owlcpp {
+
 /*
 *******************************************************************************/
-void load_file(
+void load(
+         std::istream& stream,
+         Triple_store& store,
          std::string const& path,
-         Triple_store& ts,
-         std::set<std::string>& imports,
-         std::string const& iri,
-         std::string const& version
+         Check_id const& check
 ) {
-//   if( iri.impty() )
-//   detail::Adaptor_triple_store ats(ts, path);
-}
-
-}//namespace anonymous
-
-/*
-*******************************************************************************/
-void load(std::istream& stream, Triple_store& store, std::string const& path) {
-   detail::Raptor_to_store ats(store, path);
-   ats.parse(stream);
+   detail::Raptor_to_store rts(store, path, check);
+   rts.parse(stream);
 }
 
 /*
 *******************************************************************************/
-void load_file(boost::filesystem::path const& file, Triple_store& ts) {
-   const std::string cp = canonical(file).string();
-   detail::Raptor_to_store ats(ts, cp);
-   ats.parse();
-}
-
-/*
-*******************************************************************************/
-void load_file(boost::filesystem::path const& file, Triple_store& ts, Catalog const& cat) {
-   detail::Raptor_to_store ats(ts, file.string());
-   ats.parse();
+void load(
+         std::istream& stream,
+         Triple_store& store,
+         Catalog const& cat,
+         std::string const& path,
+         Check_id const& check
+) {
+   detail::Raptor_to_store rts(store, path, check);
+   rts.parse(stream);
    try{
-      BOOST_FOREACH(std::string const& iiri, ats.imports()) {
-         if( ts.find_doc_iri(iiri) ) continue;
-         load_iri(iiri, ts, cat);
+      BOOST_FOREACH(std::string const& iri, rts.imports()) {
+         if( store.find_doc_iri(iri) ) continue;
+         load_iri(iri, store, cat);
       }
    } catch(Input_err&) {
       BOOST_THROW_EXCEPTION(
@@ -70,31 +58,40 @@ void load_file(boost::filesystem::path const& file, Triple_store& ts, Catalog co
 
 /*
 *******************************************************************************/
-void load_iri(std::string const& iri, Triple_store& ts, Catalog const& cat) {
+void load_file(
+         boost::filesystem::path const& file,
+         Triple_store& store,
+         Check_id const& check
+) {
+   const std::string cp = canonical(file).string();
+   boost::filesystem::ifstream ifs(cp);
+   load(ifs, store, cp, check);
+}
+
+/*
+*******************************************************************************/
+void load_file(
+         boost::filesystem::path const& file,
+         Triple_store& store,
+         Catalog const& cat,
+         Check_id const& check
+) {
+   const std::string cp = canonical(file).string();
+   boost::filesystem::ifstream ifs(cp);
+   load(ifs, store, cat, cp, check);
+}
+
+/*
+*******************************************************************************/
+void load_iri(std::string const& iri, Triple_store& store, Catalog const& cat) {
    Doc_id const* did = cat.find_doc_iri(iri);
    if( ! did ) BOOST_THROW_EXCEPTION(
             Input_err()
             << Input_err::msg_t("ontology not found")
             << Input_err::str1_t(iri)
    );
-
-   detail::Check_both check(cat.ontology_iri(*did), cat.version_iri(*did));
-   detail::Raptor_to_store rts(ts, cat.path(*did), check);
-   rts.parse();
-   try{
-      BOOST_FOREACH(std::string const& iiri, ats.imports()) {
-         if( ts.find_doc_iri(iiri) ) continue;
-         load_iri(iiri, ts, cat);
-      }
-   } catch(Input_err&) {
-      BOOST_THROW_EXCEPTION(
-                  Input_err()
-                  << Input_err::msg_t("import error")
-                  << Input_err::nested_t(boost::current_exception())
-      );
-   }
+   Check_both check(cat.ontology_iri_str(*did), cat.version_iri_str(*did));
+   load_file(cat.path(*did), store, cat, check);
 }
-
-
 
 }//namespace owlcpp

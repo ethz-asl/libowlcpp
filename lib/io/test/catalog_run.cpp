@@ -15,7 +15,7 @@ namespace owlcpp{ namespace test{
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 const std::string path1 = sample_file_path("version_test_b.owl");
-const std::string iri1 = "http://purl.obolibrary.org/obo/ido/dev/version_test.owl";
+const std::string ver1 = "http://purl.obolibrary.org/obo/ido/dev/version_test.owl";
 const std::string version1 = "http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl";
 const std::string dir1 = sample_file_path();
 
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(cat.size(), 0U);
    cat.insert_doc("some/path", Node_id(13), terms::T_empty_::id());
    BOOST_CHECK_EQUAL(cat.size(), 1U);
-   cat.insert_doc(path1, iri1, version1);
+   cat.insert_doc(path1, ver1, version1);
    BOOST_CHECK_EQUAL(cat.size(), 2U);
 }
 
@@ -37,9 +37,9 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    BOOST_CHECK_EQUAL(cat.size(), 0U);
    cat.add(path1);
    BOOST_CHECK_EQUAL(cat.size(), 1U);
-   Doc_id const* did1 = cat.find_doc_iri(iri1);
+   Doc_id const* did1 = cat.find_doc_iri(ver1);
    BOOST_REQUIRE(did1);
-   BOOST_CHECK_EQUAL(cat.ontology_iri_str(*did1), iri1);
+   BOOST_CHECK_EQUAL(cat.ontology_iri_str(*did1), ver1);
    BOOST_CHECK_EQUAL(cat.version_iri_str(*did1), version1);
    BOOST_CHECK_EQUAL(cat.path(*did1), boost::filesystem::canonical(path1).string());
 }
@@ -72,12 +72,18 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    );
 }
 
-/**
+/** Check sample data catalog
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case04 ) {
    Catalog cat;
-   BOOST_CHECK_EQUAL(cat.add(dir1), 12u);
-
+   BOOST_CHECK_GE(cat.add(dir1), sample_files().size());
+   BOOST_FOREACH(Sample_info const si, sample_files()) {
+      Catalog::doc_map_t::path_range r = cat.documents().find_path(si.path);
+      BOOST_REQUIRE(r);
+      const Doc_id did = r.front();
+      BOOST_CHECK_EQUAL(cat.ontology_iri_str(did), si.iri);
+      BOOST_CHECK_EQUAL(cat.version_iri_str(did), si.version);
+   }
 }
 
 }//namespace test

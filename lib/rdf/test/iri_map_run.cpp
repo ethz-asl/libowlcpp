@@ -14,7 +14,7 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-const std::string iri1("http://iri1");
+const std::string ver1("http://iri1");
 const std::string iri2("http://iri2");
 const std::string iri3("http://iri3");
 
@@ -22,12 +22,12 @@ const std::string iri3("http://iri3");
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Iri_map im;
-   const Ns_id id1 = im.insert(iri1);
-   BOOST_CHECK_MESSAGE( id1 == im.insert(iri1), "same ID from inserting duplicates" );
+   const Ns_id id1 = im.insert(ver1);
+   BOOST_CHECK_MESSAGE( id1 == im.insert(ver1), "same ID from inserting duplicates" );
    const Ns_id id2 = im.insert(iri2);
    BOOST_CHECK_NE(id1, id2);
-   BOOST_CHECK_EQUAL(im[id1], iri1);
-   BOOST_CHECK_EQUAL(im.at(id1), iri1);
+   BOOST_CHECK_EQUAL(im[id1], ver1);
+   BOOST_CHECK_EQUAL(im.at(id1), ver1);
    BOOST_CHECK_MESSAGE( im.prefix(id1) == "", "should return empty string" );
    im.remove(id1);
    BOOST_CHECK_THROW(im.at(id1), Iri_map::Err);
@@ -40,10 +40,10 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
    Iri_map im;
-   const Ns_id id1 = im.insert(iri1);
+   const Ns_id id1 = im.insert(ver1);
    im.insert_prefix(id1, "iri1");
-   BOOST_REQUIRE( im.find_iri(iri1) );
-   BOOST_CHECK_EQUAL( id1, *im.find_iri(iri1) );
+   BOOST_REQUIRE( im.find_iri(ver1) );
+   BOOST_CHECK_EQUAL( id1, *im.find_iri(ver1) );
    BOOST_REQUIRE( im.find_prefix("iri1") );
    BOOST_CHECK_EQUAL( id1, *im.find_prefix("iri1") );
    BOOST_CHECK( ! im.find_iri(iri2) );
