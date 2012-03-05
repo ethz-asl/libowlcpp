@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/triple_store_checks.hpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/triple_store_checks.hpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -11,12 +11,12 @@ part of owl_cpp project.
 namespace bmp = boost::mpl;
 #include "boost/foreach.hpp"
 
-#include "owl_cpp/exception.hpp"
-namespace ot = owl_cpp::terms;
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/rdf/query_nodes.hpp"
+#include "owlcpp/exception.hpp"
+namespace ot = owlcpp::terms;
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_nodes.hpp"
 
-namespace owl_cpp { namespace test{ namespace detail{
+namespace owlcpp { namespace test{ namespace detail{
 
 /**
 *******************************************************************************/
@@ -28,19 +28,19 @@ public:
    Check_std_iri(const Triple_store& store) : store_(store) {}
 
    template<class T> void operator()(const T& t) const {
-      if( store_[T::name()] != T::id() ) {
+      if( store_[T::iri()] != T::id() ) {
          BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("wrong ID retrieved")
-               << Err::str1_t(T::name())
+               << Err::str1_t(T::iri())
          );
       }
 
-      if( store_[T::id()] != T::name() ) {
+      if( store_[T::id()] != T::iri() ) {
          BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("wrong name retrieved")
-               << Err::str1_t(T::name())
+               << Err::str1_t(T::iri())
          );
       }
 
@@ -84,7 +84,7 @@ public:
 
    template<class T> void operator()(const T& t) const {
       typedef typename T::ns_type ns_type;
-      if( find_node(ns_type::name(), T::name(), store_) != T::id() ) {
+      if( find_node(ns_type::iri(), T::name(), store_) != T::id() ) {
          BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("wrong ID retrieved")
@@ -198,6 +198,6 @@ inline bool check_and_print(const Triple_store& store, std::ostream& stream) {
 }
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp
 
 #endif /* TRIPLE_STORE_CHECKS_HPP_ */

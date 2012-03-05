@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/kernel_01_run.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/kernel_01_run.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -9,7 +9,7 @@ part of owl_cpp project.
 #include "boost/exception/diagnostic_information.hpp"
 namespace b = boost;
 
-namespace owl_cpp{ namespace test{
+namespace owlcpp{ namespace test{
 
 /** cardinality restriction on transitive roles:
 cannot be done in tableau-based reasoners
@@ -38,4 +38,4 @@ BOOST_AUTO_TEST_CASE( kernel_01_run_case01 ) {
 }
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp

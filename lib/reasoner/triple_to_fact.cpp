@@ -1,27 +1,27 @@
-/** @file "/owl_cpp/lib/triple_to_fact.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/reasoner/triple_to_fact.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef OWLCPP_REASONER_SOURCE
 #define OWLCPP_REASONER_SOURCE
 #endif
-#include "owl_cpp/reasoner/triple_to_fact.hpp"
+#include "owlcpp/reasoner/triple_to_fact.hpp"
 
 #include <iostream>
 #include "boost/foreach.hpp"
 #include "boost/exception/get_error_info.hpp"
 namespace b = boost;
 
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/rdf/query_nodes.hpp"
-#include "owl_cpp/print.hpp"
-#include "owl_cpp/exception.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_nodes.hpp"
+#include "owlcpp/print.hpp"
+#include "owlcpp/exception.hpp"
 #include "fact_visitor.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
-namespace ot = owl_cpp::terms;
+#include "owlcpp/terms/term_tags.hpp"
+namespace ot = owlcpp::terms;
 
-namespace owl_cpp {
+namespace owlcpp {
 /*
 *******************************************************************************/
 void add(const Triple_store& store, ReasoningKernel& kernel, const bool lax) {
@@ -57,4 +57,4 @@ void add(const Triple_store& store, ReasoningKernel& kernel, const bool lax) {
 
 /*
 *******************************************************************************/
-}//namespace owl_cpp
+}//namespace owlcpp

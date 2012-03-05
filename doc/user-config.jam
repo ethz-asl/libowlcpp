@@ -75,7 +75,7 @@ constant ICONV : $(UTILS)/cpp/iconv/libiconv-1.14 1.14 ;
 ## http://code.google.com/p/factplusplus/
 # constant FACTPP : "$(utils)/FaCT++-1.5.2" 1.5.2 ;
 
-## owl_cpp library source
+## owlcpp library source
 ## http://sourceforge.net/projects/owl-cpp/
-## (optionally) uncomment this to use owl_cpp library in your projects
-# constant OWLCPP : "$(utils)/owl_cpp" 0.0.3 ;
+## (optionally) uncomment this to use owlcpp library in your projects
+# constant OWLCPP : "$(utils)/owlcpp" 0.0.3 ;

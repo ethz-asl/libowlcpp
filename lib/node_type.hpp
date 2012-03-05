@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/node_type.hpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/node_type.hpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010-1
 *******************************************************************************/
@@ -10,20 +10,21 @@ part of owl_cpp project.
 #include <cassert>
 #include "loki/Visitor.h"
 namespace L = Loki;
-#include "owl_cpp/ns_id.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
-namespace ot = owl_cpp::terms;
+#include "owlcpp/ns_id.hpp"
+#include "owlcpp/terms/node_tags_system.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
+namespace ot = owlcpp::terms;
 
-#include "owl_cpp/node_base.hpp"
-#include "owl_cpp/rdf/triple.hpp"
+#include "owlcpp/node_base.hpp"
+#include "owlcpp/rdf/triple.hpp"
 
-namespace owl_cpp{
+namespace owlcpp{
 
 /** Literal description term of an RDF triple
 *******************************************************************************/
 class Node_literal : public Node_base {
 public:
-   typedef ot::N_0 ns_type;
+   typedef ot::N_empty ns_type;
 
    Node_literal(const std::string& val) : val_(val) {}
 
@@ -70,9 +71,9 @@ template<class S> struct Node_std : public Node_base {
 
 /** specialize for a generic term
 *******************************************************************************/
-template<> class Node_std<ot::T_0_generic> : public Node_base {
+template<> class Node_std<ot::T_empty_> : public Node_base {
 public:
-   typedef ot::T_0_generic tag_t;
+   typedef ot::T_empty_ tag_t;
    Node_std() : ns_( tag_t::ns_type::id() ), name_(tag_t::name()) {}
 
    Node_std(const Ns_id ns, const std::string& name)
@@ -95,7 +96,7 @@ private:
    std::string name_;
 };
 
-typedef Node_std<ot::T_0_generic> node_generic_t;
+typedef Node_std<ot::T_empty_> node_generic_t;
 
 
 /**
@@ -105,7 +106,7 @@ Blank nodes are either sequences or classes
 *******************************************************************************/
 class Node_blank : public Node_base {
 public:
-   typedef ot::N__ ns_type;
+   typedef ot::N_blank ns_type;
    Node_blank(const std::string& name) : name_(name) {}
    Ns_id ns_id() const {return ns_type::id();}
    const std::string& value_str() const {return name_;}
@@ -129,5 +130,5 @@ private:
 /**
 *******************************************************************************/
 
-}//namespace owl_cpp
+}//namespace owlcpp
 #endif /* NODE_TYPE_HPP_ */

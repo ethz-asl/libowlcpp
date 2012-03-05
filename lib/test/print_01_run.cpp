@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/print_01_run.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/print_01_run.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -8,14 +8,14 @@ part of owl_cpp project.
 
 #include <iostream>
 #include "sample_data.hpp"
-#include "owl_cpp/io/parse_to_triple_store.hpp"
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/print.hpp"
-#include "owl_cpp/lib_info.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
-namespace ot = owl_cpp::terms;
+#include "owlcpp/io/parse_to_triple_store.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/print.hpp"
+#include "owlcpp/lib_info.hpp"
+#include "owlcpp/terms/term_tags.hpp"
+namespace ot = owlcpp::terms;
 
-namespace owl_cpp{ namespace test{
+namespace owlcpp{ namespace test{
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( print_01_run_case01 ) {
@@ -55,4 +55,4 @@ BOOST_AUTO_TEST_CASE( print_01_run_case03 ) {
 }
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp

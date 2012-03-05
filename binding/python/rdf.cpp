@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/binding/python/rdf.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/binding/python/rdf.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2011
 *******************************************************************************/
@@ -9,10 +9,10 @@ part of owl_cpp project.
 #include "boost/python/operators.hpp"
 #include "boost/utility.hpp"
 
-#include "owl_cpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 
 BOOST_PYTHON_MODULE(rdf) {
-   namespace owl = owl_cpp;
+   namespace owl = owlcpp;
    namespace bp = boost::python;
 
    bp::class_<owl::Node_id>("Node_id", bp::init<unsigned>())

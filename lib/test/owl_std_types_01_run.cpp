@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/test/owl_std_types_01_run.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/lib/test/owl_std_types_01_run.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -9,20 +9,20 @@ part of owl_cpp project.
 #include <iostream>
 #include "sample_data.hpp"
 
-//#include "owl_cpp/owl_std_uri_type.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
-namespace ot = owl_cpp::terms;
+//#include "owlcpp/owl_std_uri_type.hpp"
+#include "owlcpp/terms/term_tags.hpp"
+namespace ot = owlcpp::terms;
 
-namespace owl_cpp{ namespace test{
+namespace owlcpp{ namespace test{
 
 /** Standard namespace and term types store correct strings and indices
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( owl_std_types_01_run_case01 ) {
-   BOOST_CHECK_EQUAL(ot::N_rdf::name(), "http://www.w3.org/1999/02/22-rdf-syntax-ns");
+   BOOST_CHECK_EQUAL(ot::N_rdf::iri(), "http://www.w3.org/1999/02/22-rdf-syntax-ns");
    BOOST_CHECK_EQUAL(ot::T_owl_FunctionalProperty::name(), "FunctionalProperty");
-   BOOST_CHECK(ot::N_owl::index != ot::N_0::index);
-   BOOST_CHECK(ot::N_owl::id() != ot::N_0::id() );
-   BOOST_CHECK(ot::N_0::id() != ot::N__::id() );
+   BOOST_CHECK(ot::N_owl::index != ot::N_empty::index);
+   BOOST_CHECK(ot::N_owl::id() != ot::N_empty::id() );
+   BOOST_CHECK(ot::N_empty::id() != ot::N_blank::id() );
 }
 
 /** Correct ID objects can be generated for each standard type (namespaces and terms)
@@ -37,8 +37,8 @@ BOOST_AUTO_TEST_CASE( make_ids ) {
    BOOST_CHECK( Node_id(ot::T_rdf_type::index) == ot::T_rdf_type::id() );
 
    BOOST_CHECK( ot::N_owl::index == ot::N_owl::id()() );
-   BOOST_CHECK( ot::T_0_generic::index == ot::T_0_generic::id()() );
-   BOOST_CHECK( ot::T_rdf_type::index != ot::T_0_generic::id()() );
+   BOOST_CHECK( ot::T_empty_::index == ot::T_empty_::id()() );
+   BOOST_CHECK( ot::T_rdf_type::index != ot::T_empty_::id()() );
    BOOST_CHECK( ot::T_rdf_type::index == ot::T_rdf_type::id()() );
 
    BOOST_CHECK( ot::N_rdfs::index == ot::T_rdfs_subClassOf::ns_type::id()() );
@@ -47,4 +47,4 @@ BOOST_AUTO_TEST_CASE( make_ids ) {
 }
 
 }//namespace test
-}//namespace owl_cpp
+}//namespace owlcpp

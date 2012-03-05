@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/binding/python/io.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/binding/python/io.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2011
 *******************************************************************************/
@@ -13,11 +13,11 @@ part of owl_cpp project.
 #include "boost/python/exception_translator.hpp"
 #include "boost/tuple/tuple.hpp"
 
-#include "owl_cpp/exception.hpp"
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/io/catalog.hpp"
-#include "owl_cpp/io/parse_to_triple_store.hpp"
-namespace owl = owl_cpp;
+#include "owlcpp/exception.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/io/catalog.hpp"
+#include "owlcpp/io/parse_to_triple_store.hpp"
+namespace owl = owlcpp;
 namespace bp = boost::python;
 
 namespace{
@@ -40,7 +40,7 @@ template<class T1, class T2> struct Tuple2tuple_converter {
   }
 };
 
-void translator(owl_cpp::base_exception const& e) {
+void translator(owlcpp::base_exception const& e) {
    PyErr_SetString(
          PyExc_RuntimeError, boost::diagnostic_information(e).c_str()
    );
@@ -49,7 +49,7 @@ void translator(owl_cpp::base_exception const& e) {
 }//namespace anonymous
 
 BOOST_PYTHON_MODULE(io) {
-   bp::register_exception_translator<owl_cpp::base_exception>(&translator);
+   bp::register_exception_translator<owlcpp::base_exception>(&translator);
    bp::class_<owl::Catalog>("Catalog")
       .def("insert", &owl::Catalog::insert)
       .def(

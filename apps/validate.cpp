@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/apps/validate.cpp"
-part of owl_cpp project.
+/** @file "/owlcpp/apps/validate.cpp"
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -8,18 +8,18 @@ part of owl_cpp project.
 #include "boost/filesystem.hpp"
 #include "factpp/Kernel.hpp"
 
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/io/parse_to_triple_store.hpp"
-#include "owl_cpp/reasoner/triple_to_fact.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/io/parse_to_triple_store.hpp"
+#include "owlcpp/reasoner/triple_to_fact.hpp"
+#include "owlcpp/terms/term_tags.hpp"
 
 /**
 Parse OWL ontology file and its imports located in the same folder
 Load ontology to FaCT++ reasoner and check if it is consistent
 *******************************************************************************/
 int main(int argc, char* argv[]) {
-   namespace owl = owl_cpp;
-   namespace ot = owl_cpp::terms;
+   namespace owl = owlcpp;
+   namespace ot = owlcpp::terms;
    if( argc < 2 ) {
       std::cout << "Usage: validate ontology_file.owl" << std::endl;
       return 0;
