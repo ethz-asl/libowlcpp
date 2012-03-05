@@ -10,6 +10,7 @@ part of owlcpp project.
 #include "boost/fusion/include/mpl.hpp"
 #include "boost/fusion/include/at.hpp"
 #include "boost/fusion/include/at_c.hpp"
+#include "boost/iterator/filter_iterator.hpp"
 #include "boost/mpl/vector/vector10.hpp"
 #include "boost/mpl/if.hpp"
 #include "boost/mpl/erase.hpp"
@@ -17,7 +18,11 @@ part of owlcpp project.
 #include "boost/mpl/int.hpp"
 #include "boost/mpl/contains.hpp"
 #include "boost/mpl/empty.hpp"
-#include "boost/iterator/filter_iterator.hpp"
+#include "boost/multi_index_container.hpp"
+#include "boost/multi_index/hashed_index.hpp"
+#include "boost/multi_index/sequenced_index.hpp"
+//#include "boost/multi_index/random_access_index.hpp"
+#include "boost/multi_index/mem_fun.hpp"
 #include "boost/range.hpp"
 #include "boost/type_traits/is_same.hpp"
 
@@ -38,7 +43,7 @@ struct blank{};
 namespace query_detail{
 namespace mpl = boost::mpl;
 namespace fusion = boost::fusion;
-//TODO: check that ranges form through equal_range method, where appropriate
+
 /**
 *******************************************************************************/
 template<class Subj, class Pred, class Obj, class Doc> class Query_type {
@@ -107,7 +112,10 @@ template<class Subj, class Pred, class Obj, class Doc> class Query_type {
       Search_range(search_args_t const& sa) : sa_(sa) {}
 
       template<class T> static bool compare(T const& t1, T const& t2) { return t1 == t2; }
-      template<class T> static bool compare(T const&, blank const&) { return true; }
+      template<class T> static bool compare(T const&, blank const&) {
+         BOOST_ASSERT(false);
+         return true;
+      }
 
    public:
       typedef boost::filter_iterator<Search_range,iter1_t> iterator_t;
@@ -142,7 +150,7 @@ template<class Subj, class Pred, class Obj, class Doc> class Query_type {
       }
 
    private:
-      search_args_t const& sa_;
+      const search_args_t sa_;
 
    };
 
@@ -161,9 +169,8 @@ public:
             const Pred pred, const Obj obj, const Doc doc
             ) {
       const search_args_t sa(subj, pred, obj, doc);
-      iter1_t i1 = tms.get<tag_t>().find( fusion::at<nmi_t>(sa) );
-      iter1_t i2 = tms.get<tag_t>().end();
-      return range_maker_t::make( i1, i2, sa);
+      std::pair<iter1_t,iter1_t> p = tms.get<tag_t>().equal_range(fusion::at<nmi_t>(sa));
+      return range_maker_t::make( p.first, p.second, sa);
    }
 };
 

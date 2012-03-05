@@ -5,11 +5,6 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_MAP_HPP_
 #define TRIPLE_MAP_HPP_
-#include "boost/multi_index_container.hpp"
-#include "boost/multi_index/hashed_index.hpp"
-#include "boost/multi_index/sequenced_index.hpp"
-//#include "boost/multi_index/random_access_index.hpp"
-#include "boost/multi_index/mem_fun.hpp"
 #include "owlcpp/rdf/detail/triple_store_types.hpp"
 #include "owlcpp/rdf/detail/triple_store_query.hpp"
 
@@ -30,6 +25,9 @@ public:
    std::size_t size() const {return store_.size();}
    const_iterator begin() const {return store_.begin();}
    const_iterator end() const {return store_.end();}
+//   Triple const& operator[](const std::size_t i) const {
+//      return store_.get<query_detail::seq_tag>()[i];
+//   }
    void clear() {store_.clear();}
 
    /**@brief Insert a new triple
