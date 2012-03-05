@@ -52,7 +52,7 @@ template<class T> struct Store_node_iri_crtpb {
    Node_id const* find_iri_node(std::string const& iri) const {
       T const& self = static_cast<T const&>(*this);
       const std::size_t n = iri.find('#');
-      typename T::node_map_t::node_range r;
+      typename T::node_map::node_range r;
       if( std::string::npos == n ) {
          Ns_id const*const iid = self.iris().find_iri(iri);
          if( ! iid ) return 0;

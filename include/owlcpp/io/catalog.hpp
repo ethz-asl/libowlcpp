@@ -27,14 +27,14 @@ public Store_doc_crtpb<Catalog>,
 private Store_node_iri_crtpb<Catalog>
 {
 public:
-   typedef Iri_map iri_map_t;
-   typedef Node_map node_map_t;
-   typedef Doc_map doc_map_t;
+   typedef Iri_map iri_map;
+   typedef Node_map node_map;
+   typedef Doc_map doc_map;
 private:
    Iri_map& iris() {return iri_;}
-   node_map_t& nodes() {return node_;}
+   node_map& nodes() {return node_;}
    Iri_map const& iris() const {return iri_;}
-   node_map_t const& nodes() const {return node_;}
+   node_map const& nodes() const {return node_;}
    friend class Store_node_iri_crtpb<Catalog>;
    friend class Store_doc_crtpb<Catalog>;
 
@@ -68,7 +68,7 @@ public:
 
 private:
    Iri_map iri_;
-   node_map_t node_;
+   node_map node_;
 };
 
 }//namespace owlcpp

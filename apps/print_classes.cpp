@@ -47,7 +47,9 @@ int main(int argc, char* argv[]) {
       return 0;
    }
 
-   owlcpp::Triple_store store;
+   //create a triple store that is aware of standard OWL terms
+   owlcpp::Triple_store store( owlcpp::Node_map_std::get(owlcpp::Nodes_owl()) );
+
    const bfs::path in( vm["input-file"].as<std::string>());
    try {
       if( vm.count("include") ) { //load input-file and its includes
@@ -63,6 +65,12 @@ int main(int argc, char* argv[]) {
          load_file(in, store);
       }
 
+      owlcpp::Query<0,1,1,0>::range r = store.triples().find(
+               owlcpp::blank(),
+               owlcpp::terms::T_rdf_type::id(),
+               owlcpp::terms::T_owl_Class::id(),
+               owlcpp::blank()
+      );
 
       if( vm.count("count") ) {
          std::cout
@@ -71,9 +79,10 @@ int main(int argc, char* argv[]) {
          << distance(store.nodes().find(owlcpp::terms::N_empty::id())) << " literal nodes" << '\n'
          << distance(store.nodes().find(owlcpp::terms::N_blank::id())) << " blank nodes" << '\n'
          << store.iris().size() << " namespace IRIs" << '\n'
+         << distance(r) << " owl:Class definitions" << '\n'
          ;
       } else {
-         BOOST_FOREACH( owlcpp::Triple const& t, store.triples() ) {
+         BOOST_FOREACH( owlcpp::Triple const& t, r ) {
             std::cout
             << '\"'
             << store.string(t.subject()) << "\"\t\""
@@ -83,48 +92,6 @@ int main(int argc, char* argv[]) {
          }
       }
 
-   } catch(...) {
-      std::cerr << boost::current_exception_diagnostic_information() << std::endl;
-      return 1;
-   }
-   return 0;
-
-   namespace owl = owlcpp;
-   namespace ot = owlcpp::terms;
-   try {
-/*
-      boost::filesystem::path file(argv[1]);
-
-      //catalog ontologies in the same directory
-      owl::Catalog cat;
-      owl::find_ontologies(cat, file.parent_path().string());
-
-      //parse including imports
-      owl::Triple_store store;
-      load(argv[1], store, cat);
-
-      std::cout << "Loaded " << store.n_triples() << " triples" << '\n';
-
-      std::cout << "NAMESPACES:\n";
-      owl::print_namespaces(store, std::cout);
-
-      std::cout << "\nCLASSES:\n";
-
-      //iterate over nodes
-      BOOST_FOREACH( const owl::Node_id nid, store.node_ids() ) {
-         //if declared as class, print
-         if(
-               owl::find_triples(
-                     nid,
-                     ot::T_rdf_type::id(),
-                     ot::T_owl_Class::id(),
-                     store
-               )
-         ) {
-            std::cout << short_name(nid, store) << '\n';
-         }
-      }
-*/
    } catch(...) {
       std::cerr << boost::current_exception_diagnostic_information() << std::endl;
       return 1;

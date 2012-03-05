@@ -35,9 +35,9 @@ public Store_doc_crtpb<Triple_store>
 
 public:
    struct Err : public Rdf_err {};
-   typedef Iri_map iri_map_t;
-   typedef Node_map node_map_t;
-   typedef Triple_map triple_map_t;
+   typedef Iri_map iri_map;
+   typedef Node_map node_map;
+   typedef Triple_map triple_map;
 
    Triple_store(Node_map_std const& snodes = Node_map_std::get(Nodes_none()))
    : iri_(snodes), node_(snodes), triple_()
@@ -45,8 +45,8 @@ public:
 
    Iri_map& iris() {return iri_;}
    Iri_map const& iris() const {return iri_;}
-   node_map_t& nodes() {return node_;}
-   node_map_t const& nodes() const {return node_;}
+   node_map& nodes() {return node_;}
+   node_map const& nodes() const {return node_;}
    Triple_map const& triples() const {return triple_;}
 
    void insert_triple(
@@ -60,7 +60,7 @@ public:
 
 private:
    Iri_map iri_;
-   node_map_t node_;
+   node_map node_;
    Triple_map triple_;
 };
 
