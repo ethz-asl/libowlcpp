@@ -17,11 +17,3 @@ exe rdfprint
       <library>..//raptor
       <link>static
 ;
-
-exe elements
-   : expat_elements.cpp
-   :  #requirements
-      <library>..//expat
-      <link>static
-;
-
