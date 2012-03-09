@@ -5,17 +5,44 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_TO_FACT_HPP_
 #define TRIPLE_TO_FACT_HPP_
+#include "boost/foreach.hpp"
 #include "owlcpp/reasoner/config.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
+#include "factpp/config.hpp"
 
-class OWLCPP_REASONER_DECL ReasoningKernel;
+class FACTPP_KERNEL_DECL ReasoningKernel;
 
-namespace owlcpp{
+namespace owlcpp{ namespace detail{
 
-class Triple_store;
+OWLCPP_REASONER_DECL void submit_triple(
+         Triple const& t,
+         Triple_store const& ts,
+         ReasoningKernel& kernel,
+         const bool lax
+);
 
-/** Add triples from the store to reasoning kernel
+}//namespace detail
+
+/** Copy triples from store to reasoning kernel
 *******************************************************************************/
-OWLCPP_REASONER_DECL void add(const Triple_store&, ReasoningKernel&, const bool lax = false);
+template<class Range> inline void submit_triples(
+         Range r,
+         Triple_store const& ts,
+         ReasoningKernel& kernel,
+         const bool lax
+) {
+   BOOST_FOREACH(Triple const& t, r) detail::submit_triple(t, ts, kernel, lax);
+}
+
+/** Copy all triples from triple store to reasoning kernel
+*******************************************************************************/
+inline void submit_triples(
+         Triple_store const& ts,
+         ReasoningKernel& kernel,
+         const bool lax
+) {
+   submit_triples(ts.triples(), ts, kernel, lax);
+}
 
 
 }//namespace owlcpp
