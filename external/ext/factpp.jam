@@ -63,6 +63,7 @@ rule transform_hpp ( src_dir : version ) {
       :  $(file) $(files)
       :  @transform_hpp_action
       :  <location>$(GENERATED_INCLUDE)/$(out_dir)
+         <version>$(version)
       ;
    }
    return $(files) ;
@@ -146,7 +147,12 @@ rule transform_hpp_action ( targets * : sources * : properties * ) {
       "/* Modified to control symbol export */"
       "#include \"$(incl_dir)/config.hpp\""
    ;
-   if tSignature = $(files[1]:B) { src += "#include <iterator>" ; }
+   import property ;
+   local version = [ property.select <version> : $(properties) ] ;
+   version = $(version:G=) ;
+   if "tSignature" = $(files[1]:B) && $(version) < "1.5.3" { 
+      src += "#include <iterator>" ;
+   }
    src += "" ;
    local orig = [ read_file $(files[1]) ] ;
    orig = [ replace_include $(orig) : $(files[2-]:B) ] ;
