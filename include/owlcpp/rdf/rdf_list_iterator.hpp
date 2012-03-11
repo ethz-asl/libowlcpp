@@ -42,8 +42,8 @@ private:
       const Query<1,1,0,0>::range r = tm_->find(
                nid_,
                terms::T_rdf_rest::id(),
-               blank(),
-               blank()
+               any(),
+               any()
       );
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
@@ -63,8 +63,8 @@ private:
       const Query<1,1,0,0>::range r = tm_->find(
                nid_,
                terms::T_rdf_first::id(),
-               blank(),
-               blank()
+               any(),
+               any()
       );
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
@@ -114,8 +114,8 @@ private:
       const Query<1,1,0,0>::range r = ts_->triples().find(
                nid_,
                terms::T_rdf_rest::id(),
-               blank(),
-               blank()
+               any(),
+               any()
       );
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
@@ -135,8 +135,8 @@ private:
       const Query<1,1,0,0>::range r = ts_->triples().find(
                nid_,
                terms::T_rdf_first::id(),
-               blank(),
-               blank()
+               any(),
+               any()
       );
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()

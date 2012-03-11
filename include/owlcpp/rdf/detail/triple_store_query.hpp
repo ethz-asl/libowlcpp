@@ -38,7 +38,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 namespace owlcpp{
 
-struct blank{};
+struct any{};
 
 namespace query_detail{
 namespace mpl = boost::mpl;
@@ -51,22 +51,22 @@ template<class Subj, class Pred, class Obj, class Doc> class Query_type {
    //vector of active argument positions
    typedef mpl::vector0<> v0_t;
    typedef typename mpl::if_<
-            typename boost::is_same<Subj,blank>::type,
+            typename boost::is_same<Subj,any>::type,
             v0_t,
             typename mpl::push_back<v0_t, mpl::int_<0> >::type
             >::type v1_t;
    typedef typename mpl::if_<
-            typename boost::is_same<Pred,blank>::type,
+            typename boost::is_same<Pred,any>::type,
             v1_t,
             typename mpl::push_back<v1_t, mpl::int_<1> >::type
             >::type v2_t;
    typedef typename mpl::if_<
-            typename boost::is_same<Obj,blank>::type,
+            typename boost::is_same<Obj,any>::type,
             v2_t,
             typename mpl::push_back<v2_t, mpl::int_<2> >::type
             >::type v3_t;
    typedef typename mpl::if_<
-            typename boost::is_same<Doc,blank>::type,
+            typename boost::is_same<Doc,any>::type,
             v3_t,
             typename mpl::push_back<v3_t, mpl::int_<3> >::type
             >::type v4_t;
@@ -112,7 +112,7 @@ template<class Subj, class Pred, class Obj, class Doc> class Query_type {
       Search_range(search_args_t const& sa) : sa_(sa) {}
 
       template<class T> static bool compare(T const& t1, T const& t2) { return t1 == t2; }
-      template<class T> static bool compare(T const&, blank const&) {
+      template<class T> static bool compare(T const&, any const&) {
          BOOST_ASSERT(false);
          return true;
       }
@@ -176,22 +176,22 @@ public:
 
 /**
 *******************************************************************************/
-template<> struct Query_type<blank,blank,blank,blank> {
+template<> struct Query_type<any,any,any,any> {
    typedef triple_map_store_t::iterator iterator_t;
    typedef boost::iterator_range<iterator_t> range_t;
    static range_t range(
-            triple_map_store_t const& tms, const blank,
-            const blank, const blank, const blank
+            triple_map_store_t const& tms, const any,
+            const any, const any, const any
             ) {
       return boost::make_iterator_range( tms.begin(), tms.end() );
    }
 };
 
 template<bool S, bool P, bool O, bool D> class Query {
-   typedef typename boost::mpl::if_<boost::mpl::bool_<S>, Node_id, blank>::type subj_t;
-   typedef typename boost::mpl::if_<boost::mpl::bool_<P>, Node_id, blank>::type pred_t;
-   typedef typename boost::mpl::if_<boost::mpl::bool_<O>, Node_id, blank>::type obj_t;
-   typedef typename boost::mpl::if_<boost::mpl::bool_<D>, Doc_id, blank>::type doc_t;
+   typedef typename boost::mpl::if_<boost::mpl::bool_<S>, Node_id, any>::type subj_t;
+   typedef typename boost::mpl::if_<boost::mpl::bool_<P>, Node_id, any>::type pred_t;
+   typedef typename boost::mpl::if_<boost::mpl::bool_<O>, Node_id, any>::type obj_t;
+   typedef typename boost::mpl::if_<boost::mpl::bool_<D>, Doc_id, any>::type doc_t;
    typedef Query_type<subj_t, pred_t, obj_t, doc_t> query_t;
 public:
    typedef typename query_t::iterator_t iterator;

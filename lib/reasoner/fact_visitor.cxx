@@ -15,7 +15,7 @@ part of owlcpp project.
 namespace owlcpp {
 
 namespace{
-typedef Triples_query<Node_id, Node_id, blank>::q_range_t q_range_nnb_t;
+typedef Triples_query<Node_id, Node_id, any>::q_range_t q_range_nnb_t;
 }//namespace anonymous
 
 /* Annotation or property assertion
@@ -27,7 +27,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_empty_>& tr) {
    }
 
    const Triple& tr2 = find_first_triple(
-               tr.predicate(), ot::T_rdf_type::id(), blank(), store_
+               tr.predicate(), ot::T_rdf_type::id(), any(), store_
          );
 
    switch (tr2.object()()) {
@@ -66,14 +66,14 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_AllDifferent>& tr) {
    q_range_nnb_t range = find_triples(
          tr.subject(),
          ot::T_owl_members::id(),
-         blank(),
+         any(),
          store_
    );
 
    if( ! range ) range = find_triples(
          tr.subject(),
          ot::T_owl_distinctMembers::id(),
-         blank(),
+         any(),
          store_
    );
 
@@ -98,7 +98,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_AllDisjointClasses>& tr) {
 
    const Node_id seq_id =
          find_first_triple(
-               tr.subject(), ot::T_owl_members::id(), blank(), store_
+               tr.subject(), ot::T_owl_members::id(), any(), store_
          ).object();
 
    const std::vector<Node_id> c = rdf_collection(seq_id, store_);
@@ -117,7 +117,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_AllDisjointProperties>& tr
 
    const Node_id seq_id =
          find_first_triple(
-               tr.subject(), ot::T_owl_members::id(), blank(), store_
+               tr.subject(), ot::T_owl_members::id(), any(), store_
          ).object();
 
    const std::vector<Node_id> c = rdf_collection(seq_id, store_);
@@ -133,7 +133,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_AllDisjointProperties>& tr
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_allValuesFrom>& tr) {
    const Node_id property_id =
          find_first_triple(
-               tr.subject(), ot::T_owl_onProperty::id(), blank(), store_
+               tr.subject(), ot::T_owl_onProperty::id(), any(), store_
          ).object();
 
    const TDLConceptExpression* restriction =
@@ -148,7 +148,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_allValuesFrom>& tr) {
 *******************************************************************************/
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_cardinality>& tr) {
    const Node_id pid =
-         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), any(), store_).object();
    const TDLObjectRoleExpression* pe = property(pid);
 
    const unsigned n = get_unsigned(store_[tr.object()].value_str());
@@ -239,7 +239,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_hasKey>& tr) {
 *******************************************************************************/
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_hasSelf>& tr) {
    const Node_id pid =
-         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), any(), store_).object();
    const TDLObjectRoleExpression* pe = property(pid);
    const TDLConceptExpression* r = e_manager().SelfReference(pe);
 
@@ -256,7 +256,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_hasSelf>& tr) {
 *******************************************************************************/
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_hasValue>& tr) {
    const Node_id pid =
-         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), any(), store_).object();
    const TDLObjectRoleExpression* pe = property(pid);
 
    const TDLIndividualExpression* ind = instance(tr.object());
@@ -288,7 +288,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_intersectionOf>& tr) {
 *******************************************************************************/
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_maxCardinality>& tr) {
    const Node_id pid =
-         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), any(), store_).object();
    const TDLObjectRoleExpression* pe = property(pid);
 
    const unsigned n = get_unsigned(store_[tr.object()].value_str());
@@ -306,11 +306,11 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_maxCardinality>& tr) {
 *******************************************************************************/
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_maxQualifiedCardinality>& tr) {
    const Node_id pid =
-         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), any(), store_).object();
    const TDLObjectRoleExpression* pe = property(pid);
 
    const Node_id cid =
-         find_first_triple(tr.subject(), ot::T_owl_onClass::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onClass::id(), any(), store_).object();
    const TDLConceptExpression* ce = concept(cid);
 
    const unsigned n = get_unsigned(store_[tr.object()].value_str());
@@ -327,7 +327,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_maxQualifiedCardinality>& 
 *******************************************************************************/
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_minCardinality>& tr) {
    const Node_id pid =
-         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), any(), store_).object();
    const TDLObjectRoleExpression* pe = property(pid);
 
    const unsigned n = get_unsigned(store_[tr.object()].value_str());
@@ -345,11 +345,11 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_minCardinality>& tr) {
 *******************************************************************************/
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_minQualifiedCardinality>& tr) {
    const Node_id pid =
-         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), any(), store_).object();
    const TDLObjectRoleExpression* pe = property(pid);
 
    const Node_id cid =
-         find_first_triple(tr.subject(), ot::T_owl_onClass::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onClass::id(), any(), store_).object();
    const TDLConceptExpression* ce = concept(cid);
 
    const unsigned n = get_unsigned(store_[tr.object()].value_str());
@@ -375,7 +375,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_NegativePropertyAssertion>
    Node_id property_id;
    BOOST_FOREACH(
          const Triple& t,
-         find_triples(tr.subject(), blank(), blank(), store_)
+         find_triples(tr.subject(), any(), any(), store_)
    ) {
       switch (t.predicate()()) {
          case ot::T_rdf_type::index :
@@ -447,11 +447,11 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_propertyDisjointWith>& tr)
 *******************************************************************************/
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_qualifiedCardinality>& tr) {
    const Node_id pid =
-         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onProperty::id(), any(), store_).object();
    const TDLObjectRoleExpression* pe = property(pid);
 
    const Node_id cid =
-         find_first_triple(tr.subject(), ot::T_owl_onClass::id(), blank(), store_).object();
+         find_first_triple(tr.subject(), ot::T_owl_onClass::id(), any(), store_).object();
    const TDLConceptExpression* ce = concept(cid);
 
    const unsigned n = get_unsigned(store_[tr.object()].value_str());
@@ -479,7 +479,7 @@ void Triple_to_fact::Visit(const Triple_std<ot::T_owl_sameAs>& tr) {
 void Triple_to_fact::Visit(const Triple_std<ot::T_owl_someValuesFrom>& tr) {
    const Node_id property_id =
          find_first_triple(
-               tr.subject(), ot::T_owl_onProperty::id(), blank(), store_
+               tr.subject(), ot::T_owl_onProperty::id(), any(), store_
          ).object();
 
    const TDLConceptExpression* restriction =

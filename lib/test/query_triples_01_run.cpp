@@ -33,25 +33,25 @@ BOOST_AUTO_TEST_CASE( query_triples_01_run_case01 ) {
 
    //owl:Class is never a subject
    BOOST_CHECK(
-         ! find_triples(ot::T_owl_Class::id(), blank(), blank(), store)
+         ! find_triples(ot::T_owl_Class::id(), any(), any(), store)
    );
 
    //owl:Class is never a predicate
    BOOST_CHECK(
-         ! find_triples(blank(), ot::T_owl_Class::id(), blank(), store)
+         ! find_triples(any(), ot::T_owl_Class::id(), any(), store)
    );
 
    //owl:Class is always object
    BOOST_CHECK(
-         find_triples(blank(), blank(), ot::T_owl_Class::id(), store)
+         find_triples(any(), any(), ot::T_owl_Class::id(), store)
    );
 
    BOOST_CHECK(
-         ! find_triples(ot::T_rdf_type::id(), blank(), ot::T_owl_Class::id(), store)
+         ! find_triples(ot::T_rdf_type::id(), any(), ot::T_owl_Class::id(), store)
    );
 
    BOOST_CHECK(
-         find_triples(blank(), ot::T_rdf_type::id(), ot::T_owl_Class::id(), store)
+         find_triples(any(), ot::T_rdf_type::id(), ot::T_owl_Class::id(), store)
    );
 
    BOOST_CHECK(

@@ -66,10 +66,10 @@ int main(int argc, char* argv[]) {
       }
 
       owlcpp::Query<0,1,1,0>::range r = store.triples().find(
-               owlcpp::blank(),
+               owlcpp::any(),
                owlcpp::terms::T_rdf_type::id(),
                owlcpp::terms::T_owl_Class::id(),
-               owlcpp::blank()
+               owlcpp::any()
       );
 
       if( vm.count("count") ) {
