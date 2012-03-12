@@ -8,6 +8,7 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/reasoner/exception.hpp"
+#include "owlcpp/reasoner/detail/node_type.hpp"
 
 class /*FACTPP_KERNEL_DECL*/ ReasoningKernel;
 class TDLConceptExpression;
@@ -16,6 +17,7 @@ class TDLObjectRoleExpression;
 class TDLDataRoleExpression;
 class TDLDataTypeExpression;
 class TExpressionManager;
+class TDLDataValue;
 
 namespace owlcpp{ namespace detail{
 
@@ -44,9 +46,16 @@ private:
 
    TExpressionManager& e_manager();
 
+   Node_type node_type(const Node_id nid) const;
+
+   /**@param t triple x rdf:type y */
    void submit_type_triple(Triple const& t);
 
+   /**@param t triple x y z */
+   void submit_custom_triple(Triple const& t);
+
    TDLConceptExpression* concept(const Node_id nid);
+   TDLConceptExpression* concept_expression(const Node_id nid);
 
    TDLIndividualExpression* instance(const Node_id nid);
 
@@ -54,10 +63,14 @@ private:
    TDLIndividualExpression* instance_of(const Node_id inst, const Node_id cls);
 
    TDLObjectRoleExpression* obj_role(const Node_id nid);
+   TDLObjectRoleExpression* obj_role_expression(const Node_id nid);
 
    TDLDataRoleExpression* data_role(const Node_id nid);
 
    TDLDataTypeExpression* datatype(const Node_id nid);
+   TDLDataTypeExpression* datatype_expression(const Node_id nid);
+
+   TDLDataValue const* data_value(const Node_id nid);
 };
 
 }//namespace detail

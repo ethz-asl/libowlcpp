@@ -59,10 +59,10 @@ public:
       return li == langs_.end() ? "" : li->second;
    }
 
-   /**@brief Find the datatype of the literal node
+   /**@brief Find literal node datatype
     @param id literal node's ID
-    @return pointer to the datatype node's ID for the literal node or
-    NULL if the node is not literal or no datatype is defined for it.
+    @return datatype node ID for the literal node or empty node ID
+    if the node is not literal or datatype is not defined for it.
    */
    Node_id datatype(const Node_id id) const {
       const datatype_iter_t di = dtypes_.find(id);

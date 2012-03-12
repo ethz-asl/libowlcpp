@@ -35,6 +35,28 @@ template<class T> struct Store_node_literal_crtpb {
       return self.nodes().insert_literal(val, dti, lang);
    }
 
+   /**@brief Find literal node datatype
+    @param id literal node ID
+    @return datatype node ID for the literal node or empty node ID
+    if the node is not literal or datatype is not defined for it.
+   */
+   Node_id datatype(const Node_id nid) const {
+      T const& self = static_cast<T const&>(*this);
+      return self.nodes().datatype(nid);
+   }
+
+   /**@brief Find the language of the literal node
+    @param id literal node's ID
+    @return language tag string for the literal node or
+    "" if the node is not literal or no language is defined for it.
+    @details The tag string format MAY be according to RFC 5646
+    (http://tools.ietf.org/html/rfc5646).
+    This is not, however, currently enforced by the library.
+   */
+   std::string language(const Node_id nid) const {
+      T const& self = static_cast<T const&>(*this);
+      return self.nodes().language(nid);
+   }
 };
 
 }//namespace owlcpp

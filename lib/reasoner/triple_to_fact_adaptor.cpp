@@ -65,14 +65,33 @@ void Triple_to_fact_adaptor::submit(Triple const& t) {
       case T_rdfs_label::index:
          return;
       default:
-         BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("unsupported predicate")
-                  << Err::str1_t(ts_.string(t.predicate()))
-         );
+         submit_custom_triple(t);
    }
 }
 
+/*
+*******************************************************************************/
+void Triple_to_fact_adaptor::submit_custom_triple(Triple const& t) {
+   const Node_type nt = node_type(t.predicate());
+   if( nt.is_obj_property() ) {
+      k_.relatedTo(
+               instance(t.subject()),
+               obj_role(t.predicate()),
+               instance(t.object())
+      );
+   } else if(nt.is_data_property() ) {
+      k_.valueOf(
+               instance(t.subject()),
+               data_role(t.predicate()),
+               data_value(t.object())
+      );
+   }
+   BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("unknown predicate type")
+            << Err::str1_t(ts_.string(t.predicate()))
+      );
+}
 /*
 *******************************************************************************/
 void Triple_to_fact_adaptor::submit_type_triple(Triple const& t) {
@@ -146,11 +165,16 @@ void Triple_to_fact_adaptor::submit_type_triple(Triple const& t) {
 
 /*
 *******************************************************************************/
+TDLConceptExpression* Triple_to_fact_adaptor::concept_expression(const Node_id nid) {
+
+}
+
+/*
+*******************************************************************************/
 TDLConceptExpression* Triple_to_fact_adaptor::concept(const Node_id nid) {
    if( ts_[nid].ns_id() != N_blank::id() )
       return e_manager().Concept(ts_.string(nid));
-   //TODO:
-   return 0;
+   return concept_expression(nid);
 }
 
 /*
@@ -174,11 +198,17 @@ Triple_to_fact_adaptor::instance_of(const Node_id inst_id, const Node_id cls_id)
 
 /*
 *******************************************************************************/
+TDLObjectRoleExpression*
+Triple_to_fact_adaptor::obj_role_expression(const Node_id nid) {
+
+}
+
+/*
+*******************************************************************************/
 TDLObjectRoleExpression* Triple_to_fact_adaptor::obj_role(const Node_id nid) {
    if( ts_[nid].ns_id() != N_blank::id() )
       return e_manager().ObjectRole(ts_.string(nid));
-   //TODO:
-   return 0;
+   return obj_role_expression(nid);
 }
 
 /*
@@ -192,17 +222,108 @@ TDLDataRoleExpression* Triple_to_fact_adaptor::data_role(const Node_id nid) {
 
 /*
 *******************************************************************************/
-TDLDataTypeExpression* Triple_to_fact_adaptor::datatype(const Node_id nid) {
-   if( ts_[nid].ns_id() != N_blank::id() )
-      return e_manager().DataType(ts_.string(nid));
-   //TODO:
+TDLDataTypeExpression* Triple_to_fact_adaptor::datatype_expression(const Node_id nid) {
+   //todo:
    return 0;
 }
 
 /*
 *******************************************************************************/
- TExpressionManager& Triple_to_fact_adaptor::e_manager() {
-    return *k_.getExpressionManager();
+TDLDataTypeExpression* Triple_to_fact_adaptor::datatype(const Node_id nid) {
+   if( ts_[nid].ns_id() == N_blank::id() ) return datatype_expression(nid);
+   switch (nid()) {
+   case T_empty_::index:
+   case T_xsd_string::index:
+   case T_xsd_anyURI::index:
+   case T_xsd_normalizedString::index:
+   case T_xsd_token::index:
+   case T_xsd_language::index:
+   case T_xsd_NMTOKEN::index:
+   case T_xsd_Name::index:
+   case T_xsd_NCName::index:
+      return e_manager().getStrDataType();
+   case T_xsd_boolean::index:
+      return e_manager().getBoolDataType();
+   case T_xsd_decimal::index:
+   case T_xsd_float::index:
+   case T_xsd_double::index:
+      return e_manager().getRealDataType();
+   case T_xsd_dateTime::index:
+   case T_xsd_time::index:
+   case T_xsd_date::index:
+   case T_xsd_gYearMonth::index:
+   case T_xsd_gYear::index:
+   case T_xsd_gMonthDay::index:
+   case T_xsd_gDay::index:
+   case T_xsd_gMonth::index:
+      return e_manager().getTimeDataType();
+   case T_xsd_hexBinary::index:
+   case T_xsd_base64Binary::index:
+   case T_xsd_integer::index:
+   case T_xsd_nonPositiveInteger::index:
+   case T_xsd_negativeInteger::index:
+   case T_xsd_long::index:
+   case T_xsd_int::index:
+   case T_xsd_short::index:
+   case T_xsd_byte::index:
+   case T_xsd_nonNegativeInteger::index:
+   case T_xsd_unsignedLong::index:
+   case T_xsd_unsignedInt::index:
+   case T_xsd_unsignedShort::index:
+   case T_xsd_unsignedByte::index:
+   case T_xsd_positiveInteger::index:
+      return e_manager().getIntDataType();
+   default:
+      return e_manager().DataType(ts_.string(nid));
+   }
+}
+
+/*
+*******************************************************************************/
+TDLDataValue const* Triple_to_fact_adaptor::data_value(const Node_id nid) {
+   Node const& node = ts_[nid];
+   if( node.ns_id() != N_empty::id() ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("literal node is expected")
+            << Err::str1_t(ts_.string(nid))
+   );
+   const Node_id dt = ts_.datatype(nid);
+   return e_manager().DataValue(node.value_str(), datatype(dt));
+}
+
+/*
+*******************************************************************************/
+TExpressionManager& Triple_to_fact_adaptor::e_manager() {
+   return *k_.getExpressionManager();
+}
+
+/*
+*******************************************************************************/
+Node_type Triple_to_fact_adaptor::node_type(const Node_id nid) const {
+   Node_type nt;
+   BOOST_FOREACH(
+            Triple const& t,
+            ts_.triples().find(nid, T_rdf_type::id(), any(), any())) {
+      nt.set(t.object());
+   }
+
+   BOOST_FOREACH(
+            Triple const& t,
+            ts_.triples().find(any(), T_owl_annotatedSource::id(), nid, any())) {
+
+      const Node_id x = t.subject();
+      if( ts_[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("non-blank owl:annotatedSource x")
+               << Err::str1_t(ts_.string(nid))
+      );
+      BOOST_FOREACH(
+               Triple const& t,
+               ts_.triples().find(x, T_owl_annotatedTarget::id(), any(), any())) {
+         nt.set(t.object());
+      }
+   }
+   return nt;
 }
 
 /*
