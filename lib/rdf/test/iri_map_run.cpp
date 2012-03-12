@@ -8,7 +8,6 @@ part of %owlcpp project.
 #include <map>
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
-#include "type_vector.hpp"
 
 namespace owlcpp{ namespace test{
 

@@ -1,11 +1,10 @@
-/** @file "/owlcpp/lib/type_vector_macro.hpp" 
+/** @file "/owlcpp/lib/rdf/type_vector_macro.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-@n Copyright Mikhail K Levin 2012
+@n Copyright Mikhail K Levin 2011-2
 *******************************************************************************/
 #ifndef TYPE_VECTOR_MACRO_HPP_
 #define TYPE_VECTOR_MACRO_HPP_
-
 #include "boost/preprocessor/arithmetic/inc.hpp"
 #include "boost/preprocessor/arithmetic/dec.hpp"
 #include "boost/preprocessor/arithmetic/div.hpp"

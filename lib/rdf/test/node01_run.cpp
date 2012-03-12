@@ -8,7 +8,8 @@ Distributed under GNU General Public License; see doc/license.txt.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "owlcpp/node.hpp"
-#include "type_vector.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
+
 namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
