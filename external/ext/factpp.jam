@@ -158,7 +158,7 @@ rule transform_hpp_action ( targets * : sources * : properties * ) {
    orig = [ replace_include $(orig) : $(files[2-]:B) ] ;
    local export_classes = 
       ReasoningKernel TNamedEntry TRole TExpressionManager TBox 
-      DLConceptTaxonomy Taxonomy DlSatTester TRole
+      DLConceptTaxonomy Taxonomy DlSatTester TRole TDLAxiom
    ;
    orig = [ add_class_export $(orig) : $(export_classes) ] ;
    local export_funs = 
