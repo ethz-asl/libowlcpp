@@ -18,21 +18,40 @@ namespace owlcpp{ namespace detail{
 
 /**@brief 
 *******************************************************************************/
-class Obj_type{
-   Obj_type();
-public:
+struct Obj_type {
    typedef boost::shared_ptr<const Obj_type> ptr_t;
    struct Err : public Logic_err {};
 
-   Obj_type(const Node_id h, Triple_store const& ts) : ts_(ts), h_(h) {}
+   virtual TDLConceptExpression* operator()(
+            Triple_store const& ts,
+            ReasoningKernel& k
+   ) const  = 0;
 
-   virtual TDLConceptExpression* operator()(ReasoningKernel& k) const {
-      return k.getExpressionManager()->Concept(ts_.string(h_));
+   static ptr_t make(const Node_id h, Triple_store const& ts);
+};
+
+/**@brief
+*******************************************************************************/
+class Ot_declared : public Obj_type {
+public:
+   Ot_declared(const Node_id nid) : nid_(nid) {}
+
+   TDLConceptExpression* operator()(Triple_store const& ts, ReasoningKernel& k ) const {
+      return k.getExpressionManager()->Concept(ts.string(nid_));
    }
 
-protected:
-   Triple_store const& ts_;
-   Node_id h_;
+private:
+   const Node_id nid_;
+};
+
+/**@brief
+*******************************************************************************/
+class Ot_complement : public Obj_type {
+public:
+   Ot_complement(const Node_id h, Triple_store const& ts)
+
+private:
+   ptr_t ot_;
 };
 
 /**@brief
@@ -60,10 +79,6 @@ private:
    void parse_class();
    void parse_restriction();
 };
-
-/**
-*******************************************************************************/
-Obj_type::ptr_t make_obj_type(const Node_id h, Triple_store const& ts);
 
 }//namespace detail
 }//namespace owlcpp

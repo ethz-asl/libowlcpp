@@ -36,6 +36,7 @@ TDLConceptExpression* Obj_type::generate_expression(ReasoningKernel& k) const {
 *******************************************************************************/
 
 /*
+*******************************************************************************/
 void Obj_type::parse_class() {
    BOOST_FOREACH(Triple const& t, ts_.triples().find(handle_, any(), any(), any())) {
       const Node_id obj = t.object();
@@ -57,7 +58,6 @@ void Obj_type::parse_class() {
       }
    }
 }
-*******************************************************************************/
 
 /*
 void Obj_type::parse_restriction() {
@@ -83,6 +83,7 @@ void Obj_type::parse_expression() {
    );
 }
 *******************************************************************************/
+namespace {
 
 /*
 *******************************************************************************/
@@ -90,6 +91,25 @@ Obj_type::ptr_t make_class_type(
          const Node_id h,
          Triple_store const& ts
 ) {
+   BOOST_FOREACH(Triple const& t, ts.triples().find(h, any(), any(), any())) {
+      const Node_id obj = t.object();
+      switch (t.predicate()()) {
+         case T_rdf_type::index: continue;
+
+         case T_owl_complementOf::index:
+            tv_.push_back(Obj_type(obj, ts_));
+            op_ = t.predicate();
+            break;
+         case T_owl_intersectionOf::index:
+         case T_owl_unionOf::index:
+         case T_owl_oneOf::index:
+            op_ = t.predicate();
+
+            break;
+         default:
+            break;
+      }
+   }
 
 }
 
@@ -101,9 +121,12 @@ Obj_type::ptr_t make_restriction_type(
 ) {
 
 }
+
+}//namespace anonymous
+
 /*
 *******************************************************************************/
-Obj_type::ptr_t make_obj_type(const Node_id h, Triple_store const& ts) {
+Obj_type::ptr_t Obj_type::make(const Node_id h, Triple_store const& ts) {
    Query<1,1,0,0>::range r =
             ts.triples().find(h, T_rdf_type::id(), any(), any());
    if( ! r ) BOOST_THROW_EXCEPTION(
