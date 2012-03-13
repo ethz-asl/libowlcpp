@@ -77,9 +77,24 @@
 	<owl:inverseOf rdf:resource="&OG;isLanguageAnnotationOf"/>
 	<rdfs:subPropertyOf rdf:resource="&OG;DissectionDetailsAttribute"/>
 </owl:ObjectProperty>
+
 <owl:ObjectProperty rdf:about="&OG;isLanguageAnnotationOf">
 	<rdfs:label>isLanguageAnnotationOf</rdfs:label>
 	<rdfs:subPropertyOf rdf:resource="&OG;InverseDissectionDetailsAttribute"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&OG;DissectionDetailsAttribute">
+   <rdfs:label>DissectionDetailsAttribute</rdfs:label>
+   <owl:inverseOf rdf:resource="&OG;InverseDissectionDetailsAttribute"/>
+   <rdfs:subPropertyOf rdf:resource="&OG;DissectionAttribute"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&OG;InverseDissectionDetailsAttribute">
+   <rdfs:label>InverseDissectionDetailsAttribute</rdfs:label>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&OG;DissectionAttribute">
+   <rdfs:label>DissectionAttribute</rdfs:label>
 </owl:ObjectProperty>
 
 </rdf:RDF>
