@@ -13,7 +13,7 @@ part of owlcpp project.
 #include "owlcpp/reasoner/config.hpp"
 #include "factpp/config.hpp"
 
-class FACTPP_KERNEL_DECL ReasoningKernel;
+class /*FACTPP_KERNEL_DECL*/ ReasoningKernel;
 class TDLConceptExpression;
 class TDLIndividualExpression;
 class TDLObjectRoleExpression;
@@ -60,7 +60,6 @@ private:
    void submit_custom_triple(Triple const& t);
 
    TDLConceptExpression* concept(const Node_id nid);
-   TDLConceptExpression* concept_expression(const Node_id nid);
 
    TDLIndividualExpression* instance(const Node_id nid);
 

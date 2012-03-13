@@ -13,6 +13,7 @@ part of owlcpp project.
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
 #include "factpp/Kernel.hpp"
+#include "expressions.hpp"
 
 namespace owlcpp{ namespace detail{
 using namespace owlcpp::terms;
@@ -213,25 +214,8 @@ void Triple_to_fact_adaptor::submit_type_triple(Triple const& t) {
 
 /*
 *******************************************************************************/
-TDLConceptExpression* Triple_to_fact_adaptor::concept_expression(const Node_id nid) {
-   Query<1,1,0,0>::range r =
-            ts_.triples().find(nid, T_rdf_type::id(), any(), any());
-   if( ! r ) BOOST_THROW_EXCEPTION(
-            Err()
-            << Err::msg_t("class expression rdf:type not found")
-            << Err::str1_t(ts_.string(nid))
-   );
-   const Node_id type = r.front().object();
-   if( type == T_owl_Class::id() ) {
-
-   }
-}
-
-/*
-*******************************************************************************/
 TDLConceptExpression* Triple_to_fact_adaptor::concept(const Node_id nid) {
-   if( ts_[nid].ns_id() == N_blank::id() ) return concept_expression(nid);
-   return e_manager().Concept(ts_.string(nid));
+   return Obj_type( nid, ts_ )(k_);
 }
 
 /*
