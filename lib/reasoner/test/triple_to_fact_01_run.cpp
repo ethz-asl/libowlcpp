@@ -30,6 +30,16 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
    Triple_store ts(Node_map_std::get(Nodes_owl()));
+   load_file(sample_file_path("og_01.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( k.isKBConsistent() );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case03 ) {
+   Triple_store ts(Node_map_std::get(Nodes_owl()));
    load_file(sample_file_path("og_02.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
