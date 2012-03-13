@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/reasoner/expressions.cpp" 
+/** @file "/owlcpp/lib/logic/expressions.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -107,17 +107,17 @@ Obj_type::ptr_t make_obj_type(const Node_id h, Triple_store const& ts) {
    Query<1,1,0,0>::range r =
             ts.triples().find(h, T_rdf_type::id(), any(), any());
    if( ! r ) BOOST_THROW_EXCEPTION(
-            Reasoner_err()
-            << Reasoner_err::msg_t("class expression rdf:type not found")
-            << Reasoner_err::str1_t(ts.string(h))
+            Logic_err()
+            << Logic_err::msg_t("class expression rdf:type not found")
+            << Logic_err::str1_t(ts.string(h))
    );
    const Node_id t = r.front().object();
    if( t == T_owl_Class::id() ) return make_class_type(h, ts);
    if( t == T_owl_Restriction::id() ) return make_restriction_type(h, ts);
    BOOST_THROW_EXCEPTION(
-            Reasoner_err()
-            << Reasoner_err::msg_t("unsupported rdf:type")
-            << Reasoner_err::str1_t(ts.string(t))
+            Logic_err()
+            << Logic_err::msg_t("unsupported rdf:type")
+            << Logic_err::str1_t(ts.string(t))
    );
 
 }

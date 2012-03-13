@@ -1,4 +1,4 @@
-/** @file "/owlcpp/include/owlcpp/reasoner/detail/triple_to_fact_adaptor.hpp" 
+/** @file "/owlcpp/include/owlcpp/logic/detail/triple_to_fact_adaptor.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -7,10 +7,10 @@ part of owlcpp project.
 #define TRIPLE_TO_FACT_ADAPTOR_HPP_
 #include "boost/foreach.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/reasoner/exception.hpp"
-#include "owlcpp/reasoner/detail/node_type.hpp"
-#include "owlcpp/reasoner/detail/node_property.hpp"
-#include "owlcpp/reasoner/config.hpp"
+#include "owlcpp/logic/exception.hpp"
+#include "owlcpp/logic/detail/node_type.hpp"
+#include "owlcpp/logic/detail/node_property.hpp"
+#include "owlcpp/logic/config.hpp"
 #include "factpp/config.hpp"
 
 class /*FACTPP_KERNEL_DECL*/ ReasoningKernel;
@@ -29,7 +29,7 @@ namespace owlcpp{ namespace detail{
 *******************************************************************************/
 class OWLCPP_REASONER_DECL Triple_to_fact_adaptor {
 public:
-   struct Err : public Reasoner_err {};
+   struct Err : public Logic_err {};
 
    Triple_to_fact_adaptor(Triple_store const& ts, ReasoningKernel& k, bool lax)
    : lax_(lax), ts_(ts), k_(k)

@@ -10,7 +10,7 @@ project apps
       <library>/boost/program_options
       <library>/owlcpp//rdf
       <library>/owlcpp//io
-#      <library>/owlcpp//reasoner
+#      <library>/owlcpp//logic
 ;
 
 run ../find_ontologies.cpp : sample_data : : : find_owl_test ;

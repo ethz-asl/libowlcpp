@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/reasoner/expressions.hpp" 
+/** @file "/owlcpp/lib/logic/expressions.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -12,7 +12,7 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
-#include "owlcpp/reasoner/exception.hpp"
+#include "owlcpp/logic/exception.hpp"
 
 namespace owlcpp{ namespace detail{
 
@@ -22,7 +22,7 @@ class Obj_type{
    Obj_type();
 public:
    typedef boost::shared_ptr<const Obj_type> ptr_t;
-   struct Err : public Reasoner_err {};
+   struct Err : public Logic_err {};
 
    Obj_type(const Node_id h, Triple_store const& ts) : ts_(ts), h_(h) {}
 
@@ -40,7 +40,7 @@ protected:
 class Ot_type_list : public Obj_type {
    Ot_type_list();
 public:
-   struct Err : public Reasoner_err {};
+   struct Err : public Logic_err {};
 
    Ot_type_list(const Node_id handle, Triple_store const& ts);
 

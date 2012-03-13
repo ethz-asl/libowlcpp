@@ -1,4 +1,4 @@
-/** @file "/owlcpp/include/owlcpp/reasoner/exception.hpp" 
+/** @file "/owlcpp/include/owlcpp/logic/exception.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -10,7 +10,7 @@ namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-struct Reasoner_err : public base_exception {};
+struct Logic_err : public base_exception {};
 
 }//namespace owlcpp
 #endif /* REASONER_EXCEPTION_HPP_ */

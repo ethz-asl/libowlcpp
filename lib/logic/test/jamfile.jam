@@ -14,7 +14,7 @@ project
       <library>/boost//unit_test_framework
       <library>/owlcpp//io
       <library>/owlcpp//rdf
-      <library>/owlcpp//reasoner
+      <library>/owlcpp//logic
       <define>SAMPLE_DATA_DIR="\"$(smpl_dir:T)\""
       <define>TEMPORARY_DIR="\"$(tmp_dir:T)\""
 ;

@@ -3,10 +3,10 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011-2
 
-project lib/reasoner
+project lib/logic
 ;
 
-lib owlcpp_reasoner
+lib owlcpp_logic
    :  #sources
       [ glob *.cpp ]
    :  #requirements

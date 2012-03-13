@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/reasoner/triple_to_fact_adaptor.cpp" 
+/** @file "/owlcpp/lib/logic/triple_to_fact_adaptor.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef OWLCPP_REASONER_SOURCE
 #define OWLCPP_REASONER_SOURCE
 #endif
-#include "owlcpp/reasoner/detail/triple_to_fact_adaptor.hpp"
+#include "owlcpp/logic/detail/triple_to_fact_adaptor.hpp"
 
 #include "boost/assert.hpp"
 

@@ -10,7 +10,7 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/io/parse_to_triple_store.hpp"
-#include "owlcpp/reasoner/triple_to_fact.hpp"
+#include "owlcpp/logic/triple_to_fact.hpp"
 #include "owlcpp/terms/term_tags.hpp"
 
 /**

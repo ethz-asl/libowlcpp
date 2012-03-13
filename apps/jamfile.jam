@@ -41,7 +41,7 @@ exe print_classes
 #   : #requirements
 #      <library>/owlcpp//rdf
 #      <library>/owlcpp//io
-#      <library>/owlcpp//reasoner
+#      <library>/owlcpp//logic
 #;
 
 #exe satisfiable
@@ -50,5 +50,5 @@ exe print_classes
 #   : #requirements
 #      <library>/owlcpp//rdf
 #      <library>/owlcpp//io
-#      <library>/owlcpp//reasoner
+#      <library>/owlcpp//logic
 #;

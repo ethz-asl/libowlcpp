@@ -1,4 +1,4 @@
-/** @file "/owlcpp/include/owlcpp/reasoner/query_fact.hpp"
+/** @file "/owlcpp/include/owlcpp/logic/query_fact.hpp"
 part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
@@ -7,7 +7,7 @@ part of owlcpp project.
 #define QUERY_FACT_HPP_
 #include <string>
 #include <vector>
-#include "owlcpp/reasoner/config.hpp"
+#include "owlcpp/logic/config.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/exception.hpp"
 #include "predicate_fact_abstract.hpp"

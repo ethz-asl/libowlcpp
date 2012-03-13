@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/reasoner/test/triple_to_fact_01_run.cpp" 
+/** @file "/owlcpp/lib/logic/test/triple_to_fact_01_run.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -9,7 +9,7 @@ part of owlcpp project.
 #include "test/sample_data.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/io/input.hpp"
-#include "owlcpp/reasoner/triple_to_fact.hpp"
+#include "owlcpp/logic/triple_to_fact.hpp"
 #include "factpp/Kernel.hpp"
 
 namespace owlcpp{ namespace test{

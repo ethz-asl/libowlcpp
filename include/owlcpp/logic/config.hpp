@@ -1,4 +1,4 @@
-/** @file "/owlcpp/include/owlcpp/reasoner/config.hpp"
+/** @file "/owlcpp/include/owlcpp/logic/config.hpp"
 part of owlcpp project.
 Distributed under GNU General Public License; see doc/license.txt.
 @date 2011 @author Mikhail K Levin

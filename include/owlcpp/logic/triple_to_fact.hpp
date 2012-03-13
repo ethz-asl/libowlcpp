@@ -1,12 +1,12 @@
-/** @file "/owlcpp/include/owlcpp/reasoner/triple_to_fact.hpp"
+/** @file "/owlcpp/include/owlcpp/logic/triple_to_fact.hpp"
 part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #ifndef TRIPLE_TO_FACT_HPP_
 #define TRIPLE_TO_FACT_HPP_
-//#include "owlcpp/reasoner/config.hpp"
-#include "owlcpp/reasoner/detail/triple_to_fact_adaptor.hpp"
+//#include "owlcpp/logic/config.hpp"
+#include "owlcpp/logic/detail/triple_to_fact_adaptor.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "factpp/config.hpp"
 
