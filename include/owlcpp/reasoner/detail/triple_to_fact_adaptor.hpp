@@ -9,8 +9,11 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/reasoner/exception.hpp"
 #include "owlcpp/reasoner/detail/node_type.hpp"
+#include "owlcpp/reasoner/detail/node_property.hpp"
+#include "owlcpp/reasoner/config.hpp"
+#include "factpp/config.hpp"
 
-class /*FACTPP_KERNEL_DECL*/ ReasoningKernel;
+class FACTPP_KERNEL_DECL ReasoningKernel;
 class TDLConceptExpression;
 class TDLIndividualExpression;
 class TDLObjectRoleExpression;
@@ -18,12 +21,13 @@ class TDLDataRoleExpression;
 class TDLDataTypeExpression;
 class TExpressionManager;
 class TDLDataValue;
+class TDLAxiom;
 
 namespace owlcpp{ namespace detail{
 
 /**@brief 
 *******************************************************************************/
-class Triple_to_fact_adaptor {
+class OWLCPP_REASONER_DECL Triple_to_fact_adaptor {
 public:
    struct Err : public Reasoner_err {};
 
@@ -46,7 +50,8 @@ private:
 
    TExpressionManager& e_manager();
 
-   Node_type node_type(const Node_id nid) const;
+   typedef std::pair<Node_type, Node_property> declaration_t;
+   declaration_t declaration(const Node_id nid) const;
 
    /**@param t triple x rdf:type y */
    void submit_type_triple(Triple const& t);
@@ -71,6 +76,8 @@ private:
    TDLDataTypeExpression* datatype_expression(const Node_id nid);
 
    TDLDataValue const* data_value(const Node_id nid);
+
+   TDLAxiom* negative_property_assertion(const Node_id nid);
 };
 
 }//namespace detail

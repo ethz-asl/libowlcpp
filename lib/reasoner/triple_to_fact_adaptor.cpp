@@ -3,8 +3,13 @@ part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#include "boost/assert.hpp"
+#ifndef OWLCPP_REASONER_SOURCE
+#define OWLCPP_REASONER_SOURCE
+#endif
 #include "owlcpp/reasoner/detail/triple_to_fact_adaptor.hpp"
+
+#include "boost/assert.hpp"
+
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
 #include "factpp/Kernel.hpp"
@@ -17,31 +22,47 @@ using namespace owlcpp::terms;
 void Triple_to_fact_adaptor::submit(Triple const& t) {
    //ignore blank nodes
 //   if( ts_[t.subject()].ns_id() == N_blank::id() ) return;
-   switch (t.predicate()()) {
+   const Node_id subj = t.subject();
+   const Node_id pred = t.predicate();
+   const Node_id obj = t.object();
+   switch (pred()) {
       case T_rdf_type::index:
          submit_type_triple(t);
          return;
       case T_rdfs_subClassOf::index:
-         k_.impliesConcepts(concept(t.subject()), concept(t.object()));
+         k_.impliesConcepts(concept(subj), concept(obj));
          return;
       case T_owl_equivalentClass::index:
          e_manager().newArgList();
-         e_manager().addArg(concept(t.subject()));
-         e_manager().addArg(concept(t.object()));
+         e_manager().addArg(concept(subj));
+         e_manager().addArg(concept(obj));
          k_.equalConcepts();
          return;
       case T_owl_disjointWith::index:
          e_manager().newArgList();
-         e_manager().addArg(concept(t.subject()));
-         e_manager().addArg(concept(t.object()));
+         e_manager().addArg(concept(subj));
+         e_manager().addArg(concept(obj));
          k_.disjointConcepts();
          return;
-      case T_owl_AllDisjointClasses::index: {
-         e_manager().newArgList();
-         boost::iterator_range<Rdf_list_iter_s> r = rdf_list(t.subject(), ts_);
-         BOOST_ASSERT(distance(r) > 2);
-         BOOST_FOREACH(const Node_id nid, r) e_manager().addArg(concept(nid));
-         k_.disjointConcepts();
+      case T_owl_inverseOf::index:
+         if( ts_[subj].ns_id() == N_blank::id() ) return;
+         k_.setInverseRoles(obj_role(subj), obj_role(obj));
+         return;
+      case T_rdfs_subPropertyOf::index: {
+         if( ts_[subj].ns_id() == N_blank::id() ) return;
+         const Node_property nts = declaration(subj).second;
+         const Node_property nto = declaration(obj).second;
+         if( nts != nto ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("declaration mismatch in rdfs:subPropertyOf triple")
+                  << Err::str1_t(ts_.string(subj))
+                  << Err::str2_t(ts_.string(obj))
+            );
+         if( nts.is_object() ) {
+            k_.impliesORoles(obj_role(subj), obj_role(obj));
+         } else if( nts.is_data() ) {
+            k_.impliesDRoles(data_role(subj), data_role(obj));
+         }
          return;
       }
       //ignored triples:
@@ -72,74 +93,101 @@ void Triple_to_fact_adaptor::submit(Triple const& t) {
 /*
 *******************************************************************************/
 void Triple_to_fact_adaptor::submit_custom_triple(Triple const& t) {
-   const Node_type nt = node_type(t.predicate());
-   if( nt.is_obj_property() ) {
+   const Node_id subj = t.subject();
+   const Node_id pred = t.predicate();
+   const Node_id obj = t.object();
+   const Node_property np = declaration(pred).second;
+   if( np.is_object() ) {
       k_.relatedTo(
-               instance(t.subject()),
-               obj_role(t.predicate()),
-               instance(t.object())
+               instance(subj),
+               obj_role(pred),
+               instance(obj)
       );
-   } else if(nt.is_data_property() ) {
-      k_.valueOf(
-               instance(t.subject()),
-               data_role(t.predicate()),
-               data_value(t.object())
-      );
+      return;
    }
+
+   if(np.is_data() ) {
+      k_.valueOf(
+               instance(subj),
+               data_role(pred),
+               data_value(obj)
+      );
+      return;
+   }
+
+   if( np.is_annotation() ) return;
+   if( ts_[subj].ns_id() == N_blank::id() ) return;
+
    BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unknown predicate type")
-            << Err::str1_t(ts_.string(t.predicate()))
+            << Err::str1_t(ts_.string(pred))
       );
 }
 /*
 *******************************************************************************/
 void Triple_to_fact_adaptor::submit_type_triple(Triple const& t) {
    BOOST_ASSERT(t.pred_ == T_rdf_type::id());
+   const Node_id subj = t.subject();
+   const Node_id obj = t.object();
+   switch (obj()) {
+   case T_owl_NegativePropertyAssertion::index:
+      negative_property_assertion(subj);
+      return;
+   }
+
    //ignore blank nodes
-   if( ts_[t.subject()].ns_id() == N_blank::id() ) return;
-   switch (t.object()()) {
+   if( ts_[subj].ns_id() == N_blank::id() ) return;
+   switch (obj()) {
       case T_owl_Class::index:
-         concept(t.subject());
+         concept(subj);
          return;
+      case T_owl_AllDisjointClasses::index: {
+         e_manager().newArgList();
+         boost::iterator_range<Rdf_list_iter_s> r = rdf_list(subj, ts_);
+         BOOST_ASSERT(distance(r) > 2);
+         BOOST_FOREACH(const Node_id nid, r) e_manager().addArg(concept(nid));
+         k_.disjointConcepts();
+         return;
+      }
       case T_rdfs_Datatype::index:
-         datatype(t.subject());
+         datatype(subj);
          return;
       case T_owl_ObjectProperty::index:
-         obj_role(t.subject());
+         obj_role(subj);
          return;
       case T_owl_AsymmetricProperty::index:
-         k_.setAsymmetric( obj_role(t.subject()) );
+         k_.setAsymmetric( obj_role(subj) );
          return;
       case T_owl_FunctionalProperty::index:
-         k_.setOFunctional( obj_role(t.subject()) );
+         k_.setOFunctional( obj_role(subj) );
          return;
       case T_owl_InverseFunctionalProperty::index:
-         k_.setInverseFunctional( obj_role(t.subject()) );
+         k_.setInverseFunctional( obj_role(subj) );
          return;
       case T_owl_inverseOf::index:
-         k_.setInverseRoles( obj_role(t.subject()), obj_role(t.object()) );
+         k_.setInverseRoles( obj_role(subj), obj_role(obj) );
          return;
       case T_owl_IrreflexiveProperty::index:
-         k_.setIrreflexive( obj_role(t.subject()) );
+         k_.setIrreflexive( obj_role(subj) );
          return;
       case T_owl_ReflexiveProperty::index:
-         k_.setReflexive( obj_role(t.subject()) );
+         k_.setReflexive( obj_role(subj) );
          return;
       case T_owl_SymmetricProperty::index:
-         k_.setSymmetric( obj_role(t.subject()) );
+         k_.setSymmetric( obj_role(subj) );
          return;
       case T_owl_TransitiveProperty::index:
-         k_.setTransitive( obj_role(t.subject()) );
+         k_.setTransitive( obj_role(subj) );
          return;
       case T_rdfs_subPropertyOf::index:
-         k_.impliesORoles( obj_role(t.subject()), obj_role(t.object()) );
+         k_.impliesORoles( obj_role(subj), obj_role(obj) );
          return;
       case T_owl_DatatypeProperty::index:
-         data_role(t.subject());
+         data_role(subj);
          return;
       case T_owl_NamedIndividual::index:
-         instance( t.subject() );
+         instance( subj );
          return;
       //ignore, look for owl:annotatedTarget
       case T_owl_AnnotationProperty::index:
@@ -158,7 +206,7 @@ void Triple_to_fact_adaptor::submit_type_triple(Triple const& t) {
          BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("unsupported rdf:type object")
-                  << Err::str1_t(ts_.string(t.object()))
+                  << Err::str1_t(ts_.string(obj))
          );
    }
 }
@@ -299,12 +347,14 @@ TExpressionManager& Triple_to_fact_adaptor::e_manager() {
 
 /*
 *******************************************************************************/
-Node_type Triple_to_fact_adaptor::node_type(const Node_id nid) const {
-   Node_type nt;
+Triple_to_fact_adaptor::declaration_t
+Triple_to_fact_adaptor::declaration(const Node_id nid) const {
+   declaration_t d;
    BOOST_FOREACH(
             Triple const& t,
             ts_.triples().find(nid, T_rdf_type::id(), any(), any())) {
-      nt.set(t.object());
+      d.first.set(t.object());
+      d.second.set(t.object());
    }
 
    BOOST_FOREACH(
@@ -320,10 +370,59 @@ Node_type Triple_to_fact_adaptor::node_type(const Node_id nid) const {
       BOOST_FOREACH(
                Triple const& t,
                ts_.triples().find(x, T_owl_annotatedTarget::id(), any(), any())) {
-         nt.set(t.object());
+         d.first.set(t.object());
+         d.second.set(t.object());
       }
    }
-   return nt;
+   return d;
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::negative_property_assertion(const Node_id nid) {
+   Query<1,1,0,0>::range r1 =
+            ts_.triples().find(nid, T_owl_sourceIndividual::id(), any(), any());
+   if( ! r1 ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("no owl:sourceIndividual in owl:NegativePropertyAssertion")
+            << Err::str1_t(ts_.string(nid))
+   );
+   const Node_id src_ind = r1.front().object();
+
+   Query<1,1,0,0>::range r2 =
+            ts_.triples().find(nid, T_owl_assertionProperty::id(), any(), any());
+   if( ! r2 ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("no owl:assertionProperty in owl:NegativePropertyAssertion")
+            << Err::str1_t(ts_.string(nid))
+            << Err::str2_t(ts_.string(src_ind))
+   );
+   const Node_id prop = r2.front().object();
+   const Node_property nt = declaration(prop).second;
+   if( ! nt.is_object() && ! nt.is_data() ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("undefined property in owl:NegativePropertyAssertion")
+            << Err::str1_t(ts_.string(prop))
+   );
+   const Node_id tiv = nt.is_object() ?
+            T_owl_targetIndividual::id() :
+            T_owl_targetValue::id();
+   Query<1,1,0,0>::range r3 =
+            ts_.triples().find(nid, tiv, any(), any());
+   if( ! r3 ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("no owl:target* in owl:NegativePropertyAssertion")
+            << Err::str1_t(ts_.string(nid))
+            << Err::str2_t(ts_.string(src_ind))
+            << Err::str3_t(ts_.string(prop))
+   );
+   const Node_id target = r3.front().object();
+
+   if( nt.is_object() ) {
+      /*return*/ k_.relatedToNot(instance(src_ind), obj_role(prop), instance(target));
+   } else {
+      /*return*/ k_.valueOfNot(instance(src_ind), data_role(prop), data_value(target));
+   }
 }
 
 /*
