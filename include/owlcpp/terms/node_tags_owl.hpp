@@ -137,6 +137,7 @@ part of owlcpp project.
       ((owl)(withRestrictions)) \
 /* */
 
+//TODO: map to internally stored types
 /**@brief OWL terms in XSD namespace
 *******************************************************************************/
 #define OWLCPP_TERMS_XSD \

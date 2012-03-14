@@ -39,7 +39,7 @@ public:
    typedef Node_map node_map;
    typedef Triple_map triple_map;
 
-   Triple_store(Node_map_std const& snodes = Node_map_std::get(Nodes_none()))
+   Triple_store(Node_map_std const& snodes = Node_map_std::get(Nodes_owl()))
    : iri_(snodes), node_(snodes), triple_()
    {}
 

@@ -19,7 +19,7 @@ const std::string ni2 = "http://example.xyz/example#n2";
 /** OWL-unaware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Triple_store ts;
+   Triple_store ts(Node_map_std::get(Nodes_none()));
 
    const Node_id nid1 = ts.insert_iri_node(ni1);
    const Node_id nid1a = ts.insert_iri_node(ni1);
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 /** OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   Triple_store ts; //default constructor makes OWL-aware store
 
    //correct term
    const Node_id nid3 = ts.insert_iri_node(terms::N_owl::iri() + "#Ontology");
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE( case02 ) {
 /** Empty IRI node maps to T_empty_::id() ID
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case03 ) {
-   Triple_store ts;
+   Triple_store ts(Node_map_std::get(Nodes_none()));
    Node_id const* nid = ts.find_iri_node("");
    BOOST_REQUIRE(nid);
    BOOST_CHECK_EQUAL(*nid, terms::T_empty_::id());

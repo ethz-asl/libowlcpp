@@ -37,8 +37,7 @@ template<class T> struct Store_node_iri_crtpb {
          BOOST_THROW_EXCEPTION(
                   Err()
                   << typename Err::msg_t("error inserting IRI")
-                  << typename Err::str1_t( name )
-                  << typename Err::str2_t( self.iris().at(iid) )
+                  << typename Err::str1_t( iri )
                   << typename Err::nested_t(boost::current_exception())
          );
       }
