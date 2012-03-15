@@ -215,7 +215,7 @@ void Triple_to_fact_adaptor::submit_type_triple(Triple const& t) {
 /*
 *******************************************************************************/
 TDLConceptExpression* Triple_to_fact_adaptor::concept(const Node_id nid) {
-   return Obj_type( nid, ts_ )(k_);
+   return Obj_type::make( nid, ts_ )->get(ts_, k_);
 }
 
 /*
