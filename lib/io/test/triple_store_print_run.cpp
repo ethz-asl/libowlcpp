@@ -10,25 +10,13 @@ part of owlcpp project.
 #include "boost/lexical_cast.hpp"
 #include "test/sample_data.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
-std::string short_str(const Node_id nid, Triple_store const& ts) {
-   Node const& node = ts[nid];
-   const Ns_id nsid = node.ns_id();
-   const std::string val = node.value_str();
-   if( nsid == owlcpp::terms::N_blank::id() ) return "_:" + val;
-   if( nsid == owlcpp::terms::N_empty::id() ) return "\"" + val + "\"";
-   if( val.empty() ) return ts[nsid];
-   const std::string pref = ts.iris().prefix(nsid);
-   return (
-            pref.empty() ? "ns" + boost::lexical_cast<std::string>(nsid()) : pref
-   ) + ":" + node.value_str();
-}
 
 /**
 *******************************************************************************/
@@ -39,9 +27,9 @@ BOOST_AUTO_TEST_CASE( case01 ) {
       load_file(si.path, ts);
       BOOST_FOREACH(Triple const& t, ts.triples()) {
          std::cout
-         << short_str(t.subject(), ts) << ' '
-         << short_str(t.predicate(), ts) << ' '
-         << short_str(t.object(), ts) << '\n'
+         << to_string_shortest(t.subject(), ts) << ' '
+         << to_string_shortest(t.predicate(), ts) << ' '
+         << to_string_shortest(t.object(), ts) << '\n'
          ;
       }
       std::cout << '\n';
