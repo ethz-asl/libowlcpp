@@ -12,6 +12,7 @@ part of owlcpp project.
 #include "owlcpp/logic/detail/node_property.hpp"
 #include "owlcpp/logic/config.hpp"
 #include "factpp/config.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
 
 class /*FACTPP_KERNEL_DECL*/ ReasoningKernel;
 class TDLConceptExpression;
@@ -48,10 +49,41 @@ private:
    Triple_store const& ts_;
    ReasoningKernel& k_;
 
+   TDLAxiom* axiom(Triple const& t);
+   TDLAxiom* axiom_owl_type(Triple const& t);
+   TDLAxiom* all_disjoint(Triple const& t);
+
    TExpressionManager& e_manager();
 
-   typedef std::pair<Node_type, Node_property> declaration_t;
-   declaration_t declaration(const Node_id nid) const;
+//   typedef std::pair<Node_type, Node_property> declaration_t;
+//   declaration_t declaration(const Node_id nid) const;
+   template<class Decl> Decl declaration(const Node_id nid) const {
+      using namespace owlcpp::terms;
+      Decl d;
+      BOOST_FOREACH(
+               Triple const& t,
+               ts_.triples().find(nid, T_rdf_type::id(), any(), any())) {
+         d.set(t.object());
+      }
+
+      BOOST_FOREACH(
+               Triple const& t,
+               ts_.triples().find(any(), T_owl_annotatedSource::id(), nid, any())) {
+
+         const Node_id x = t.subject();
+         if( ts_[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("non-blank owl:annotatedSource x")
+                  << Err::str1_t(ts_.string(nid))
+         );
+         BOOST_FOREACH(
+                  Triple const& t,
+                  ts_.triples().find(x, T_owl_annotatedTarget::id(), any(), any())) {
+            d.set(t.object());
+         }
+      }
+      return d;
+   }
 
    /**@param t triple x rdf:type y */
    void submit_type_triple(Triple const& t);
@@ -66,13 +98,11 @@ private:
    /** make instance of a class */
    TDLIndividualExpression* instance_of(const Node_id inst, const Node_id cls);
 
-   TDLObjectRoleExpression* obj_role(const Node_id nid);
-   TDLObjectRoleExpression* obj_role_expression(const Node_id nid);
+   TDLObjectRoleExpression* obj_property(const Node_id nid);
 
-   TDLDataRoleExpression* data_role(const Node_id nid);
+   TDLDataRoleExpression* data_property(const Node_id nid);
 
    TDLDataTypeExpression* datatype(const Node_id nid);
-   TDLDataTypeExpression* datatype_expression(const Node_id nid);
 
    TDLDataValue const* data_value(const Node_id nid);
 

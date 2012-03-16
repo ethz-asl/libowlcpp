@@ -18,8 +18,55 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace detail{
 
+struct Obj_class {
+   typedef TDLConceptExpression* fact_type;
+};
+
+struct Obj_prop {
+   typedef TDLObjectRoleExpression* fact_type;
+};
+
+struct Data_class {
+   typedef TDLDataTypeExpression* fact_type;
+};
+
+struct Data_prop {
+   typedef TDLDataRoleExpression* fact_type;
+};
+
 /**@brief 
 *******************************************************************************/
+template<class T> struct Fact_expression {
+   struct Err : public Logic_err {};
+   typedef Fact_expression self_t;
+   typedef T expression_type;
+   typedef boost::shared_ptr<const self_t> ptr_t;
+   typedef typename expression_type::fact_type generated_t;
+   virtual generated_t get(ReasoningKernel& k) const  = 0;
+   virtual ~Fact_expression() {}
+};
+
+template<class T> typename Fact_expression<T>::ptr_t
+make_fact_expression(Expression_args const& ea, Triple_store const& ts);
+
+template<> typename Fact_expression<Obj_class>::ptr_t
+make_fact_expression<Obj_class>(Expression_args const& ea, Triple_store const& ts);
+
+template<> typename Fact_expression<Obj_prop>::ptr_t
+make_fact_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts);
+
+template<> typename Fact_expression<Data_class>::ptr_t
+make_fact_expression<Data_class>(Expression_args const& ea, Triple_store const& ts);
+
+template<> typename Fact_expression<Data_prop>::ptr_t
+make_fact_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts);
+
+template<class T> inline typename Fact_expression<T>::ptr_t
+make_fact_expression(const Node_id h, Triple_store const& ts) {
+   return make_fact_expression<T>(Expression_args(h, ts), ts);
+}
+
+/**@brief
 struct Obj_type {
    struct Err : public Logic_err {};
 
@@ -31,14 +78,11 @@ struct Obj_type {
 
    static ptr_t make(Expression_args const& ea, Triple_store const& ts);
 
-   virtual TDLConceptExpression* get(
-            Triple_store const& ts,
-            ReasoningKernel& k
-   ) const  = 0;
+   virtual TDLConceptExpression* get(ReasoningKernel& k) const  = 0;
 };
+*******************************************************************************/
 
 /**@brief
-*******************************************************************************/
 struct Obj_prop {
    struct Err : public Logic_err {};
 
@@ -50,38 +94,26 @@ struct Obj_prop {
 
    static ptr_t make(Expression_args const& ea, Triple_store const& ts);
 
-   virtual TDLObjectRoleExpression* get(
-            Triple_store const& ts,
-            ReasoningKernel& k
-   ) const  = 0;
+   virtual TDLObjectRoleExpression* get(ReasoningKernel& k) const  = 0;
 };
-
+*******************************************************************************/
 
 /**@brief
-*******************************************************************************/
-class Ot_type_list : public Obj_type {
-   Ot_type_list();
-public:
-   Ot_type_list(Expression_args const& ea, Triple_store const& ts);
+struct Data_prop {
+   struct Err : public Logic_err {};
 
-   TDLConceptExpression* get(Triple_store const& ts, ReasoningKernel& k ) const {
-      return 0;
+   typedef boost::shared_ptr<const Data_prop> ptr_t;
+
+   static ptr_t make(const Node_id h, Triple_store const& ts) {
+      return make(Expression_args(h, ts), ts);
    }
 
-private:
-   Triple_store const& ts_;
-   Node_id handle_;
-   Node_id type_;
-   Node_id op_;
-   std::vector<Ot_type_list> tv_;
-   std::vector<Node_id> iv_;
+   static ptr_t make(Expression_args const& ea, Triple_store const& ts);
 
-
-   TDLConceptExpression* generate_expression(ReasoningKernel& k) const;
-   void parse_expression();
-   void parse_class();
-   void parse_restriction();
+   virtual TDLDataRoleExpression* get(ReasoningKernel& k) const  = 0;
 };
+*******************************************************************************/
+
 
 }//namespace detail
 }//namespace owlcpp

@@ -14,7 +14,7 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/** Iterate over members of RDF list
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Triple_store ts(Node_map_std::get(Nodes_owl()));

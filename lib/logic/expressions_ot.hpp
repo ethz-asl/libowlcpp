@@ -5,7 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef EXPRESSIONS_OT_HPP_
 #define EXPRESSIONS_OT_HPP_
-#include <list>
+#include <vector>
 #include "boost/foreach.hpp"
 #include "expressions.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
@@ -15,7 +15,7 @@ using namespace owlcpp::terms;
 
 /**@brief
 *******************************************************************************/
-class Ot_declared : public Obj_type {
+class Ot_declared : public Fact_expression<Obj_class> {
 public:
    Ot_declared(Expression_args const& ea, Triple_store const& ts)
    : iri_(ts.string(ea.handle)) {
@@ -27,7 +27,7 @@ public:
       );
    }
 
-   TDLConceptExpression* get(Triple_store const& ts, ReasoningKernel& k ) const {
+   generated_t get(ReasoningKernel& k ) const {
       return k.getExpressionManager()->Concept(iri_);
    }
 
@@ -37,10 +37,10 @@ private:
 
 /**@brief
 *******************************************************************************/
-class Ot_complement : public Obj_type {
+class Ot_complement : public Fact_expression<Obj_class> {
 public:
    Ot_complement(Expression_args const& ea, Triple_store const& ts)
-   : ot_(Obj_type::make(ea.obj1, ts))
+   : ot_(make_fact_expression<Obj_class>(ea.obj1, ts))
    {
       if( ea.e_type != T_owl_Class::id() ) BOOST_THROW_EXCEPTION(
                Err()
@@ -49,8 +49,8 @@ public:
       );
    }
 
-   TDLConceptExpression* get(Triple_store const& ts, ReasoningKernel& k ) const {
-      return k.getExpressionManager()->Not(ot_->get(ts, k));
+   TDLConceptExpression* get(ReasoningKernel& k ) const {
+      return k.getExpressionManager()->Not(ot_->get(k));
    }
 
 private:
@@ -59,11 +59,15 @@ private:
 
 /**@brief
 *******************************************************************************/
-class Ot_card : public Obj_type {
+class Ot_card : public Fact_expression<Obj_class> {
 public:
    Ot_card(Expression_args const& ea, Triple_store const& ts)
-   : op_( Obj_prop::make(ea.obj1, ts) ),
-     ot_(is_empty(ea.obj2) ? Obj_type::ptr_t() : Obj_type::make(ea.obj2, ts)),
+   : op_( make_fact_expression<Obj_prop>(ea.obj1, ts) ),
+     ot_(
+              is_empty(ea.obj2) ?
+                       Fact_expression<Obj_class>::ptr_t() :
+                       make_fact_expression<Obj_class>(ea.obj2, ts)
+     ),
      card_type_(ea.card_type),
      n_(ea.cardinality)
    {
@@ -72,23 +76,14 @@ public:
                << Err::msg_t("wrong rdf:type for owl:*cardinality expression")
                << Err::str1_t(ts.string(ea.e_type))
       );
-   }
-
-   TDLConceptExpression* get(Triple_store const& ts, ReasoningKernel& k ) const {
-      TExpressionManager& em = *k.getExpressionManager();
       switch(card_type_()) {
       case T_owl_cardinality::index:
-         return em.Cardinality(n_, op_->get(ts, k), em.Top());
       case T_owl_maxCardinality::index:
-         return em.MaxCardinality(n_, op_->get(ts, k), em.Top());
       case T_owl_minCardinality::index:
-         return em.MinCardinality(n_, op_->get(ts, k), em.Top());
       case T_owl_maxQualifiedCardinality::index:
-         return em.MaxCardinality(n_, op_->get(ts, k), ot_->get(ts, k));
       case T_owl_minQualifiedCardinality::index:
-         return em.MinCardinality(n_, op_->get(ts, k), ot_->get(ts, k));
       case T_owl_qualifiedCardinality::index:
-         return em.Cardinality(n_, op_->get(ts, k), ot_->get(ts, k));
+         break;
       default:
          BOOST_THROW_EXCEPTION(
                      Err()
@@ -98,33 +93,65 @@ public:
       }
    }
 
+   TDLConceptExpression* get(ReasoningKernel& k ) const {
+      TExpressionManager& em = *k.getExpressionManager();
+      switch(card_type_()) {
+      case T_owl_cardinality::index:
+         return em.Cardinality(n_, op_->get(k), em.Top());
+      case T_owl_maxCardinality::index:
+         return em.MaxCardinality(n_, op_->get(k), em.Top());
+      case T_owl_minCardinality::index:
+         return em.MinCardinality(n_, op_->get(k), em.Top());
+      case T_owl_maxQualifiedCardinality::index:
+         return em.MaxCardinality(n_, op_->get(k), ot_->get(k));
+      case T_owl_minQualifiedCardinality::index:
+         return em.MinCardinality(n_, op_->get(k), ot_->get(k));
+      case T_owl_qualifiedCardinality::index:
+         return em.Cardinality(n_, op_->get(k), ot_->get(k));
+      default:
+         return 0;//shouldn't come to this
+      }
+   }
+
 private:
-   Obj_prop::ptr_t op_;
-   Obj_type::ptr_t ot_;
+   Fact_expression<Obj_prop>::ptr_t op_;
+   Fact_expression<Obj_class>::ptr_t ot_;
    const Node_id card_type_;
    const unsigned n_;
 };
 
 /**@brief Type from a list of types (owl:intersectionOf, owl:unionOf)
 *******************************************************************************/
-class Ot_tlist : public Obj_type {
+class Ot_tlist : public Fact_expression<Obj_class> {
 public:
    Ot_tlist(Expression_args const& ea, Triple_store const& ts)
-   : ot_(Obj_type::make(ea.obj1, ts))
+   : type_(ea.pred1)
    {
       if( ea.e_type != T_owl_Class::id() ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unexpected rdf:type; should be owl:Class")
                << Err::str1_t(ts.string(ea.e_type))
       );
-   }
 
-   TDLConceptExpression* get(Triple_store const& ts, ReasoningKernel& k ) const {
-      TExpressionManager& em = *k.getExpressionManager();
+      BOOST_FOREACH(const Node_id nid, rdf_list(ea.obj1, ts)) {
+         Node const& node = ts[nid];
+         if( is_empty(node.ns_id()) ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("invalid node for object type declaration")
+                  << Err::str1_t(ts.string(nid))
+         );
+         otl_.push_back(make_fact_expression<Obj_class>(nid, ts));
+      }
+      if( otl_.size() < 2 ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("at least two object type expressions is required")
+               << Err::str1_t(ts.string(type_))
+               << Err::str2_t(ts.string(ea.obj1))
+      );
       switch(type_()) {
       case T_owl_intersectionOf::index:
       case T_owl_unionOf::index:
-         return em.Cardinality(n_, op_->get(ts, k), em.Top());
+         break;
       default:
          BOOST_THROW_EXCEPTION(
                      Err()
@@ -134,16 +161,30 @@ public:
       }
    }
 
+   TDLConceptExpression* get(ReasoningKernel& k ) const {
+      TExpressionManager& em = *k.getExpressionManager();
+      em.newArgList();
+      BOOST_FOREACH(ptr_t const& ote, otl_) em.addArg( ote->get(k) );
+      switch(type_()) {
+      case T_owl_intersectionOf::index:
+         return em.And();
+      case T_owl_unionOf::index:
+         return em.Or();
+      default:
+         return 0;//shouldn't come to this
+      }
+   }
+
 private:
-   ptr_t ot_;
    const Node_id type_;
+   std::vector<Fact_expression<Obj_class>::ptr_t> otl_;  /**< object type expressions list */
 };
 
 /**@brief generate owl:oneOf type expression
 *******************************************************************************/
-class Ot_olist : public Obj_type {
+class Ot_ilist : public Fact_expression<Obj_class> {
 public:
-   Ot_olist(Expression_args const& ea, Triple_store const& ts)
+   Ot_ilist(Expression_args const& ea, Triple_store const& ts)
    {
       if( ea.e_type != T_owl_Class::id() ) BOOST_THROW_EXCEPTION(
                Err()
@@ -154,20 +195,23 @@ public:
          Node const& node = ts[nid];
          if( is_blank(node.ns_id()) || is_empty(node.ns_id()) ) BOOST_THROW_EXCEPTION(
                   Err()
-                  << Err::msg_t("invalid node for object type declaration")
+                  << Err::msg_t("invalid node for instance declaration")
                   << Err::str1_t(ts.string(nid))
          );
-         o_.push_back(ts.string(nid));
+         il_.push_back(ts.string(nid));
       }
    }
 
-   TDLConceptExpression* get(Triple_store const& ts, ReasoningKernel& k ) const {
+   TDLConceptExpression* get(ReasoningKernel& k ) const {
       TExpressionManager& em = *k.getExpressionManager();
-      if( o_.empty() ) return em.Bottom();
+      if( il_.empty() ) return em.Bottom();
+      em.newArgList();
+      BOOST_FOREACH(std::string const& iri, il_) em.addArg( em.Individual(iri) );
+      return em.OneOf();
    }
 
 private:
-   std::list<std::string> o_;
+   std::vector<std::string> il_; /**< instance IRI list */
 };
 
 }//namespace detail
