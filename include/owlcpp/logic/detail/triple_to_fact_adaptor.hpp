@@ -36,27 +36,34 @@ public:
    : lax_(lax), ts_(ts), k_(k)
    {}
 
-   void submit(Triple const& t);
+   void submit(Triple const& t) {axiom(t);}
 
    template<class Range> void submit(Range r) {
       BOOST_FOREACH(Triple const& t, r) submit(t);
    }
 
-
+   TDLAxiom* axiom(Triple const& t);
 
 private:
    bool lax_;
    Triple_store const& ts_;
    ReasoningKernel& k_;
 
-   TDLAxiom* axiom(Triple const& t);
-   TDLAxiom* axiom_owl_type(Triple const& t);
+   TDLAxiom* axiom_rdf_type(Triple const& t);
+   TDLAxiom* axiom_custom_predicate(Triple const& t);
    TDLAxiom* all_disjoint(Triple const& t);
+   TDLAxiom* disjoint_union(Triple const& t);
+   TDLAxiom* sub_property_of(Triple const& t);
+   TDLAxiom* equivalent_property(Triple const& t);
+   TDLAxiom* equivalent_class(Triple const& t);
+   TDLAxiom* property_chain(Triple const& t);
+   TDLAxiom* property_disjoint_with(Triple const& t);
+   TDLAxiom* domain(Triple const& t);
+   TDLAxiom* range(Triple const& t);
+   TDLAxiom* all_different(Triple const& t);
 
-   TExpressionManager& e_manager();
+   TExpressionManager& e_m();
 
-//   typedef std::pair<Node_type, Node_property> declaration_t;
-//   declaration_t declaration(const Node_id nid) const;
    template<class Decl> Decl declaration(const Node_id nid) const {
       using namespace owlcpp::terms;
       Decl d;
@@ -84,9 +91,6 @@ private:
       }
       return d;
    }
-
-   /**@param t triple x rdf:type y */
-   void submit_type_triple(Triple const& t);
 
    /**@param t triple x y z */
    void submit_custom_triple(Triple const& t);

@@ -26,23 +26,60 @@ TDLAxiom* Triple_to_fact_adaptor::axiom(Triple const& t) {
    const Node_id obj = t.object();
    switch (pred()) {
    case T_rdf_type::index:
-      return axiom_owl_type(t);
+      return axiom_rdf_type(t);
    case T_rdfs_subClassOf::index:
       return k_.impliesConcepts(concept(subj), concept(obj));
    case T_owl_equivalentClass::index:
-      e_manager().newArgList();
-      e_manager().addArg(concept(subj));
-      e_manager().addArg(concept(obj));
+      return equivalent_class(t);
+      e_m().newArgList();
+      e_m().addArg(concept(subj));
+      e_m().addArg(concept(obj));
       return k_.equalConcepts();
    case T_owl_disjointWith::index:
-      e_manager().newArgList();
-      e_manager().addArg(concept(subj));
-      e_manager().addArg(concept(obj));
+      e_m().newArgList();
+      e_m().addArg(concept(subj));
+      e_m().addArg(concept(obj));
       return k_.disjointConcepts();
+   case T_owl_disjointUnionOf::index:
+      return disjoint_union(t);
    case T_owl_inverseOf::index:
-      if( ts_[subj].ns_id() == N_blank::id() ) return 0;
+      if( ! declaration<Node_property>(subj).is_object() )
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("x in \"x owl:inverseOf y\" is not declared as object property")
+      );
+      if( ! declaration<Node_property>(obj).is_object() )
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("y in \"x owl:inverseOf y\" is not declared as object property")
+      );
       return k_.setInverseRoles(obj_property(subj), obj_property(obj));
-   case T_rdfs_subPropertyOf::index: {
+   case T_rdfs_subPropertyOf::index:
+      return sub_property_of(t);
+   case T_owl_propertyChainAxiom::index:
+      return property_chain(t);
+   case T_owl_equivalentProperty::index:
+      return equivalent_property(t);
+   case T_owl_propertyDisjointWith::index:
+      return property_disjoint_with(t);
+   case T_rdfs_domain::index:
+      return domain(t);
+   case T_rdfs_range::index:
+      return range(t);
+   case T_owl_hasKey::index:
+      BOOST_THROW_EXCEPTION( Err() << Err::msg_t("owl:hasKey is not supported") );
+   case T_owl_sameAs::index:
+      e_m().newArgList();
+      e_m().addArg(instance(subj));
+      e_m().addArg(instance(obj));
+      return k_.processSame();
+   case T_owl_differentFrom::index:
+      e_m().newArgList();
+      e_m().addArg(instance(subj));
+      e_m().addArg(instance(obj));
+      return k_.processDifferent();
+/*
+   {
       if( ts_[subj].ns_id() == N_blank::id() ) return 0;
       const Node_property nts = declaration<Node_property>(subj);
       const Node_property nto = declaration<Node_property>(obj);
@@ -59,6 +96,7 @@ TDLAxiom* Triple_to_fact_adaptor::axiom(Triple const& t) {
       }
       return 0;
    }
+*/
    //ignored triples:
    case T_owl_annotatedProperty::index:
    case T_owl_annotatedSource::index:
@@ -80,13 +118,13 @@ TDLAxiom* Triple_to_fact_adaptor::axiom(Triple const& t) {
    case T_rdfs_label::index:
       return 0;
    default:
-      break;
+      return axiom_custom_predicate(t);
    }
 }
 
 /*
 *******************************************************************************/
-TDLAxiom* Triple_to_fact_adaptor::axiom_owl_type(Triple const& t) {
+TDLAxiom* Triple_to_fact_adaptor::axiom_rdf_type(Triple const& t) {
    const Node_id subj = t.subject();
    const Node_id pred = t.predicate();
    const Node_id obj = t.object();
@@ -94,9 +132,62 @@ TDLAxiom* Triple_to_fact_adaptor::axiom_owl_type(Triple const& t) {
    case T_owl_AllDisjointClasses::index:
    case T_owl_AllDisjointProperties::index:
       return all_disjoint(t);
+   case T_owl_AllDifferent::index:
+      return all_different(t);
+   case T_owl_FunctionalProperty::index: {
+      const Node_property np = declaration<Node_property>(subj);
+      if( np.is_object() ) return k_.setOFunctional(obj_property(subj));
+      if( np.is_data() ) return k_.setDFunctional(data_property(subj));
+      BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("undefined subject in x rdf:type owl:FunctionalProperty")
+                  << Err::str1_t(ts_.string(subj))
+      );
+   }
+
+   case T_owl_InverseFunctionalProperty::index:
+      return k_.setInverseFunctional(obj_property(subj));
+
+   case T_owl_ReflexiveProperty::index:
+      if( ! declaration<Node_property>(subj).is_object() ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("undefined subject in x rdf:type owl:ReflexiveProperty")
+               << Err::str1_t(ts_.string(subj))
+      );
+      return k_.setReflexive(obj_property(subj));
+
+   case T_owl_IrreflexiveProperty::index:
+      if( ! declaration<Node_property>(subj).is_object() ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("undefined subject in x rdf:type owl:owl:IrreflexiveProperty")
+               << Err::str1_t(ts_.string(subj))
+      );
+      return k_.setIrreflexive(obj_property(subj));
+
+   case T_owl_SymmetricProperty::index:
+      return k_.setSymmetric(obj_property(subj));
+
+   case T_owl_AsymmetricProperty::index:
+      if( ! declaration<Node_property>(subj).is_object() ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("undefined subject in x rdf:type owl:owl:AsymmetricProperty")
+               << Err::str1_t(ts_.string(subj))
+      );
+      return k_.setAsymmetric(obj_property(subj));
+
+   case T_owl_TransitiveProperty::index:
+      return k_.setTransitive(obj_property(subj));
+
    default:
+      if( declaration<Node_type>(obj).is_class() )
+         return k_.instanceOf(instance(subj), concept(obj));
       break;
    }
+   BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("unsupported rdf:type object")
+                  << Err::str1_t(ts_.string(subj))
+   );
 }
 
 /*
@@ -126,8 +217,6 @@ TDLAxiom* Triple_to_fact_adaptor::all_disjoint(Triple const& t) {
             << Err::str1_t(ts_.string(seqid))
    );
 
-   e_manager().newArgList();
-
    if( obj == T_owl_AllDisjointClasses::id() ) {
       BOOST_FOREACH(const Node_id nid, seq) {
          if( ! declaration<Node_type>(nid).is_class() ) BOOST_THROW_EXCEPTION(
@@ -135,8 +224,9 @@ TDLAxiom* Triple_to_fact_adaptor::all_disjoint(Triple const& t) {
                   << Err::msg_t("non-class node in owl:AllDisjointClasses")
                   << Err::str1_t(ts_.string(nid))
          );
-         e_manager().addArg(concept(nid));
       }
+      e_m().newArgList();
+      BOOST_FOREACH(const Node_id nid, seq) e_m().addArg(concept(nid));
       return k_.disjointConcepts();
    }
 
@@ -147,23 +237,90 @@ TDLAxiom* Triple_to_fact_adaptor::all_disjoint(Triple const& t) {
    );
 
    const Node_property np = declaration<Node_property>(seq[0]);
-   if( np.is_object() ) {
-      BOOST_FOREACH(const Node_id nid, seq) {
-         if( np != declaration<Node_property>(nid) ) BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("non-uniform types in owl:AllDisjointProperties axiom")
-                  << Err::str1_t(ts_.string(nid))
-         );
-         e_manager().addArg(concept(nid));
-      }
-      return k_.disjointConcepts();
+   if( ! np.is_object() || ! np.is_data() ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("object or data property types are expected in owl:AllDisjointProperties axiom")
+            << Err::str1_t(ts_.string(seq[0]))
+   );
+   BOOST_FOREACH(const Node_id nid, seq) {
+      if( np != declaration<Node_property>(nid) ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("non-uniform types in owl:AllDisjointProperties axiom")
+               << Err::str1_t(ts_.string(nid))
+      );
    }
 
+   e_m().newArgList();
+   if( np.is_object() ) {
+      BOOST_FOREACH(const Node_id nid, seq) e_m().addArg(obj_property(nid));
+      return k_.disjointORoles();
+   }
+
+   BOOST_FOREACH(const Node_id nid, seq) e_m().addArg(data_property(nid));
+   return k_.disjointDRoles();
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::axiom_custom_predicate(Triple const& t) {
 
 }
 
 /*
 *******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::disjoint_union(Triple const& t) {
+
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::sub_property_of(Triple const& t) {
+
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::equivalent_property(Triple const& t) {
+
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::equivalent_class(Triple const& t) {
+
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::property_chain(Triple const& t) {
+
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::property_disjoint_with(Triple const& t) {
+
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::domain(Triple const& t) {
+
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::range(Triple const& t) {
+
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Triple_to_fact_adaptor::all_different(Triple const& t) {
+
+}
+
+/*
 void Triple_to_fact_adaptor::submit(Triple const& t) {
    //ignore blank nodes
 //   if( ts_[t.subject()].ns_id() == N_blank::id() ) return;
@@ -171,22 +328,19 @@ void Triple_to_fact_adaptor::submit(Triple const& t) {
    const Node_id pred = t.predicate();
    const Node_id obj = t.object();
    switch (pred()) {
-   case T_rdf_type::index:
-      submit_type_triple(t);
-      return;
    case T_rdfs_subClassOf::index:
       k_.impliesConcepts(concept(subj), concept(obj));
       return;
    case T_owl_equivalentClass::index:
-      e_manager().newArgList();
-      e_manager().addArg(concept(subj));
-      e_manager().addArg(concept(obj));
+      e_m().newArgList();
+      e_m().addArg(concept(subj));
+      e_m().addArg(concept(obj));
       k_.equalConcepts();
       return;
    case T_owl_disjointWith::index:
-      e_manager().newArgList();
-      e_manager().addArg(concept(subj));
-      e_manager().addArg(concept(obj));
+      e_m().newArgList();
+      e_m().addArg(concept(subj));
+      e_m().addArg(concept(obj));
       k_.disjointConcepts();
       return;
    case T_owl_inverseOf::index:
@@ -234,6 +388,7 @@ void Triple_to_fact_adaptor::submit(Triple const& t) {
       submit_custom_triple(t);
    }
 }
+*******************************************************************************/
 
 /*
 *******************************************************************************/
@@ -269,92 +424,6 @@ void Triple_to_fact_adaptor::submit_custom_triple(Triple const& t) {
             << Err::str1_t(ts_.string(pred))
       );
 }
-/*
-*******************************************************************************/
-void Triple_to_fact_adaptor::submit_type_triple(Triple const& t) {
-   BOOST_ASSERT(t.pred_ == T_rdf_type::id());
-   const Node_id subj = t.subject();
-   const Node_id obj = t.object();
-   switch (obj()) {
-   case T_owl_NegativePropertyAssertion::index:
-      negative_property_assertion(subj);
-      return;
-   }
-
-   //ignore blank nodes
-   if( ts_[subj].ns_id() == N_blank::id() ) return;
-   switch (obj()) {
-      case T_owl_Class::index:
-         concept(subj);
-         return;
-      case T_owl_AllDisjointClasses::index: {
-         e_manager().newArgList();
-         boost::iterator_range<Rdf_list_iter_s> r = rdf_list(subj, ts_);
-         BOOST_ASSERT(distance(r) > 2);
-         BOOST_FOREACH(const Node_id nid, r) e_manager().addArg(concept(nid));
-         k_.disjointConcepts();
-         return;
-      }
-      case T_rdfs_Datatype::index:
-         datatype(subj);
-         return;
-      case T_owl_ObjectProperty::index:
-         obj_property(subj);
-         return;
-      case T_owl_AsymmetricProperty::index:
-         k_.setAsymmetric( obj_property(subj) );
-         return;
-      case T_owl_FunctionalProperty::index:
-         k_.setOFunctional( obj_property(subj) );
-         return;
-      case T_owl_InverseFunctionalProperty::index:
-         k_.setInverseFunctional( obj_property(subj) );
-         return;
-      case T_owl_inverseOf::index:
-         k_.setInverseRoles( obj_property(subj), obj_property(obj) );
-         return;
-      case T_owl_IrreflexiveProperty::index:
-         k_.setIrreflexive( obj_property(subj) );
-         return;
-      case T_owl_ReflexiveProperty::index:
-         k_.setReflexive( obj_property(subj) );
-         return;
-      case T_owl_SymmetricProperty::index:
-         k_.setSymmetric( obj_property(subj) );
-         return;
-      case T_owl_TransitiveProperty::index:
-         k_.setTransitive( obj_property(subj) );
-         return;
-      case T_rdfs_subPropertyOf::index:
-         k_.impliesORoles( obj_property(subj), obj_property(obj) );
-         return;
-      case T_owl_DatatypeProperty::index:
-         data_property(subj);
-         return;
-      case T_owl_NamedIndividual::index:
-         instance( subj );
-         return;
-      //ignore, look for owl:annotatedTarget
-      case T_owl_AnnotationProperty::index:
-      case T_owl_Axiom::index:
-      //ignore, look for rdf:type (owl:Class rdfs:Datatype owl:DataRange owl:Restriction)
-      case T_rdfs_Class::index:
-      //ignore, look for rdf:type (owl:***Property )
-      case T_rdf_Property::index:
-      //ignore, look for rdf:first, rdf:rest
-      case T_rdf_List::index:
-      //just ignore
-      case T_owl_Ontology::index:
-      case T_owl_OntologyProperty::index:
-         return;
-      default:
-         BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("unsupported rdf:type object")
-                  << Err::str1_t(ts_.string(obj))
-         );
-   }
-}
 
 /*
 *******************************************************************************/
@@ -371,7 +440,7 @@ TDLIndividualExpression* Triple_to_fact_adaptor::instance(const Node_id nid) {
             << Err::msg_t("invalid node for object instance declaration")
             << Err::str1_t(ts_.string(nid))
    );
-   return e_manager().Individual(ts_.string(nid));
+   return e_m().Individual(ts_.string(nid));
 }
 
 /*
@@ -445,7 +514,7 @@ TDLDataTypeExpression* Triple_to_fact_adaptor::datatype(const Node_id nid) {
    case T_xsd_positiveInteger::index:
       return e_manager().getIntDataType();
    default:
-      return e_manager().DataType(ts_.string(nid));
+      return e_m().DataType(ts_.string(nid));
    }
 */
 }
@@ -460,46 +529,14 @@ TDLDataValue const* Triple_to_fact_adaptor::data_value(const Node_id nid) {
             << Err::str1_t(ts_.string(nid))
    );
    const Node_id dt = ts_.datatype(nid);
-   return e_manager().DataValue(node.value_str(), datatype(dt));
+   return e_m().DataValue(node.value_str(), datatype(dt));
 }
 
 /*
 *******************************************************************************/
-TExpressionManager& Triple_to_fact_adaptor::e_manager() {
+TExpressionManager& Triple_to_fact_adaptor::e_m() {
    return *k_.getExpressionManager();
 }
-
-/*
-Triple_to_fact_adaptor::declaration_t
-Triple_to_fact_adaptor::declaration(const Node_id nid) const {
-   declaration_t d;
-   BOOST_FOREACH(
-            Triple const& t,
-            ts_.triples().find(nid, T_rdf_type::id(), any(), any())) {
-      d.first.set(t.object());
-      d.second.set(t.object());
-   }
-
-   BOOST_FOREACH(
-            Triple const& t,
-            ts_.triples().find(any(), T_owl_annotatedSource::id(), nid, any())) {
-
-      const Node_id x = t.subject();
-      if( ts_[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("non-blank owl:annotatedSource x")
-               << Err::str1_t(ts_.string(nid))
-      );
-      BOOST_FOREACH(
-               Triple const& t,
-               ts_.triples().find(x, T_owl_annotatedTarget::id(), any(), any())) {
-         d.first.set(t.object());
-         d.second.set(t.object());
-      }
-   }
-   return d;
-}
-*******************************************************************************/
 
 /*
 *******************************************************************************/
