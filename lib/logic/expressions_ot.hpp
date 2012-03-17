@@ -7,6 +7,7 @@ part of owlcpp project.
 #define EXPRESSIONS_OT_HPP_
 #include <vector>
 #include "boost/foreach.hpp"
+#include "boost/ptr_container/ptr_vector.hpp"
 #include "expressions.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
 
@@ -164,7 +165,7 @@ public:
    TDLConceptExpression* get(ReasoningKernel& k ) const {
       TExpressionManager& em = *k.getExpressionManager();
       em.newArgList();
-      BOOST_FOREACH(ptr_t const& ote, otl_) em.addArg( ote->get(k) );
+      BOOST_FOREACH(Fact_expression<Obj_class> const& ote, otl_) em.addArg( ote.get(k) );
       switch(type_()) {
       case T_owl_intersectionOf::index:
          return em.And();
@@ -177,7 +178,7 @@ public:
 
 private:
    const Node_id type_;
-   std::vector<Fact_expression<Obj_class>::ptr_t> otl_;  /**< object type expressions list */
+   boost::ptr_vector<Fact_expression<Obj_class> > otl_;  /**< object type expressions list */
 };
 
 /**@brief generate owl:oneOf type expression

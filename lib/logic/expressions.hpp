@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef EXPRESSIONS_HPP_
 #define EXPRESSIONS_HPP_
 #include <vector>
-#include "boost/shared_ptr.hpp"
+#include <memory>
 
 #include "factpp/Kernel.hpp"
 
@@ -26,6 +26,10 @@ struct Obj_prop {
    typedef TDLObjectRoleExpression* fact_type;
 };
 
+struct Obj_inst {
+   typedef TDLObjectRoleExpression* fact_type;
+};
+
 struct Data_class {
    typedef TDLDataTypeExpression* fact_type;
 };
@@ -34,13 +38,17 @@ struct Data_prop {
    typedef TDLDataRoleExpression* fact_type;
 };
 
+struct Axiom {
+   typedef TDLAxiom* fact_type;
+};
+
 /**@brief 
 *******************************************************************************/
 template<class T> struct Fact_expression {
    struct Err : public Logic_err {};
    typedef Fact_expression self_t;
    typedef T expression_type;
-   typedef boost::shared_ptr<const self_t> ptr_t;
+   typedef std::auto_ptr<self_t> ptr_t;
    typedef typename expression_type::fact_type generated_t;
    virtual generated_t get(ReasoningKernel& k) const  = 0;
    virtual ~Fact_expression() {}
@@ -67,53 +75,8 @@ make_fact_expression(const Node_id h, Triple_store const& ts) {
 }
 
 /**@brief
-struct Obj_type {
-   struct Err : public Logic_err {};
-
-   typedef boost::shared_ptr<const Obj_type> ptr_t;
-
-   static ptr_t make(const Node_id h, Triple_store const& ts) {
-      return make(Expression_args(h, ts), ts);
-   }
-
-   static ptr_t make(Expression_args const& ea, Triple_store const& ts);
-
-   virtual TDLConceptExpression* get(ReasoningKernel& k) const  = 0;
-};
 *******************************************************************************/
-
-/**@brief
-struct Obj_prop {
-   struct Err : public Logic_err {};
-
-   typedef boost::shared_ptr<const Obj_prop> ptr_t;
-
-   static ptr_t make(const Node_id h, Triple_store const& ts) {
-      return make(Expression_args(h, ts), ts);
-   }
-
-   static ptr_t make(Expression_args const& ea, Triple_store const& ts);
-
-   virtual TDLObjectRoleExpression* get(ReasoningKernel& k) const  = 0;
-};
-*******************************************************************************/
-
-/**@brief
-struct Data_prop {
-   struct Err : public Logic_err {};
-
-   typedef boost::shared_ptr<const Data_prop> ptr_t;
-
-   static ptr_t make(const Node_id h, Triple_store const& ts) {
-      return make(Expression_args(h, ts), ts);
-   }
-
-   static ptr_t make(Expression_args const& ea, Triple_store const& ts);
-
-   virtual TDLDataRoleExpression* get(ReasoningKernel& k) const  = 0;
-};
-*******************************************************************************/
-
+//template<class T, class Arg1
 
 }//namespace detail
 }//namespace owlcpp

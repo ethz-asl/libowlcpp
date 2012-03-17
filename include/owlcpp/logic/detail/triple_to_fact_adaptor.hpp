@@ -49,17 +49,38 @@ private:
    Triple_store const& ts_;
    ReasoningKernel& k_;
 
+//   template<class Op
+
    TDLAxiom* axiom_rdf_type(Triple const& t);
+
+   /** x *:y z, where *:y is object or data property
+    @param t RDF triple
+    @return axiom pointer
+   */
    TDLAxiom* axiom_custom_predicate(Triple const& t);
+
    TDLAxiom* all_disjoint(Triple const& t);
+
+   /** *:x owl:disjointUnionOf seq
+    @param
+    @return
+   */
    TDLAxiom* disjoint_union(Triple const& t);
+
    TDLAxiom* sub_property_of(Triple const& t);
+
    TDLAxiom* equivalent_property(Triple const& t);
+
    TDLAxiom* equivalent_class(Triple const& t);
+
    TDLAxiom* property_chain(Triple const& t);
+
    TDLAxiom* property_disjoint_with(Triple const& t);
+
    TDLAxiom* domain(Triple const& t);
+
    TDLAxiom* range(Triple const& t);
+
    TDLAxiom* all_different(Triple const& t);
 
    TExpressionManager& e_m();

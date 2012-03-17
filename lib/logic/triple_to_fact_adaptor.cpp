@@ -263,12 +263,50 @@ TDLAxiom* Triple_to_fact_adaptor::all_disjoint(Triple const& t) {
 /*
 *******************************************************************************/
 TDLAxiom* Triple_to_fact_adaptor::axiom_custom_predicate(Triple const& t) {
+   const Node_id subj = t.subject();
+   const Node_id pred = t.predicate();
+   const Node_id obj = t.object();
 
+   Node const& node = ts_[pred];
+   if( is_blank(node.ns_id()) || is_empty(node.ns_id()) ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("non-IRI predicate in x *:y z")
+            << Err::str1_t(ts_.string(pred))
+      );
+
+   const Node_property np = declaration<Node_property>(pred);
+
+   if( np.is_annotation() ) return 0;
+
+   if( np.is_object() ) {
+      return k_.relatedTo( instance(subj), obj_property(pred), instance(obj) );
+   }
+
+   if( is_empty(ts_[obj].ns_id()) && np.is_data() ) {
+      return k_.valueOf( instance(subj), data_property(pred), data_value(obj) );
+   }
+
+   BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("unknown predicate type")
+            << Err::str1_t(ts_.string(pred))
+      );
 }
 
-/*
+/* *:x owl:disjointUnionOf seq
 *******************************************************************************/
 TDLAxiom* Triple_to_fact_adaptor::disjoint_union(Triple const& t) {
+   const Node_id subj = t.subject();
+   const Node_id obj = t.object();
+   Node const& subj_node = ts_[subj];
+   if( is_blank(subj_node.ns_id()) || is_empty(subj_node.ns_id()) ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("non-IRI subject in *:x owl:disjointUnionOf seq")
+            << Err::str1_t(ts_.string(subj))
+   );
+   const std::vector<Node_id> seq(
+            boost::copy_range<std::vector<Node_id> >(rdf_list(obj, ts_))
+   );
 
 }
 
