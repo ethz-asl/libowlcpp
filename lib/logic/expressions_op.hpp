@@ -5,31 +5,35 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef EXPRESSIONS_OP_HPP_
 #define EXPRESSIONS_OP_HPP_
+#include <string>
 #include "expressions.hpp"
 
-namespace owlcpp{ namespace detail{
+namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
 
 /**@brief
 *******************************************************************************/
-class Op_declared : public Obj_prop {
+class Op_declared : public Fact_expression<Obj_prop> {
 public:
-   Op_declared(const Node_id nid) : nid_(nid) {
-      if( is_empty(nid_) ) BOOST_THROW_EXCEPTION(
+   Op_declared(Expression_args const& ea, Triple_store const& ts)
+   : iri_(ts.string(ea.handle)) {
+      Node const& node = ts[ea.handle];
+      if( is_blank(node.ns_id()) || is_empty(node.ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
-               << Err::msg_t("empty object property node")
-               << Err::str1_t(ts.string(card_type_))
+               << Err::msg_t("invalid node for object property declaration")
+               << Err::str1_t(ts.string(ea.handle))
       );
    }
 
-   TDLObjectRoleExpression* get(Triple_store const& ts, ReasoningKernel& k ) const {
-      return k.getExpressionManager()->ObjectRole(ts.string(nid_));
+   TDLObjectRoleExpression* get(ReasoningKernel& k ) const {
+      return k.getExpressionManager()->ObjectRole(iri_);
    }
 
 private:
-   const Node_id nid_;
+   std::string iri_;
 };
 
-}//namespace detail
+}//namespace factpp
+}//namespace logic
 }//namespace owlcpp
 #endif /* EXPRESSIONS_OP_HPP_ */

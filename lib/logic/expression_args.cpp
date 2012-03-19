@@ -12,7 +12,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
-namespace owlcpp { namespace detail{
+namespace owlcpp { namespace logic{
 using namespace owlcpp::terms;
 /*
 *******************************************************************************/
@@ -81,5 +81,5 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
    );
 }
 
-}//namespace detail
+}//namespace logic
 }//namespace owlcpp

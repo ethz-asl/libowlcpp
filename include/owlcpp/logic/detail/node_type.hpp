@@ -5,31 +5,39 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_TYPE_HPP_
 #define NODE_TYPE_HPP_
+#include<string>
 #include "owlcpp/logic/exception.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
-namespace owlcpp{  namespace detail{
+namespace owlcpp{  namespace logic{
 
 /**@brief 
 *******************************************************************************/
 class Node_type {
+   enum Type {None, Object, Data};
+   Node_type(const Type t) : c_(t) {}
 public:
    struct Err : public Logic_err {};
 
-   Node_type() : c_(C_None) {}
-   bool is_class() const {return c_ == Class;}
-   bool is_data() const {return c_ == Data_Range;}
+   static std::string name() {return "type";}
+   static Node_type object() {return Node_type(Object);}
+   static Node_type data() {return Node_type(Data);}
+
+   Node_type() : c_(None) {}
+   bool is_none() const {return c_ == None;}
+   bool is_object() const {return c_ == Object;}
+   bool is_data() const {return c_ == Data;}
 
    void set(const Node_id nid) {
       using namespace owlcpp::terms;
       switch (nid()) {
       case T_owl_Class::index:
       case T_owl_Restriction::index:
-         set(Class);
+         set(Object);
          break;
 
       case T_owl_DataRange::index:
-         set(Data_Range);
+         set(Data);
          break;
       }
    }
@@ -37,12 +45,20 @@ public:
    bool operator==(Node_type const& nt) const { return c_ == nt.c_; }
    bool operator!=(Node_type const& nt) const { return c_ != nt.c_; }
 
+   std::string to_string() const {
+      switch (c_) {
+      case None:     return "undefined";
+      case Object:   return "object type";
+      case Data:     return "data type";
+      default:       return "";
+      }
+   }
+
 private:
-   enum Type {C_None, Class, Data_Range};
    Type c_;
 
    void set(const Type c) {
-      if( c_ == C_None ) c_ = c;
+      if( c_ == None ) c_ = c;
       if( c_ != c ) {
          BOOST_THROW_EXCEPTION(
                Err()
@@ -54,6 +70,6 @@ private:
 };
 
 
-}//namespace detail
+}//namespace logic
 }//namespace owlcpp
 #endif /* NODE_TYPE_HPP_ */

@@ -16,9 +16,9 @@ part of owlcpp project.
 #include "owlcpp/logic/exception.hpp"
 #include "expression_args.hpp"
 
-namespace owlcpp{ namespace detail{
+namespace owlcpp{ namespace logic{ namespace factpp{
 
-struct Obj_class {
+struct Obj_type {
    typedef TDLConceptExpression* fact_type;
 };
 
@@ -30,16 +30,12 @@ struct Obj_inst {
    typedef TDLObjectRoleExpression* fact_type;
 };
 
-struct Data_class {
+struct Data_type {
    typedef TDLDataTypeExpression* fact_type;
 };
 
 struct Data_prop {
    typedef TDLDataRoleExpression* fact_type;
-};
-
-struct Axiom {
-   typedef TDLAxiom* fact_type;
 };
 
 /**@brief 
@@ -57,14 +53,14 @@ template<class T> struct Fact_expression {
 template<class T> typename Fact_expression<T>::ptr_t
 make_fact_expression(Expression_args const& ea, Triple_store const& ts);
 
-template<> typename Fact_expression<Obj_class>::ptr_t
-make_fact_expression<Obj_class>(Expression_args const& ea, Triple_store const& ts);
+template<> typename Fact_expression<Obj_type>::ptr_t
+make_fact_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts);
 
 template<> typename Fact_expression<Obj_prop>::ptr_t
 make_fact_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts);
 
-template<> typename Fact_expression<Data_class>::ptr_t
-make_fact_expression<Data_class>(Expression_args const& ea, Triple_store const& ts);
+template<> typename Fact_expression<Data_type>::ptr_t
+make_fact_expression<Data_type>(Expression_args const& ea, Triple_store const& ts);
 
 template<> typename Fact_expression<Data_prop>::ptr_t
 make_fact_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts);
@@ -74,10 +70,7 @@ make_fact_expression(const Node_id h, Triple_store const& ts) {
    return make_fact_expression<T>(Expression_args(h, ts), ts);
 }
 
-/**@brief
-*******************************************************************************/
-//template<class T, class Arg1
-
-}//namespace detail
+}//namespace factpp
+}//namespace logic
 }//namespace owlcpp
 #endif /* EXPRESSIONS_HPP_ */

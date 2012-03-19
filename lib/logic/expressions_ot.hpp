@@ -6,17 +6,18 @@ part of owlcpp project.
 #ifndef EXPRESSIONS_OT_HPP_
 #define EXPRESSIONS_OT_HPP_
 #include <vector>
+#include <string>
 #include "boost/foreach.hpp"
 #include "boost/ptr_container/ptr_vector.hpp"
 #include "expressions.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
 
-namespace owlcpp{ namespace detail{
+namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
 
 /**@brief
 *******************************************************************************/
-class Ot_declared : public Fact_expression<Obj_class> {
+class Ot_declared : public Fact_expression<Obj_type> {
 public:
    Ot_declared(Expression_args const& ea, Triple_store const& ts)
    : iri_(ts.string(ea.handle)) {
@@ -38,10 +39,10 @@ private:
 
 /**@brief
 *******************************************************************************/
-class Ot_complement : public Fact_expression<Obj_class> {
+class Ot_complement : public Fact_expression<Obj_type> {
 public:
    Ot_complement(Expression_args const& ea, Triple_store const& ts)
-   : ot_(make_fact_expression<Obj_class>(ea.obj1, ts))
+   : ot_(make_fact_expression<Obj_type>(ea.obj1, ts))
    {
       if( ea.e_type != T_owl_Class::id() ) BOOST_THROW_EXCEPTION(
                Err()
@@ -60,14 +61,14 @@ private:
 
 /**@brief
 *******************************************************************************/
-class Ot_card : public Fact_expression<Obj_class> {
+class Ot_card : public Fact_expression<Obj_type> {
 public:
    Ot_card(Expression_args const& ea, Triple_store const& ts)
    : op_( make_fact_expression<Obj_prop>(ea.obj1, ts) ),
      ot_(
               is_empty(ea.obj2) ?
-                       Fact_expression<Obj_class>::ptr_t() :
-                       make_fact_expression<Obj_class>(ea.obj2, ts)
+                       Fact_expression<Obj_type>::ptr_t() :
+                       make_fact_expression<Obj_type>(ea.obj2, ts)
      ),
      card_type_(ea.card_type),
      n_(ea.cardinality)
@@ -116,14 +117,14 @@ public:
 
 private:
    Fact_expression<Obj_prop>::ptr_t op_;
-   Fact_expression<Obj_class>::ptr_t ot_;
+   Fact_expression<Obj_type>::ptr_t ot_;
    const Node_id card_type_;
    const unsigned n_;
 };
 
 /**@brief Type from a list of types (owl:intersectionOf, owl:unionOf)
 *******************************************************************************/
-class Ot_tlist : public Fact_expression<Obj_class> {
+class Ot_tlist : public Fact_expression<Obj_type> {
 public:
    Ot_tlist(Expression_args const& ea, Triple_store const& ts)
    : type_(ea.pred1)
@@ -141,7 +142,7 @@ public:
                   << Err::msg_t("invalid node for object type declaration")
                   << Err::str1_t(ts.string(nid))
          );
-         otl_.push_back(make_fact_expression<Obj_class>(nid, ts));
+         otl_.push_back(make_fact_expression<Obj_type>(nid, ts));
       }
       if( otl_.size() < 2 ) BOOST_THROW_EXCEPTION(
                Err()
@@ -165,7 +166,7 @@ public:
    TDLConceptExpression* get(ReasoningKernel& k ) const {
       TExpressionManager& em = *k.getExpressionManager();
       em.newArgList();
-      BOOST_FOREACH(Fact_expression<Obj_class> const& ote, otl_) em.addArg( ote.get(k) );
+      BOOST_FOREACH(Fact_expression<Obj_type> const& ote, otl_) em.addArg( ote.get(k) );
       switch(type_()) {
       case T_owl_intersectionOf::index:
          return em.And();
@@ -178,12 +179,12 @@ public:
 
 private:
    const Node_id type_;
-   boost::ptr_vector<Fact_expression<Obj_class> > otl_;  /**< object type expressions list */
+   boost::ptr_vector<Fact_expression<Obj_type> > otl_;  /**< object type expressions list */
 };
 
 /**@brief generate owl:oneOf type expression
 *******************************************************************************/
-class Ot_ilist : public Fact_expression<Obj_class> {
+class Ot_ilist : public Fact_expression<Obj_type> {
 public:
    Ot_ilist(Expression_args const& ea, Triple_store const& ts)
    {
@@ -215,6 +216,7 @@ private:
    std::vector<std::string> il_; /**< instance IRI list */
 };
 
-}//namespace detail
+}//namespace factpp
+}//namespace logic
 }//namespace owlcpp
 #endif /* EXPRESSIONS_OT_HPP_ */

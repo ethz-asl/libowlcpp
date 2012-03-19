@@ -150,8 +150,7 @@ template<class Subj, class Pred, class Obj, class Doc> class Query_type {
       }
 
    private:
-      const search_args_t sa_;
-
+      search_args_t sa_;
    };
 
    typedef typename mpl::if_<

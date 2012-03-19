@@ -7,15 +7,15 @@ part of owlcpp project.
 #include "expressions.hpp"
 #include "expressions_ot.hpp"
 
-namespace owlcpp{ namespace detail{
+namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
 
 /*
 *******************************************************************************/
-template<>typename Fact_expression<Obj_class>::ptr_t
-make_fact_expression<Obj_class>(Expression_args const& ea, Triple_store const& ts) {
-   typedef typename Fact_expression<Obj_class>::ptr_t ptr_t;
-   typedef typename Fact_expression<Obj_class>::Err Err;
+template<>typename Fact_expression<Obj_type>::ptr_t
+make_fact_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
+   typedef typename Fact_expression<Obj_type>::ptr_t ptr_t;
+   typedef typename Fact_expression<Obj_type>::Err Err;
    if( ! is_blank(ts[ea.handle].ns_id()) )
       return ptr_t(new Ot_declared(ea, ts));
    switch (ea.card_type()) {
@@ -60,5 +60,6 @@ make_fact_expression<Obj_class>(Expression_args const& ea, Triple_store const& t
 /*
 *******************************************************************************/
 
-}//namespace detail
+}//namespace factpp
+}//namespace logic
 }//namespace owlcpp

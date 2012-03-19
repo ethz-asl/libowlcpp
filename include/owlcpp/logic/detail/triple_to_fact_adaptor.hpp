@@ -6,7 +6,9 @@ part of owlcpp project.
 #ifndef TRIPLE_TO_FACT_ADAPTOR_HPP_
 #define TRIPLE_TO_FACT_ADAPTOR_HPP_
 #include "boost/foreach.hpp"
+#include "boost/range.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/logic/exception.hpp"
 #include "owlcpp/logic/detail/node_type.hpp"
 #include "owlcpp/logic/detail/node_property.hpp"
@@ -24,7 +26,7 @@ class TExpressionManager;
 class TDLDataValue;
 class TDLAxiom;
 
-namespace owlcpp{ namespace detail{
+namespace owlcpp{ namespace logic{ namespace factpp{
 
 /**@brief 
 *******************************************************************************/
@@ -39,7 +41,22 @@ public:
    void submit(Triple const& t) {axiom(t);}
 
    template<class Range> void submit(Range r) {
-      BOOST_FOREACH(Triple const& t, r) submit(t);
+      BOOST_FOREACH(Triple const& t, r) {
+         try{
+            submit(t);
+         } catch(...) {
+            BOOST_THROW_EXCEPTION(
+                     Err()
+                     << Err::msg_t("error submitting triple")
+                     << Err::str1_t(
+                              to_string_short(t.subject(), ts_) + ' ' +
+                              to_string_short(t.predicate(), ts_) + ' ' +
+                              to_string_short(t.object(), ts_)
+                     )
+                     << Err::nested_t(boost::current_exception())
+            );
+         }
+      }
    }
 
    TDLAxiom* axiom(Triple const& t);
@@ -49,8 +66,6 @@ private:
    Triple_store const& ts_;
    ReasoningKernel& k_;
 
-//   template<class Op
-
    TDLAxiom* axiom_rdf_type(Triple const& t);
 
    /** x *:y z, where *:y is object or data property
@@ -59,31 +74,64 @@ private:
    */
    TDLAxiom* axiom_custom_predicate(Triple const& t);
 
-   TDLAxiom* all_disjoint(Triple const& t);
-
-   /** *:x owl:disjointUnionOf seq
-    @param
-    @return
-   */
-   TDLAxiom* disjoint_union(Triple const& t);
-
-   TDLAxiom* sub_property_of(Triple const& t);
-
-   TDLAxiom* equivalent_property(Triple const& t);
-
-   TDLAxiom* equivalent_class(Triple const& t);
-
-   TDLAxiom* property_chain(Triple const& t);
-
-   TDLAxiom* property_disjoint_with(Triple const& t);
-
-   TDLAxiom* domain(Triple const& t);
-
-   TDLAxiom* range(Triple const& t);
-
-   TDLAxiom* all_different(Triple const& t);
+   TDLAxiom* axiom_from_seq(
+            const Node_id op,
+            const Node_id seq_nid,
+            const std::size_t min_len,
+            const Node_id subj = owlcpp::terms::T_empty_::id()
+   );
 
    TExpressionManager& e_m();
+
+   template<class Decl> Decl check_same_declaration(const Node_id n1, const Node_id n2) const {
+      const Decl nt1 = declaration<Decl>(n1);
+      const Decl nt2 = declaration<Decl>(n2);
+      if( nt1 != nt2 ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("node type mismatch")
+                  << Err::str1_t(nt1.to_string())
+                  << Err::str2_t(nt2.to_string())
+      );
+      return nt1;
+   }
+
+   template<class Decl, class Range> Decl check_seq_declaration(Range& r) const {
+      boost::sub_range<Range> bsr(r);
+      if( ! bsr ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("empty sequence")
+      );
+      const Decl d = declaration<Decl>(bsr.front());
+      bsr.advance_begin(1);
+      check_seq_declaration(bsr, d);
+      return d;
+   }
+
+   template<class Decl, class Range> void check_seq_declaration(Range& r, const Decl d) const {
+      BOOST_FOREACH(const Node_id nid, r) {
+         const Decl nt = declaration<Decl>(nid);
+         if( nt != d ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t(
+                           "node declared as " + nt.to_string() +
+                           "; should be " + d.to_string()
+                  )
+                  << Err::str1_t(ts_.string(nid))
+         );
+      }
+   }
+
+   template<class Decl> void check_declaration(const Node_id nid, const Decl d) const {
+      const Decl nt = declaration<Decl>(nid);
+      if( nt != d ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t(
+                           "node declared as " + nt.to_string() +
+                           "; should be " + d.to_string()
+                  )
+                  << Err::str1_t(ts_.string(nid))
+      );
+   }
 
    template<class Decl> Decl declaration(const Node_id nid) const {
       using namespace owlcpp::terms;
@@ -101,7 +149,7 @@ private:
          const Node_id x = t.subject();
          if( ts_[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
                   Err()
-                  << Err::msg_t("non-blank owl:annotatedSource x")
+                  << Err::msg_t("non-blank subject in _:x owl:annotatedSource y")
                   << Err::str1_t(ts_.string(nid))
          );
          BOOST_FOREACH(
@@ -110,15 +158,20 @@ private:
             d.set(t.object());
          }
       }
+      if( d.is_none() ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("node " + Decl::name() + " declaration not found")
+               << Err::str1_t(ts_.string(nid))
+      );
       return d;
    }
 
    /**@param t triple x y z */
    void submit_custom_triple(Triple const& t);
 
-   TDLConceptExpression* concept(const Node_id nid);
+   TDLConceptExpression* obj_type(const Node_id nid);
 
-   TDLIndividualExpression* instance(const Node_id nid);
+   TDLIndividualExpression* obj_value(const Node_id nid);
 
    /** make instance of a class */
    TDLIndividualExpression* instance_of(const Node_id inst, const Node_id cls);
@@ -127,13 +180,14 @@ private:
 
    TDLDataRoleExpression* data_property(const Node_id nid);
 
-   TDLDataTypeExpression* datatype(const Node_id nid);
+   TDLDataTypeExpression* data_type(const Node_id nid);
 
    TDLDataValue const* data_value(const Node_id nid);
 
    TDLAxiom* negative_property_assertion(const Node_id nid);
 };
 
-}//namespace detail
+}//namespace factpp
+}//namespace logic
 }//namespace owlcpp
 #endif /* TRIPLE_TO_FACT_ADAPTOR_HPP_ */

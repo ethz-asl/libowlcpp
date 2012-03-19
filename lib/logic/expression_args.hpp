@@ -10,7 +10,7 @@ part of owlcpp project.
 
 namespace owlcpp{
 class Triple_store;
-namespace detail{
+namespace logic{
 
 
 /**@brief 
@@ -25,6 +25,6 @@ struct Expression_args {
 };
 
 
-}//namespace detail
+}//namespace logic
 }//namespace owlcpp
 #endif /* EXPRESSION_ARGS_HPP_ */

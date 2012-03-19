@@ -5,20 +5,29 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_PROPERTY_HPP_
 #define NODE_PROPERTY_HPP_
+#include<string>
 #include "owlcpp/logic/exception.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
-namespace owlcpp{  namespace detail{
+namespace owlcpp{  namespace logic{
 
 /**@brief 
 *******************************************************************************/
 class Node_property {
+   enum Property {None, Object, Data, Annotation};
+   Node_property(const Property p) : p_(p) {}
 public:
    struct Err : public Logic_err {};
 
-   Node_property() : p_(P_None) {}
-   bool is_object() const {return p_ == Obj_property;}
-   bool is_data() const {return p_ == Data_property;}
+   static std::string name() {return "property";}
+   static Node_property object() {return Node_property(Object);}
+   static Node_property data() {return Node_property(Data);}
+   static Node_property annotation() {return Node_property(Annotation);}
+
+   Node_property() : p_(None) {}
+   bool is_none() const {return p_ == None;}
+   bool is_object() const {return p_ == Object;}
+   bool is_data() const {return p_ == Data;}
    bool is_annotation() const {return p_ == Annotation;}
 
    void set(const Node_id nid) {
@@ -32,11 +41,11 @@ public:
       case T_owl_ReflexiveProperty::index:
       case T_owl_SymmetricProperty::index:
       case T_owl_TransitiveProperty::index:
-         set(Obj_property);
+         set(Object);
          break;
 
       case T_owl_DatatypeProperty::index:
-         set(Data_property);
+         set(Data);
          break;
 
       case T_owl_AnnotationProperty::index:
@@ -48,12 +57,21 @@ public:
    bool operator==(Node_property const& nt) const {return p_ == nt.p_;}
    bool operator!=(Node_property const& nt) const {return p_ != nt.p_;}
 
-private:
-   enum Property {P_None, Obj_property, Data_property, Annotation};
+   std::string to_string() const {
+      switch (p_) {
+      case None:        return "undefined";
+      case Object:      return "object property";
+      case Data:        return "data property";
+      case Annotation:  return "annotation property";
+      default:          return "";
+      }
+   }
+
+   private:
    Property p_;
 
    void set(const Property p) {
-      if( p_ == P_None ) p_ = p;
+      if( p_ == None ) p_ = p;
       if( p_ != p ) {
          BOOST_THROW_EXCEPTION(
                Err()
@@ -64,6 +82,6 @@ private:
 };
 
 
-}//namespace detail
+}//namespace logic
 }//namespace owlcpp
 #endif /* NODE_PROPERTY_HPP_ */
