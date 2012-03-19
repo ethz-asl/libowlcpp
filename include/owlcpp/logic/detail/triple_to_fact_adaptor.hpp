@@ -30,11 +30,11 @@ namespace owlcpp{ namespace logic{ namespace factpp{
 
 /**@brief 
 *******************************************************************************/
-class OWLCPP_REASONER_DECL Triple_to_fact_adaptor {
+class OWLCPP_REASONER_DECL Adaptor_triple {
 public:
    struct Err : public Logic_err {};
 
-   Triple_to_fact_adaptor(Triple_store const& ts, ReasoningKernel& k, bool lax)
+   Adaptor_triple(Triple_store const& ts, ReasoningKernel& k, bool lax)
    : lax_(lax), ts_(ts), k_(k)
    {}
 

@@ -1,10 +1,10 @@
-/** @file "/owlcpp/lib/logic/expressions.hpp" 
+/** @file "/owlcpp/lib/logic/factpp/expression.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef EXPRESSIONS_HPP_
-#define EXPRESSIONS_HPP_
+#ifndef EXPRESSION_HPP_
+#define EXPRESSION_HPP_
 #include <vector>
 #include <memory>
 
@@ -40,37 +40,37 @@ struct Data_prop {
 
 /**@brief 
 *******************************************************************************/
-template<class T> struct Fact_expression {
+template<class T> struct Expression {
    struct Err : public Logic_err {};
-   typedef Fact_expression self_t;
+   typedef Expression self_t;
    typedef T expression_type;
    typedef std::auto_ptr<self_t> ptr_t;
    typedef typename expression_type::fact_type generated_t;
    virtual generated_t get(ReasoningKernel& k) const  = 0;
-   virtual ~Fact_expression() {}
+   virtual ~Expression() {}
 };
 
-template<class T> typename Fact_expression<T>::ptr_t
-make_fact_expression(Expression_args const& ea, Triple_store const& ts);
+template<class T> typename Expression<T>::ptr_t
+make_expression(Expression_args const& ea, Triple_store const& ts);
 
-template<> typename Fact_expression<Obj_type>::ptr_t
-make_fact_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts);
+template<> typename Expression<Obj_type>::ptr_t
+make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts);
 
-template<> typename Fact_expression<Obj_prop>::ptr_t
-make_fact_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts);
+template<> typename Expression<Obj_prop>::ptr_t
+make_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts);
 
-template<> typename Fact_expression<Data_type>::ptr_t
-make_fact_expression<Data_type>(Expression_args const& ea, Triple_store const& ts);
+template<> typename Expression<Data_type>::ptr_t
+make_expression<Data_type>(Expression_args const& ea, Triple_store const& ts);
 
-template<> typename Fact_expression<Data_prop>::ptr_t
-make_fact_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts);
+template<> typename Expression<Data_prop>::ptr_t
+make_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts);
 
-template<class T> inline typename Fact_expression<T>::ptr_t
-make_fact_expression(const Node_id h, Triple_store const& ts) {
-   return make_fact_expression<T>(Expression_args(h, ts), ts);
+template<class T> inline typename Expression<T>::ptr_t
+make_expression(const Node_id h, Triple_store const& ts) {
+   return make_expression<T>(Expression_args(h, ts), ts);
 }
 
 }//namespace factpp
 }//namespace logic
 }//namespace owlcpp
-#endif /* EXPRESSIONS_HPP_ */
+#endif /* EXPRESSION_HPP_ */

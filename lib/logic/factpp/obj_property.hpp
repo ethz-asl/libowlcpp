@@ -1,12 +1,12 @@
-/** @file "/owlcpp/lib/logic/expressions_op.hpp" 
+/** @file "/owlcpp/lib/logic/factpp/obj_property.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef EXPRESSIONS_OP_HPP_
-#define EXPRESSIONS_OP_HPP_
+#ifndef OBJ_PROPERTY_HPP_
+#define OBJ_PROPERTY_HPP_
 #include <string>
-#include "expressions.hpp"
+#include "expression.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
@@ -36,4 +36,4 @@ private:
 }//namespace factpp
 }//namespace logic
 }//namespace owlcpp
-#endif /* EXPRESSIONS_OP_HPP_ */
+#endif /* OBJ_PROPERTY_HPP_ */

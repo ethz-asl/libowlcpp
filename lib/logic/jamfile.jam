@@ -8,7 +8,7 @@ project lib/logic
 
 lib owlcpp_logic
    :  #sources
-      [ glob *.cpp ]
+      [ glob *.cpp factpp/*.cpp ]
    :  #requirements
       $(LIB_REQUIREMENTS)
       <include>.

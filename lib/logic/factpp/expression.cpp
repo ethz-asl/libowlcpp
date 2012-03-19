@@ -1,23 +1,28 @@
-/** @file "/owlcpp/lib/logic/expressions.cpp" 
+/** @file "/owlcpp/lib/logic/factpp/expression.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
 
-#include "expressions.hpp"
-#include "expressions_ot.hpp"
+#include "expression.hpp"
+#include "obj_type.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
 
 /*
 *******************************************************************************/
-template<>typename Fact_expression<Obj_type>::ptr_t
-make_fact_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
-   typedef typename Fact_expression<Obj_type>::ptr_t ptr_t;
-   typedef typename Fact_expression<Obj_type>::Err Err;
-   if( ! is_blank(ts[ea.handle].ns_id()) )
-      return ptr_t(new Ot_declared(ea, ts));
+template<>typename Expression<Obj_type>::ptr_t
+make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
+   typedef typename Expression<Obj_type>::ptr_t ptr_t;
+   typedef typename Expression<Obj_type>::Err Err;
+
+   if( ea.handle == T_owl_Thing::id() ) return ptr_t(new Ot_thing());
+
+   if( ea.handle == T_owl_Nothing::id() ) return ptr_t(new Ot_nothing());
+
+   if( is_iri(ts[ea.handle].ns_id()) ) return ptr_t(new Ot_declared(ea, ts));
+
    switch (ea.card_type()) {
       case T_owl_cardinality::index:
       case T_owl_maxCardinality::index:
@@ -59,6 +64,30 @@ make_fact_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts
 
 /*
 *******************************************************************************/
+template<> typename Expression<Obj_prop>::ptr_t
+make_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts) {
+   typedef typename Expression<Obj_prop>::ptr_t ptr_t;
+   typedef typename Expression<Obj_prop>::Err Err;
+
+}
+
+/*
+*******************************************************************************/
+template<> typename Expression<Data_type>::ptr_t
+make_expression<Data_type>(Expression_args const& ea, Triple_store const& ts) {
+   typedef typename Expression<Data_type>::ptr_t ptr_t;
+   typedef typename Expression<Data_type>::Err Err;
+
+}
+
+/*
+*******************************************************************************/
+template<> typename Expression<Data_prop>::ptr_t
+make_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts) {
+   typedef typename Expression<Data_prop>::ptr_t ptr_t;
+   typedef typename Expression<Data_prop>::Err Err;
+
+}
 
 }//namespace factpp
 }//namespace logic

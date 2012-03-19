@@ -22,7 +22,7 @@ template<class Range> inline void submit_triples(
          ReasoningKernel& kernel,
          const bool lax
 ) {
-   logic::factpp::Triple_to_fact_adaptor ttfa(ts, kernel, lax);
+   logic::factpp::Adaptor_triple ttfa(ts, kernel, lax);
    ttfa.submit(r);
 }
 

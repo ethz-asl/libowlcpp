@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/logic/triple_to_fact_adaptor.cpp" 
+/** @file "/owlcpp/lib/logic/factpp/adaptor_triple.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -13,14 +13,14 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/query_triples.hpp"
 #include "factpp/Kernel.hpp"
-#include "expressions.hpp"
+#include "expression.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
 
 /*
 *******************************************************************************/
-TDLAxiom* Triple_to_fact_adaptor::axiom(Triple const& t) {
+TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    const Node_id subj = t.subject();
    const Node_id pred = t.predicate();
    const Node_id obj = t.object();
@@ -187,7 +187,7 @@ TDLAxiom* Triple_to_fact_adaptor::axiom(Triple const& t) {
 
 /*
 *******************************************************************************/
-TDLAxiom* Triple_to_fact_adaptor::axiom_rdf_type(Triple const& t) {
+TDLAxiom* Adaptor_triple::axiom_rdf_type(Triple const& t) {
    const Node_id subj = t.subject();
    const Node_id pred = t.predicate();
    const Node_id obj = t.object();
@@ -272,7 +272,7 @@ TDLAxiom* Triple_to_fact_adaptor::axiom_rdf_type(Triple const& t) {
 
 /*
 *******************************************************************************/
-TDLAxiom* Triple_to_fact_adaptor::axiom_from_seq(
+TDLAxiom* Adaptor_triple::axiom_from_seq(
          const Node_id op,
          const Node_id seq_nid,
          const std::size_t min_len,
@@ -339,7 +339,7 @@ TDLAxiom* Triple_to_fact_adaptor::axiom_from_seq(
 
 /*
 *******************************************************************************/
-TDLAxiom* Triple_to_fact_adaptor::axiom_custom_predicate(Triple const& t) {
+TDLAxiom* Adaptor_triple::axiom_custom_predicate(Triple const& t) {
    const Node_id subj = t.subject();
    const Node_id pred = t.predicate();
    const Node_id obj = t.object();
@@ -372,7 +372,7 @@ TDLAxiom* Triple_to_fact_adaptor::axiom_custom_predicate(Triple const& t) {
 
 /*
 *******************************************************************************/
-void Triple_to_fact_adaptor::submit_custom_triple(Triple const& t) {
+void Adaptor_triple::submit_custom_triple(Triple const& t) {
    const Node_id subj = t.subject();
    const Node_id pred = t.predicate();
    const Node_id obj = t.object();
@@ -407,13 +407,13 @@ void Triple_to_fact_adaptor::submit_custom_triple(Triple const& t) {
 
 /*
 *******************************************************************************/
-TDLConceptExpression* Triple_to_fact_adaptor::obj_type(const Node_id nid) {
-   return make_fact_expression<Obj_type>( nid, ts_ )->get(k_);
+TDLConceptExpression* Adaptor_triple::obj_type(const Node_id nid) {
+   return make_expression<Obj_type>( nid, ts_ )->get(k_);
 }
 
 /*
 *******************************************************************************/
-TDLIndividualExpression* Triple_to_fact_adaptor::obj_value(const Node_id nid) {
+TDLIndividualExpression* Adaptor_triple::obj_value(const Node_id nid) {
    Node const& node = ts_[nid];
    if( is_blank(node.ns_id()) || is_empty(node.ns_id()) ) BOOST_THROW_EXCEPTION(
             Err()
@@ -425,30 +425,20 @@ TDLIndividualExpression* Triple_to_fact_adaptor::obj_value(const Node_id nid) {
 
 /*
 *******************************************************************************/
-TDLIndividualExpression*
-Triple_to_fact_adaptor::instance_of(const Node_id inst_id, const Node_id cls_id) {
-   TDLIndividualExpression* inst = obj_value( inst_id );
-   const TDLConceptExpression* cls = obj_type( cls_id );
-   k_.instanceOf(inst, cls);
-   return inst;
+TDLObjectRoleExpression* Adaptor_triple::obj_property(const Node_id nid) {
+   return make_expression<Obj_prop>( nid, ts_ )->get(k_);
 }
 
 /*
 *******************************************************************************/
-TDLObjectRoleExpression* Triple_to_fact_adaptor::obj_property(const Node_id nid) {
-   return make_fact_expression<Obj_prop>( nid, ts_ )->get(k_);
+TDLDataRoleExpression* Adaptor_triple::data_property(const Node_id nid) {
+   return make_expression<Data_prop>( nid, ts_ )->get(k_);
 }
 
 /*
 *******************************************************************************/
-TDLDataRoleExpression* Triple_to_fact_adaptor::data_property(const Node_id nid) {
-   return make_fact_expression<Data_prop>( nid, ts_ )->get(k_);
-}
-
-/*
-*******************************************************************************/
-TDLDataTypeExpression* Triple_to_fact_adaptor::data_type(const Node_id nid) {
-   return make_fact_expression<Data_type>( nid, ts_ )->get(k_);
+TDLDataTypeExpression* Adaptor_triple::data_type(const Node_id nid) {
+   return make_expression<Data_type>( nid, ts_ )->get(k_);
 /*
    if( ts_[nid].ns_id() == N_blank::id() ) return datatype_expression(nid);
    switch (nid()) {
@@ -501,7 +491,7 @@ TDLDataTypeExpression* Triple_to_fact_adaptor::data_type(const Node_id nid) {
 
 /*
 *******************************************************************************/
-TDLDataValue const* Triple_to_fact_adaptor::data_value(const Node_id nid) {
+TDLDataValue const* Adaptor_triple::data_value(const Node_id nid) {
    Node const& node = ts_[nid];
    if( node.ns_id() != N_empty::id() ) BOOST_THROW_EXCEPTION(
             Err()
@@ -514,13 +504,13 @@ TDLDataValue const* Triple_to_fact_adaptor::data_value(const Node_id nid) {
 
 /*
 *******************************************************************************/
-TExpressionManager& Triple_to_fact_adaptor::e_m() {
+TExpressionManager& Adaptor_triple::e_m() {
    return *k_.getExpressionManager();
 }
 
 /*
 *******************************************************************************/
-TDLAxiom* Triple_to_fact_adaptor::negative_property_assertion(const Node_id nid) {
+TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
    Query<1,1,0,0>::range r1 =
             ts_.triples().find(nid, T_owl_sourceIndividual::id(), any(), any());
    if( ! r1 ) BOOST_THROW_EXCEPTION(

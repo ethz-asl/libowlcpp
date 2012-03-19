@@ -18,12 +18,12 @@ using namespace owlcpp::terms;
 *******************************************************************************/
 Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
 : handle(h),
-  e_type(owlcpp::terms::T_empty_::id()),
-  pred1(e_type),
-  obj1(e_type),
-  pred2(e_type),
-  obj2(e_type),
-  card_type(e_type),
+  e_type    (T_empty_::id()),
+  pred1     (T_empty_::id()),
+  obj1      (T_empty_::id()),
+  pred2     (T_empty_::id()),
+  obj2      (T_empty_::id()),
+  card_type (T_empty_::id()),
   cardinality(0)
 {
    if( ! is_blank(ts[handle].ns_id()) ) return;
