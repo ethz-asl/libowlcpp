@@ -10,59 +10,34 @@ part of owlcpp project.
 #include "boost/type_traits/is_integral.hpp"
 #include "boost/type_traits/is_unsigned.hpp"
 #include "boost/type_traits/is_floating_point.hpp"
+
+#include "owlcpp/rdf/config.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/exception.hpp"
-#include "owlcpp/terms/iri_tags.hpp"
 #include "owlcpp/terms/term_methods.hpp"
 
 namespace owlcpp{
+class Triple_store;
 
 /**@brief
 *******************************************************************************/
-inline std::string to_string(const Node_id nid) {
-   return "NodeID" + boost::lexical_cast<std::string>(nid());
-}
+OWLCPP_RDF_DECL std::string to_string(const Node_id nid);
 
 /**@brief
 *******************************************************************************/
-inline std::string to_string(const Node_id nid, Triple_store const& ts) {
-   if( is_empty(nid) ) return "";
-   Node const& node = ts[nid];
-   const std::string name = node.value_str();
-   if( is_blank(node.ns_id()) ) return "_:" + name;
-   if( is_empty(node.ns_id()) ) return '\"' + name + '\"';
-   if( name.empty() ) return ts[node.ns_id()];
-   return ts[node.ns_id()] + '#' + name;
-}
+OWLCPP_RDF_DECL std::string to_string(const Node_id nid, Triple_store const& ts);
 
 /**@brief
 *******************************************************************************/
-inline std::string to_string_short(const Node_id nid, Triple_store const& ts) {
-   if( is_empty(nid) ) return "";
-   Node const& node = ts[nid];
-   const std::string name = node.value_str();
-   const Ns_id nsid = node.ns_id();
-   if( is_blank(nsid) ) return "_:" + name;
-   if( is_empty(nsid) ) return '\"' + name + '\"';
-   if( name.empty() ) return ts[node.ns_id()];
-   const std::string pref = ts.iris().prefix(nsid);
-   return pref.empty() ? ts[nsid] + '#' + name : pref + ':' + name;
-}
+OWLCPP_RDF_DECL std::string to_string_short(const Node_id nid, Triple_store const& ts);
 
 /**@brief
 *******************************************************************************/
-inline std::string to_string_shortest(const Node_id nid, Triple_store const& ts) {
-   if( is_empty(nid) ) return "";
-   Node const& node = ts[nid];
-   const std::string name = node.value_str();
-   const Ns_id nsid = node.ns_id();
-   if( is_blank(nsid) ) return "_:" + name;
-   if( is_empty(nsid) ) return '\"' + name + '\"';
-   const std::string pref = ts.iris().prefix(nsid);
-   return (pref.empty() ? "ns" + boost::lexical_cast<std::string>(nsid()) : pref)
-            + ( name.empty() ? "" : ':' + name )
-                     ;
-}
+OWLCPP_RDF_DECL std::string to_string_shortest(const Node_id nid, Triple_store const& ts);
+
+/**@brief
+*******************************************************************************/
+OWLCPP_RDF_DECL bool is_std_owl(const Node_id nid);
 
 namespace detail{
 
