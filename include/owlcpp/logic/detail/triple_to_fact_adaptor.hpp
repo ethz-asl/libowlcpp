@@ -86,7 +86,11 @@ private:
 
    TDLAxiom* negative_property_assertion(const Node_id nid);
 
-   TDLAxiom* axiom_rdf_type(Triple const& t);
+   TDLAxiom* axiom_type(Triple const& t);
+
+   TDLAxiom* axiom_blank_node_type(Triple const& t);
+
+   TDLAxiom* axiom_iri_node_type(Triple const& t);
 
    /** x *:y z, where *:y is object or data property
     @param t RDF triple
@@ -104,15 +108,20 @@ private:
    TExpressionManager& e_m();
 
    template<class Decl> Decl check_same_declaration(const Node_id n1, const Node_id n2) const {
-      const Decl nt1 = declaration<Decl>(n1);
-      const Decl nt2 = declaration<Decl>(n2);
-      if( nt1 != nt2 ) BOOST_THROW_EXCEPTION(
+      const Decl d1 = declaration<Decl>(n1);
+      if( d1.is_none() ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("node " + Decl::name() + " declaration not found")
+               << Err::str1_t(to_string_short(n1, ts_))
+      );
+      const Decl d2 = declaration<Decl>(n2);
+      if( d1 != d2 ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("node type mismatch")
-                  << Err::str1_t(nt1.to_string())
-                  << Err::str2_t(nt2.to_string())
+                  << Err::str1_t(d1.to_string())
+                  << Err::str2_t(d2.to_string())
       );
-      return nt1;
+      return d1;
    }
 
    template<class Decl, class Range> Decl check_seq_declaration(Range& r) const {
@@ -122,6 +131,11 @@ private:
                << Err::msg_t("empty sequence")
       );
       const Decl d = declaration<Decl>(bsr.front());
+      if( d.is_none() ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("node " + Decl::name() + " declaration not found")
+               << Err::str1_t(to_string_short(bsr.front(), ts_))
+      );
       bsr.advance_begin(1);
       check_seq_declaration(bsr, d);
       return d;
@@ -207,11 +221,6 @@ private:
             d.set(t.object());
          }
       }
-      if( d.is_none() ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("node " + Decl::name() + " declaration not found")
-               << Err::str1_t(to_string_short(nid, ts_))
-      );
       return d;
    }
 };

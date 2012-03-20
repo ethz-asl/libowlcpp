@@ -26,7 +26,7 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    const Node_id obj = t.object();
    switch (pred()) {
    case T_rdf_type::index:
-      return axiom_rdf_type(t);
+      return axiom_type(t);
 
    case T_rdfs_subClassOf::index:
       check_declaration(subj, Node_type::object());
@@ -143,14 +143,8 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
       return k_.processDifferent();
 
    case T_owl_oneOf::index:
-      if( is_blank(ts_[subj].ns_id()) ) return 0;
-      e_m().newArgList();
-      e_m().addArg(obj_type(subj));
-      if( seq.empty() ) e_m().addArg(e_m().Bottom());
-      else e_m().addArg( );
-      return k_.equalConcepts();
-
-      return axiom_from_seq(pred, obj, 0, subj);
+      if( is_iri(ts_[subj].ns_id()) ) return axiom_from_seq(pred, obj, 0, subj);
+      return 0;
 
    //ignored triples:
    case T_owl_onProperty::index:
@@ -187,21 +181,49 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
 
 /*
 *******************************************************************************/
-TDLAxiom* Adaptor_triple::axiom_rdf_type(Triple const& t) {
+TDLAxiom* Adaptor_triple::axiom_iri_node_type(Triple const& t) {
    const Node_id subj = t.subject();
    const Node_id pred = t.predicate();
    const Node_id obj = t.object();
+   BOOST_ASSERT( is_iri(ts_[subj].ns_id()) );
    switch (obj()) {
 
    case T_owl_Class::index:
+      return k_.declare( e_m().Concept(ts_.string(subj)) );
 
    case T_rdfs_Datatype::index:
+      return k_.declare( e_m().DataType(ts_.string(subj)) );
 
    case T_owl_ObjectProperty::index:
+      return k_.declare( e_m().ObjectRole(ts_.string(subj)) );
 
    case T_owl_DatatypeProperty::index:
+      return k_.declare( e_m().DataRole(ts_.string(subj)) );
 
    case T_owl_NamedIndividual::index:
+      return k_.declare( e_m().Individual(ts_.string(subj)) );
+
+   //ignored triples
+   case T_owl_DeprecatedClass::index:
+   case T_owl_DeprecatedProperty::index:
+      return 0;
+
+   default: BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("unsupported rdf:type object")
+            << Err::str1_t(ts_.string(subj))
+   );
+   }
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
+   const Node_id subj = t.subject();
+   const Node_id pred = t.predicate();
+   const Node_id obj = t.object();
+   BOOST_ASSERT( is_blank(ts_[subj].ns_id()) );
+   switch (obj()) {
 
    case T_owl_AllDisjointClasses::index:
    case T_owl_AllDisjointProperties::index: {
@@ -235,6 +257,26 @@ TDLAxiom* Adaptor_triple::axiom_rdf_type(Triple const& t) {
       return axiom_from_seq(pred, r.front().object(), 2);
    }
 
+   case T_owl_NegativePropertyAssertion::index:
+      return negative_property_assertion(subj);
+
+   default: BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("unsupported rdf:type object")
+            << Err::str1_t(ts_.string(subj))
+   );
+
+   }
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
+   const Node_id subj = t.subject();
+   const Node_id pred = t.predicate();
+   const Node_id obj = t.object();
+   switch (obj()) {
+
    case T_owl_FunctionalProperty::index: {
       const Node_property np = declaration<Node_property>(subj);
       if( np.is_object() ) return k_.setOFunctional(obj_property(subj));
@@ -265,19 +307,7 @@ TDLAxiom* Adaptor_triple::axiom_rdf_type(Triple const& t) {
       check_declaration(subj, Node_property::object());
       return k_.setTransitive(obj_property(subj));
 
-   case T_owl_NegativePropertyAssertion::index:
-      return negative_property_assertion(subj);
-
    //ignored triples
-   case T_owl_DeprecatedClass::index:
-   case T_owl_DeprecatedProperty::index:
-      if( ! is_iri(ts_[subj].ns_id()) ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("IRI node subject is expected")
-               << Err::str1_t(ts_.string(subj))
-      );
-      return 0;
-
    case T_owl_Restriction::index: //class expression, not axiom
       if( ! is_blank(ts_[subj].ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
@@ -298,6 +328,9 @@ TDLAxiom* Adaptor_triple::axiom_rdf_type(Triple const& t) {
          return k_.instanceOf(obj_value(subj), obj_type(obj));
       break;
    }
+   Node const& node = ts_[subj];
+   if( is_blank(node.ns_id()) ) return axiom_blank_node_type(t);
+   if( is_iri(node.ns_id()) ) return axiom_iri_node_type(t);
    BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("unsupported rdf:type object")
@@ -362,21 +395,32 @@ TDLAxiom* Adaptor_triple::axiom_from_seq(
       e_m().newArgList();
       BOOST_FOREACH(const Node_id nid, seq) e_m().addArg(obj_value(nid));
       return k_.processDifferent();
+
    case T_owl_oneOf::index:
+      check_declaration(subj, Node_type::object());
+      BOOST_FOREACH(const Node_id nid, seq) {
+         if( ! is_iri(ts_[nid].ns_id()) ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("non-IRI node in owl:oneOf sequence")
+                  << Err::str1_t(to_string_short(nid, ts_))
+         );
+      }
       e_m().newArgList();
       e_m().addArg(obj_type(subj));
       if( seq.empty() ) e_m().addArg(e_m().Bottom());
-      else e_m().addArg(obj_type(obj));
+      else {
+         e_m().newArgList();
+         BOOST_FOREACH(const Node_id nid, seq) e_m().addArg( e_m().Individual(ts_.string(nid)) );
+         TDLConceptExpression* ce = e_m().OneOf();
+         e_m().addArg(ce);
+      }
       return k_.equalConcepts();
 
-
-
-   default:
-      BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("unsupported operation")
-                  << Err::str1_t(to_string_short(op, ts_))
-         );
+   default: BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("unsupported operation")
+            << Err::str1_t(to_string_short(op, ts_))
+   );
    }
 }
 

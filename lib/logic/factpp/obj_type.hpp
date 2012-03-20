@@ -223,7 +223,6 @@ private:
 
    void make_sequence(const Node_id seq, Triple_store const& ts) {
       BOOST_FOREACH(const Node_id nid, rdf_list(seq, ts)) {
-         Node const& node = ts[nid];
          if( ! is_iri(ts[nid].ns_id()) ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("non-IRI node for instance declaration")
