@@ -8,13 +8,18 @@ part of owlcpp project.
 #include <vector>
 #include <memory>
 
-#include "factpp/Kernel.hpp"
-
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/logic/exception.hpp"
 #include "expression_args.hpp"
+
+class ReasoningKernel;
+class TDLConceptExpression;
+class TDLIndividualExpression;
+class TDLObjectRoleExpression;
+class TDLDataTypeExpression;
+class TDLDataRoleExpression;
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 
@@ -27,7 +32,7 @@ struct Obj_prop {
 };
 
 struct Obj_inst {
-   typedef TDLObjectRoleExpression* fact_type;
+   typedef TDLIndividualExpression* fact_type;
 };
 
 struct Data_type {

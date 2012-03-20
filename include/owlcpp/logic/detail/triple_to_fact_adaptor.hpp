@@ -66,6 +66,26 @@ private:
    Triple_store const& ts_;
    ReasoningKernel& k_;
 
+   /**@param t triple x y z */
+   void submit_custom_triple(Triple const& t);
+
+   TDLConceptExpression* obj_type(const Node_id nid);
+
+   TDLIndividualExpression* obj_value(const Node_id nid);
+
+   /** make instance of a class */
+   TDLIndividualExpression* instance_of(const Node_id inst, const Node_id cls);
+
+   TDLObjectRoleExpression* obj_property(const Node_id nid);
+
+   TDLDataRoleExpression* data_property(const Node_id nid);
+
+   TDLDataTypeExpression* data_type(const Node_id nid);
+
+   TDLDataValue const* data_value(const Node_id nid);
+
+   TDLAxiom* negative_property_assertion(const Node_id nid);
+
    TDLAxiom* axiom_rdf_type(Triple const& t);
 
    /** x *:y z, where *:y is object or data property
@@ -116,7 +136,7 @@ private:
                            "node declared as " + nt.to_string() +
                            "; should be " + d.to_string()
                   )
-                  << Err::str1_t(ts_.string(nid))
+                  << Err::str1_t(to_string_short(nid, ts_))
          );
       }
    }
@@ -129,13 +149,42 @@ private:
                            "node declared as " + nt.to_string() +
                            "; should be " + d.to_string()
                   )
-                  << Err::str1_t(ts_.string(nid))
+                  << Err::str1_t(to_string_short(nid, ts_))
       );
    }
 
    template<class Decl> Decl declaration(const Node_id nid) const {
       using namespace owlcpp::terms;
       Decl d;
+      if( is_std_owl(nid) ) {
+         switch (nid()) {
+         case T_owl_Thing::index:
+         case T_owl_Nothing::index:
+            d.set(T_owl_Class::id());
+            break;
+
+         case T_owl_topObjectProperty::index:
+         case T_owl_bottomObjectProperty::index:
+            d.set(T_owl_ObjectProperty::id());
+            break;
+
+         case T_rdfs_Literal::index:
+            d.set(T_owl_DataRange::id());
+            break;
+
+         case T_owl_topDataProperty::index:
+         case T_owl_bottomDataProperty::index:
+            d.set(T_owl_DatatypeProperty::id());
+            break;
+
+         default: BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("unknown node type")
+                  << Err::str1_t(to_string_short(nid, ts_))
+         );
+         }
+      }
+
       BOOST_FOREACH(
                Triple const& t,
                ts_.triples().find(nid, T_rdf_type::id(), any(), any())) {
@@ -150,7 +199,7 @@ private:
          if( ts_[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("non-blank subject in _:x owl:annotatedSource y")
-                  << Err::str1_t(ts_.string(nid))
+                  << Err::str1_t(to_string_short(nid, ts_))
          );
          BOOST_FOREACH(
                   Triple const& t,
@@ -161,30 +210,10 @@ private:
       if( d.is_none() ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("node " + Decl::name() + " declaration not found")
-               << Err::str1_t(ts_.string(nid))
+               << Err::str1_t(to_string_short(nid, ts_))
       );
       return d;
    }
-
-   /**@param t triple x y z */
-   void submit_custom_triple(Triple const& t);
-
-   TDLConceptExpression* obj_type(const Node_id nid);
-
-   TDLIndividualExpression* obj_value(const Node_id nid);
-
-   /** make instance of a class */
-   TDLIndividualExpression* instance_of(const Node_id inst, const Node_id cls);
-
-   TDLObjectRoleExpression* obj_property(const Node_id nid);
-
-   TDLDataRoleExpression* data_property(const Node_id nid);
-
-   TDLDataTypeExpression* data_type(const Node_id nid);
-
-   TDLDataValue const* data_value(const Node_id nid);
-
-   TDLAxiom* negative_property_assertion(const Node_id nid);
 };
 
 }//namespace factpp

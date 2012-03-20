@@ -9,6 +9,7 @@ part of owlcpp project.
 #include <string>
 #include "boost/foreach.hpp"
 #include "boost/ptr_container/ptr_vector.hpp"
+#include "factpp/Kernel.hpp"
 #include "expression.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
 
@@ -36,14 +37,8 @@ struct Ot_nothing : public Expression<Obj_type> {
 class Ot_declared : public Expression<Obj_type> {
 public:
    Ot_declared(Expression_args const& ea, Triple_store const& ts)
-   : iri_(ts.string(ea.handle)) {
-      Node const& node = ts[ea.handle];
-      if( is_blank(node.ns_id()) || is_empty(node.ns_id()) ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("invalid node for object type declaration")
-               << Err::str1_t(ts.string(ea.handle))
-      );
-   }
+   : iri_(ts.string(ea.handle))
+   {}
 
    generated_t get(ReasoningKernel& k ) const {
       return k.getExpressionManager()->Concept(iri_);
@@ -77,17 +72,17 @@ private:
 
 /**@brief
 *******************************************************************************/
-class Ot_card : public Expression<Obj_type> {
+class Ot_cardinality : public Expression<Obj_type> {
 public:
-   Ot_card(Expression_args const& ea, Triple_store const& ts)
+   Ot_cardinality(Expression_args const& ea, Triple_store const& ts)
    : op_( make_expression<Obj_prop>(ea.obj1, ts) ),
      ot_(
               is_empty(ea.obj2) ?
                        Expression<Obj_type>::ptr_t() :
                        make_expression<Obj_type>(ea.obj2, ts)
      ),
-     card_type_(ea.card_type),
-     n_(ea.cardinality)
+     card_type_(ea.cardinality),
+     n_(ea.num)
    {
       if( ea.e_type != T_owl_Restriction::id() ) BOOST_THROW_EXCEPTION(
                Err()
@@ -140,9 +135,9 @@ private:
 
 /**@brief Type from a list of types (owl:intersectionOf, owl:unionOf)
 *******************************************************************************/
-class Ot_tlist : public Expression<Obj_type> {
+class Ot_type_list : public Expression<Obj_type> {
 public:
-   Ot_tlist(Expression_args const& ea, Triple_store const& ts)
+   Ot_type_list(Expression_args const& ea, Triple_store const& ts)
    : type_(ea.pred1)
    {
       if( ea.e_type != T_owl_Class::id() ) BOOST_THROW_EXCEPTION(
@@ -200,24 +195,19 @@ private:
 
 /**@brief generate owl:oneOf type expression
 *******************************************************************************/
-class Ot_ilist : public Expression<Obj_type> {
+class Ot_instance_list : public Expression<Obj_type> {
 public:
-   Ot_ilist(Expression_args const& ea, Triple_store const& ts)
-   {
+   Ot_instance_list(const Node_id seq, Triple_store const& ts) {
+      make_sequence(seq, ts);
+   }
+
+   Ot_instance_list(Expression_args const& ea, Triple_store const& ts) {
       if( ea.e_type != T_owl_Class::id() ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unexpected rdf:type; should be owl:Class")
                << Err::str1_t(ts.string(ea.e_type))
       );
-      BOOST_FOREACH(const Node_id nid, rdf_list(ea.obj1, ts)) {
-         Node const& node = ts[nid];
-         if( is_blank(node.ns_id()) || is_empty(node.ns_id()) ) BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("invalid node for instance declaration")
-                  << Err::str1_t(ts.string(nid))
-         );
-         il_.push_back(ts.string(nid));
-      }
+      make_sequence(ea.obj1, ts);
    }
 
    TDLConceptExpression* get(ReasoningKernel& k ) const {
@@ -230,6 +220,18 @@ public:
 
 private:
    std::vector<std::string> il_; /**< instance IRI list */
+
+   void make_sequence(const Node_id seq, Triple_store const& ts) {
+      BOOST_FOREACH(const Node_id nid, rdf_list(seq, ts)) {
+         Node const& node = ts[nid];
+         if( ! is_iri(ts[nid].ns_id()) ) BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("non-IRI node for instance declaration")
+                  << Err::str1_t(ts.string(nid))
+         );
+         il_.push_back(ts.string(nid));
+      }
+   }
 };
 
 }//namespace factpp

@@ -41,7 +41,7 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
          e_m().addArg(obj_type(obj));
          return k_.equalConcepts();
       }
-      if( ! is_iri(ts_[subj].ns_id()) ) return 0;
+//      if( ! is_iri(ts_[subj].ns_id()) ) return 0;
       BOOST_THROW_EXCEPTION( Err() << Err::msg_t("owl:equivalentClass on datatypes is not supported") );
    }
 
@@ -141,26 +141,27 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
       e_m().addArg(obj_value(subj));
       e_m().addArg(obj_value(obj));
       return k_.processDifferent();
-/*
-   {
-      if( ts_[subj].ns_id() == N_blank::id() ) return 0;
-      const Node_property nts = declaration<Node_property>(subj);
-      const Node_property nto = declaration<Node_property>(obj);
-      if( nts != nto ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("declaration mismatch in rdfs:subPropertyOf triple")
-               << Err::str1_t(ts_.string(subj))
-               << Err::str2_t(ts_.string(obj))
-      );
-      if( nts.is_object() ) {
-         k_.impliesORoles(obj_property(subj), obj_property(obj));
-      } else if( nts.is_data() ) {
-         k_.impliesDRoles(data_property(subj), data_property(obj));
-      }
-      return 0;
-   }
-*/
+
+   case T_owl_oneOf::index:
+      if( is_blank(ts_[subj].ns_id()) ) return 0;
+      e_m().newArgList();
+      e_m().addArg(obj_type(subj));
+      if( seq.empty() ) e_m().addArg(e_m().Bottom());
+      else e_m().addArg( );
+      return k_.equalConcepts();
+
+      return axiom_from_seq(pred, obj, 0, subj);
+
    //ignored triples:
+   case T_owl_onProperty::index:
+   case T_owl_someValuesFrom::index: //class expression, not axiom
+      if( ! is_blank(ts_[subj].ns_id()) ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("blank node subject is expected")
+               << Err::str1_t(ts_.string(subj))
+      );
+      return 0;
+
    case T_owl_annotatedProperty::index:
    case T_owl_annotatedSource::index:
    case T_owl_annotatedTarget::index:
@@ -169,7 +170,6 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    case T_owl_imports::index:
    case T_owl_members::index:
    case T_owl_onClass::index:
-   case T_owl_onProperty::index:
    case T_owl_sourceIndividual::index:
    case T_owl_targetIndividual::index:
    case T_owl_versionInfo::index:
@@ -192,6 +192,16 @@ TDLAxiom* Adaptor_triple::axiom_rdf_type(Triple const& t) {
    const Node_id pred = t.predicate();
    const Node_id obj = t.object();
    switch (obj()) {
+
+   case T_owl_Class::index:
+
+   case T_rdfs_Datatype::index:
+
+   case T_owl_ObjectProperty::index:
+
+   case T_owl_DatatypeProperty::index:
+
+   case T_owl_NamedIndividual::index:
 
    case T_owl_AllDisjointClasses::index:
    case T_owl_AllDisjointProperties::index: {
@@ -257,6 +267,31 @@ TDLAxiom* Adaptor_triple::axiom_rdf_type(Triple const& t) {
 
    case T_owl_NegativePropertyAssertion::index:
       return negative_property_assertion(subj);
+
+   //ignored triples
+   case T_owl_DeprecatedClass::index:
+   case T_owl_DeprecatedProperty::index:
+      if( ! is_iri(ts_[subj].ns_id()) ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("IRI node subject is expected")
+               << Err::str1_t(ts_.string(subj))
+      );
+      return 0;
+
+   case T_owl_Restriction::index: //class expression, not axiom
+      if( ! is_blank(ts_[subj].ns_id()) ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("blank node is expected in _:x rdf:type owl:Restriction")
+               << Err::str1_t(ts_.string(subj))
+      );
+      return 0;
+
+   case T_owl_Ontology::index:
+   case T_owl_OntologyProperty::index:
+   case T_owl_Axiom::index:
+   case T_owl_AnnotationProperty::index:
+   case T_rdfs_Class::index:
+      return 0; //do not form axioms
 
    default:
       if( declaration<Node_type>(obj).is_object() )
@@ -327,6 +362,14 @@ TDLAxiom* Adaptor_triple::axiom_from_seq(
       e_m().newArgList();
       BOOST_FOREACH(const Node_id nid, seq) e_m().addArg(obj_value(nid));
       return k_.processDifferent();
+   case T_owl_oneOf::index:
+      e_m().newArgList();
+      e_m().addArg(obj_type(subj));
+      if( seq.empty() ) e_m().addArg(e_m().Bottom());
+      else e_m().addArg(obj_type(obj));
+      return k_.equalConcepts();
+
+
 
    default:
       BOOST_THROW_EXCEPTION(
@@ -344,12 +387,11 @@ TDLAxiom* Adaptor_triple::axiom_custom_predicate(Triple const& t) {
    const Node_id pred = t.predicate();
    const Node_id obj = t.object();
 
-   Node const& node = ts_[pred];
-   if( is_blank(node.ns_id()) || is_empty(node.ns_id()) ) BOOST_THROW_EXCEPTION(
+   if( ! is_iri(ts_[pred].ns_id() ) ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("non-IRI predicate in x *:y z")
             << Err::str1_t(ts_.string(pred))
-      );
+   );
 
    const Node_property np = declaration<Node_property>(pred);
 

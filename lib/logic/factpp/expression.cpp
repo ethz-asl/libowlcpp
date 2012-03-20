@@ -6,6 +6,7 @@ part of owlcpp project.
 
 #include "expression.hpp"
 #include "obj_type.hpp"
+#include "obj_property.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
@@ -23,14 +24,14 @@ make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
 
    if( is_iri(ts[ea.handle].ns_id()) ) return ptr_t(new Ot_declared(ea, ts));
 
-   switch (ea.card_type()) {
+   switch (ea.cardinality()) {
       case T_owl_cardinality::index:
       case T_owl_maxCardinality::index:
       case T_owl_minCardinality::index:
       case T_owl_maxQualifiedCardinality::index:
       case T_owl_minQualifiedCardinality::index:
       case T_owl_qualifiedCardinality::index:
-         return ptr_t(new Ot_card(ea, ts));
+         return ptr_t(new Ot_cardinality(ea, ts));
       default:
          break;
    }
@@ -47,11 +48,11 @@ make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
    switch (ea.pred1()) {
    case T_owl_intersectionOf::index:
    case T_owl_unionOf::index:
-      return ptr_t(new Ot_tlist(ea, ts));
+      return ptr_t(new Ot_type_list(ea, ts));
    case T_owl_complementOf::index:
       return ptr_t(new Ot_complement(ea, ts));
    case T_owl_oneOf::index:
-      return ptr_t(new Ot_ilist(ea, ts));
+      return ptr_t(new Ot_instance_list(ea, ts));
 
       break;
    }
@@ -68,6 +69,11 @@ template<> typename Expression<Obj_prop>::ptr_t
 make_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts) {
    typedef typename Expression<Obj_prop>::ptr_t ptr_t;
    typedef typename Expression<Obj_prop>::Err Err;
+
+   if( ea.handle == T_owl_topObjectProperty::id() ) return ptr_t(new Op_top());
+   if( ea.handle == T_owl_bottomObjectProperty::id() ) return ptr_t(new Op_bottom());
+
+   if( is_iri(ts[ea.handle].ns_id()) ) return ptr_t(new Op_declared(ea, ts));
 
 }
 

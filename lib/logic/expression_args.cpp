@@ -23,8 +23,8 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
   obj1      (T_empty_::id()),
   pred2     (T_empty_::id()),
   obj2      (T_empty_::id()),
-  card_type (T_empty_::id()),
-  cardinality(0)
+  cardinality (T_empty_::id()),
+  num(0)
 {
    if( ! is_blank(ts[handle].ns_id()) ) return;
    BOOST_FOREACH(Triple const& t, ts.triples().find(h, any(), any(), any())) {
@@ -56,8 +56,8 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
          case T_owl_maxQualifiedCardinality::index:
          case T_owl_minQualifiedCardinality::index:
          case T_owl_qualifiedCardinality::index:
-            card_type = pred;
-            cardinality = value<unsigned>(obj, ts);
+            cardinality = pred;
+            num = value<unsigned>(obj, ts);
             break;
          default:
             BOOST_THROW_EXCEPTION(

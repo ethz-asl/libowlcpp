@@ -49,6 +49,7 @@ public:
          break;
 
       case T_owl_AnnotationProperty::index:
+      case T_owl_OntologyProperty::index:
          set(Annotation);
          break;
       }

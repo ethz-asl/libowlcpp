@@ -5,24 +5,36 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef OBJ_PROPERTY_HPP_
 #define OBJ_PROPERTY_HPP_
-#include <string>
 #include "expression.hpp"
+#include "factpp/Kernel.hpp"
+#include "boost/assert.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
 
 /**@brief
 *******************************************************************************/
-class Op_declared : public Fact_expression<Obj_prop> {
+struct Op_top : public Expression<Obj_prop> {
+   TDLObjectRoleExpression* get(ReasoningKernel& k ) const {
+      return k.getExpressionManager()->ObjectRoleTop();
+   }
+};
+
+/**@brief
+*******************************************************************************/
+struct Op_bottom : public Expression<Obj_prop> {
+   TDLObjectRoleExpression* get(ReasoningKernel& k ) const {
+      return k.getExpressionManager()->ObjectRoleBottom();
+   }
+};
+
+/**@brief
+*******************************************************************************/
+class Op_declared : public Expression<Obj_prop> {
 public:
    Op_declared(Expression_args const& ea, Triple_store const& ts)
    : iri_(ts.string(ea.handle)) {
-      Node const& node = ts[ea.handle];
-      if( is_blank(node.ns_id()) || is_empty(node.ns_id()) ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("invalid node for object property declaration")
-               << Err::str1_t(ts.string(ea.handle))
-      );
+      BOOST_ASSERT(is_iri(ts[ea.handle].ns_id()));
    }
 
    TDLObjectRoleExpression* get(ReasoningKernel& k ) const {

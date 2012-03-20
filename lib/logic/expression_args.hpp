@@ -20,8 +20,8 @@ struct Expression_args {
 
    Expression_args(const Node_id h, Triple_store const& ts);
 
-   Node_id handle, e_type, pred1, obj1, pred2, obj2, card_type;
-   unsigned cardinality;
+   Node_id handle, e_type, pred1, obj1, pred2, obj2, cardinality;
+   unsigned num;
 };
 
 
