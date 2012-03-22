@@ -78,6 +78,11 @@ make_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts) {
 
    if( is_iri(ts[ea.handle].ns_id()) ) return ptr_t(new Op_declared(ea, ts));
 
+   BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("unsupported object property")
+               << Err::str1_t(to_string_short(ea.handle, ts))
+   );
 }
 
 /*
@@ -87,6 +92,11 @@ make_expression<Data_type>(Expression_args const& ea, Triple_store const& ts) {
    typedef typename Expression<Data_type>::ptr_t ptr_t;
    typedef typename Expression<Data_type>::Err Err;
 
+   BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("unsupported data type")
+               << Err::str1_t(to_string_short(ea.handle, ts))
+   );
 }
 
 /*
@@ -96,6 +106,11 @@ make_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts) {
    typedef typename Expression<Data_prop>::ptr_t ptr_t;
    typedef typename Expression<Data_prop>::Err Err;
 
+   BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("unsupported data property")
+               << Err::str1_t(to_string_short(ea.handle, ts))
+   );
 }
 
 }//namespace factpp

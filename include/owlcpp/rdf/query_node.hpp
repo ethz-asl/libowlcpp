@@ -19,25 +19,21 @@ part of owlcpp project.
 namespace owlcpp{
 class Triple_store;
 
-/**@brief
+/**@brief print node ID
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string(const Node_id nid);
 
-/**@brief
+/**@brief print full node value
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string(const Node_id nid, Triple_store const& ts);
 
-/**@brief
+/**@brief print node value replacing namespace IRI with a prefix if declared
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string_short(const Node_id nid, Triple_store const& ts);
 
-/**@brief
+/**@brief print node value replacing namespace IRI with a prefix always
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string_shortest(const Node_id nid, Triple_store const& ts);
-
-/**@brief
-*******************************************************************************/
-OWLCPP_RDF_DECL bool is_std_owl(const Node_id nid);
 
 namespace detail{
 

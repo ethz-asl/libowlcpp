@@ -14,6 +14,8 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
+TExpressionManager& em(ReasoningKernel& k) {return *k.getExpressionManager();}
+
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 /**
@@ -33,7 +35,7 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    load_file(sample_file_path("og_01.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
-//   BOOST_CHECK( k.isKBConsistent() );
+   BOOST_CHECK( k.isKBConsistent() );
 }
 
 /**
@@ -42,8 +44,98 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    Triple_store ts(Node_map_std::get(Nodes_owl()));
    load_file(sample_file_path("og_02.owl"), ts);
    ReasoningKernel k;
-//   submit_triples(ts, k, false);
-//   BOOST_CHECK( k.isKBConsistent() );
+   submit_triples(ts, k, false);
+   BOOST_CHECK( k.isKBConsistent() );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case04 ) {
+   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   load_file(sample_file_path("owl2-rl-rules-fp-differentFrom.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( k.isKBConsistent() );
+   const TDLIndividualExpression* i1 = em(k).Individual("http://owl2.test/rules/Y1");
+   const TDLIndividualExpression* i2 = em(k).Individual("http://owl2.test/rules/Y2");
+   BOOST_CHECK( ! k.isSameIndividuals(i1, i2) );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case05 ) {
+   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   load_file(sample_file_path("owl2-rl-rules-fp-sameAs.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( k.isKBConsistent() );
+   const TDLIndividualExpression* i1 = em(k).Individual("http://owl2.test/rules/X1");
+   const TDLIndividualExpression* i2 = em(k).Individual("http://owl2.test/rules/X2");
+   BOOST_CHECK( k.isSameIndividuals(i1, i2) );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case06 ) {
+   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   load_file(sample_file_path("owl2-rl-rules-ifp-differentFrom.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( k.isKBConsistent() );
+   const TDLIndividualExpression* i1 = em(k).Individual("http://owl2.test/rules/X1");
+   const TDLIndividualExpression* i2 = em(k).Individual("http://owl2.test/rules/X2");
+   BOOST_CHECK( ! k.isSameIndividuals(i1, i2) );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case07 ) {
+   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   load_file(sample_file_path("owl2-rl-rules-ifp-sameAs.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( k.isKBConsistent() );
+   const TDLIndividualExpression* i1 = em(k).Individual("http://owl2.test/rules/Y1");
+   const TDLIndividualExpression* i2 = em(k).Individual("http://owl2.test/rules/Y2");
+   BOOST_CHECK( k.isSameIndividuals(i1, i2) );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case08 ) {
+   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   load_file(sample_file_path("one_eq_two_01.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( ! k.isKBConsistent() );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case09 ) {
+   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   load_file(sample_file_path("negative_property_assertion_01.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( ! k.isKBConsistent() );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case10 ) {
+   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   load_file(sample_file_path("propertyChain_01.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( k.isKBConsistent() );
+   const std::string iri = "http://owl.semanticweb.org/page/New-Feature-ObjectPropertyChain-001";
+   const TDLIndividualExpression* stewie =   em(k).Individual(iri + "#Stewie");
+   const TDLIndividualExpression* lois =     em(k).Individual(iri + "#Lois");
+   const TDLIndividualExpression* carol =    em(k).Individual(iri + "#Carol");
+   const TDLObjectRoleExpression* hasAunt =  em(k).ObjectRole(iri + "#hasAunt");
+
+   BOOST_CHECK(   k.isRelated(stewie, hasAunt, carol) );
+   BOOST_CHECK( ! k.isRelated(lois,   hasAunt, carol) );
 }
 
 }//namespace test

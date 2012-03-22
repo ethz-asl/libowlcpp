@@ -25,7 +25,10 @@ std::string to_string(const Node_id nid, Triple_store const& ts) {
    Node const& node = ts[nid];
    const std::string name = node.value_str();
    if( is_blank(node.ns_id()) ) return "_:" + name;
-   if( is_empty(node.ns_id()) ) return '\"' + name + '\"';
+   if( is_empty(node.ns_id()) ) {
+      return '\"' + name + '\"';
+      //todo: print language and datatype
+   }
    if( name.empty() ) return ts[node.ns_id()];
    return ts[node.ns_id()] + '#' + name;
 }
@@ -57,12 +60,6 @@ std::string to_string_shortest(const Node_id nid, Triple_store const& ts) {
    return (pref.empty() ? "ns" + boost::lexical_cast<std::string>(nsid()) : pref)
             + ( name.empty() ? "" : ':' + name )
                      ;
-}
-
-/*
-*******************************************************************************/
-bool is_std_owl(const Node_id nid) {
-   return nid < Node_map_std::get(Nodes_owl()).node_id_next();
 }
 
 }//namespace owlcpp

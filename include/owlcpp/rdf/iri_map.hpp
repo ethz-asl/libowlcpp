@@ -71,7 +71,7 @@ public:
    */
    void insert_prefix(const Ns_id iid, std::string const& pref) {
       if( pref.empty() ) return;
-      BOOST_ASSERT( smap_.is_constant(iid) || map_.have(iid) );
+      BOOST_ASSERT( smap_.is_standard(iid) || map_.have(iid) );
       Ns_id const*const iid0 = find_prefix(pref);
       if( iid0 ) {
          if( *iid0 == iid ) return; //prefix already defined for same IRI

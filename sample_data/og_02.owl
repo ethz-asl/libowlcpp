@@ -51,6 +51,9 @@
 	<rdfs:subClassOf rdf:resource="&OG;PrimitiveValueType"/>
 </owl:Class>
 
+<owl:Class rdf:about="&OG;PrimitiveValueType" />
+<owl:Class rdf:about="&OG;ApplicationCategory" />
+
 <owl:Class rdf:about="&OG;NumberValueType">
 	<rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
 </owl:Class>

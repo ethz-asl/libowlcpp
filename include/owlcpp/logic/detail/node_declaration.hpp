@@ -21,7 +21,7 @@ namespace owlcpp{ namespace logic{
 template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts) {
    using namespace owlcpp::terms;
    Decl d;
-   if( is_std_owl(nid) ) {
+   if( ts.is_standard(nid) ) {
       switch (nid()) {
       case T_owl_Thing::index:
       case T_owl_Nothing::index:

@@ -214,7 +214,7 @@ TDLAxiom* Adaptor_triple::axiom_iri_node_type(Triple const& t) {
 
    case T_owl_Class::index:
       if( subj == T_owl_Thing::id() || subj == T_owl_Nothing::id() ) return 0;
-      if( is_std_owl(subj) ) BOOST_THROW_EXCEPTION(
+      if( ts_.is_standard(subj) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("re-definition of a standard term")
                << Err::str1_t(to_string_short(subj, ts_))
@@ -223,7 +223,7 @@ TDLAxiom* Adaptor_triple::axiom_iri_node_type(Triple const& t) {
 
    case T_rdfs_Datatype::index:
       if( subj == T_rdfs_Literal::id() || subj == T_owl_Nothing::id() ) return 0;
-      if( is_std_owl(subj) ) BOOST_THROW_EXCEPTION(
+      if( ts_.is_standard(subj) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("re-definition of a standard term")
                << Err::str1_t(to_string_short(subj, ts_))
@@ -281,7 +281,7 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
                << Err::msg_t("_:x owl:(distinct)Members seq not found for _:x rdf:type owl:AllDifferent")
                << Err::str1_t(to_string_short(subj, ts_))
       );
-      return axiom_from_seq(pred, r.front().object(), 2);
+      return axiom_from_seq(obj, r.front().object(), 2);
    }
 
    case T_owl_NegativePropertyAssertion::index:
