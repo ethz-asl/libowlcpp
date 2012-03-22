@@ -7,6 +7,7 @@ part of owlcpp project.
 #include "expression.hpp"
 #include "obj_type.hpp"
 #include "obj_property.hpp"
+#include "owlcpp/rdf/query_node.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
@@ -31,7 +32,7 @@ make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
       case T_owl_maxQualifiedCardinality::index:
       case T_owl_minQualifiedCardinality::index:
       case T_owl_qualifiedCardinality::index:
-         return ptr_t(new Ot_cardinality(ea, ts));
+         return ptr_t(new Ot_card_restriction(ea, ts));
       default:
          break;
    }
@@ -41,7 +42,8 @@ make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
    case T_owl_hasValue::index:
    case T_owl_hasSelf::index:
    case T_owl_someValuesFrom::index:
-
+         return ptr_t(new Ot_restriction(ea, ts));
+   default:
       break;
    }
 
@@ -56,10 +58,11 @@ make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
 
       break;
    }
+
    BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unsupported object type")
-               << Err::str1_t(ts.string(ea.handle))
+               << Err::str1_t(to_string_short(ea.handle, ts))
    );
 }
 

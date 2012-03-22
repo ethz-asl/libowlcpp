@@ -10,6 +10,7 @@ part of owlcpp project.
 #include "boost/ptr_container/ptr_vector.hpp"
 #include "factpp/Kernel.hpp"
 #include "expression.hpp"
+#include "owlcpp/rdf/query_node.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 
@@ -34,7 +35,7 @@ struct Ot_nothing : public Expression<Obj_type> {
 class Ot_declared : public Expression<Obj_type> {
 public:
    Ot_declared(Expression_args const& ea, Triple_store const& ts)
-   : iri_(ts.string(ea.handle))
+   : iri_(to_string_short(ea.handle, ts))
    {}
 
    generated_t get(ReasoningKernel& k ) const {
@@ -64,9 +65,41 @@ private:
 
 /**@brief
 *******************************************************************************/
-class Ot_cardinality : public Expression<Obj_type> {
+class Ot_restriction : public Expression<Obj_type> {
 public:
-   Ot_cardinality(Expression_args const& ea, Triple_store const& ts);
+   Ot_restriction(Expression_args const& ea, Triple_store const& ts);
+
+   Ot_restriction(
+            const Node_id r_type,
+            const Node_id prop,
+            const Node_id val,
+            Triple_store const& ts
+   )
+   : restr_type_(r_type)
+   {
+      init(prop, val, ts);
+   }
+
+   TDLConceptExpression* get(ReasoningKernel& k ) const ;
+
+private:
+   const Node_id restr_type_;
+   Expression<Obj_prop>::ptr_t op_;
+   Expression<Obj_type>::ptr_t ot_;
+   std::string inst_;
+
+   void init(
+            const Node_id prop,
+            const Node_id val,
+            Triple_store const& ts
+   );
+};
+
+/**@brief
+*******************************************************************************/
+class Ot_card_restriction : public Expression<Obj_type> {
+public:
+   Ot_card_restriction(Expression_args const& ea, Triple_store const& ts);
 
    TDLConceptExpression* get(ReasoningKernel& k ) const ;
 

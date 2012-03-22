@@ -64,21 +64,21 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
             BOOST_THROW_EXCEPTION(
                         Err()
                         << Err::msg_t("unsupported class declaration")
-                        << Err::str1_t(ts.string(h))
-                        << Err::str2_t(ts.string(pred))
+                        << Err::str1_t(to_string_short(h, ts))
+                        << Err::str2_t(to_string_short(pred, ts))
                );
       }
    }
    if( is_empty(e_type) ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("class expression rdf:type not found")
-            << Err::str1_t(ts.string(h))
+            << Err::str1_t(to_string_short(h, ts))
    );
    if( e_type != T_owl_Class::id() && e_type != T_owl_Restriction::id() )
       BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unsupported rdf:type")
-               << Err::str1_t(ts.string(e_type))
+               << Err::str1_t(to_string_short(e_type, ts))
    );
 }
 

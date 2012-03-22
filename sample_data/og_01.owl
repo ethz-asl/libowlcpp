@@ -69,6 +69,10 @@
 	</owl:equivalentClass>
 </owl:Class>
 
+<owl:ObjectProperty rdf:about="&OG;IsDivisionOf">
+   <rdfs:label>IsDivisionOf</rdfs:label>
+</owl:ObjectProperty>
+
 </rdf:RDF>
 
 
