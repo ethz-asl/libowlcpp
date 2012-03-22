@@ -53,6 +53,7 @@
 
 <owl:Class rdf:about="&OG;MagnitudeValueType" />
 <owl:Class rdf:about="&OG;BNFBookChapter" />
+<owl:Class rdf:about="&OG;InformationSource" />
 
 <owl:Class rdf:about="&OG;GeneralisedStructurewhichIsDivisionOfBNFBookChaptercontainsInformation">
 	<owl:equivalentClass>

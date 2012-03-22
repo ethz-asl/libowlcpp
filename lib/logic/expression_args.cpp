@@ -27,6 +27,7 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
   num(0)
 {
    if( ! is_blank(ts[handle].ns_id()) ) return;
+
    BOOST_FOREACH(Triple const& t, ts.triples().find(h, any(), any(), any())) {
       const Node_id pred = t.predicate();
       const Node_id obj = t.object();

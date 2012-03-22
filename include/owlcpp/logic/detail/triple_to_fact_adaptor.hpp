@@ -10,8 +10,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/logic/exception.hpp"
-#include "owlcpp/logic/detail/node_type.hpp"
-#include "owlcpp/logic/detail/node_property.hpp"
+#include "owlcpp/logic/detail/node_declaration.hpp"
 #include "owlcpp/logic/config.hpp"
 #include "factpp/config.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
@@ -106,123 +105,6 @@ private:
    );
 
    TExpressionManager& e_m();
-
-   template<class Decl> Decl check_same_declaration(const Node_id n1, const Node_id n2) const {
-      const Decl d1 = declaration<Decl>(n1);
-      if( d1.is_none() ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("node " + Decl::name() + " declaration not found")
-               << Err::str1_t(to_string_short(n1, ts_))
-      );
-      const Decl d2 = declaration<Decl>(n2);
-      if( d1 != d2 ) BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("node type mismatch")
-                  << Err::str1_t(d1.to_string())
-                  << Err::str2_t(d2.to_string())
-      );
-      return d1;
-   }
-
-   template<class Decl, class Range> Decl check_seq_declaration(Range& r) const {
-      boost::sub_range<Range> bsr(r);
-      if( ! bsr ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("empty sequence")
-      );
-      const Decl d = declaration<Decl>(bsr.front());
-      if( d.is_none() ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("node " + Decl::name() + " declaration not found")
-               << Err::str1_t(to_string_short(bsr.front(), ts_))
-      );
-      bsr.advance_begin(1);
-      check_seq_declaration(bsr, d);
-      return d;
-   }
-
-   template<class Decl, class Range> void check_seq_declaration(Range& r, const Decl d) const {
-      BOOST_FOREACH(const Node_id nid, r) {
-         const Decl nt = declaration<Decl>(nid);
-         if( nt != d ) BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t(
-                           "node declared as " + nt.to_string() +
-                           "; should be " + d.to_string()
-                  )
-                  << Err::str1_t(to_string_short(nid, ts_))
-         );
-      }
-   }
-
-   template<class Decl> void check_declaration(const Node_id nid, const Decl d) const {
-      const Decl nt = declaration<Decl>(nid);
-      if( nt != d ) BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t(
-                           "node declared as " + nt.to_string() +
-                           "; should be " + d.to_string()
-                  )
-                  << Err::str1_t(to_string_short(nid, ts_))
-      );
-   }
-
-   template<class Decl> Decl declaration(const Node_id nid) const {
-      using namespace owlcpp::terms;
-      Decl d;
-      if( is_std_owl(nid) ) {
-         switch (nid()) {
-         case T_owl_Thing::index:
-         case T_owl_Nothing::index:
-            d.set(T_owl_Class::id());
-            break;
-
-         case T_owl_topObjectProperty::index:
-         case T_owl_bottomObjectProperty::index:
-            d.set(T_owl_ObjectProperty::id());
-            break;
-
-         case T_rdfs_Literal::index:
-            d.set(T_owl_DataRange::id());
-            break;
-
-         case T_owl_topDataProperty::index:
-         case T_owl_bottomDataProperty::index:
-            d.set(T_owl_DatatypeProperty::id());
-            break;
-
-         default: BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("unknown node type")
-                  << Err::str1_t(to_string_short(nid, ts_))
-         );
-         }
-      }
-
-      BOOST_FOREACH(
-               Triple const& t,
-               ts_.triples().find(nid, T_rdf_type::id(), any(), any())) {
-         d.set(t.object());
-      }
-
-      BOOST_FOREACH(
-               Triple const& t,
-               ts_.triples().find(any(), T_owl_annotatedSource::id(), nid, any())) {
-
-         const Node_id x = t.subject();
-         if( ts_[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("non-blank subject in _:x owl:annotatedSource y")
-                  << Err::str1_t(to_string_short(nid, ts_))
-         );
-         BOOST_FOREACH(
-                  Triple const& t,
-                  ts_.triples().find(x, T_owl_annotatedTarget::id(), any(), any())) {
-            d.set(t.object());
-         }
-      }
-      return d;
-   }
 };
 
 }//namespace factpp
