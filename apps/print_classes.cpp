@@ -48,9 +48,10 @@ int main(int argc, char* argv[]) {
    }
 
    //create a triple store that is aware of standard OWL terms
-   owlcpp::Triple_store store( owlcpp::Node_map_std::get(owlcpp::Nodes_owl()) );
+   owlcpp::Triple_store store;
 
-   const bfs::path in( vm["input-file"].as<std::string>());
+   const bfs::path in = vm["input-file"].as<std::string>();
+
    try {
       if( vm.count("include") ) { //load input-file and its includes
          owlcpp::Catalog cat;

@@ -10,12 +10,13 @@ project apps
       <library>/boost/program_options
       <library>/owlcpp//rdf
       <library>/owlcpp//io
-#      <library>/owlcpp//logic
+      <library>/owlcpp//logic
+      <library>/owlcpp//factpp_kernel
 ;
 
 run ../find_ontologies.cpp : sample_data : : : find_owl_test ;
 run ../print_triples.cpp : sample_data/test_01.owl ;
 run ../print_classes.cpp : sample_data/one_eq_two_01.owl -i : : : ;
-# run ../validate.cpp : sample_data/test_01.owl : : : validate_test01 ;
+run ../validate.cpp : sample_data/test_01.owl : : : validate_test01 ;
 # run-fail ../validate.cpp : sample_data/one_eq_two_01.owl : : : validate_test02 ;
 
