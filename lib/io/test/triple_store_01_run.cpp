@@ -30,8 +30,7 @@ const std::string ver2 = sample_files()[0].version;
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case00 ) {
    Triple_store ts;
-   Check_both check(iri1, ver1);
-   owlcpp::detail::Raptor_to_store rts(ts, path1, check);
+   owlcpp::detail::Raptor_to_store rts(ts, path1, Check_both(iri1, ver1));
    boost::filesystem::ifstream ifs(path1);
    rts.parse(ifs);
    BOOST_CHECK_EQUAL( ts.triples().size(), 15u );
@@ -50,8 +49,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
    Triple_store ts;
-   Check_both check(iri2, ver2);
-   owlcpp::detail::Raptor_to_store rts(ts, path2, check);
+   owlcpp::detail::Raptor_to_store rts(ts, path2, Check_both(iri2, ver2));
    boost::filesystem::ifstream ifs(path2);
    rts.parse(ifs);
    BOOST_CHECK_EQUAL(rts.imports().size(), 1u);
@@ -68,6 +66,17 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    load_file(path2, ts, cat);
 
    BOOST_CHECK_EQUAL( ts.triples().size(), 18u );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case04 ) {
+   Triple_store ts;
+   Catalog cat;
+   cat.add(sample_file_path());
+   load_file(sample_file_path("og_01.owl"), ts, cat);
+
+   BOOST_CHECK_GT( ts.triples().size(), 18u );
 }
 
 }//namespace test

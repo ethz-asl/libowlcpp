@@ -17,7 +17,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 /** Check that every ontology IRI and version is read correctly
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   BOOST_FOREACH(Sample_info const si, sample_files()) {
+   BOOST_FOREACH(Sample_info const& si, sample_files()) {
       const std::pair<std::string,std::string> p1 = read_ontology_iri(si.path);
       BOOST_CHECK_EQUAL(p1.first, si.iri);
       BOOST_CHECK_EQUAL(p1.second, si.version);

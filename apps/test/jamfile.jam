@@ -5,17 +5,12 @@
 
 project apps
    :  build-dir $(OUT)/apps
-   :  requirements
-      <link>static
-      <library>/boost/program_options
-      <library>/owlcpp//rdf
-      <library>/owlcpp//io
-#      <library>/owlcpp//reasoner
 ;
 
-run ../find_ontologies.cpp : sample_data : : : find_owl_test ;
-run ../print_triples.cpp : sample_data/test_01.owl ;
-run ../print_classes.cpp : sample_data/one_eq_two_01.owl -i : : : ;
-# run ../validate.cpp : sample_data/test_01.owl : : : validate_test01 ;
-# run-fail ../validate.cpp : sample_data/one_eq_two_01.owl : : : validate_test02 ;
+run      ..//find_owl      : sample_data                 : : : find_owl ;
+run      ..//print_triples : sample_data/test_01.owl ;
+run      ..//print_classes : sample_data/one_eq_two_01.owl -i : : : ;
+run      ..//validate : -h                               : : : validate_01 ;
+run      ..//validate : sample_data/test_01.owl -S       : : : validate_02 ;
+run-fail ..//validate : sample_data/one_eq_two_01.owl -S : : : validate_03 ;
 

@@ -53,6 +53,9 @@ inline bool is_empty(const Ns_id id) {return id == terms::N_empty::id();}
 *******************************************************************************/
 inline bool is_blank(const Ns_id id) {return id == terms::N_blank::id();}
 
+/**
+*******************************************************************************/
+inline bool is_iri(const Ns_id id) {return id != terms::N_empty::id() && id != terms::N_blank::id();}
 
 }//namespace owlcpp
 #endif /* IRI_TAGS_HPP_ */

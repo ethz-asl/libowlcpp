@@ -40,7 +40,7 @@ struct Sample_info {
    std::string version;
 };
 
-std::vector<Sample_info> const& sample_files() {
+inline std::vector<Sample_info> const& sample_files() {
    static const std::vector<Sample_info> v = boost::assign::list_of<Sample_info>
    /* 0 */("imports_test_01.owl", "http://purl.obolibrary.org/obo/ido/dev/imports_test_01.owl", "")
    /* 1 */("negative_property_assertion_01.owl", "http://owl.semanticweb.org/page/New-Feature-NegativeObjectPropertyAssertion-001", "")

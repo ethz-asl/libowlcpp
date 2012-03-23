@@ -14,8 +14,8 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
 #include "owlcpp/io/parse_to_triple_store.hpp"
-#include "owlcpp/reasoner/triple_to_fact.hpp"
-#include "owlcpp/reasoner/query_fact.hpp"
+#include "owlcpp/logic/triple_to_fact.hpp"
+#include "owlcpp/logic/query_fact.hpp"
 #include "owlcpp/print.hpp"
 #include "owlcpp/terms/term_tags.hpp"
 

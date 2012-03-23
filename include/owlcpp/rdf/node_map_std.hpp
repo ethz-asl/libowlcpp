@@ -64,7 +64,7 @@ public:
     e.g., in case of RDF or OWL namespaces.
     That is, all nodes from this namespace should reside in this map.
    */
-   bool is_constant(const Ns_id iid) const {
+   bool is_standard(const Ns_id iid) const {
       return iid > terms::N_empty::id() && iid > terms::N_blank::id() && iid < ns_id_next_;
    }
 

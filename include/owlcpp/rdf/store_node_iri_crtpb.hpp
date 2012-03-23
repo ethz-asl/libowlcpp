@@ -37,8 +37,7 @@ template<class T> struct Store_node_iri_crtpb {
          BOOST_THROW_EXCEPTION(
                   Err()
                   << typename Err::msg_t("error inserting IRI")
-                  << typename Err::str1_t( name )
-                  << typename Err::str2_t( self.iris().at(iid) )
+                  << typename Err::str1_t( iri )
                   << typename Err::nested_t(boost::current_exception())
          );
       }
@@ -64,6 +63,19 @@ template<class T> struct Store_node_iri_crtpb {
       }
       if( r ) return &r.front();
       return 0;
+   }
+
+   /**@return true if nid belongs to one of standard pre-defined namespaces,
+    except empty ("") or blank("_") */
+   bool is_standard(const Ns_id iid) const {
+      T const& self = static_cast<T const&>(*this);
+      return self.nodes().is_standard(iid);
+   }
+
+   /**@return true if nid belongs to one of standard pre-defined nodes */
+   bool is_standard(const Node_id nid) const {
+      T const& self = static_cast<T const&>(*this);
+      return self.nodes().is_standard(nid);
    }
 
    std::string string(const Node_id nid) const {

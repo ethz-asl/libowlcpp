@@ -38,6 +38,7 @@ alias test
    : #sources
       lib/rdf/test
       lib/io/test
+      lib/logic/test
       apps/test
    : #requirements
 ;
@@ -53,7 +54,7 @@ build-project lib ;
 use-project /owlcpp : . ;
 alias rdf : lib/rdf ;
 alias io : lib/io ;
-# alias reasoner : lib/reasoner ;
+alias logic : lib/logic ;
 alias apps : ./apps ;
 alias factpp_kernel : external//factpp_kernel ;
 alias expat : external//expat ;

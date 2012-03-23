@@ -5,10 +5,8 @@ part of %owlcpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE iri_map_run
 #include "boost/test/unit_test.hpp"
-#include <map>
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/iri_map.hpp"
-#include "type_vector.hpp"
 
 namespace owlcpp{ namespace test{
 

@@ -54,14 +54,14 @@ public:
    */
    ns_range find(const Ns_id iid) const {
       return
-               snodes_.is_constant(iid) ?
+               snodes_.is_standard(iid) ?
                         snodes_.find(iid) :
                         static_cast<Super const&>(*this).node_map().find(iid);
    }
 
    node_range find(Node const& node) const {
       return
-               snodes_.is_constant(node.ns_id()) || node.empty() ?
+               snodes_.is_standard(node.ns_id()) || node.empty() ?
                         snodes_.find(node) :
                         static_cast<Super const&>(*this).node_map().find(node);
    }
@@ -89,7 +89,7 @@ public:
          );
 
       const Node node(nsid, name);
-      if( snodes_.is_constant(nsid) ) {
+      if( snodes_.is_standard(nsid) ) {
          const node_range r = snodes_.find(node);
          if( r ) return r.front();
          BOOST_THROW_EXCEPTION(
@@ -104,6 +104,13 @@ public:
       if( nr ) return nr.front();
       return self.insert_new(nsid, name);
    }
+
+   /**@return true if nid belongs to one of standard pre-defined namespaces,
+    except empty ("") or blank("_") */
+   bool is_standard(const Ns_id iid) const {return snodes_.is_standard(iid);}
+
+   /**@return true if nid belongs to one of standard pre-defined nodes */
+   bool is_standard(const Node_id nid) const {return nid < snodes_.node_id_next();}
 
 protected:
    Node_id snode_id_next() const {return snodes_.node_id_next();}

@@ -35,14 +35,16 @@ exe print_classes
       <library>/owlcpp//io
 ;
 
-#exe validate
-#   : #sources
-#      validate.cpp
-#   : #requirements
-#      <library>/owlcpp//rdf
-#      <library>/owlcpp//io
-#      <library>/owlcpp//reasoner
-#;
+exe validate
+   : #sources
+      validate.cpp
+   : #requirements
+      <library>/boost/program_options
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
+      <library>/owlcpp//logic
+      <library>/owlcpp//factpp_kernel
+;
 
 #exe satisfiable
 #   : #sources
@@ -50,5 +52,5 @@ exe print_classes
 #   : #requirements
 #      <library>/owlcpp//rdf
 #      <library>/owlcpp//io
-#      <library>/owlcpp//reasoner
+#      <library>/owlcpp//logic
 #;

@@ -12,6 +12,5 @@ namespace owlcpp{
 *******************************************************************************/
 struct Rdf_err : public base_exception {};
 
-
 }//namespace owlcpp
 #endif /* RDF_EXCEPTION_HPP_ */

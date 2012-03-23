@@ -39,8 +39,7 @@ const std::string b5 = "b5";
 
 /**@brief 
 *******************************************************************************/
-Triple_store sample_triples_01() {
-   Triple_store ts;
+Triple_store& sample_triples_01(Triple_store& ts) {
    const Node_id nid1 = ts.insert_iri_node(iri11);
    const Node_id nid2 = ts.insert_iri_node(iri12);
    const Node_id nid3 = ts.insert_iri_node(iri13);
@@ -63,10 +62,14 @@ Triple_store sample_triples_01() {
    return ts;
 }
 
+Triple_store sample_triples_01() {
+   Triple_store ts;
+   return sample_triples_01(ts);
+}
+
 /**@brief
 *******************************************************************************/
-Triple_store sample_triples_02() {
-   Triple_store ts;
+Triple_store& sample_triples_02(Triple_store& ts) {
    const Doc_id did1 = ts.insert_doc(path2, doc2, doc3).first;
    const Node_id nid5 = ts.insert_blank_node(did1, b1);
    const Node_id nid6 = ts.insert_blank_node(did1, b2);
@@ -87,6 +90,11 @@ Triple_store sample_triples_02() {
    ts.insert_triple(nid9, nid2, nid3, did1);
 
    return ts;
+}
+
+Triple_store sample_triples_02() {
+   Triple_store ts;
+   return sample_triples_02(ts);
 }
 
 }//namespace test

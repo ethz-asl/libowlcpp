@@ -10,35 +10,35 @@ part of owlcpp project.
 @details ((standard namespace IRI prefix)(node name))
 *******************************************************************************/
 #define OWLCPP_TERMS_RDFS \
-      ((rdfs)(comment)) \
+      ((rdfs)(Class)) \
+      ((rdfs)(Container)) \
+      ((rdfs)(ContainerMembershipProperty)) \
       ((rdfs)(Datatype)) \
+      ((rdfs)(Literal)) \
+      ((rdfs)(Resource)) \
+      ((rdfs)(comment)) \
       ((rdfs)(domain)) \
       ((rdfs)(isDefinedBy)) \
       ((rdfs)(label)) \
+      ((rdfs)(member)) \
       ((rdfs)(range)) \
+      ((rdfs)(seeAlso)) \
       ((rdfs)(subClassOf)) \
       ((rdfs)(subPropertyOf)) \
 /*
-      ((rdfs)(Resource)) \
-      ((rdfs)(Literal)) \
-      ((rdfs)(Class)) \
-      ((rdfs)(member)) \
-      ((rdfs)(Container)) \
-      ((rdfs)(ContainerMembershipProperty)) \
-      ((rdfs)(seeAlso)) \
 */
 
 /**@brief OWL terms in RDF namespace
 *******************************************************************************/
 #define OWLCPP_TERMS_RDF \
+      ((rdf)(List)) \
+      ((rdf)(Property)) \
       ((rdf)(first)) \
       ((rdf)(nil)) \
-      ((rdf)(Property)) \
       ((rdf)(rest)) \
       ((rdf)(type)) \
 /*
       ((rdf)(XMLLiteral)) \
-      ((rdf)(List)) \
       ((rdf)(Statement)) \
       ((rdf)(subject)) \
       ((rdf)(predicate)) \
@@ -137,6 +137,7 @@ part of owlcpp project.
       ((owl)(withRestrictions)) \
 /* */
 
+//TODO: map to internally stored types
 /**@brief OWL terms in XSD namespace
 *******************************************************************************/
 #define OWLCPP_TERMS_XSD \

@@ -48,9 +48,10 @@ int main(int argc, char* argv[]) {
    }
 
    //create a triple store that is aware of standard OWL terms
-   owlcpp::Triple_store store( owlcpp::Node_map_std::get(owlcpp::Nodes_owl()) );
+   owlcpp::Triple_store store;
 
-   const bfs::path in( vm["input-file"].as<std::string>());
+   const bfs::path in = vm["input-file"].as<std::string>();
+
    try {
       if( vm.count("include") ) { //load input-file and its includes
          owlcpp::Catalog cat;
@@ -66,10 +67,10 @@ int main(int argc, char* argv[]) {
       }
 
       owlcpp::Query<0,1,1,0>::range r = store.triples().find(
-               owlcpp::blank(),
+               owlcpp::any(),
                owlcpp::terms::T_rdf_type::id(),
                owlcpp::terms::T_owl_Class::id(),
-               owlcpp::blank()
+               owlcpp::any()
       );
 
       if( vm.count("count") ) {

@@ -21,7 +21,7 @@
   xmlns:OpenGALEN="http://www.sample.com/owl/sample.owl#">
 
 <owl:Ontology rdf:about="">
-	<owl:imports><owl:Ontology rdf:about="OpenGALEN8_DissectionsModel.owl"/></owl:imports>
+	<owl:imports><owl:Ontology rdf:about="og_02.owl"/></owl:imports>
 	<dc:date>October 10, 2000</dc:date>
 	<dc:title>title</dc:title>
 </owl:Ontology>
@@ -51,6 +51,10 @@
 	<rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
 </owl:Class>
 
+<owl:Class rdf:about="&OG;MagnitudeValueType" />
+<owl:Class rdf:about="&OG;BNFBookChapter" />
+<owl:Class rdf:about="&OG;InformationSource" />
+
 <owl:Class rdf:about="&OG;GeneralisedStructurewhichIsDivisionOfBNFBookChaptercontainsInformation">
 	<owl:equivalentClass>
 		<owl:Class>
@@ -64,6 +68,10 @@
 		</owl:Class>
 	</owl:equivalentClass>
 </owl:Class>
+
+<owl:ObjectProperty rdf:about="&OG;IsDivisionOf">
+   <rdfs:label>IsDivisionOf</rdfs:label>
+</owl:ObjectProperty>
 
 </rdf:RDF>
 
