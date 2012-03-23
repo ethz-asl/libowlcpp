@@ -29,10 +29,11 @@ int main(int argc, char* argv[]) {
             ("help,h", "help message")
             ("input-file", bpo::value<std::string>(), "input OWL file")
             ("include,i",
-                     bpo::value<std::vector<std::string> >()->zero_tokens()
-                     ->composing(), "search paths"
-            )
+                     bpo::value<std::vector<std::string> >()->zero_tokens()->composing(),
+                     "search paths")
             ("lax", bpo::bool_switch(), "non-strict parsing")
+            ("return-success,S", bpo::bool_switch(),
+                     "return 1 if ontology is not consistent")
             ;
    bpo::positional_options_description pod;
    pod.add("input-file", -1);
@@ -70,18 +71,21 @@ int main(int argc, char* argv[]) {
 
       ReasoningKernel kernel;
       submit_triples(store, kernel, vm["lax"].as<bool>());
-
-      if( kernel.isKBConsistent() ) {
+      const bool consistent = kernel.isKBConsistent();
+      const bool rs = vm["return-success"].as<bool>();
+      if( consistent && ! rs ) {
          std::cout << "ontology is consistent" << std::endl;
          return 0;
-      } else {
-         std::cout << "ontology is inconsistent" << std::endl;
-         return 1;
       }
+      if( ! consistent && ! rs ){
+         std::cout << "ontology is inconsistent" << std::endl;
+         return 0;
+      }
+      if( consistent && rs ) return 0;
+      if( ! consistent && ! rs ) return 1;
 
    } catch(...) {
       std::cerr << boost::current_exception_diagnostic_information() << std::endl;
-      return 1;
    }
-   return 0;
+   return 1;
 }
