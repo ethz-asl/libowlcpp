@@ -226,7 +226,8 @@ rule init ( version ? : location : options * ) {
       raptor_json_writer raptor_memstr raptor_concepts raptor_syntax_description 
       raptor_libxml raptor_rdfxml raptor_sax2 turtle_lexer turtle_parser 
       ntriples_parse raptor_guess raptor_librdfa raptor_serialize_ntriples 
-      raptor_nfc_data raptor_nfc strcasecmp parsedate
+      #raptor_nfc_data raptor_nfc 
+      strcasecmp parsedate
       ;
    local src_rdfa = 
       curie iri language rdfa rdfa_utils subject triple

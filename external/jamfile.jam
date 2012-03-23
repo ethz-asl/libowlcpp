@@ -46,12 +46,32 @@ if $(os) = LINUX {
    
 } else {
 
-   if ! $(LIBXML2_DLL) && ! $(LIBXML2_H) { 
+   if ! $(LIBXML2_DLL) || ! $(LIBXML2_H) { 
    EXIT "
    Please set variables LIBXML2_DLL and LIBXML2_H to location of libxml2.dll and its headers
    See doc/user-config.jam
    " ;
    }
+   lib libxml2
+   : 
+   : 
+      <link>static
+#      <name>libxml2 <search>$(LIBXML2)/bin/
+      <file>$(LIBXML2)/lib/libxml2.lib
+      <file>$(LIBXML2)/lib/libxml2_a.lib
+   : 
+   : <include>$(LIBXML2)/include <include>$(ICONV_H) ; 
+   lib libxml2
+   : 
+   :
+      <link>shared
+      <file>$(LIBXML2)/lib/libxml2.lib
+      <file>$(LIBXML2)/bin/libxml2.dll
+      <file>$(LIBXML2)/lib/libxml2_a_dll.lib
+      <file>$(ICONV)/bin/iconv.dll
+      <file>$(ICONV)/lib/iconv.lib
+   : 
+   : <include>$(LIBXML2)/include <include>$(ICONV)/include ; 
 }
 
 #if ! $(ICONV) { 

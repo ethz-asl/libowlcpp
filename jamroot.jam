@@ -57,9 +57,9 @@ alias io : lib/io ;
 alias logic : lib/logic ;
 alias apps : ./apps ;
 alias factpp_kernel : external//factpp_kernel ;
-alias expat : external//expat ;
+alias libxml2 : external//libxml2 ;
 alias raptor : external//raptor ;
-explicit factpp_kernel expat raptor ;
+explicit factpp_kernel raptor ;
 
 alias rdf-py : binding/python//rdf_install ;
 alias io-py : binding/python//io_install ;
