@@ -3,10 +3,10 @@
     xmlns:owl="http://www.w3.org/2002/07/owl#"
     xmlns:j.0="http://owl2.test/rules/"
     xmlns="http://owl2.test/rules/"
-    xml:base="http://owl2.test/rules/"
+    xml:base="http://owl2.test/rules/owl2-rl-rules-ifp-sameAs"
     >
     <!-- 
-    http://owl.semanticweb.org/page/Owl2-rl-rules-ifp-differentFrom
+    http://owl.semanticweb.org/page/owl2-rl-rules-ifp-sameAs.owl
      -->
   <owl:Ontology rdf:about=""/>
   <owl:InverseFunctionalProperty rdf:about="http://owl2.test/rules/ifp">

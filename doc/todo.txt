@@ -1,2 +1,1 @@
 TODO
-- separate modules (dirs, namespaces, libs): node_store, triple_store, parser, reasoner

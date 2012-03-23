@@ -1,5 +1,5 @@
-# owl_cpp/external/test/jamfile.jam
-# part of owl_cpp project.
+# owlcpp/external/test/jamfile.jam
+# part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011
 
@@ -17,11 +17,3 @@ exe rdfprint
       <library>..//raptor
       <link>static
 ;
-
-exe elements
-   : expat_elements.cpp
-   :  #requirements
-      <library>..//expat
-      <link>static
-;
-

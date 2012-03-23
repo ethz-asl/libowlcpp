@@ -1,4 +1,4 @@
-/** @file "/owl_cpp/lib/test/raptor_rdfprint.cpp"
+/** @file "/owlcpp/lib/test/raptor_rdfprint.cpp"
 *******************************************************************************/
 
 #include <stdio.h>

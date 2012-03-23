@@ -1,20 +1,16 @@
-# owl_cpp/apps/test/jamfile.jam
-# part of owl_cpp project.
+# owlcpp/apps/test/jamfile.jam
+# part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011
 
 project apps
    :  build-dir $(OUT)/apps
-   :  requirements
-      <link>static
-      <library>/owlcpp//rdf
-      <library>/owlcpp//io
-      <library>/owlcpp//reasoner
 ;
 
-run ../print_triples.cpp : sample_data/test_01.owl ;
-run ../find_ontologies.cpp : sample_data : : : find_owl_test ;
-run ../print_classes.cpp : sample_data/one_eq_two_01.owl : : : print_classes_test ;
-run ../validate.cpp : sample_data/test_01.owl : : : validate_test01 ;
-run-fail ../validate.cpp : sample_data/one_eq_two_01.owl : : : validate_test02 ;
+run      ..//find_owl      : sample_data                 : : : find_owl ;
+run      ..//print_triples : sample_data/test_01.owl ;
+run      ..//print_classes : sample_data/one_eq_two_01.owl -i : : : ;
+run      ..//validate : -h                               : : : validate_01 ;
+run      ..//validate : sample_data/test_01.owl -S       : : : validate_02 ;
+run-fail ..//validate : sample_data/one_eq_two_01.owl -S : : : validate_03 ;
 

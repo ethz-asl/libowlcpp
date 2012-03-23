@@ -1,5 +1,6 @@
 /.cproject
 /.project
 /out
-/include/owl_cpp/version.hpp
+/include/owlcpp/version.hpp
 /.pydevproject
+/.settings

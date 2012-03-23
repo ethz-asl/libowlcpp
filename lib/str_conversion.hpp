@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/lib/str_conversion.hpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/lib/str_conversion.hpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -11,9 +11,9 @@ namespace b = boost;
 #include "boost/algorithm/string/trim.hpp"
 namespace ba = boost::algorithm;
 #include "boost/throw_exception.hpp"
-#include "owl_cpp/exception.hpp"
+#include "owlcpp/exception.hpp"
 
-namespace owl_cpp{
+namespace owlcpp{
 
 /**
 *******************************************************************************/
@@ -44,6 +44,6 @@ inline bool get_bool(const std::string& str) {
       );
 }
 
-}//namespace owl_cpp
+}//namespace owlcpp
 
 #endif /* STR_CONVERSION_HPP_ */

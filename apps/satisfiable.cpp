@@ -1,5 +1,5 @@
-/** @file "/owl_cpp/apps/satisfiable.cpp" 
-part of owl_cpp project.
+/** @file "/owlcpp/apps/satisfiable.cpp" 
+part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
@@ -11,13 +11,13 @@ part of owl_cpp project.
 #include "boost/foreach.hpp"
 #include "factpp/Kernel.hpp"
 
-#include "owl_cpp/rdf/triple_store.hpp"
-#include "owl_cpp/rdf/query_triples.hpp"
-#include "owl_cpp/io/parse_to_triple_store.hpp"
-#include "owl_cpp/reasoner/triple_to_fact.hpp"
-#include "owl_cpp/reasoner/query_fact.hpp"
-#include "owl_cpp/print.hpp"
-#include "owl_cpp/terms/term_tags.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/query_triples.hpp"
+#include "owlcpp/io/parse_to_triple_store.hpp"
+#include "owlcpp/logic/triple_to_fact.hpp"
+#include "owlcpp/logic/query_fact.hpp"
+#include "owlcpp/print.hpp"
+#include "owlcpp/terms/term_tags.hpp"
 
 /**
 Parse OWL ontology file and its imports located in the same folder
@@ -25,8 +25,8 @@ Load ontology to FaCT++ reasoner
 check if all classes are satisfiable
 *******************************************************************************/
 int main(int argc, char* argv[]) {
-   namespace owl = owl_cpp;
-   namespace ot = owl_cpp::terms;
+   namespace owl = owlcpp;
+   namespace ot = owlcpp::terms;
    if( argc < 2 ) {
       std::cout
       <<
