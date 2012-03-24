@@ -75,6 +75,16 @@ make_expression(const Node_id h, Triple_store const& ts) {
    return make_expression<T>(Expression_args(h, ts), ts);
 }
 
+/**@brief generate owl:Restriction object type expression
+*******************************************************************************/
+Expression<Obj_type>::ptr_t
+make_restriction_ote(Expression_args const& ea, Triple_store const& ts);
+
+/**@brief generate owl:Class object type expression
+*******************************************************************************/
+Expression<Obj_type>::ptr_t
+make_class_ote(Expression_args const& ea, Triple_store const& ts);
+
 }//namespace factpp
 }//namespace logic
 }//namespace owlcpp

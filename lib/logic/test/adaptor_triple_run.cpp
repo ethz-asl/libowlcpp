@@ -22,7 +22,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Triple_store ts(Node_map_std::get(Nodes_owl()));
-   load_file(sample_file_path("negative_property_assertion_01.owl"), ts);
+   load_file(sample_file_path("data_value_clash.owl"), ts);
    ReasoningKernel k;
    owlcpp::logic::factpp::Adaptor_triple at(ts, k, false);
    BOOST_FOREACH(Triple const& t, ts.triples()) {

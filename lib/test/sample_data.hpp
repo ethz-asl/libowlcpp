@@ -56,6 +56,7 @@ inline std::vector<Sample_info> const& sample_files() {
    /* 11 */("transitive_property.owl", "http://purl.org/obo/owl/transitive_property", "")
    /* 12 */("union_01.owl", "http://www.ifomis.org/bfo/union", "")
    /* 13 */("version_test_b.owl", "http://purl.obolibrary.org/obo/ido/dev/version_test.owl", "http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl")
+   /* 14 */("data_value_clash.owl", "http://owl.semanticweb.org/page/Functionality-clash", "")
    ;
    return v;
 }
