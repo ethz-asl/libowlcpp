@@ -64,7 +64,11 @@ if $(os) = LINUX {
    }
 
    LIBXML2_LIB ?= $(LIBXML2)/lib/libxml2_a.lib ;
-   LIBXML2_DLL ?= $(LIBXML2)/lib/libxml2.lib (LIBXML2)/bin/libxml2.dll $(LIBXML2)/lib/libxml2_a_dll.lib ;
+   LIBXML2_DLL ?= 
+      $(LIBXML2)/lib/libxml2.lib 
+      $(LIBXML2)/bin/libxml2.dll 
+      $(LIBXML2)/lib/libxml2_a_dll.lib 
+   ;
    LIBXML2_H ?= $(LIBXML2)/include ;
    lib libxml2
       : 
