@@ -37,7 +37,6 @@
 # using python : 2.7 : /usr/bin/python ;
 # using python : 2.7 : "C:/Program Files/Python" ;
 
-
 ## Doxygen (generating documentation from source code, optional)
 ## http://www.stack.nl/~dimitri/doxygen/
 ## Specifying Doxygen location may be required. For example

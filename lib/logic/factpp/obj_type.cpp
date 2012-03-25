@@ -7,6 +7,7 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "boost/assert.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
+#include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/logic/detail/node_declaration.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
@@ -94,7 +95,8 @@ void Ot_dp_restriction::init(
                << Err::msg_t("non-literal object node in \"x owl:hasValue y\"")
                << Err::str1_t(to_string_short(val, ts))
       );
-      val_str_ = to_string(val, ts);
+      val_str_ = value<std::string>(val, ts);
+      dt_ = make_expression<Data_type>(ts.datatype(val), ts);
       break;
 
    case T_owl_hasSelf::index: BOOST_THROW_EXCEPTION(
@@ -121,6 +123,8 @@ void Ot_dp_restriction::init(
 /*
 *******************************************************************************/
 TDLConceptExpression* Ot_dp_restriction::get(ReasoningKernel& k ) const {
+   BOOST_ASSERT( dt_.get() );
+   BOOST_ASSERT( dp_.get() );
    TExpressionManager& em = *k.getExpressionManager();
 
    switch(restr_type_()) {
@@ -128,7 +132,14 @@ TDLConceptExpression* Ot_dp_restriction::get(ReasoningKernel& k ) const {
    case T_owl_allValuesFrom::index: return em.Forall(dp_->get(k), dt_->get(k));
 
    case T_owl_hasValue::index: {
-      const TDLDataValue* val = em.DataValue(val_str_, dt_->get(k));
+      TDLDataTypeExpression* dt = dt_->get(k);
+      const TDLDataValue* val = em.DataValue(val_str_, dt);
+      if( ! val ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("data value error")
+               << Err::str1_t(val_str_)
+               << Err::str2_t(dt_->string())
+      );
       return em.Value(dp_->get(k), val);
    }
 
@@ -173,6 +184,7 @@ Ot_opc_restriction::Ot_opc_restriction(Expression_args const& ea, Triple_store c
 /*
 *******************************************************************************/
 TDLConceptExpression* Ot_opc_restriction::get(ReasoningKernel& k ) const {
+   BOOST_ASSERT( op_.get() );
    TExpressionManager& em = *k.getExpressionManager();
    switch(card_type_()) {
    case T_owl_cardinality::index:
@@ -185,12 +197,15 @@ TDLConceptExpression* Ot_opc_restriction::get(ReasoningKernel& k ) const {
       return em.MinCardinality(n_, op_->get(k), em.Top());
 
    case T_owl_maxQualifiedCardinality::index:
+      BOOST_ASSERT( ot_.get() );
       return em.MaxCardinality(n_, op_->get(k), ot_->get(k));
 
    case T_owl_minQualifiedCardinality::index:
+      BOOST_ASSERT( ot_.get() );
       return em.MinCardinality(n_, op_->get(k), ot_->get(k));
 
    case T_owl_qualifiedCardinality::index:
+      BOOST_ASSERT( ot_.get() );
       return em.Cardinality(n_, op_->get(k), ot_->get(k));
 
    default: BOOST_THROW_EXCEPTION(
@@ -233,6 +248,7 @@ Ot_dpc_restriction::Ot_dpc_restriction(Expression_args const& ea, Triple_store c
 /*
 *******************************************************************************/
 TDLConceptExpression* Ot_dpc_restriction::get(ReasoningKernel& k ) const {
+   BOOST_ASSERT( dp_.get() );
    TExpressionManager& em = *k.getExpressionManager();
    switch(card_type_()) {
    case T_owl_cardinality::index:
@@ -245,12 +261,15 @@ TDLConceptExpression* Ot_dpc_restriction::get(ReasoningKernel& k ) const {
       return em.MinCardinality(n_, dp_->get(k), em.DataTop());
 
    case T_owl_maxQualifiedCardinality::index:
+      BOOST_ASSERT( dt_.get() );
       return em.MaxCardinality(n_, dp_->get(k), dt_->get(k));
 
    case T_owl_minQualifiedCardinality::index:
+      BOOST_ASSERT( dt_.get() );
       return em.MinCardinality(n_, dp_->get(k), dt_->get(k));
 
    case T_owl_qualifiedCardinality::index:
+      BOOST_ASSERT( dt_.get() );
       return em.Cardinality(n_, dp_->get(k), dt_->get(k));
 
    default: BOOST_THROW_EXCEPTION(

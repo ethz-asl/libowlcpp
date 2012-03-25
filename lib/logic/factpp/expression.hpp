@@ -52,6 +52,7 @@ template<class T> struct Expression {
    typedef std::auto_ptr<self_t> ptr_t;
    typedef typename expression_type::fact_type generated_t;
    virtual generated_t get(ReasoningKernel& k) const  = 0;
+   virtual std::string string() const {return "Expression";}
    virtual ~Expression() {}
 };
 

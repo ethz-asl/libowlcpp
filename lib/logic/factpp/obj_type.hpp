@@ -170,7 +170,7 @@ private:
    const unsigned n_;
 };
 
-/**@brief Type from a list of types (owl:intersectionOf, owl:unionOf)
+/**@brief Generate object type from a list of types (owl:intersectionOf, owl:unionOf)
 *******************************************************************************/
 class Ot_type_list : public Expression<Obj_type> {
 public:

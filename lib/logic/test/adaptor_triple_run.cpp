@@ -4,6 +4,7 @@ part of owlcpp project.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
 #define BOOST_TEST_MODULE adaptor_triple_run
+#include <iostream>
 #include "boost/test/unit_test.hpp"
 #include "boost/foreach.hpp"
 #include "test/exception_fixture.hpp"
