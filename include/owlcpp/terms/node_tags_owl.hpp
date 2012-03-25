@@ -5,10 +5,17 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_TAGS_OWL_HPP_
 #define NODE_TAGS_OWL_HPP_
+#include <string>
+#include "boost/preprocessor/arithmetic/add.hpp"
+#include "boost/preprocessor/seq/size.hpp"
+#include "owlcpp/terms/term_macro.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
+#include "owlcpp/node_id.hpp"
 
 /**@brief Standard OWL nodes in RDFS namespace
 @details ((standard namespace IRI prefix)(node name))
 *******************************************************************************/
+#define OWLCPP_TERMS_RDFS_N0 5
 #define OWLCPP_TERMS_RDFS \
       ((rdfs)(Class)) \
       ((rdfs)(Container)) \
@@ -28,8 +35,30 @@ part of owlcpp project.
 /*
 */
 
+namespace owlcpp{ namespace terms{
+
+/**@brief
+@code
+struct T_empty_ {
+   typedef N_empty ns_type;
+   typedef ::owlcpp::Node_id id_type;
+   static const unsigned index = 0;
+   static std::string const & name() {
+      static const std::string str = std::string("");
+      return str;
+   }
+   static id_type id() {return id_type(index);}
+}; @endcode
+
+*******************************************************************************/
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_RDFS, OWLCPP_TERMS_RDFS_N0)
+
+}//namespace terms
+}//namespace owlcpp
+
 /**@brief OWL terms in RDF namespace
 *******************************************************************************/
+#define OWLCPP_TERMS_RDF_N0 BOOST_PP_ADD(OWLCPP_TERMS_RDFS_N0, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_RDFS))
 #define OWLCPP_TERMS_RDF \
       ((rdf)(List)) \
       ((rdf)(Property)) \
@@ -50,10 +79,14 @@ part of owlcpp project.
       ((rdf)(_2)) \
       ((rdf)(value)) \
 */
+namespace owlcpp{ namespace terms{
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_RDF, OWLCPP_TERMS_RDF_N0)
+}}
 
 /**@brief OWL 2 RDF-Based Vocabulary
  http://www.w3.org/TR/2009/REC-owl2-rdf-based-semantics-20091027/
 *******************************************************************************/
+#define OWLCPP_TERMS_OWL1_N0 BOOST_PP_ADD(OWLCPP_TERMS_RDF_N0, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_RDF))
 #define OWLCPP_TERMS_OWL1 \
       ((owl)(AllDifferent)) \
       ((owl)(AllDisjointClasses)) \
@@ -95,7 +128,11 @@ part of owlcpp project.
       ((owl)(InverseFunctionalProperty)) \
       ((owl)(inverseOf)) \
 /* */
+namespace owlcpp{ namespace terms{
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_OWL1, OWLCPP_TERMS_OWL1_N0)
+}}
 
+#define OWLCPP_TERMS_OWL2_N0 BOOST_PP_ADD(OWLCPP_TERMS_OWL1_N0, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_OWL1))
 #define OWLCPP_TERMS_OWL2 \
       ((owl)(IrreflexiveProperty)) \
       ((owl)(maxCardinality)) \
@@ -136,10 +173,14 @@ part of owlcpp project.
       ((owl)(versionIRI)) \
       ((owl)(withRestrictions)) \
 /* */
+namespace owlcpp{ namespace terms{
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_OWL2, OWLCPP_TERMS_OWL2_N0)
+}}
 
 //TODO: map to internally stored types
 /**@brief OWL terms in XSD namespace
 *******************************************************************************/
+#define OWLCPP_TERMS_XSD_N0 BOOST_PP_ADD(OWLCPP_TERMS_OWL2_N0, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_OWL2))
 #define OWLCPP_TERMS_XSD \
          ((xsd)(string)) \
          ((xsd)(boolean)) \
@@ -185,6 +226,9 @@ part of owlcpp project.
          ((xsd)(unsignedByte)) \
          ((xsd)(positiveInteger)) \
 /* */
+namespace owlcpp{ namespace terms{
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_XSD, OWLCPP_TERMS_XSD_N0)
+}}
 
 /**@brief Combined set of supported OWL terms
 @details Define sequence of standard OWL terms.
@@ -202,29 +246,4 @@ The last element---either second or third---is used as string value of the term.
       OWLCPP_TERMS_XSD \
 /* */
 
-#include <string>
-#include "owlcpp/terms/term_macro.hpp"
-#include "owlcpp/terms/iri_tags.hpp"
-#include "owlcpp/node_id.hpp"
-
-namespace owlcpp{ namespace terms{
-
-/**@brief
-@code
-struct T_empty_ {
-   typedef N_empty ns_type;
-   typedef ::owlcpp::Node_id id_type;
-   static const unsigned index = 0;
-   static std::string const & name() {
-      static const std::string str = std::string("");
-      return str;
-   }
-   static id_type id() {return id_type(index);}
-}; @endcode
-
-*******************************************************************************/
-OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_ALL, 5)
-
-}//namespace terms
-}//namespace owlcpp
 #endif /* NODE_TAGS_OWL_HPP_ */
