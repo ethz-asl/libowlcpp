@@ -61,6 +61,12 @@ template<> struct Converter<bool> {
    }
 };
 
+template<class Ch,class Tr,class All> struct Converter<std::basic_string<Ch,Tr,All> > {
+   static std::basic_string<Ch,Tr,All> convert(std::string const& str) {
+      return boost::lexical_cast<std::basic_string<Ch,Tr,All> >(str);
+   }
+};
+
 }//namespace detail
 
 /**@brief

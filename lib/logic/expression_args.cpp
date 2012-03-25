@@ -35,6 +35,7 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
          case T_rdf_type::index:
             e_type = obj;
             break;
+         case T_owl_inverseOf::index:
          case T_owl_intersectionOf::index:
          case T_owl_unionOf::index:
          case T_owl_complementOf::index:

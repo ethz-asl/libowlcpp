@@ -1,5 +1,18 @@
 <?xml version="1.0"?>
-<rdf:RDF xmlns="http://purl.org/obo/owl/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" xmlns:oboContent="http://purl.org/obo/owl/" xmlns:oban="http://purl.org/obo/oban/" xmlns:owl11="http://www.w3.org/2006/12/owl11#onClass" xmlns:owl2="http://www.w3.org/2006/12/owl2#onClass" xmlns:obo="http://purl.org/obo/owl/obo#" xml:base="http://purl.org/obo/owl/ro">
+<rdf:RDF 
+xmlns="http://purl.org/obo/owl/" 
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+xmlns:owl="http://www.w3.org/2002/07/owl#" 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema#" 
+xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" 
+xmlns:oboContent="http://purl.org/obo/owl/" 
+xmlns:oban="http://purl.org/obo/oban/" 
+xmlns:owl11="http://www.w3.org/2006/12/owl11#onClass" 
+xmlns:owl2="http://www.w3.org/2006/12/owl2#onClass" 
+xmlns:obo="http://purl.org/obo/owl/obo#" 
+xml:base="http://purl.org/obo/owl/ro"
+>
 <!--oboInOwl meta-model - we must declare this here, otherwise the ontology will be OWL-Full unless we import http://www.geneontology.org/formats/oboInOwl#-->
   <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasAlternativeId"/>
   <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasDate"/>

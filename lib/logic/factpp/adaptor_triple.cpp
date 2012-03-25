@@ -64,7 +64,7 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
       return axiom_from_seq(pred, obj, 2, subj);
 
    case T_owl_inverseOf::index:
-      check_declaration(subj, Node_property::object(), ts_);
+      if( ! is_iri(ts_[subj].ns_id()) ) return 0;
       check_declaration(obj, Node_property::object(), ts_);
       return k_.setInverseRoles(obj_property(subj), obj_property(obj));
 
@@ -171,6 +171,21 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
 
    //ignored triples:
    case T_owl_onProperty::index:
+   case T_owl_datatypeComplementOf::index:
+   case T_owl_onDatatype::index: //TODO
+   case T_owl_withRestrictions::index: //TODO
+   case T_owl_allValuesFrom::index:
+   case T_owl_hasValue::index:
+   case T_owl_hasSelf::index:
+   case T_owl_minQualifiedCardinality::index:
+   case T_owl_onClass::index:
+   case T_owl_maxQualifiedCardinality::index:
+   case T_owl_qualifiedCardinality::index:
+   case T_owl_minCardinality::index:
+   case T_owl_maxCardinality::index:
+   case T_owl_cardinality::index:
+   case T_owl_onProperties::index: //TODO
+   case T_owl_onDataRange::index: //TODO
    case T_owl_someValuesFrom::index: //class expression, not axiom
       if( ! is_blank(ts_[subj].ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
@@ -186,7 +201,6 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    case T_owl_distinctMembers::index:
    case T_owl_imports::index:
    case T_owl_members::index:
-   case T_owl_onClass::index:
    case T_owl_sourceIndividual::index:
    case T_owl_targetIndividual::index:
    case T_owl_versionInfo::index:
@@ -200,6 +214,94 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    default:
       return axiom_custom_predicate(t);
    }
+}
+
+/*
+*******************************************************************************/
+TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
+   const Node_id subj = t.subject();
+   const Node_id pred = t.predicate();
+   const Node_id obj = t.object();
+   Node const& subj_node = ts_[subj];
+   switch (obj()) {
+
+   case T_owl_FunctionalProperty::index: {
+      const Node_property np = declaration<Node_property>(subj, ts_);
+      if( np.is_object() ) return k_.setOFunctional(obj_property(subj));
+      if( np.is_data() ) return k_.setDFunctional(data_property(subj));
+   }
+
+   case T_owl_InverseFunctionalProperty::index:
+      check_declaration(subj, Node_property::object(), ts_);
+      return k_.setInverseFunctional(obj_property(subj));
+
+   case T_owl_ReflexiveProperty::index:
+      check_declaration(subj, Node_property::object(), ts_);
+      return k_.setReflexive(obj_property(subj));
+
+   case T_owl_IrreflexiveProperty::index:
+      check_declaration(subj, Node_property::object(), ts_);
+      return k_.setIrreflexive(obj_property(subj));
+
+   case T_owl_SymmetricProperty::index:
+      check_declaration(subj, Node_property::object(), ts_);
+      return k_.setSymmetric(obj_property(subj));
+
+   case T_owl_AsymmetricProperty::index:
+      check_declaration(subj, Node_property::object(), ts_);
+      return k_.setAsymmetric(obj_property(subj));
+
+   case T_owl_TransitiveProperty::index:
+      check_declaration(subj, Node_property::object(), ts_);
+      return k_.setTransitive(obj_property(subj));
+
+   case T_owl_Class::index:
+   case T_rdfs_Datatype::index:
+   case T_owl_ObjectProperty::index:
+   case T_owl_DatatypeProperty::index:
+      if( is_iri(subj_node.ns_id()) ) return axiom_iri_node_type(t);
+      return 0;
+
+   case T_owl_NamedIndividual::index:
+   case T_owl_DeprecatedClass::index:
+   case T_owl_DeprecatedProperty::index:
+      if( is_iri(subj_node.ns_id()) ) return axiom_iri_node_type(t);
+      BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("IRI subject node is expected")
+               << Err::str1_t(to_string_short(subj, ts_))
+      );
+
+   case T_owl_AllDisjointClasses::index:
+   case T_owl_AllDisjointProperties::index:
+   case T_owl_AllDifferent::index:
+   case T_owl_NegativePropertyAssertion::index:
+   case T_owl_Restriction::index:
+      if( is_blank(subj_node.ns_id()) ) return axiom_blank_node_type(t);
+      BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("blank subject node is expected")
+               << Err::str1_t(to_string_short(subj, ts_))
+      );
+
+   //ignored triples
+   case T_owl_Ontology::index:
+   case T_owl_OntologyProperty::index:
+   case T_owl_Axiom::index:
+   case T_owl_AnnotationProperty::index:
+   case T_rdfs_Class::index:
+      return 0; //do not form axioms
+
+   default:
+      if( declaration<Node_type>(obj, ts_).is_object() )
+         return k_.instanceOf(obj_value(subj), obj_type(obj));
+      break;
+   }
+   BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("unsupported rdf:type object")
+                  << Err::str1_t(to_string_short(subj, ts_))
+   );
 }
 
 /*
@@ -297,93 +399,6 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
    );
 
    }
-}
-
-/*
-*******************************************************************************/
-TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
-   const Node_id subj = t.subject();
-   const Node_id pred = t.predicate();
-   const Node_id obj = t.object();
-   Node const& subj_node = ts_[subj];
-   switch (obj()) {
-
-   case T_owl_FunctionalProperty::index: {
-      const Node_property np = declaration<Node_property>(subj, ts_);
-      if( np.is_object() ) return k_.setOFunctional(obj_property(subj));
-      if( np.is_data() ) return k_.setDFunctional(data_property(subj));
-   }
-
-   case T_owl_InverseFunctionalProperty::index:
-      check_declaration(subj, Node_property::object(), ts_);
-      return k_.setInverseFunctional(obj_property(subj));
-
-   case T_owl_ReflexiveProperty::index:
-      check_declaration(subj, Node_property::object(), ts_);
-      return k_.setReflexive(obj_property(subj));
-
-   case T_owl_IrreflexiveProperty::index:
-      check_declaration(subj, Node_property::object(), ts_);
-      return k_.setIrreflexive(obj_property(subj));
-
-   case T_owl_SymmetricProperty::index:
-      check_declaration(subj, Node_property::object(), ts_);
-      return k_.setSymmetric(obj_property(subj));
-
-   case T_owl_AsymmetricProperty::index:
-      check_declaration(subj, Node_property::object(), ts_);
-      return k_.setAsymmetric(obj_property(subj));
-
-   case T_owl_TransitiveProperty::index:
-      check_declaration(subj, Node_property::object(), ts_);
-      return k_.setTransitive(obj_property(subj));
-
-   case T_owl_Class::index:
-   case T_rdfs_Datatype::index:
-   case T_owl_ObjectProperty::index:
-   case T_owl_DatatypeProperty::index:
-      if( is_iri(subj_node.ns_id()) ) return axiom_iri_node_type(t);
-      return 0;
-   case T_owl_NamedIndividual::index:
-   case T_owl_DeprecatedClass::index:
-   case T_owl_DeprecatedProperty::index:
-      if( is_iri(subj_node.ns_id()) ) return axiom_iri_node_type(t);
-      BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("IRI subject node is expected")
-               << Err::str1_t(to_string_short(subj, ts_))
-      );
-
-   case T_owl_AllDisjointClasses::index:
-   case T_owl_AllDisjointProperties::index:
-   case T_owl_AllDifferent::index:
-   case T_owl_NegativePropertyAssertion::index:
-   case T_owl_Restriction::index:
-      if( is_blank(subj_node.ns_id()) ) return axiom_blank_node_type(t);
-      BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("blank subject node is expected")
-               << Err::str1_t(to_string_short(subj, ts_))
-      );
-
-   //ignored triples
-   case T_owl_Ontology::index:
-   case T_owl_OntologyProperty::index:
-   case T_owl_Axiom::index:
-   case T_owl_AnnotationProperty::index:
-   case T_rdfs_Class::index:
-      return 0; //do not form axioms
-
-   default:
-      if( declaration<Node_type>(obj, ts_).is_object() )
-         return k_.instanceOf(obj_value(subj), obj_type(obj));
-      break;
-   }
-   BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("unsupported rdf:type object")
-                  << Err::str1_t(to_string_short(subj, ts_))
-   );
 }
 
 /*
@@ -573,54 +588,6 @@ TDLDataRoleExpression* Adaptor_triple::data_property(const Node_id nid) {
 *******************************************************************************/
 TDLDataTypeExpression* Adaptor_triple::data_type(const Node_id nid) {
    return make_expression<Data_type>( nid, ts_ )->get(k_);
-/*
-   if( ts_[nid].ns_id() == N_blank::id() ) return datatype_expression(nid);
-   switch (nid()) {
-   case T_empty_::index:
-   case T_xsd_string::index:
-   case T_xsd_anyURI::index:
-   case T_xsd_normalizedString::index:
-   case T_xsd_token::index:
-   case T_xsd_language::index:
-   case T_xsd_NMTOKEN::index:
-   case T_xsd_Name::index:
-   case T_xsd_NCName::index:
-      return e_manager().getStrDataType();
-   case T_xsd_boolean::index:
-      return e_manager().getBoolDataType();
-   case T_xsd_decimal::index:
-   case T_xsd_float::index:
-   case T_xsd_double::index:
-      return e_manager().getRealDataType();
-   case T_xsd_dateTime::index:
-   case T_xsd_time::index:
-   case T_xsd_date::index:
-   case T_xsd_gYearMonth::index:
-   case T_xsd_gYear::index:
-   case T_xsd_gMonthDay::index:
-   case T_xsd_gDay::index:
-   case T_xsd_gMonth::index:
-      return e_manager().getTimeDataType();
-   case T_xsd_hexBinary::index:
-   case T_xsd_base64Binary::index:
-   case T_xsd_integer::index:
-   case T_xsd_nonPositiveInteger::index:
-   case T_xsd_negativeInteger::index:
-   case T_xsd_long::index:
-   case T_xsd_int::index:
-   case T_xsd_short::index:
-   case T_xsd_byte::index:
-   case T_xsd_nonNegativeInteger::index:
-   case T_xsd_unsignedLong::index:
-   case T_xsd_unsignedInt::index:
-   case T_xsd_unsignedShort::index:
-   case T_xsd_unsignedByte::index:
-   case T_xsd_positiveInteger::index:
-      return e_manager().getIntDataType();
-   default:
-      return e_m().DataType(ts_.string(nid));
-   }
-*/
 }
 
 /*

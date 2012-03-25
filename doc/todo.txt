@@ -1,1 +1,6 @@
 TODO
+
+- lax (non-strict) parsing into triple store
+   allow adding new terms to standard namespaces
+   
+- lax (non-strict) axiom generation

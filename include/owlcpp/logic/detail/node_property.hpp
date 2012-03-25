@@ -34,13 +34,13 @@ public:
       using namespace owlcpp::terms;
       switch (nid()) {
       case T_owl_AsymmetricProperty::index:
-      case T_owl_FunctionalProperty::index:
       case T_owl_InverseFunctionalProperty::index:
       case T_owl_IrreflexiveProperty::index:
       case T_owl_ObjectProperty::index:
       case T_owl_ReflexiveProperty::index:
       case T_owl_SymmetricProperty::index:
       case T_owl_TransitiveProperty::index:
+      case T_owl_inverseOf::index:
          set(Object);
          break;
 

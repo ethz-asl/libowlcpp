@@ -35,7 +35,7 @@ struct Ot_nothing : public Expression<Obj_type> {
 class Ot_declared : public Expression<Obj_type> {
 public:
    Ot_declared(Expression_args const& ea, Triple_store const& ts)
-   : iri_(to_string_short(ea.handle, ts))
+   : iri_(to_string(ea.handle, ts))
    {}
 
    generated_t get(ReasoningKernel& k ) const {
@@ -50,12 +50,15 @@ private:
 *******************************************************************************/
 class Ot_complement : public Expression<Obj_type> {
 public:
-   Ot_complement(Expression_args const& ea, Triple_store const& ts);
+   Ot_complement(Expression_args const& ea, Triple_store const& ts)
+   : ot_(make_expression<Obj_type>(ea.obj1, ts))
+   {}
+
    Ot_complement(const Node_id nid, Triple_store const& ts)
    : ot_(make_expression<Obj_type>(nid, ts))
    {}
 
-   TDLConceptExpression* get(ReasoningKernel& k ) const {
+   generated_t get(ReasoningKernel& k ) const {
       return k.getExpressionManager()->Not(ot_->get(k));
    }
 
@@ -63,13 +66,17 @@ private:
    ptr_t ot_;
 };
 
-/**@brief
+/**@brief Object type expression generator for object property restrictions
 *******************************************************************************/
-class Ot_restriction : public Expression<Obj_type> {
+class Ot_op_restriction : public Expression<Obj_type> {
 public:
-   Ot_restriction(Expression_args const& ea, Triple_store const& ts);
+   Ot_op_restriction(Expression_args const& ea, Triple_store const& ts)
+   :  restr_type_(ea.pred2)
+   {
+      init(ea.obj1, ea.obj2, ts);
+   }
 
-   Ot_restriction(
+   Ot_op_restriction(
             const Node_id r_type,
             const Node_id prop,
             const Node_id val,
@@ -80,7 +87,7 @@ public:
       init(prop, val, ts);
    }
 
-   TDLConceptExpression* get(ReasoningKernel& k ) const ;
+   generated_t get(ReasoningKernel& k ) const ;
 
 private:
    const Node_id restr_type_;
@@ -95,13 +102,50 @@ private:
    );
 };
 
-/**@brief
+/**@brief Object type expression generator for data property restrictions
 *******************************************************************************/
-class Ot_card_restriction : public Expression<Obj_type> {
+class Ot_dp_restriction : public Expression<Obj_type> {
 public:
-   Ot_card_restriction(Expression_args const& ea, Triple_store const& ts);
+   Ot_dp_restriction(Expression_args const& ea, Triple_store const& ts)
+   :  restr_type_(ea.pred2)
+   {
+      init(ea.obj1, ea.obj2, ts);
+   }
 
-   TDLConceptExpression* get(ReasoningKernel& k ) const ;
+   Ot_dp_restriction(
+            const Node_id r_type,
+            const Node_id prop,
+            const Node_id val,
+            Triple_store const& ts
+   )
+   : restr_type_(r_type)
+   {
+      init(prop, val, ts);
+   }
+
+   generated_t get(ReasoningKernel& k ) const ;
+
+private:
+   const Node_id restr_type_;
+   Expression<Data_prop>::ptr_t dp_;
+   Expression<Data_type>::ptr_t dt_;
+   std::string val_str_;
+
+   void init(
+            const Node_id prop,
+            const Node_id val,
+            Triple_store const& ts
+   );
+};
+
+/**@brief  Object type expression generator for object property cardinality
+restrictions
+*******************************************************************************/
+class Ot_opc_restriction : public Expression<Obj_type> {
+public:
+   Ot_opc_restriction(Expression_args const& ea, Triple_store const& ts);
+
+   generated_t get(ReasoningKernel& k ) const ;
 
 private:
    Expression<Obj_prop>::ptr_t op_;
@@ -110,11 +154,31 @@ private:
    const unsigned n_;
 };
 
-/**@brief Type from a list of types (owl:intersectionOf, owl:unionOf)
+/**@brief  Object type expression generator for object property cardinality
+restrictions
+*******************************************************************************/
+class Ot_dpc_restriction : public Expression<Obj_type> {
+public:
+   Ot_dpc_restriction(Expression_args const& ea, Triple_store const& ts);
+
+   generated_t get(ReasoningKernel& k ) const ;
+
+private:
+   Expression<Data_prop>::ptr_t dp_;
+   Expression<Data_type>::ptr_t dt_;
+   const Node_id card_type_;
+   const unsigned n_;
+};
+
+/**@brief Generate object type from a list of types (owl:intersectionOf, owl:unionOf)
 *******************************************************************************/
 class Ot_type_list : public Expression<Obj_type> {
 public:
-   Ot_type_list(Expression_args const& ea, Triple_store const& ts);
+   Ot_type_list(Expression_args const& ea, Triple_store const& ts)
+   : type_(ea.pred1)
+   {
+      make_sequence(ea.obj1, ts);
+   }
 
    Ot_type_list(const Node_id type, const Node_id seq, Triple_store const& ts)
    : type_(type)
@@ -122,7 +186,7 @@ public:
       make_sequence(seq, ts);
    }
 
-   TDLConceptExpression* get(ReasoningKernel& k ) const;
+   generated_t get(ReasoningKernel& k ) const;
 
 private:
    const Node_id type_;
@@ -139,9 +203,11 @@ public:
       make_sequence(seq, ts);
    }
 
-   Ot_instance_list(Expression_args const& ea, Triple_store const& ts);
+   Ot_instance_list(Expression_args const& ea, Triple_store const& ts) {
+      make_sequence(ea.obj1, ts);
+   }
 
-   TDLConceptExpression* get(ReasoningKernel& k ) const;
+   generated_t get(ReasoningKernel& k ) const;
 
 private:
    std::vector<std::string> il_; /**< instance IRI list */

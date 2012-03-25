@@ -1,25 +1,25 @@
 # owlcpp/external/jamfile.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2010-1
+# Copyright Mikhail K Levin 2010-2
 
 project external ;
 
 if ! $(RAPTOR) { 
-EXIT "
-Please set variable RAPTOR to location and version of expat library.
-See doc/user-config.jam
-" ;
+   EXIT "
+   Please set variable RAPTOR to location and version of expat library.
+   See doc/user-config.jam
+   " ;
 }
 using ext/raptor : $(RAPTOR[2]) : $(RAPTOR[1]) ;
 alias raptor : /ext/raptor//raptor ;
 # alias raptor_pic : /ext/raptor//raptor : <link>static <pic>on ;
 
 if ! $(FACTPP) { 
-EXIT "
-Please set variable FACTPP to location and version of FaCT++ library.
-See doc/user-config.jam
-" ;
+   EXIT "
+   Please set variable FACTPP to location and version of FaCT++ library.
+   See doc/user-config.jam
+   " ;
 }
 using ext/factpp : $(FACTPP[2]) : $(FACTPP[1]) ;
 alias factpp_kernel 
@@ -32,8 +32,11 @@ alias factpp_kernel
 # On Linux libxml2 is integrated into the system and is expected to be available.
 # On Windows and Mac, pre-built libxml2 is currently required.
 # A Boost:build module for building it from the sources will be added in future.
+
 import modules ;
+
 local os = [ modules.peek : OS ] ;
+
 if $(os) = LINUX {
 
    LIBXML2_H ?= /usr/include/libxml2 ;
@@ -44,22 +47,46 @@ if $(os) = LINUX {
       lib libxml2 : : <name>xml2 <link>shared : : <include>$(LIBXML2_H) ; 
    }
    
-} else {
+} else if $(os) = NT {
 
-   if ! $(LIBXML2_DLL) && ! $(LIBXML2_H) { 
-   EXIT "
-   Please set variables LIBXML2_DLL and LIBXML2_H to location of libxml2.dll and its headers
-   See doc/user-config.jam
-   " ;
+   if ! $(LIBXML2) && ! ( $(LIBXML2_DLL) && $(LIBXML2_LIB) && $(LIBXML2_H) ) { 
+      EXIT "
+      Please set variable LIBXML2 to location of pre-compiled libxml2 library.
+      See doc/user-config.jam
+      " ;
    }
-}
+   
+   if ! $(ICONV) { 
+      EXIT "
+      Please set variable ICONV to location of pre-compiled iconv library.
+      See doc/user-config.jam
+      " ;
+   }
 
-#if ! $(ICONV) { 
-#EXIT "
-#Please set variable ICONV to location and version of iconv library.
-#See doc/user-config.jam
-#" ;
-#}
-#using ext/iconv : $(ICONV[2]) : $(ICONV[1]) ;
-#alias iconv : /ext/iconv//iconv ;
-#alias iconv_pic : /ext/iconv//iconv : <link>static <pic>on ;
+   LIBXML2_LIB ?= $(LIBXML2)/lib/libxml2_a.lib ;
+   LIBXML2_DLL ?= 
+      $(LIBXML2)/lib/libxml2.lib 
+      $(LIBXML2)/bin/libxml2.dll 
+      $(LIBXML2)/lib/libxml2_a_dll.lib 
+   ;
+   LIBXML2_H ?= $(LIBXML2)/include ;
+   lib libxml2
+      : 
+      : 
+         <link>static
+         <file>$(LIBXML2_LIB)
+      : 
+      : <include>$(LIBXML2_H) <include>$(ICONV_H) 
+   ;
+   
+   lib libxml2
+      : 
+      :
+         <link>shared
+         <file>$(LIBXML2_DLL)
+         <file>$(ICONV)/bin/iconv.dll
+         <file>$(ICONV)/lib/iconv.lib
+      : 
+      : <include>$(LIBXML2_H) <include>$(ICONV)/include 
+   ;
+}

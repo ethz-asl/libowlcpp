@@ -15,7 +15,7 @@ using namespace owlcpp::terms;
 /**@brief
 *******************************************************************************/
 struct Op_top : public Expression<Obj_prop> {
-   TDLObjectRoleExpression* get(ReasoningKernel& k ) const {
+   generated_t get(ReasoningKernel& k ) const {
       return k.getExpressionManager()->ObjectRoleTop();
    }
 };
@@ -23,7 +23,7 @@ struct Op_top : public Expression<Obj_prop> {
 /**@brief
 *******************************************************************************/
 struct Op_bottom : public Expression<Obj_prop> {
-   TDLObjectRoleExpression* get(ReasoningKernel& k ) const {
+   generated_t get(ReasoningKernel& k ) const {
       return k.getExpressionManager()->ObjectRoleBottom();
    }
 };
@@ -33,16 +33,37 @@ struct Op_bottom : public Expression<Obj_prop> {
 class Op_declared : public Expression<Obj_prop> {
 public:
    Op_declared(Expression_args const& ea, Triple_store const& ts)
-   : iri_(ts.string(ea.handle)) {
+   : iri_(to_string(ea.handle, ts)) {
       BOOST_ASSERT(is_iri(ts[ea.handle].ns_id()));
    }
 
-   TDLObjectRoleExpression* get(ReasoningKernel& k ) const {
+   generated_t get(ReasoningKernel& k ) const {
       return k.getExpressionManager()->ObjectRole(iri_);
    }
 
 private:
    std::string iri_;
+};
+
+/**@brief
+*******************************************************************************/
+class Op_inverse : public Expression<Obj_prop> {
+public:
+   Op_inverse(Expression_args const& ea, Triple_store const& ts)
+   : op_(make_expression<Obj_prop>(ea.obj1, ts)) {
+      if( ! is_iri(ts[ea.handle].ns_id()) ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("non-IRI object in _:x owl:inverseOf *:y")
+               << Err::str1_t(to_string_short(ea.obj1, ts))
+      );
+   }
+
+   generated_t get(ReasoningKernel& k ) const {
+      return k.getExpressionManager()->Inverse(op_->get(k));
+   }
+
+private:
+   ptr_t op_;
 };
 
 }//namespace factpp

@@ -138,5 +138,15 @@ BOOST_AUTO_TEST_CASE( case10 ) {
    BOOST_CHECK( ! k.isRelated(lois,   hasAunt, carol) );
 }
 
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case11 ) {
+   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   load_file(sample_file_path("data_value_clash.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( ! k.isKBConsistent() );
+}
+
 }//namespace test
 }//namespace owlcpp

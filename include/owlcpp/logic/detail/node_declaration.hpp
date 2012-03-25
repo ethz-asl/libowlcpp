@@ -50,10 +50,12 @@ template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts)
       }
    }
 
-   BOOST_FOREACH(
-            Triple const& t,
-            ts.triples().find(nid, T_rdf_type::id(), any(), any())) {
-      d.set(t.object());
+   BOOST_FOREACH( Triple const& t, ts.triples().find(nid, any(), any(), any()) ) {
+      if( t.predicate() == T_rdf_type::id() ) {
+         d.set(t.object());
+         continue;
+      }
+      d.set(t.predicate());
    }
 
    BOOST_FOREACH(
