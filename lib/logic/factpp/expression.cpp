@@ -14,10 +14,10 @@ using namespace owlcpp::terms;
 
 /*
 *******************************************************************************/
-template<>typename Expression<Obj_type>::ptr_t
+template<> Expression<Obj_type>::ptr_t
 make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
-   typedef typename Expression<Obj_type>::ptr_t ptr_t;
-   typedef typename Expression<Obj_type>::Err Err;
+   typedef Expression<Obj_type>::ptr_t ptr_t;
+   typedef Expression<Obj_type>::Err Err;
 
    if( ea.handle == T_owl_Thing::id() ) return ptr_t(new Ot_thing());
 
@@ -68,10 +68,10 @@ make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
 
 /*
 *******************************************************************************/
-template<> typename Expression<Obj_prop>::ptr_t
+template<> Expression<Obj_prop>::ptr_t
 make_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts) {
-   typedef typename Expression<Obj_prop>::ptr_t ptr_t;
-   typedef typename Expression<Obj_prop>::Err Err;
+   typedef Expression<Obj_prop>::ptr_t ptr_t;
+   typedef Expression<Obj_prop>::Err Err;
 
    if( ea.handle == T_owl_topObjectProperty::id() ) return ptr_t(new Op_top());
    if( ea.handle == T_owl_bottomObjectProperty::id() ) return ptr_t(new Op_bottom());
@@ -87,10 +87,10 @@ make_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts) {
 
 /*
 *******************************************************************************/
-template<> typename Expression<Data_type>::ptr_t
+template<> Expression<Data_type>::ptr_t
 make_expression<Data_type>(Expression_args const& ea, Triple_store const& ts) {
-   typedef typename Expression<Data_type>::ptr_t ptr_t;
-   typedef typename Expression<Data_type>::Err Err;
+   typedef Expression<Data_type>::ptr_t ptr_t;
+   typedef Expression<Data_type>::Err Err;
 
    BOOST_THROW_EXCEPTION(
                Err()
@@ -101,10 +101,10 @@ make_expression<Data_type>(Expression_args const& ea, Triple_store const& ts) {
 
 /*
 *******************************************************************************/
-template<> typename Expression<Data_prop>::ptr_t
+template<> Expression<Data_prop>::ptr_t
 make_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts) {
-   typedef typename Expression<Data_prop>::ptr_t ptr_t;
-   typedef typename Expression<Data_prop>::Err Err;
+   typedef Expression<Data_prop>::ptr_t ptr_t;
+   typedef Expression<Data_prop>::Err Err;
 
    BOOST_THROW_EXCEPTION(
                Err()
