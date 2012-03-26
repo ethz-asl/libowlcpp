@@ -10,7 +10,7 @@ part of owlcpp project.
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/member.hpp"
-#include "boost/multi_index/global_fun.hpp"
+#include "boost/multi_index/mem_fun.hpp"
 #include "boost/range.hpp"
 
 #include "owlcpp/node.hpp"
@@ -22,6 +22,7 @@ part of owlcpp project.
 #include "owlcpp/detail/member_iterator.hpp"
 
 namespace owlcpp{
+
 /**@brief Store RDF nodes
 @details
 Validity of node IDs is assumed and asserted in debug mode.
@@ -30,31 +31,30 @@ Calling node map methods with invalid node IDs results in undefined behavior.
 class Node_map_base {
 public:
    typedef Node_id id_type;
-   typedef std::pair<Node_id, Node> value_t;
-protected:
-   static Ns_id ns_id(value_t const& v) {return v.second.ns_id();}
+
+private:
+   struct Val {
+      Val(const id_type id, Node const& node) : node_(node), id_(id){}
+      Ns_id ns_id() const {return node_.ns_id();}
+      Node node_;
+      id_type id_;
+   };
 
    typedef boost::multi_index_container<
-         value_t,
+         Val,
          boost::multi_index::indexed_by<
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct id_tag>,
-               boost::multi_index::member<
-                  value_t, Node_id, &value_t::first
-               >
+               boost::multi_index::member<Val, Node_id, &Val::id_>
             >,
             //blank and literal nodes may be non-unique
             boost::multi_index::hashed_non_unique<
                boost::multi_index::tag<struct node_tag>,
-               boost::multi_index::member<
-                  value_t, Node, &value_t::second
-               >
+               boost::multi_index::member<Val, Node, &Val::node_>
             >,
             boost::multi_index::hashed_non_unique<
                boost::multi_index::tag<struct iri_tag>,
-               boost::multi_index::global_fun<
-                  value_t const&, Ns_id, &ns_id
-               >
+               boost::multi_index::const_mem_fun<Val, Ns_id, &Val::ns_id>
             >
          >
       > nodes_t;
@@ -65,12 +65,12 @@ protected:
    typedef nodes_t::index<iri_tag>::type iri_index_t;
 
 public:
-   typedef Member_iterator<nodes_t::const_iterator, const Node_id, &value_t::first> const_iterator;
+   typedef Member_iterator<nodes_t::const_iterator, const Node_id, &Val::id_> const_iterator;
    typedef const_iterator iterator;
    typedef boost::iterator_range<const_iterator> range;
-   typedef Member_iterator<node_index_t::const_iterator, const Node_id, &value_t::first> node_iterator;
+   typedef Member_iterator<node_index_t::const_iterator, const Node_id, &Val::id_> node_iterator;
    typedef boost::iterator_range<node_iterator> node_range;
-   typedef Member_iterator<iri_index_t::const_iterator, const Node_id, &value_t::first> ns_iterator;
+   typedef Member_iterator<iri_index_t::const_iterator, const Node_id, &Val::id_> ns_iterator;
    typedef boost::iterator_range<ns_iterator> ns_range;
 
    std::size_t size() const {return nodes_.size();}
@@ -79,7 +79,7 @@ public:
 
    Node const& operator[](const Node_id id) const {
       BOOST_ASSERT(nodes_.get<id_tag>().find(id) != nodes_.get<id_tag>().end());
-      return nodes_.get<id_tag>().find(id)->second;
+      return nodes_.get<id_tag>().find(id)->node_;
    }
 
    /**
@@ -95,7 +95,7 @@ public:
                << Rdf_err::msg_t("unknown node ID")
                << Rdf_err::int1_t(id())
       );
-      return iter->second;
+      return iter->node_;
    }
 
    /**@brief Find nodes in a given namespace
@@ -103,19 +103,11 @@ public:
     @return iterator range for nodes in namespace iid
    */
    ns_range find(const Ns_id iid) const {
-      std::pair<iri_index_t::const_iterator,iri_index_t::const_iterator> p =
-               nodes_.get<iri_tag>().equal_range(iid);
-      return boost::make_iterator_range(
-               ns_iterator(p.first), ns_iterator(p.second)
-      );
+      return nodes_.get<iri_tag>().equal_range(iid);
    }
 
    node_range find(Node const& node) const {
-      std::pair<node_index_t::const_iterator,node_index_t::const_iterator> p =
-               nodes_.get<node_tag>().equal_range(node);
-      return boost::make_iterator_range(
-               node_iterator(p.first), node_iterator(p.second)
-      );
+      return nodes_.get<node_tag>().equal_range(node);
    }
 
    /**@brief Remove node with specified ID
@@ -131,7 +123,7 @@ public:
    }
 
    void insert(const Node_id nid, Node const& node) {
-      nodes_.insert(std::make_pair(nid, node));
+      nodes_.insert(Val(nid, node));
    }
 
    template<class Tag> void insert_tag(Tag const&) {

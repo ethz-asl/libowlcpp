@@ -24,21 +24,23 @@ class Iri_map_base {
 public:
    typedef Ns_id id_type;
 private:
-   typedef std::pair<id_type, std::string> value_t;
+   struct Val {
+      Val(const id_type id, std::string const& str)
+      : str_(str), id_(id){}
+
+      std::string str_;
+      id_type id_;
+   };
    typedef boost::multi_index_container<
-         value_t,
+         Val,
          boost::multi_index::indexed_by<
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct id_tag>,
-               boost::multi_index::member<
-                  value_t, id_type, &value_t::first
-               >
+               boost::multi_index::member<Val, id_type, &Val::id_>
             >,
             boost::multi_index::hashed_unique<
                boost::multi_index::tag<struct string_tag>,
-               boost::multi_index::member<
-                  value_t, std::string, &value_t::second
-               >
+               boost::multi_index::member<Val, std::string, &Val::str_>
             >
          >
       > store_t;
@@ -48,7 +50,7 @@ private:
    typedef string_index_t::iterator string_iter_t;
 
 public:
-   typedef Member_iterator<store_t::const_iterator, const Ns_id, &value_t::first> const_iterator;
+   typedef Member_iterator<store_t::const_iterator, const Ns_id, &Val::id_> const_iterator;
    typedef const_iterator iterator;
 
    struct Err : public Rdf_err {};
@@ -63,7 +65,7 @@ public:
 
    std::string operator[](const Ns_id iid) const {
       BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) != store_iri_.get<id_tag>().end());
-      return store_iri_.get<id_tag>().find(iid)->second;
+      return store_iri_.get<id_tag>().find(iid)->str_;
    }
 
    std::string at(const Ns_id iid) const {
@@ -74,7 +76,7 @@ public:
                << Err::msg_t("unknown IRI ID")
                << Err::int1_t(iid())
       );
-      return iter->second;
+      return iter->str_;
    }
 
    /**
@@ -85,7 +87,7 @@ public:
       string_index_t const& s_index = store_iri_.get<string_tag>();
       const string_iter_t s_iter = s_index.find(iri);
       if( s_iter == s_index.end() ) return 0;
-      return &s_iter->first;
+      return &s_iter->id_;
    }
 
    /**
@@ -96,7 +98,7 @@ public:
       id_index_t const& id_index = store_pref_.get<id_tag>();
       id_iter_t id_iter = id_index.find(iid);
       if( id_iter == id_index.end() ) return "";
-      return id_iter->second;
+      return id_iter->str_;
    }
 
    /**
@@ -108,10 +110,10 @@ public:
       const string_iter_t s_iter = s_index.find(pref);
       if( s_iter == s_index.end() ) return 0;
       BOOST_ASSERT(
-               store_iri_.get<id_tag>().find(s_iter->first) !=
+               store_iri_.get<id_tag>().find(s_iter->id_) !=
                         store_iri_.get<id_tag>().end()
       );
-      return &s_iter->first;
+      return &s_iter->id_;
    }
 
    /**
@@ -131,18 +133,18 @@ public:
                   << Err::str3_t(at(*iid0))
          );
       }
-      store_pref_.insert(std::make_pair(iid, pref));
+      store_pref_.insert(Val(iid, pref));
    }
 
    Ns_id insert(const Ns_id iid, std::string const& iri) {
       BOOST_ASSERT(store_iri_.get<id_tag>().find(iid) == store_iri_.get<id_tag>().end());
       BOOST_ASSERT(store_pref_.get<id_tag>().find(iid) == store_pref_.get<id_tag>().end());
-      store_iri_.insert(std::make_pair(iid, iri));
+      store_iri_.insert(Val(iid, iri));
       return iid;
    }
 
    template<class Tag> void insert_tag(Tag const&) {
-      store_iri_.insert( std::make_pair(Tag::id(), Tag::iri()) );
+      store_iri_.insert( Val(Tag::id(), Tag::iri()) );
       insert_prefix( Tag::id(), Tag::prefix() );
    }
 
