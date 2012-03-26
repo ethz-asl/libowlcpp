@@ -35,7 +35,7 @@ private:
    node_map& nodes() {return node_;}
    Iri_map const& iris() const {return iri_;}
    node_map const& nodes() const {return node_;}
-   friend class Store_node_iri_crtpb<Catalog>;
+   friend struct Store_node_iri_crtpb<Catalog>;
    friend class Store_doc_crtpb<Catalog>;
 
 public:
