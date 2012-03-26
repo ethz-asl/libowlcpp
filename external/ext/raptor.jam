@@ -60,7 +60,6 @@ rule config_h ( targets * : sources * : properties * ) {
          HAVE_SYS_PARAM_H
          HAVE_SYS_STAT_H
          HAVE_SYS_TYPES_H
-         HAVE_VASPRINTF
          HAVE_VSNPRINTF
          HAVE_XMLCTXTUSEOPTIONS
          HAVE_XMLSAX2INTERNALSUBSET
@@ -121,6 +120,7 @@ rule config_h ( targets * : sources * : properties * ) {
          HAVE_GETOPT_H
          HAVE_STRCASECMP
          HAVE_SYS_TIME_H
+         HAVE_VASPRINTF
          TIME_WITH_SYS_TIME
          HAVE_UNISTD_H
       ;
@@ -139,10 +139,12 @@ rule config_h ( targets * : sources * : properties * ) {
       other +=
 #         "#define vsnprintf _vsnprintf"
          "#define snprintf _snprintf"
+         "#define strtok_r strtok_s"
+         "#define strcasecmp stricmp"
          "#define access _access"
 #         "#define sscanf sscanf_s"
-         "#define stricmp _stricmp"
-         "#define strnicmp _strnicmp"
+#         "#define stricmp _stricmp"
+#         "#define strnicmp _strnicmp"
          "#define __func__ \"\""
          "#undef RAPTOR_INLINE"
          "#define RAPTOR_INLINE __inline"
