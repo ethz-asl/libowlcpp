@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_STORE_QUERY_HPP_
 #define TRIPLE_STORE_QUERY_HPP_
+#include "owlcpp/config.hpp"
 #include "boost/fusion/adapted/struct/adapt_struct.hpp"
 #include "boost/fusion/container/vector/vector10.hpp"
 #include "boost/fusion/include/mpl.hpp"

@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef IRI_MAP_BASE_HPP_
 #define IRI_MAP_BASE_HPP_
+#include "owlcpp/config.hpp"
 #include <string>
 #include "boost/assert.hpp"
 #include "boost/foreach.hpp"

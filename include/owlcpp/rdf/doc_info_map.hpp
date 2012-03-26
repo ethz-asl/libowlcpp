@@ -7,6 +7,7 @@ part of owlcpp project.
 #define DOC_INFO_MAP_HPP_
 #include <string>
 #include "boost/assert.hpp"
+#include "owlcpp/config.hpp"
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
 #include "boost/multi_index/member.hpp"

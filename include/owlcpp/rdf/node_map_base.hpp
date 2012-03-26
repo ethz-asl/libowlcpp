@@ -6,6 +6,7 @@ part of owlcpp project.
 #ifndef NODE_MAP_BASE_HPP_
 #define NODE_MAP_BASE_HPP_
 #include "boost/assert.hpp"
+#include "owlcpp/config.hpp"
 #include "boost/foreach.hpp"
 #include "boost/multi_index_container.hpp"
 #include "boost/multi_index/hashed_index.hpp"
