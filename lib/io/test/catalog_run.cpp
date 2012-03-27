@@ -39,8 +39,8 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    BOOST_CHECK_EQUAL(cat.size(), 1U);
    Doc_id const* did1 = cat.find_doc_iri(ver1);
    BOOST_REQUIRE(did1);
-   BOOST_CHECK_EQUAL(cat.ontology_iri_str(*did1), ver1);
-   BOOST_CHECK_EQUAL(cat.version_iri_str(*did1), version1);
+   BOOST_CHECK_EQUAL(cat.ontology_iri(*did1), ver1);
+   BOOST_CHECK_EQUAL(cat.version_iri(*did1), version1);
    BOOST_CHECK_EQUAL(cat.path(*did1), boost::filesystem::canonical(path1).string());
 }
 
@@ -81,8 +81,8 @@ BOOST_AUTO_TEST_CASE( case04 ) {
       Catalog::doc_map_t::path_range r = cat.documents().find_path(si.path);
       BOOST_REQUIRE(r);
       const Doc_id did = r.front();
-      BOOST_CHECK_EQUAL(cat.ontology_iri_str(did), si.iri);
-      BOOST_CHECK_EQUAL(cat.version_iri_str(did), si.version);
+      BOOST_CHECK_EQUAL(cat.ontology_iri(did), si.iri);
+      BOOST_CHECK_EQUAL(cat.version_iri(did), si.version);
    }
 }
 

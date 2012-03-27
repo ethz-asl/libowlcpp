@@ -92,9 +92,19 @@ template<class T> struct Store_node_iri_crtpb {
       return self.iris()[iid];
    }
 
+   std::string at(const Ns_id iid) const {
+      T const& self = static_cast<T const&>(*this);
+      return self.iris().at(iid);
+   }
+
    Node const& operator[](const Node_id nid) const {
       T const& self = static_cast<T const&>(*this);
       return self.nodes()[nid];
+   }
+
+   Node const& at(const Node_id nid) const {
+      T const& self = static_cast<T const&>(*this);
+      return self.nodes().at(nid);
    }
 
 };

@@ -45,8 +45,6 @@ public:
    std::size_t size() const {return documents().size();}
    const_iterator begin() const {return documents().begin();}
    const_iterator end() const {return documents().end();}
-   std::string ontology_iri_str(const Doc_id did) const {return string(ontology_iri(did));}
-   std::string version_iri_str(const Doc_id did) const { return string(version_iri(did)); }
 
    /**@brief determine OntologyIRI and VersionIRI of ontology document(s)
     and add them to the catalog

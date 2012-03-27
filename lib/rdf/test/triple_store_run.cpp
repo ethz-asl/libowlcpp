@@ -69,5 +69,21 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    BOOST_CHECK_EQUAL(*nid, terms::T_empty_::id());
 }
 
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case04 ) {
+   Triple_store ts;
+   BOOST_CHECK_EQUAL(ts.documents().size(), 0U);
+   const Doc_id did = ts.insert_doc("path", ni1, ni2).first;
+   BOOST_REQUIRE_EQUAL( ts.documents().size(), 1u );
+   BOOST_CHECK_EQUAL( *ts.documents().begin(), did );
+   BOOST_CHECK_EQUAL( ts.path(did), "path" );
+   const Node_id nid1 = ts.ontology_iri_id(did);
+   Node const& node1 = ts.at(nid1);
+   BOOST_CHECK_EQUAL( node1.value_str(), "n1" );
+   BOOST_REQUIRE( ts.find_doc_iri(ni1) );
+   BOOST_REQUIRE( ts.find_doc_iri(ni2) );
+}
+
 }//namespace test
 }//namespace owlcpp
