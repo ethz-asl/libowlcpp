@@ -47,11 +47,13 @@ int main(int argc, char* argv[]) {
    try {
       if( vm.count("include") ) { //load input-file and its includes
          owlcpp::Catalog cat;
+         //how far to look into each file for ontologyVersion
+         const std::size_t search_depth = 100;
          std::vector<std::string> const& vin = vm["include"].as<std::vector<std::string> >();
          if( vin.empty() ) {
-            cat.add(in.parent_path(), true, 100);
+            cat.add(in.parent_path(), true, search_depth);
          } else {
-            BOOST_FOREACH(std::string const& p, vin) cat.add(p, true, 100);
+            BOOST_FOREACH(std::string const& p, vin) cat.add(p, true, search_depth);
          }
          load_file(in, store, cat);
       } else { //load just input-file

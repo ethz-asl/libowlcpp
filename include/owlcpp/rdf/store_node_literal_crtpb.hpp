@@ -36,7 +36,7 @@ template<class T> struct Store_node_literal_crtpb {
    }
 
    /**@brief Find literal node datatype
-    @param id literal node ID
+    @param nid literal node ID
     @return datatype node ID for the literal node or empty node ID
     if the node is not literal or datatype is not defined for it.
    */
@@ -46,7 +46,7 @@ template<class T> struct Store_node_literal_crtpb {
    }
 
    /**@brief Find the language of the literal node
-    @param id literal node's ID
+    @param nid literal node's ID
     @return language tag string for the literal node or
     "" if the node is not literal or no language is defined for it.
     @details The tag string format MAY be according to RFC 5646

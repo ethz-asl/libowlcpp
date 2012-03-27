@@ -16,15 +16,23 @@ namespace owlcpp {
 /*
 *******************************************************************************/
 std::pair<std::string,std::string> read_ontology_iri(
-         boost::filesystem::path const& file,
+         std::istream& is,
          const std::size_t search_depth
 ) {
    Raptor_wrapper parser;
    detail::Raptor_to_iri rti(parser.abort_call(), search_depth);
-   boost::filesystem::ifstream ifs(file);
-   parser(ifs, rti);
-//   parser(file.string(), rti);
+   parser(is, rti);
    return make_pair(rti.iri(), rti.version());
+}
+
+/*
+*******************************************************************************/
+std::pair<std::string,std::string> read_ontology_iri(
+         boost::filesystem::path const& file,
+         const std::size_t search_depth
+) {
+   boost::filesystem::ifstream ifs(file);
+   return read_ontology_iri(ifs, search_depth);
 }
 
 }//namespace owlcpp

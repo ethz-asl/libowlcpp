@@ -53,7 +53,8 @@ public:
     @param path symbolic path pointing to local file or directory;
     any type implicitly convertible to boost::path can be used, e.g., std::string, const char*
     @param recurse if true add to catalog files located in sub-directories
-    @param search_depth
+    @param search_depth once ontologyIRI declaration is found, stop searching for
+    versionIRI declaration after @b search_depth triples
     @return number of added files
     @details
     If path is a directory, an attempt will be made to parse and determine
