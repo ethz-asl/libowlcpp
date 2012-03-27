@@ -27,10 +27,11 @@ public:
    typedef Node_map node_map_t;
    struct Err : public base_exception {};
 
-   Triple_store_temp()
+   Triple_store_temp(std::string const& path)
    : did_(0),
      ontology_iri_(terms::T_empty_::id()),
-     version_iri_(terms::T_empty_::id())
+     version_iri_(terms::T_empty_::id()),
+     path_(path)
    {}
 
    Iri_map& iris() {return iri_;}
@@ -52,14 +53,14 @@ public:
    }
 
    Node_id ontology_iri(const Doc_id = Doc_id(0)) const {return ontology_iri_;}
+   Node_id version_iri(const Doc_id = Doc_id()) const {return version_iri_;}
+   std::string path(const Doc_id = Doc_id()) const {return path_;}
 
    void set_ids(std::string const& ontologyIRI, std::string const& versionIRI) {
       ontology_iri_ = insert_iri_node(ontologyIRI);
       version_iri_ = insert_iri_node(versionIRI);
    }
 
-   Node_id version_iri(const Doc_id) const {return version_iri_;}
-   std::string path(const Doc_id) const {return path_;}
    void clear() {
       triple_.clear();
       node_.clear();

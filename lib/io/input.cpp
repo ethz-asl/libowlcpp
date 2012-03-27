@@ -42,6 +42,7 @@ void load(
 ) {
    detail::Raptor_to_store rts(store, path, check);
    rts.parse(stream);
+//   const std::vector<std::string> v(rts.imports().begin(), rts.imports().end());
    try{
       BOOST_FOREACH(std::string const& iri, rts.imports()) {
          if( store.find_doc_iri(iri) ) continue;
@@ -90,7 +91,7 @@ void load_iri(std::string const& iri, Triple_store& store, Catalog const& cat) {
             << Input_err::msg_t("ontology not found")
             << Input_err::str1_t(iri)
    );
-   Check_both check(cat.ontology_iri_str(*did), cat.version_iri_str(*did));
+   Check_both check(cat.ontology_iri(*did), cat.version_iri(*did));
    load_file(cat.path(*did), store, cat, check);
 }
 
