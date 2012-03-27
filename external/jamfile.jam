@@ -74,23 +74,16 @@ if $(os) = LINUX {
    LIBXML2_DLL ?= 
       $(LIBXML2)/lib/libxml2.lib 
       $(LIBXML2)/bin/libxml2.dll 
-#      $(LIBXML2)/lib/libxml2_a_dll.lib 
    ;
    LIBXML2_H ?= $(LIBXML2)/include ;
    
    ICONV_LIB ?= $(ICONV)/lib/iconv.lib ;
-   ICONV_DLL ?= 
-#      $(ICONV)/lib/iconv.lib 
-      $(ICONV)/bin/iconv.dll 
-   ;
+   ICONV_DLL ?= $(ICONV)/bin/iconv.dll ;
    ICONV_H ?= $(ICONV)/include ;
    
    ZLIB_LIB ?= $(ZLIB)/lib/zlib.lib ;
-   ZLIB_DLL ?= 
-      $(ZLIB)/lib/zdll.lib 
-#      $(ZLIB)/bin/zlib1.dll 
-   ;
-   ZLIB_H ?= $(ZLIB)/include ;
+   ZLIB_DLL ?= $(ZLIB)/bin/zlib1.dll ;
+#   ZLIB_H ?= $(ZLIB)/include ;
 
    lib libxml2
       : 

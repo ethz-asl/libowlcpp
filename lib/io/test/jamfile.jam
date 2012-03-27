@@ -9,12 +9,12 @@ local tmp_dir = [ path.native $(TEMP_DIR) ] ;
 project
    : 
    : requirements
-#      <link>static
       <include>../
       <library>/boost//unit_test_framework
       <library>/boost//filesystem
       <library>/owlcpp//io
       <library>/owlcpp//rdf
+      <library>/owlcpp//raptor
       <define>SAMPLE_DATA_DIR="\"$(smpl_dir:T)\""
       <define>TEMPORARY_DIR="\"$(tmp_dir:T)\""
 ;

@@ -9,7 +9,6 @@ local tmp_dir = [ path.native $(TEMP_DIR) ] ;
 project
    : 
    : requirements
-#      <link>static
       <include>../
       <library>/boost//unit_test_framework
       <library>/owlcpp//rdf

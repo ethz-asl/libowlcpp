@@ -3,8 +3,8 @@ part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef OWLCPP_REASONER_SOURCE
-#define OWLCPP_REASONER_SOURCE
+#ifndef OWLCPP_LOGIC_SOURCE
+#define OWLCPP_LOGIC_SOURCE
 #endif
 #include "owlcpp/logic/detail/triple_to_fact_adaptor.hpp"
 

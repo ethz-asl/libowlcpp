@@ -4,7 +4,6 @@ part of owlcpp project.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #include <iostream>
-#include "boost/exception/diagnostic_information.hpp"
 #include "boost/foreach.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/lib_info.hpp"
