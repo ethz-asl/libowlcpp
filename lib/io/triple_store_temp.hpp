@@ -52,8 +52,8 @@ public:
       triple_.insert(Triple(subj, pred, obj, did_));
    }
 
-   Node_id ontology_iri(const Doc_id = Doc_id(0)) const {return ontology_iri_;}
-   Node_id version_iri(const Doc_id = Doc_id()) const {return version_iri_;}
+   Node_id ontology_iri_id(const Doc_id = Doc_id(0)) const {return ontology_iri_;}
+   Node_id version_iri_id(const Doc_id = Doc_id()) const {return version_iri_;}
    std::string path(const Doc_id = Doc_id()) const {return path_;}
 
    void set_ids(std::string const& ontologyIRI, std::string const& versionIRI) {

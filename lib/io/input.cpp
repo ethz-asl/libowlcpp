@@ -13,6 +13,7 @@ part of owlcpp project.
 #include "boost/filesystem/fstream.hpp"
 #include "boost/filesystem.hpp"
 #include "boost/foreach.hpp"
+#include "boost/range/algorithm/copy.hpp"
 
 #include "owlcpp/io/catalog.hpp"
 #include "raptor_to_store.hpp"
@@ -31,6 +32,24 @@ void load(
    rts.parse(stream);
 }
 
+namespace {
+
+/*
+*******************************************************************************/
+template<class Iter> void load(
+         std::istream& stream,
+         Triple_store& store,
+         std::string const& path,
+         Check_id const& check,
+         Iter iter
+) {
+   detail::Raptor_to_store rts(store, path, check);
+   rts.parse(stream);
+   boost::copy(rts.imports(), iter);
+}
+
+}//namespace anonymous
+
 /*
 *******************************************************************************/
 void load(
@@ -40,11 +59,10 @@ void load(
          std::string const& path,
          Check_id const& check
 ) {
-   detail::Raptor_to_store rts(store, path, check);
-   rts.parse(stream);
-//   const std::vector<std::string> v(rts.imports().begin(), rts.imports().end());
+   std::vector<std::string> v;
+   load(stream, store, path, check, back_inserter(v));
    try{
-      BOOST_FOREACH(std::string const& iri, rts.imports()) {
+      BOOST_FOREACH(std::string const& iri, v) {
          if( store.find_doc_iri(iri) ) continue;
          load_iri(iri, store, cat);
       }

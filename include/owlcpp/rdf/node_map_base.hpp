@@ -111,6 +111,10 @@ public:
       return nodes_.get<node_tag>().equal_range(node);
    }
 
+   Node const* find(const Node_id nid) const {
+      return &nodes_.get<id_tag>().find(nid)->node_;
+   }
+
    /**@brief Remove node with specified ID
     @param id node ID
     @details
