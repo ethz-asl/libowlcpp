@@ -31,9 +31,9 @@ class Node_map_std {
       t(iris_);
       t(nodes_);
       Iri_map_base::const_iterator i = boost::max_element(iris_);
-      if( i != iris_.end() ) ns_id_next_ = Ns_id((*i)() + 1);
+      ns_id_next_ = Ns_id((*i)() + 1);
       Node_map_base::const_iterator j = boost::max_element(nodes_);
-      if( j != nodes_.end() ) node_id_next_ = Node_id((*j)() + 1);
+      node_id_next_ = Node_id((*j)() + 1);
      }
 
 public:

@@ -15,9 +15,23 @@ part of owlcpp project.
 
 namespace owlcpp{
 
-/**
-@param file local path to ontology document
-@param search_depth
+/**@brief Find ontologyIRI and versionIRI declarations in a stream containing
+ontology document
+@param is input stream containing ontology document
+@param search_depth once ontologyIRI declaration is found, stop searching for
+versionIRI declaration after @b search_depth triples
+@return ontologyIRI and versionIRI strings
+*******************************************************************************/
+OWLCPP_IO_DECL std::pair<std::string,std::string>
+read_ontology_iri(
+         std::istream& is,
+         const std::size_t search_depth = std::numeric_limits<std::size_t>::max()
+);
+
+/**@brief find ontologyIRI and versionIRI declarations in ontology document
+@param file filesystem path to ontology document
+@param search_depth once ontologyIRI declaration is found, stop searching for
+versionIRI declaration after @b search_depth triples
 @return ontologyIRI and versionIRI strings
 *******************************************************************************/
 OWLCPP_IO_DECL std::pair<std::string,std::string>

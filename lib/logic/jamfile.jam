@@ -14,9 +14,9 @@ lib owlcpp_logic
       <include>.
       <library>/owlcpp//factpp_kernel
       <library>/owlcpp//rdf
-      <link>shared:<define>OWLCPP_REASONER_DYN_LINK
+      <link>shared:<define>OWLCPP_LOGIC_DYN_LINK
    :  #default build options
    :  #usage requirements
-      <link>shared:<define>OWLCPP_REASONER_DYN_LINK
+      <link>shared:<define>OWLCPP_LOGIC_DYN_LINK
 ;
 

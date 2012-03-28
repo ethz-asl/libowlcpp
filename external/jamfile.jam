@@ -56,27 +56,44 @@ if $(os) = LINUX {
       " ;
    }
    
-   if ! $(ICONV) { 
+   if ! $(ICONV) && ! ( $(ICONV_DLL) && $(ICONV2_LIB) && $(ICONV_H) ) { 
       EXIT "
       Please set variable ICONV to location of pre-compiled iconv library.
       See doc/user-config.jam
       " ;
    }
 
-   LIBXML2_LIB ?= $(LIBXML2)/lib/libxml2_a.lib ;
+   if ! $(ZLIB) && ! ( $(ZLIB_DLL) && $(ZLIB_LIB) && $(ZLIB_H) ) { 
+      EXIT "
+      Please set variable ZLIB to location of pre-compiled zlib library.
+      See doc/user-config.jam
+      " ;
+   }
+
+   LIBXML2_LIB ?= $(LIBXML2)/lib/libxml2.lib ;
    LIBXML2_DLL ?= 
       $(LIBXML2)/lib/libxml2.lib 
       $(LIBXML2)/bin/libxml2.dll 
-      $(LIBXML2)/lib/libxml2_a_dll.lib 
    ;
    LIBXML2_H ?= $(LIBXML2)/include ;
+   
+   ICONV_LIB ?= $(ICONV)/lib/iconv.lib ;
+   ICONV_DLL ?= $(ICONV)/bin/iconv.dll ;
+   ICONV_H ?= $(ICONV)/include ;
+   
+   ZLIB_LIB ?= $(ZLIB)/lib/zlib.lib ;
+   ZLIB_DLL ?= $(ZLIB)/bin/zlib1.dll ;
+#   ZLIB_H ?= $(ZLIB)/include ;
+
    lib libxml2
       : 
       : 
          <link>static
          <file>$(LIBXML2_LIB)
+         <file>$(ICONV_LIB)
+         <file>$(ZLIB_LIB)
       : 
-      : <include>$(LIBXML2_H) <include>$(ICONV_H) 
+      : <include>$(LIBXML2_H) <include>$(ICONV_H)
    ;
    
    lib libxml2
@@ -84,9 +101,9 @@ if $(os) = LINUX {
       :
          <link>shared
          <file>$(LIBXML2_DLL)
-         <file>$(ICONV)/bin/iconv.dll
-         <file>$(ICONV)/lib/iconv.lib
+         <file>$(ICONV_DLL)
+         <file>$(ZLIB_DLL)
       : 
-      : <include>$(LIBXML2_H) <include>$(ICONV)/include 
+      : <include>$(LIBXML2_H) <include>$(ICONV_H)
    ;
 }

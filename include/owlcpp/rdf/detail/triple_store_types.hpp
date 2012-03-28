@@ -5,7 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_STORE_TYPES_HPP_
 #define TRIPLE_STORE_TYPES_HPP_
-
+#include "owlcpp/config.hpp"
 #include "boost/multi_index_container_fwd.hpp"
 #include "boost/multi_index/hashed_index_fwd.hpp"
 #include "boost/multi_index/sequenced_index_fwd.hpp"

@@ -3,7 +3,7 @@ part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-
+#include "owlcpp/config.hpp"
 #include "expression_args.hpp"
 
 #include "boost/foreach.hpp"

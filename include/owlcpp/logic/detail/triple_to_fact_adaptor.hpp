@@ -12,16 +12,15 @@ part of owlcpp project.
 #include "owlcpp/logic/exception.hpp"
 #include "owlcpp/logic/detail/node_declaration.hpp"
 #include "owlcpp/logic/config.hpp"
-#include "factpp/config.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
-class /*FACTPP_KERNEL_DECL*/ ReasoningKernel;
+class ReasoningKernel;
+class TExpressionManager;
 class TDLConceptExpression;
 class TDLIndividualExpression;
 class TDLObjectRoleExpression;
 class TDLDataRoleExpression;
 class TDLDataTypeExpression;
-class TExpressionManager;
 class TDLDataValue;
 class TDLAxiom;
 
@@ -29,7 +28,7 @@ namespace owlcpp{ namespace logic{ namespace factpp{
 
 /**@brief 
 *******************************************************************************/
-class OWLCPP_REASONER_DECL Adaptor_triple {
+class OWLCPP_LOGIC_DECL Adaptor_triple {
 public:
    struct Err : public Logic_err {};
 

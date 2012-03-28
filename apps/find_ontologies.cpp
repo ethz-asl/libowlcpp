@@ -4,7 +4,6 @@ part of owlcpp project.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #include <iostream>
-#include "boost/exception/diagnostic_information.hpp"
 #include "boost/foreach.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/lib_info.hpp"
@@ -25,8 +24,8 @@ int main(int argc, char* argv[]) {
       BOOST_FOREACH(const owlcpp::Doc_id id, cat) {
          std::cout
          << '\"' << cat.path(id) << "\"\t\""
-         << cat.ontology_iri_str(id) << "\"\t\""
-         << cat.version_iri_str(id) << "\"\n"
+         << cat.ontology_iri(id) << "\"\t\""
+         << cat.version_iri(id) << "\"\n"
          ;
       }
    } catch(...) {

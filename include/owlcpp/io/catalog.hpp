@@ -35,7 +35,7 @@ private:
    node_map& nodes() {return node_;}
    Iri_map const& iris() const {return iri_;}
    node_map const& nodes() const {return node_;}
-   friend class Store_node_iri_crtpb<Catalog>;
+   friend struct Store_node_iri_crtpb<Catalog>;
    friend class Store_doc_crtpb<Catalog>;
 
 public:
@@ -45,15 +45,14 @@ public:
    std::size_t size() const {return documents().size();}
    const_iterator begin() const {return documents().begin();}
    const_iterator end() const {return documents().end();}
-   std::string ontology_iri_str(const Doc_id did) const {return string(ontology_iri(did));}
-   std::string version_iri_str(const Doc_id did) const { return string(version_iri(did)); }
 
    /**@brief determine OntologyIRI and VersionIRI of ontology document(s)
     and add them to the catalog
     @param path symbolic path pointing to local file or directory;
     any type implicitly convertible to boost::path can be used, e.g., std::string, const char*
     @param recurse if true add to catalog files located in sub-directories
-    @param search_depth
+    @param search_depth once ontologyIRI declaration is found, stop searching for
+    versionIRI declaration after @b search_depth triples
     @return number of added files
     @details
     If path is a directory, an attempt will be made to parse and determine

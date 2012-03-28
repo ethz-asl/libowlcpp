@@ -114,8 +114,8 @@ make_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts) {
 *******************************************************************************/
 Expression<Obj_type>::ptr_t
 make_restriction_ote(Expression_args const& ea, Triple_store const& ts) {
-   typedef typename Expression<Obj_type>::ptr_t ptr_t;
-   typedef typename Expression<Obj_type>::Err Err;
+   typedef Expression<Obj_type>::ptr_t ptr_t;
+   typedef Expression<Obj_type>::Err Err;
 
    if( ea.pred1 != T_owl_onProperty::id() ) BOOST_THROW_EXCEPTION(
             Err()
@@ -168,8 +168,8 @@ make_restriction_ote(Expression_args const& ea, Triple_store const& ts) {
 *******************************************************************************/
 Expression<Obj_type>::ptr_t
 make_class_ote(Expression_args const& ea, Triple_store const& ts) {
-   typedef typename Expression<Obj_type>::ptr_t ptr_t;
-   typedef typename Expression<Obj_type>::Err Err;
+   typedef Expression<Obj_type>::ptr_t ptr_t;
+   typedef Expression<Obj_type>::Err Err;
 
    switch (ea.pred1()) {
 

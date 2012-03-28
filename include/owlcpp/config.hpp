@@ -16,6 +16,7 @@ part of owlcpp project.
    #pragma warning (disable : 4355) // 'this' : used in base member initializer list
    #pragma warning (disable : 4800) // forcing value to bool 'true' or 'false'
    #pragma warning (disable : 4003) // not enough actual parameters for macro
+   #pragma warning (disable : 4503) // not enough actual parameters for macro
 #endif
 
 #endif /* CONFIG_HPP_ */

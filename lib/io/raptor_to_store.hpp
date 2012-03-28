@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef RAPTOR_TO_STORE_HPP_
 #define RAPTOR_TO_STORE_HPP_
 #include <string>
-#include <deque>
+#include <vector>
 #include <iosfwd>
 #include "boost/bind.hpp"
 #include "boost/function.hpp"
@@ -35,9 +35,9 @@ public:
      parser_(),
      abort_call_(parser_.abort_call()),
      checker_(checker),
-     path_(path),
      rti_(boost::bind(&Raptor_to_store::id_found, this)),
-     id_found_(false)
+     id_found_(false),
+     tst_(path)
    {}
 
    void insert(void const* statement) {
@@ -52,7 +52,7 @@ public:
 
    const std::string& iri() const {return rti_.iri();}
    const std::string& version() const {return rti_.version();}
-   std::deque<std::string> const& imports() const {return imports_;}
+   std::vector<std::string> const& imports() const {return imports_;}
 
    void parse(std::istream& stream) {
       parser_(stream, *this);
@@ -65,11 +65,10 @@ private:
    Raptor_wrapper parser_;
    const boost::function<void()> abort_call_;
    Check_id const& checker_;
-   const std::string path_;
    Raptor_to_iri rti_;
    bool id_found_;
    Triple_store_temp tst_;
-   std::deque<std::string> imports_;
+   std::vector<std::string> imports_;
 
    /** This method is called when ontologyIRI and (possibly) versionIRI statements
     are encountered during parsing.
@@ -87,7 +86,7 @@ private:
          BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("error parsing")
-                  << Err::str1_t(path_)
+                  << Err::str1_t(tst_.path())
                   << Err::nested_t(boost::current_exception())
          );
       }

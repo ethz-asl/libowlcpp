@@ -47,8 +47,8 @@ public:
    ) {
       T& self = static_cast<T&>(*this);
       const Node_id iid = self.insert_iri_node(iri);
-      if( vers.empty() ) return docs_.insert(path, iid, terms::T_empty_::id());
-      const Node_id vid = self.insert_iri_node(vers);
+      const Node_id vid =
+               vers.empty() ? terms::T_empty_::id() : self.insert_iri_node(vers);
       return insert_doc(path, iid, vid);
    }
 
@@ -70,19 +70,27 @@ public:
     @param did document ID; invalid @b id results in undefined behavior
     @return node ID for ontology IRI
    */
-   Node_id ontology_iri(const Doc_id did) const {return docs_.ontology_iri(did);}
+   Node_id ontology_iri_id(const Doc_id did) const {return docs_.ontology_iri(did);}
 
    /**
     @param did document ID
     @return node ID for document version or empty node ID if version is not defined
    */
-   Node_id version_iri(const Doc_id did) const {return docs_.version_iri(did);}
+   Node_id version_iri_id(const Doc_id did) const {return docs_.version_iri(did);}
 
    /**
     @param did document ID
     @return document's path or empty string if not defined
    */
    std::string path(const Doc_id did) const {return docs_.path(did);}
+
+   std::string ontology_iri(const Doc_id did) const {
+      return static_cast<T const*>(this)->string(ontology_iri_id(did));
+   }
+
+   std::string version_iri(const Doc_id did) const {
+      return static_cast<T const*>(this)->string(version_iri_id(did));
+   }
 
 private:
    doc_map_t docs_;

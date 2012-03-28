@@ -22,14 +22,14 @@ public:
    {}
 
    void operator()(Triple const& t) {
-      const Node_id subj = (*this)(t.subject());
-      const Node_id pred = (*this)(t.predicate());
-      const Node_id obj = (*this)(t.object());
-      const Doc_id doc = (*this)(t.document());
+      const Node_id subj = insert(t.subject());
+      const Node_id pred = insert(t.predicate());
+      const Node_id obj = insert(t.object());
+      const Doc_id doc = insert(t.document());
       dest_.insert_triple(subj, pred, obj, doc);
    }
 
-   Node_id operator()(const Node_id nid0) {
+   Node_id insert(const Node_id nid0) {
       const node_map_t::const_iterator i = nm_.find(nid0);
       if( i != nm_.end() ) return i->second;
       Node const& node = src_[nid0];
@@ -38,19 +38,20 @@ public:
       return insert_iri(nid0, node);
    }
 
-   Doc_id operator()(const Doc_id did0) {
+   Doc_id insert(const Doc_id did0) {
       const doc_map_t::const_iterator i = dm_.find(did0);
       if( i != dm_.end() ) return i->second;
-      const Doc_id did1 = dest_.insert_doc(
+      const std::pair<Doc_id,bool> p = dest_.insert_doc(
                src_.path(did0),
-               src_.ontology_iri(did0),
-               src_.version_iri(did0)
-      ).first;
-      dm_.emplace(did0, did1);
-      return did1;
+               insert(src_.ontology_iri_id(did0)),
+               insert(src_.version_iri_id(did0))
+      );
+      BOOST_ASSERT(p.second);
+      dm_.emplace(did0, p.first);
+      return p.first;
    }
 
-   Ns_id operator()(const Ns_id nsid0) {
+   Ns_id insert(const Ns_id nsid0) {
       const ns_map_t::const_iterator i = nsm_.find(nsid0);
       if( i != nsm_.end() ) return i->second;
       const Ns_id nsid1 = dest_.iris().insert(src_[nsid0]);
@@ -72,7 +73,7 @@ private:
    ) {
 
       const Node_id nid1 = dest_.insert_blank_node(
-               (*this)(src_.nodes().blank_node_doc(nid0)),
+               insert(src_.nodes().blank_node_doc(nid0)),
                name
       );
       nm_.emplace(nid0, nid1);
@@ -81,7 +82,7 @@ private:
 
    Node_id insert_iri(const Node_id nid0, Node const& node) {
       const Node_id nid1 = dest_.nodes().insert_iri(
-               (*this)(node.ns_id()),
+               insert(node.ns_id()),
                node.value_str()
       );
       nm_.emplace(nid0, nid1);

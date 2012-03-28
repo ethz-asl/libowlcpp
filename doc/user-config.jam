@@ -61,7 +61,7 @@ local utils = "c:/utils" ;
 ## http://xmlsoft.org/
 ## http://www.zlatkovic.com/libxml.en.html
 # constant LIBXML2 : "$(utils)/libxml2-2.7.8.win32" ;
-# constant ICONV : "$(utils)/cpp/iconv/iconv-1.9.2.win32" ;
+# constant ICONV : "$(utils)/cpp/iconv-1.9.2.win32" ;
 
 ## Raptor library source
 ## http://librdf.org/raptor/

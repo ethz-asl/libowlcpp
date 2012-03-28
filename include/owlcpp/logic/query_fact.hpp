@@ -25,7 +25,7 @@ class Triple_store;
 
 /**
 *******************************************************************************/
-OWLCPP_REASONER_DECL TDLConceptExpression* concept(
+OWLCPP_LOGIC_DECL TDLConceptExpression* concept(
       const Node_id nid,
       const Triple_store& store,
       ReasoningKernel& kernel
@@ -33,7 +33,7 @@ OWLCPP_REASONER_DECL TDLConceptExpression* concept(
 
 /**
 *******************************************************************************/
-OWLCPP_REASONER_DECL TDLConceptExpression* concept(
+OWLCPP_LOGIC_DECL TDLConceptExpression* concept(
       const std::string& uri,
       const std::string& class_term,
       const Triple_store& store,
@@ -43,7 +43,7 @@ OWLCPP_REASONER_DECL TDLConceptExpression* concept(
 /**
 @throw exception if not present in store
 *******************************************************************************/
-OWLCPP_REASONER_DECL TDLConceptExpression* concept(
+OWLCPP_LOGIC_DECL TDLConceptExpression* concept(
       const std::string& iri,
       const Triple_store& store,
       ReasoningKernel& kernel
@@ -51,7 +51,7 @@ OWLCPP_REASONER_DECL TDLConceptExpression* concept(
 
 /**
 *******************************************************************************/
-OWLCPP_REASONER_DECL TDLIndividualExpression* instance(
+OWLCPP_LOGIC_DECL TDLIndividualExpression* instance(
       const Node_id nid,
       const Triple_store& store,
       ReasoningKernel& kernel
@@ -60,7 +60,7 @@ OWLCPP_REASONER_DECL TDLIndividualExpression* instance(
 
 /**
 *******************************************************************************/
-OWLCPP_REASONER_DECL TDLIndividualExpression* instance(
+OWLCPP_LOGIC_DECL TDLIndividualExpression* instance(
       const std::string& uri,
       const std::string& instance_term,
       const Triple_store& store,
@@ -69,7 +69,7 @@ OWLCPP_REASONER_DECL TDLIndividualExpression* instance(
 
 /*
 *******************************************************************************/
-OWLCPP_REASONER_DECL TDLObjectRoleExpression* property(
+OWLCPP_LOGIC_DECL TDLObjectRoleExpression* property(
       const Node_id nid,
       const Triple_store& store,
       ReasoningKernel& kernel
@@ -78,7 +78,7 @@ OWLCPP_REASONER_DECL TDLObjectRoleExpression* property(
 
 /**
 *******************************************************************************/
-OWLCPP_REASONER_DECL TDLObjectRoleExpression* property(
+OWLCPP_LOGIC_DECL TDLObjectRoleExpression* property(
       const std::string& uri,
       const std::string& property_term,
       const Triple_store& store,
@@ -87,7 +87,7 @@ OWLCPP_REASONER_DECL TDLObjectRoleExpression* property(
 
 /**
 *******************************************************************************/
-OWLCPP_REASONER_DECL TDLObjectRoleExpression* property(
+OWLCPP_LOGIC_DECL TDLObjectRoleExpression* property(
       const std::string& iri,
       const Triple_store& store,
       ReasoningKernel& kernel
@@ -95,7 +95,7 @@ OWLCPP_REASONER_DECL TDLObjectRoleExpression* property(
 
 /**
 *******************************************************************************/
-OWLCPP_REASONER_DECL bool is_subclass(
+OWLCPP_LOGIC_DECL bool is_subclass(
       const std::string& sub,
       const std::string& super,
       const Triple_store& store,
@@ -106,7 +106,7 @@ OWLCPP_REASONER_DECL bool is_subclass(
 determine if relationship c1i.p(c2i) is satisfiable
 @return true if c2 can be related to c1 by p
 *******************************************************************************/
-OWLCPP_REASONER_DECL bool can_relate(
+OWLCPP_LOGIC_DECL bool can_relate(
       const std::string& c1,
       const std::string& p,
       const std::string& c2,
@@ -116,7 +116,7 @@ OWLCPP_REASONER_DECL bool can_relate(
 
 /**
 *******************************************************************************/
-OWLCPP_REASONER_DECL bool can_relate(
+OWLCPP_LOGIC_DECL bool can_relate(
       const TDLConceptExpression* c1e,
       const TDLObjectRoleExpression* pe,
       const TDLConceptExpression* c2e,
@@ -125,7 +125,7 @@ OWLCPP_REASONER_DECL bool can_relate(
 
 /**
 *******************************************************************************/
-OWLCPP_REASONER_DECL void get_sub_super(
+OWLCPP_LOGIC_DECL void get_sub_super(
       const CE_predicate& pred,
       std::vector<std::string>& cv,
       const TDLConceptExpression* ce,
@@ -142,7 +142,7 @@ OWLCPP_REASONER_DECL void get_sub_super(
 @param kernel reasoning kernel
 @param direct search for direct ancestors/descendants if true
 *******************************************************************************/
-OWLCPP_REASONER_DECL void get_sub_super(
+OWLCPP_LOGIC_DECL void get_sub_super(
       const std::vector<const CE_predicate*>& pred,
       std::vector<std::string>& cv,
       const TDLConceptExpression* ce,
@@ -153,7 +153,7 @@ OWLCPP_REASONER_DECL void get_sub_super(
 
 /**@brief set top/bottom property names as short OWL names
 *******************************************************************************/
-OWLCPP_REASONER_DECL void set_top_bottom(ReasoningKernel&);
+OWLCPP_LOGIC_DECL void set_top_bottom(ReasoningKernel&);
 
 
 /**
