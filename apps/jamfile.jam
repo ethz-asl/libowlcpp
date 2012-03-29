@@ -7,41 +7,40 @@ project apps
    :  build-dir $(OUT)/apps
    :  requirements
       <link>static
+      <runtime-link>static
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
+      <library>/boost//filesystem
 ;
 
 exe find_owl
    : #sources
       find_ontologies.cpp
    : #requirements
-      <library>/owlcpp//rdf
-      <library>/owlcpp//io
 ;
 
 exe print_triples
    : #sources
       print_triples.cpp
    : #requirements
+      <link>static
       <library>/boost/program_options
-      <library>/owlcpp//rdf
-      <library>/owlcpp//io
 ;
 
 exe print_classes
    : #sources
       print_classes.cpp
    : #requirements
+      <link>static
       <library>/boost/program_options
-      <library>/owlcpp//rdf
-      <library>/owlcpp//io
 ;
 
 exe validate
    : #sources
       validate.cpp
    : #requirements
+      <link>static
       <library>/boost/program_options
-      <library>/owlcpp//rdf
-      <library>/owlcpp//io
       <library>/owlcpp//logic
       <library>/owlcpp//factpp_kernel
 ;
@@ -50,7 +49,6 @@ exe validate
 #   : #sources
 #      satisfiable.cpp
 #   : #requirements
-#      <library>/owlcpp//rdf
-#      <library>/owlcpp//io
+#      <link>static
 #      <library>/owlcpp//logic
 #;
