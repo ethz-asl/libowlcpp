@@ -58,6 +58,13 @@ public:
       triple_.insert(Triple(subj, pred, obj, doc));
    }
 
+   void clear() {
+      triple_.clear();
+      documents().clear();
+      node_.clear();
+      iri_.clear();
+   }
+
 private:
    Iri_map iri_;
    node_map node_;
