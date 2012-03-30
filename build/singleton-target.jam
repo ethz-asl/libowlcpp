@@ -29,7 +29,7 @@ class make-target-singleton : basic-target {
       local location = [ $(property-set).get <location> ] ;
       local props ;
       local remove = 
-         <link> <variant> <debug-symbols> <define> <inlining> <optimization> 
+         <link> <runtime-link> <variant> <debug-symbols> <define> <inlining> <optimization> 
          <threading> <runtime-debugging> <toolset> <toolset-gcc:version> <pic>
       ;
       for local e in [ $(property-set).raw ] {

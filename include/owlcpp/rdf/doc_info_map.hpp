@@ -101,6 +101,11 @@ public:
    const_iterator begin() const {return store_.begin();}
    const_iterator end() const {return store_.end();}
 
+   void clear() {
+      store_.clear();
+      tracker_ = detail::Id_tracker<Doc_id>();
+   }
+
    /**@brief Add document info: location, ontologyIRI, and versionIRI.
     @param path document location
     @param iri ontologyIRI

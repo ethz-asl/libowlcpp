@@ -16,7 +16,6 @@ public:
    typedef Doc_map doc_map_t;
 
    doc_map_t const& documents() const {return docs_;}
-//   Doc_map& documents() {return doc_;}
 
    /**
     @param iri OntologyIRI or VersionIRI
@@ -91,6 +90,8 @@ public:
    std::string version_iri(const Doc_id did) const {
       return static_cast<T const*>(this)->string(version_iri_id(did));
    }
+protected:
+   Doc_map& documents() {return docs_;}
 
 private:
    doc_map_t docs_;

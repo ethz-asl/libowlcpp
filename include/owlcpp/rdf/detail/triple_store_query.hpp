@@ -76,6 +76,7 @@ template<class Subj, class Pred, class Obj, class Doc> class Query_type {
    // explicit specialization should be used for that case
    BOOST_MPL_ASSERT_RELATION( mpl::size<v4_t>::type::value, >, 0 );
 
+   //index preference order: subj, obj, pred, doc
    typedef typename mpl::if_<
             typename mpl::contains<v4_t, mpl::int_<0> >::type,
             mpl::int_<0>,
