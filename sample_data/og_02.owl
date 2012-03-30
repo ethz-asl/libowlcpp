@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE rdf:RDF [
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+  <!ENTITY owl2 "http://www.w3.org/2006/12/owl2#" >
+  <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+  <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+  <!ENTITY OG "http://www.sample.com/owl/sample.owl#" >
+]>
+<rdf:RDF xmlns="http://www.sample.com/owl/sample.owl#"
+  xml:base="og_02.owl#"
+  xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:owl2="http://www.w3.org/2006/12/owl2#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns:OG="http://www.sample.com/owl/sample.owl#">
+
+<owl:Ontology rdf:about="" />
+
+<owl:AnnotationProperty rdf:about="&dc;date"/>
+<owl:AnnotationProperty rdf:about="&dc;title"/>
+<owl:AnnotationProperty rdf:about="&dc;description"/>
+<owl:AnnotationProperty rdf:about="&dc;creator"/>
+<owl:AnnotationProperty rdf:about="&dc;rights"/>
+<owl:AnnotationProperty rdf:about="&dc;publisher"/>
+<owl:AnnotationProperty rdf:about="&dc;subject"/>
+<owl:AnnotationProperty rdf:about="&dc;type"/>
+<owl:AnnotationProperty rdf:about="&dc;contributor"/>
+<owl:Class rdf:about="&owl;Thing"/>
+<owl:Class rdf:about="&OG;TopCategory">
+  <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+</owl:Class>
+<owl:ObjectProperty rdf:about="&OG;Attribute">
+        <rdfs:label>Attribute</rdfs:label>
+        <owl:inverseOf rdf:resource="&OG;InverseAttribute"/>
+    </owl:ObjectProperty>
+    <owl:ObjectProperty rdf:about="&OG;InverseAttribute">
+        <rdfs:label>InverseAttribute</rdfs:label>
+    </owl:ObjectProperty>
+
+<owl:Class rdf:about="&OG;DateValueType">
+	<rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
+</owl:Class>
+
+<owl:Class rdf:about="&OG;MagnitudeValueType">
+	<rdfs:subClassOf rdf:resource="&OG;PrimitiveValueType"/>
+</owl:Class>
+
+<owl:Class rdf:about="&OG;PrimitiveValueType" />
+<owl:Class rdf:about="&OG;ApplicationCategory" />
+
+<owl:Class rdf:about="&OG;NumberValueType">
+	<rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
+</owl:Class>
+
+<owl:Class rdf:about="&OG;Unit">
+	<rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
+</owl:Class>
+
+<owl:Class rdf:about="&OG;ValueType">
+	<rdfs:subClassOf rdf:resource="&OG;TopCategory"/>
+</owl:Class>
+
+
+<owl:Class rdf:about="&OG;DissectionCategory">
+	<rdfs:subClassOf rdf:resource="&OG;ApplicationCategory"/>
+</owl:Class>
+
+<owl:Class rdf:about="&OG;CodingArtefact">
+	<rdfs:subClassOf rdf:resource="&OG;DissectionCategory"/>
+</owl:Class>
+
+<owl:ObjectProperty rdf:about="&OG;hasLanguageAnnotation">
+	<rdfs:label>hasLanguageAnnotation</rdfs:label>
+	<owl:inverseOf rdf:resource="&OG;isLanguageAnnotationOf"/>
+	<rdfs:subPropertyOf rdf:resource="&OG;DissectionDetailsAttribute"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&OG;isLanguageAnnotationOf">
+	<rdfs:label>isLanguageAnnotationOf</rdfs:label>
+	<rdfs:subPropertyOf rdf:resource="&OG;InverseDissectionDetailsAttribute"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&OG;DissectionDetailsAttribute">
+   <rdfs:label>DissectionDetailsAttribute</rdfs:label>
+   <owl:inverseOf rdf:resource="&OG;InverseDissectionDetailsAttribute"/>
+   <rdfs:subPropertyOf rdf:resource="&OG;DissectionAttribute"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&OG;InverseDissectionDetailsAttribute">
+   <rdfs:label>InverseDissectionDetailsAttribute</rdfs:label>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&OG;DissectionAttribute">
+   <rdfs:label>DissectionAttribute</rdfs:label>
+</owl:ObjectProperty>
+
+</rdf:RDF>
+

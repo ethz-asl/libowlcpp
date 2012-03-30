@@ -1,43 +1,70 @@
-# owl_cpp/jamroot.jam
-# part of owl_cpp project.
+# owlcpp/jamroot.jam
+# part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
 import build/singleton-target ;
+import build/version ;
 
 path-constant PROJ_ROOT : . ;
 path-constant INCLUDE : include ;
 path-constant OUT : out ;
-path-constant SMPL_DATA : "sample_data" ;
-path-constant TEMP_DIR : "out/temp" ;
+path-constant SMPL_DATA : sample_data ;
+path-constant TEMP_DIR : $(OUT)/temp ;
 make $(TEMP_DIR) : : @common.mkdir ;
-path-constant GENERATED_INCLUDE : out/include ;
-path-constant GENERATED_LIB : out/lib ;
+path-constant GENERATED_INCLUDE : $(OUT)/include ;
+path-constant GENERATED_LIB : $(OUT)/lib ;
+path-constant PYTHON_OUT : $(OUT)/binding/python ;
+
+constant LIB_REQUIREMENTS :
+   <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
+   <toolset>msvc:<cxxflags>/Gy
+;
 
 if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
-use-project boost : $(BOOST[1]) ;
+use-project /boost : $(BOOST[1]) ;
 
-project owl_cpp
-   : 
-      build-dir $(OUT)
-   : 
+project owlcpp
+   : build-dir $(OUT)
    : requirements
+      <include>$(BOOST[1])
+      <include>$(INCLUDE)
+   : usage-requirements
+      <include>$(INCLUDE)
+
 ;
 
 alias test
    : #sources
-      lib/test
+      lib/rdf/test
+      lib/io/test
+      lib/logic/test
       apps/test
    : #requirements
 ;
 
-alias lib_owl_cpp : lib//lib_owl_cpp ;
+alias test-py
+   : #sources
+      binding/python/test
+   : #requirements
+;
+explicit test test-py ;
 
-alias applications : apps ;
+build-project lib ;
+use-project /owlcpp : . ;
+alias rdf : lib/rdf ;
+alias io : lib/io ;
+alias logic : lib/logic ;
+alias apps : ./apps ;
 alias factpp_kernel : external//factpp_kernel ;
-alias expat : external//expat ;
+alias libxml2 : external//libxml2 ;
 alias raptor : external//raptor ;
-explicit test factpp_kernel expat raptor ;
+explicit factpp_kernel raptor ;
+
+alias rdf-py : binding/python//rdf_install ;
+alias io-py : binding/python//io_install ;
+alias api-py : rdf-py io-py ;
+explicit rdf-py io-py api-py ;
 
 if [ modules.peek doxygen : .initialized ] {
    import path ;

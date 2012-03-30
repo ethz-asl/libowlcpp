@@ -1,3 +1,8 @@
+# owlcpp/build/singleton-target.jam
+# part of owlcpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2011
+
 import "class" : new ;
 import project ;
 import property ;
@@ -24,8 +29,8 @@ class make-target-singleton : basic-target {
       local location = [ $(property-set).get <location> ] ;
       local props ;
       local remove = 
-         <link> <variant> <debug-symbols> <define> <inlining> <optimization> 
-         <runtime-debugging> <toolset> <toolset-gcc:version> <pic>
+         <link> <runtime-link> <variant> <debug-symbols> <define> <inlining> <optimization> 
+         <threading> <runtime-debugging> <toolset> <toolset-gcc:version> <pic>
       ;
       for local e in [ $(property-set).raw ] {
          if ! [ set.intersection $(remove) : $(e:G) ] {

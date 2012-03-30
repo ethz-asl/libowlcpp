@@ -1,5 +1,5 @@
-# owl_cpp/apps/jamfile.jam
-# part of owl_cpp project.
+# owlcpp/apps/jamfile.jam
+# part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
@@ -7,30 +7,48 @@ project apps
    :  build-dir $(OUT)/apps
    :  requirements
       <link>static
-      <library>..//lib_owl_cpp
-;
-
-exe print_triples
-   : #sources
-      print_triples.cpp
+      <runtime-link>static
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
+      <library>/boost//filesystem
 ;
 
 exe find_owl
    : #sources
       find_ontologies.cpp
+   : #requirements
+;
+
+exe print_triples
+   : #sources
+      print_triples.cpp
+   : #requirements
+      <link>static
+      <library>/boost/program_options
 ;
 
 exe print_classes
    : #sources
       print_classes.cpp
+   : #requirements
+      <link>static
+      <library>/boost/program_options
 ;
 
 exe validate
    : #sources
       validate.cpp
+   : #requirements
+      <link>static
+      <library>/boost/program_options
+      <library>/owlcpp//logic
+      <library>/owlcpp//factpp_kernel
 ;
 
-exe satisfiable
-   : #sources
-      satisfiable.cpp
-;
+#exe satisfiable
+#   : #sources
+#      satisfiable.cpp
+#   : #requirements
+#      <link>static
+#      <library>/owlcpp//logic
+#;

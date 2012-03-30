@@ -1,5 +1,5 @@
-# "owl_cpp/external/ext/factpp.jam"
-# part of owl_cpp project.
+# "owlcpp/external/ext/factpp.jam"
+# part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
@@ -11,7 +11,6 @@ import extension ;
 import project ;
 import regex ;
 import path ;
-import utils ; #local jam-file
 
 extension.declare factpp ;
 
@@ -64,6 +63,7 @@ rule transform_hpp ( src_dir : version ) {
       :  $(file) $(files)
       :  @transform_hpp_action
       :  <location>$(GENERATED_INCLUDE)/$(out_dir)
+         <version>$(version)
       ;
    }
    return $(files) ;
@@ -147,13 +147,18 @@ rule transform_hpp_action ( targets * : sources * : properties * ) {
       "/* Modified to control symbol export */"
       "#include \"$(incl_dir)/config.hpp\""
    ;
-   if tSignature = $(files[1]:B) { src += "#include <iterator>" ; }
+   import property ;
+   local version = [ property.select <version> : $(properties) ] ;
+   version = $(version:G=) ;
+   if "tSignature" = $(files[1]:B) && $(version) < "1.5.3" { 
+      src += "#include <iterator>" ;
+   }
    src += "" ;
-   local orig = [ utils.read_file $(files[1]) ] ;
+   local orig = [ read_file $(files[1]) ] ;
    orig = [ replace_include $(orig) : $(files[2-]:B) ] ;
    local export_classes = 
       ReasoningKernel TNamedEntry TRole TExpressionManager TBox 
-      DLConceptTaxonomy Taxonomy DlSatTester TRole
+      DLConceptTaxonomy Taxonomy DlSatTester TRole TDLAxiom
    ;
    orig = [ add_class_export $(orig) : $(export_classes) ] ;
    local export_funs = 
@@ -194,7 +199,7 @@ rule transform_cpp ( src_dir : version : headers * ) {
 ################################################################################
 rule transform_cpp_action ( targets * : sources * : properties * ) {
    local files = $(sources:G=) ;
-   local src = [ utils.read_file $(files[1]) ] ;
+   local src = [ read_file $(files[1]) ] ;
    src = [ replace_include $(src) : $(files[2-]:B) ] ;
    
    #make getVersion definition in Kernel.cpp
@@ -209,8 +214,6 @@ const char* ReasoningKernel::getVersion() { return ReasoningKernel::Version; }" 
    STR on $(<) = $(src) ;
 }
 actions transform_cpp_action { @($(STDOUT):E=$(STR)) > "$(<)" }
-
-
 
 ## 
 ################################################################################
@@ -232,13 +235,12 @@ rule init ( version ? : location : options * )
    
    local requirements = 
       [ extension.define factpp $(version) : $(kernel_location) : $(options) ]
-      <include>$(BOOST[1])
       <include>$(GENERATED_INCLUDE)
       <implicit-dependency>config.hpp
       <implicit-dependency>$(headers:B).hpp
       <define>FACTPP_KERNEL_SOURCE
       <link>shared:<define>FACTPP_KERNEL_DYN_LINK
-      <toolset>gcc:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
+      <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
    ;
    
    lib factpp_kernel
@@ -247,5 +249,6 @@ rule init ( version ? : location : options * )
       :   #default build properties
       :   #usage requirements
          <include>$(GENERATED_INCLUDE)
+         <link>shared:<define>FACTPP_KERNEL_DYN_LINK
       ;
 }

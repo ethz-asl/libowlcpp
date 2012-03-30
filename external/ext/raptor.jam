@@ -1,5 +1,5 @@
-# @file "owl_cpp/external/ext/raptor.jam"
-# part of owl_cpp project.
+# @file "owlcpp/external/ext/raptor.jam"
+# part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
@@ -12,7 +12,6 @@ import feature ;
 import common ;
 import regex ;
 import path ;
-import utils ; #local jam-file
 
 extension.declare raptor ;
 
@@ -43,12 +42,17 @@ rule config_h ( targets * : sources * : properties * ) {
          HAVE_GETTIMEOFDAY
          HAVE_INTTYPES_H
          HAVE_ISASCII
+         HAVE_LIBXML_HASH_H
+         HAVE_LIBXML_HTMLPARSER_H
+#         HAVE_LIBXML_NANOHTTP_H
+         HAVE_LIBXML_PARSER_H
+         HAVE_LIBXML_SAX2_H
          HAVE_LIMITS_H
          HAVE_MATH_H
          HAVE_MEMORY_H
-         HAVE_RAPTOR_PARSE_DATE
          HAVE_SETJMP
          HAVE_SETJMP_H
+         HAVE_STDDEF_H
          HAVE_STDINT_H
          HAVE_STDLIB_H
          HAVE_STRINGS_H
@@ -59,6 +63,11 @@ rule config_h ( targets * : sources * : properties * ) {
          HAVE_VSNPRINTF
          HAVE_XMLCTXTUSEOPTIONS
          HAVE_XMLSAX2INTERNALSUBSET
+         RAPTOR_LIBXML_ENTITY_ETYPE
+         RAPTOR_LIBXML_HTML_PARSE_NONET
+         RAPTOR_LIBXML_XMLSAXHANDLER_EXTERNALSUBSET
+         RAPTOR_LIBXML_XMLSAXHANDLER_INITIALIZED
+         RAPTOR_LIBXML_XML_PARSE_NONET
          RAPTOR_NFC_CHECK
          RAPTOR_PARSER_GUESS
          RAPTOR_PARSER_NTRIPLES
@@ -66,7 +75,7 @@ rule config_h ( targets * : sources * : properties * ) {
          RAPTOR_PARSER_TURTLE
          RAPTOR_SERIALIZER_NTRIPLES
          RAPTOR_WWW_NONE
-         RAPTOR_XML_EXPAT
+         RAPTOR_XML_LIBXML
          STDC_HEADERS
    ;
    
@@ -111,38 +120,45 @@ rule config_h ( targets * : sources * : properties * ) {
          HAVE_GETOPT_H
          HAVE_STRCASECMP
          HAVE_SYS_TIME_H
+         HAVE_VASPRINTF
          TIME_WITH_SYS_TIME
          HAVE_UNISTD_H
-         ;
+      ;
       undef +=
-         ;
-      
+      ;
+
       case *windows* :
       define +=
          HAVE_STRICMP
          WIN32_LEAN_AND_MEAN
          YY_USE_CONST
-         ;
+         WIN32_CONFIG_H
+      ;
       undef +=
-         ;
+      ;
       other +=
 #         "#define vsnprintf _vsnprintf"
          "#define snprintf _snprintf"
+         "#define strtok_r strtok_s"
+         "#define strcasecmp stricmp"
          "#define access _access"
 #         "#define sscanf sscanf_s"
-         "#define stricmp _stricmp"
-         "#define strnicmp _strnicmp"
+#         "#define stricmp _stricmp"
+#         "#define strnicmp _strnicmp"
          "#define __func__ \"\""
          "#undef RAPTOR_INLINE"
          "#define RAPTOR_INLINE __inline"
+         "#include \"boost/config.hpp\""
+         "#if defined BOOST_MSVC"
          "#define lround(x) (((x) < 0) ? (long)((x)-0.5) : (long)((x)+0.5))"
+         "#endif"
       ;
    }
    CONFIG on $(<) =
       $(other)
       "#define $(define) 1"
       "#undef $(undef)"
-      ;
+   ;
    NL on $(<) = "
 " ;
 }
@@ -152,8 +168,7 @@ rule raptor2_h ( targets * : sources * : properties * ) {
    local v = 2.0.4 ; #[ version_raptor $(properties) ] ;
    local vs = [ version_split $(v) ] ;
    local vc = [ version_calc $(v) ] ;
-   
-   local src = [ utils.read_file $(sources:G=) ] ;
+   local src = [ read_file $(sources:G=) ] ;
    src = [ regex.replace $(src) @RAPTOR_VERSION_DECIMAL@ $(vc[2]) ] ;
    src = [ regex.replace $(src) @VERSION@ $(v) ] ;
    src = [ regex.replace $(src) @RAPTOR_VERSION_MAJOR@ $(vs[1]) ] ;
@@ -189,73 +204,66 @@ actions raptor2_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 rule init ( version ? : location : options * ) {
    version ?= default ;
    
-   make-singleton raptor_config.h 
+   make raptor_config.h 
       : 
       : @config_h
       : <raptor-version>$(version)
-      <location>$(GENERATED_INCLUDE)/raptor
    ;
    
    local location_src = [ path.join $(location) src ] ;
+   local location_rdfa = [ path.join $(location) librdfa ] ;
    
-   make-singleton raptor2.h 
+   make raptor2.h 
       : $(location_src)/raptor2.h.in
       : @raptor2_h 
       : <raptor-version>$(version)
-         <location>$(GENERATED_INCLUDE)/raptor
    ;
    
-   src = 
-      raptor_parse.c raptor_serialize.c
-      raptor_rfc2396.c raptor_uri.c raptor_log.c raptor_locator.c
-      raptor_namespace.c raptor_qname.c raptor_option.c
-      raptor_general.c raptor_unicode.c raptor_www.c
-      raptor_statement.c raptor_term.c raptor_sequence.c
-      raptor_stringbuffer.c raptor_iostream.c raptor_xml.c
-      raptor_xml_writer.c raptor_set.c turtle_common.c
-      raptor_turtle_writer.c raptor_avltree.c snprintf.c
-      raptor_json_writer.c raptor_memstr.c raptor_concepts.c
-      raptor_syntax_description.c
-      raptor_expat.c
-      raptor_rdfxml.c raptor_sax2.c
-      turtle_lexer.c turtle_parser.c
-      ntriples_parse.c
-      raptor_guess.c
-      raptor_serialize_ntriples.c
-      raptor_nfc_data.c raptor_nfc.c
-      strcasecmp.c
-      parsedate.c
-   ;
+   local src = 
+      raptor_parse raptor_serialize raptor_rfc2396 raptor_uri raptor_log 
+      raptor_locator raptor_namespace raptor_qname raptor_option raptor_general 
+      raptor_unicode raptor_www raptor_statement raptor_term raptor_sequence 
+      raptor_stringbuffer raptor_iostream raptor_xml raptor_xml_writer 
+      raptor_set turtle_common raptor_turtle_writer raptor_avltree snprintf 
+      raptor_json_writer raptor_memstr raptor_concepts raptor_syntax_description 
+      raptor_libxml raptor_rdfxml raptor_sax2 turtle_lexer turtle_parser 
+      ntriples_parse raptor_guess raptor_librdfa raptor_serialize_ntriples 
+      raptor_nfc_data raptor_nfc 
+      strcasecmp parsedate
+      ;
+   local src_rdfa = 
+      curie iri language rdfa rdfa_utils subject triple
+      ;
    
    local requirements = 
          [ extension.define raptor $(version) : $(location) : $(options) ]
          <raptor-version>$(version)
          <raptor-location>$(location)
          <include>$(location_src)
-         <include>$(BOOST[1])
+         <include>$(location_rdfa)
          <define>HAVE_CONFIG_H
          <define>LIBRDFA_IN_RAPTOR
          <define>RAPTOR_INTERNAL
          <implicit-dependency>raptor_config.h
-         #<dependency>raptor_config.h
          <implicit-dependency>raptor2.h
-         #<dependency>raptor2.h
          <link>shared:<define>RAPTOR_DYN_LINK
          <toolset>msvc:<define>RAPTOR_WIN32
-         <toolset>gcc:<cflags>"-fvisibility=hidden"
+         <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden"
    ;
    
    
    lib raptor
-      :  $(location_src)/$(src)
+      :  
+         $(location_src)/$(src).c
+         $(location_rdfa)/$(src_rdfa).c
       :  $(requirements)
-         <link>static:<library>../../external//expat
-         <link>shared:<library>../../external//expat_pic
+         <library>../../external//libxml2 #:<link>shared
       :  #default build options
       :  #usage requirements
          <implicit-dependency>raptor2.h
          <dependency>raptor2.h
          <link>shared:<define>RAPTOR_DYN_LINK
+         <library>../../external//libxml2
    ;
    
 }

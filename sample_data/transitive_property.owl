@@ -1,5 +1,18 @@
 <?xml version="1.0"?>
-<rdf:RDF xmlns="http://purl.org/obo/owl/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" xmlns:oboContent="http://purl.org/obo/owl/" xmlns:oban="http://purl.org/obo/oban/" xmlns:owl11="http://www.w3.org/2006/12/owl11#onClass" xmlns:owl2="http://www.w3.org/2006/12/owl2#onClass" xmlns:obo="http://purl.org/obo/owl/obo#" xml:base="http://purl.org/obo/owl/ro">
+<rdf:RDF 
+xmlns="http://purl.org/obo/owl/" 
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+xmlns:owl="http://www.w3.org/2002/07/owl#" 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema#" 
+xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" 
+xmlns:oboContent="http://purl.org/obo/owl/" 
+xmlns:oban="http://purl.org/obo/oban/" 
+xmlns:owl11="http://www.w3.org/2006/12/owl11#onClass" 
+xmlns:owl2="http://www.w3.org/2006/12/owl2#onClass" 
+xmlns:obo="http://purl.org/obo/owl/obo#" 
+xml:base="http://purl.org/obo/owl/ro"
+>
 <!--oboInOwl meta-model - we must declare this here, otherwise the ontology will be OWL-Full unless we import http://www.geneontology.org/formats/oboInOwl#-->
   <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasAlternativeId"/>
   <owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasDate"/>
@@ -28,7 +41,7 @@
   <owl:Class rdf:about="http://www.geneontology.org/formats/oboInOwl#SynonymType"/>
   <owl:Class rdf:about="http://www.geneontology.org/formats/oboInOwl#ObsoleteClass"/>
   <owl:ObjectProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#ObsoleteProperty"/>
-  <owl:Ontology rdf:about="">
+  <owl:Ontology rdf:about="transitive_property">
     <oboInOwl:savedBy>cjm</oboInOwl:savedBy>
     <oboInOwl:hasDefaultNamespace>relationship</oboInOwl:hasDefaultNamespace>
     <rdfs:comment>&lt;p&gt;This ontology contains logical relations to be shared across the different OBO ontologies. Each OBO ontology is free to extend this set with relations specific to the biology within that ontology&lt;/p&gt;&lt;div class="notes"&gt;&lt;p&gt;In the definitions, variables c, d, ..., p, q, ... range over instances of continuants and processes respectively. C, D, ..., P, Q, ... range over the corresponding classes&lt;/p&gt;&lt;p&gt; For a discussion of instance-level relations and also of additional axioms needed to infer transitivity and other properties of the relations listed above see &lt;a href="http://genomebiology.com/2005/6/5/R46"&gt;http://genomebiology.com/2005/6/5/R46&lt;/a&gt; or the OBO relations page hosted at &lt;a href="http://obo.sourceforge.net/relationship"&gt;http://obo.sourceforge.net/relationship&lt;/a&gt;&lt;/div&gt;</rdfs:comment>

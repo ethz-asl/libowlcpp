@@ -1,5 +1,5 @@
-# owl_cpp/lib/test/jamfile.jam
-# part of owl_cpp project.
+# owlcpp/lib/test/jamfile.jam
+# part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
@@ -12,8 +12,10 @@ project
       <include>../
       <library>/boost//unit_test_framework
       <library>/boost//filesystem
-      <library>..//lib_owl_cpp
-      <library>../..//factpp_kernel
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
+      <library>/owlcpp//logic
+      <library>/owlcpp//factpp_kernel
       <define>SAMPLE_DATA_DIR="\"$(smpl_dir:T)\""
       <define>TEMPORARY_DIR="\"$(tmp_dir:T)\""
 ;
@@ -30,13 +32,7 @@ rule run-all ( sources * )
 
 local auto_run_src = [ glob *_run.cpp ] ;
 
-test-suite simple_tests
-    :
-        [ run-all 
-            $(auto_run_src)
-#         factpp_05_run.cpp
-        ]
-;
+test-suite simple_tests : [ run-all $(auto_run_src) ] ;
 
 test-suite all_tests
    :

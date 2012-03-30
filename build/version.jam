@@ -1,0 +1,64 @@
+# owlcpp/build/version.jam
+# part of owlcpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2010-1
+
+import read_file ;
+
+# construct build version from date and time numbers; n=[1-6]
+rule build_version ( n ? ) {
+   n ?= 3 ;
+   local re = "([0-9]+)-([0-9]+)-([0-9]+) ([0-9]+):([0-9]+):([0-9]+)" ;
+   local b = [ MATCH $(re) : [ modules.peek : JAMDATE ] ] ;
+   b = $(b[1-$(n)]) ;
+   return $(b:J) ;
+}
+
+# trim whitespace from ends
+rule trim_whitespace ( str ) {
+   import string ;
+   local re = "^[ \n\t]*([^\n\t]*[^ \n\t])[ \n\t]*$" ;
+   local match = [ MATCH "$(re)" : $(str) ] ;
+   if $(match) { return $(match[1]) ; }
+   else { return $(str) ; }
+} 
+
+# return git revision name
+rule git_revision {
+   local ref = [ MATCH "ref: ([0-9a-zA-Z/_\.\-]+)" : [ read_file "./.git/HEAD" ] ] ;
+   local rev ;
+   if $(ref) {
+      #exclude '\n'
+      rev = [ MATCH "([0-9a-f]+)" : [ read_file "./.git/$(ref[1])" ] ] ;
+   }
+   rev ?= 0 ;
+   return $(rev) ;
+}
+
+# return version based on a git tag
+rule git_describe ( git_path ? ) {
+   git_path ?= git ;
+   local str = [ SHELL "\"$(git_path)\" describe --always --dirty=*" ] ;
+   return [ trim_whitespace $(str) ] ;
+}
+
+# split tag "v1.2.5-8-gda17203*" into "1", "2", "5", "8-gda17203*"
+rule process_version_string ( v_str : v_def_1 v_def_2 v_def_3 v_def_e ) {
+   local re = "v?([0-9]*)[ \-\.]?([0-9]*)[ \-\.]?([0-9]*)-?(.*)" ;
+   local v = [ MATCH $(re) : $(v_str) ] ;
+   if $(v[1]) = "" || $(v[2]) = "" || $(v[3]) = "" {
+      echo "WARNING: Could not determine current code revision.  Using default." ;
+      echo "Undefined GIT_PATH variable in user-config.jam?" ;
+      return $(v_def_1) $(v_def_2) $(v_def_3) $(v_def_e) ;
+   } else {
+      return $(v) ;
+   }
+}
+
+IMPORT $(__name__) #source module
+   :  #source rules
+      build_version git_describe process_version_string 
+   :  #target module
+   :  #target rules
+      build_version git_describe process_version_string
+;
