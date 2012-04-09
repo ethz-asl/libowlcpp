@@ -7,7 +7,7 @@ project apps
    :  build-dir $(OUT)/apps
    :  requirements
       <link>static
-      <runtime-link>static
+#      <runtime-link>static
       <library>/owlcpp//rdf
       <library>/owlcpp//io
       <library>/boost//filesystem
@@ -23,7 +23,6 @@ exe print_triples
    : #sources
       print_triples.cpp
    : #requirements
-      <link>static
       <library>/boost/program_options
 ;
 
@@ -31,7 +30,6 @@ exe print_classes
    : #sources
       print_classes.cpp
    : #requirements
-      <link>static
       <library>/boost/program_options
 ;
 
@@ -39,7 +37,6 @@ exe validate
    : #sources
       validate.cpp
    : #requirements
-      <link>static
       <library>/boost/program_options
       <library>/owlcpp//logic
       <library>/owlcpp//factpp_kernel

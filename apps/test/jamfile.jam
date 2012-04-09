@@ -6,8 +6,6 @@
 project apps/test
    :  build-dir $(OUT)/apps
    : requirements
-      <link>shared
-      <runtime-link>shared
 ;
 
 run ../find_ontologies.cpp
