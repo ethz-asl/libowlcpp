@@ -1,7 +1,7 @@
 # @file "owlcpp/external/ext/raptor.jam"
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2010-1
+# Copyright Mikhail K Levin 2010-2
 
 # Boost.build script for building Raptor library <http://librdf.org/raptor/>
 
@@ -15,15 +15,21 @@ import path ;
 
 extension.declare raptor ;
 
+## extract version string
+################################################################################
 rule version_raptor ( properties * ) {
    local v = [ property.select <raptor-version> : $(properties) ] ;
    return $(v:G=) ;
 }
 
+## 
+################################################################################
 rule version_split ( v ) {
    return [ regex.split $(v) "\\." ] ;
 }
 
+## 
+################################################################################
 rule version_calc ( v ) {
    local vs = [ version_split $(v) ] ;
    local vdmin = $(vs[1])0000 ;
@@ -31,6 +37,8 @@ rule version_calc ( v ) {
    return $(vdmin) $(vd) ;
 }
 
+## 
+################################################################################
 rule config_h ( targets * : sources * : properties * ) {
    local define =
          HAVE_DLFCN_H
@@ -44,7 +52,6 @@ rule config_h ( targets * : sources * : properties * ) {
          HAVE_ISASCII
          HAVE_LIBXML_HASH_H
          HAVE_LIBXML_HTMLPARSER_H
-#         HAVE_LIBXML_NANOHTTP_H
          HAVE_LIBXML_PARSER_H
          HAVE_LIBXML_SAX2_H
          HAVE_LIMITS_H
@@ -52,6 +59,7 @@ rule config_h ( targets * : sources * : properties * ) {
          HAVE_MEMORY_H
          HAVE_SETJMP
          HAVE_SETJMP_H
+         HAVE_STAT
          HAVE_STDDEF_H
          HAVE_STDINT_H
          HAVE_STDLIB_H
@@ -81,7 +89,7 @@ rule config_h ( targets * : sources * : properties * ) {
    
    local undef ;
    
-   local v = 2.0.4 ; #[ version_raptor $(properties) ] ;
+   local v = [ version_raptor $(properties) ] ;
    local vs = [ version_split $(v) ] ;
    local vc = [ version_calc $(v) ] ;
    
@@ -164,8 +172,10 @@ rule config_h ( targets * : sources * : properties * ) {
 }
 actions config_h { @($(STDOUT):E=$(CONFIG:J=$(NL))$(NL)) > "$(<)" }
 
+## 
+################################################################################
 rule raptor2_h ( targets * : sources * : properties * ) {
-   local v = 2.0.4 ; #[ version_raptor $(properties) ] ;
+   local v = [ version_raptor $(properties) ] ;
    local vs = [ version_split $(v) ] ;
    local vc = [ version_calc $(v) ] ;
    local src = [ read_file $(sources:G=) ] ;
@@ -201,24 +211,9 @@ rule raptor2_h ( targets * : sources * : properties * ) {
 }
 actions raptor2_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 
-rule init ( version ? : location : options * ) {
-   version ?= default ;
-   
-   make raptor_config.h 
-      : 
-      : @config_h
-      : <raptor-version>$(version)
-   ;
-   
-   local location_src = [ path.join $(location) src ] ;
-   local location_rdfa = [ path.join $(location) librdfa ] ;
-   
-   make raptor2.h 
-      : $(location_src)/raptor2.h.in
-      : @raptor2_h 
-      : <raptor-version>$(version)
-   ;
-   
+## 
+################################################################################
+rule raptor-source ( version : location ) {
    local src = 
       raptor_parse raptor_serialize raptor_rfc2396 raptor_uri raptor_log 
       raptor_locator raptor_namespace raptor_qname raptor_option raptor_general 
@@ -228,12 +223,39 @@ rule init ( version ? : location : options * ) {
       raptor_json_writer raptor_memstr raptor_concepts raptor_syntax_description 
       raptor_libxml raptor_rdfxml raptor_sax2 turtle_lexer turtle_parser 
       ntriples_parse raptor_guess raptor_librdfa raptor_serialize_ntriples 
-      raptor_nfc_data raptor_nfc 
       strcasecmp parsedate
-      ;
+   ;
    local src_rdfa = 
       curie iri language rdfa rdfa_utils subject triple
+   ;
+   if $(version) <= "2.0.6" {
+      src += raptor_nfc_data raptor_nfc
       ;
+   }
+   local location_src = [ path.join $(location) src ] ;
+   local location_rdfa = [ path.join $(location) librdfa ] ;
+   
+   return $(location_src)/$(src).c $(location_rdfa)/$(src_rdfa).c ;
+}
+
+## 
+################################################################################
+rule init ( version : location : options * ) {
+   
+   make-singleton raptor_config.h 
+      : 
+      : @config_h
+      : <raptor-version>$(version) <location>$(GENERATED_INCLUDE)/raptor
+   ;
+   
+   local location_src = [ path.join $(location) src ] ;
+   local location_rdfa = [ path.join $(location) librdfa ] ;
+   
+   make-singleton raptor2.h 
+      : $(location_src)/raptor2.h.in
+      : @raptor2_h 
+      : <raptor-version>$(version) <location>$(GENERATED_INCLUDE)/raptor
+   ;
    
    local requirements = 
          [ extension.define raptor $(version) : $(location) : $(options) ]
@@ -251,11 +273,9 @@ rule init ( version ? : location : options * ) {
          <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden"
    ;
    
-   
    lib raptor
       :  
-         $(location_src)/$(src).c
-         $(location_rdfa)/$(src_rdfa).c
+         [ raptor-source $(version) : $(location) ]
       :  $(requirements)
          <library>../../external//libxml2 #:<link>shared
       :  #default build options
