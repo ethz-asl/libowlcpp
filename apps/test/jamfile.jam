@@ -13,6 +13,7 @@ run ../find_ontologies.cpp
       sample_data
    : #input-files
    : #requirements
+      <link>shared
    : #target-name
       find_owl
 ;

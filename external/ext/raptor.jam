@@ -151,8 +151,8 @@ rule config_h ( targets * : sources * : properties * ) {
          "#define strcasecmp stricmp"
          "#define access _access"
 #         "#define sscanf sscanf_s"
-#         "#define stricmp _stricmp"
-#         "#define strnicmp _strnicmp"
+         "#define stricmp _stricmp"
+         "#define strnicmp _strnicmp"
          "#define __func__ \"\""
          "#undef RAPTOR_INLINE"
          "#define RAPTOR_INLINE __inline"
@@ -160,6 +160,7 @@ rule config_h ( targets * : sources * : properties * ) {
          "#if defined BOOST_MSVC"
          "#define lround(x) (((x) < 0) ? (long)((x)-0.5) : (long)((x)+0.5))"
          "#endif"
+         "#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)"
       ;
    }
    CONFIG on $(<) =
@@ -242,19 +243,21 @@ rule raptor-source ( version : location ) {
 ################################################################################
 rule init ( version : location : options * ) {
    
-   make-singleton raptor_config.h 
+   make #-singleton 
+      raptor_config.h 
       : 
       : @config_h
-      : <raptor-version>$(version) <location>$(GENERATED_INCLUDE)/raptor
+      : <raptor-version>$(version) #<location>$(GENERATED_INCLUDE)/raptor
    ;
    
    local location_src = [ path.join $(location) src ] ;
    local location_rdfa = [ path.join $(location) librdfa ] ;
    
-   make-singleton raptor2.h 
+   make #-singleton 
+      raptor2.h 
       : $(location_src)/raptor2.h.in
       : @raptor2_h 
-      : <raptor-version>$(version) <location>$(GENERATED_INCLUDE)/raptor
+      : <raptor-version>$(version) #<location>$(GENERATED_INCLUDE)/raptor
    ;
    
    local requirements = 
