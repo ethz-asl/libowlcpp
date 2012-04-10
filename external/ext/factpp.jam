@@ -7,7 +7,6 @@
 # <http://code.google.com/p/factplusplus/>
 
 import extension ;
-
 import project ;
 import regex ;
 import path ;
@@ -60,10 +59,10 @@ rule transform_hpp ( src_dir : version ) {
    local out_dir = factpp ;
    for local file in $(files) {
       make-singleton $(file:B).hpp
-      :  $(file) $(files)
-      :  @transform_hpp_action
-      :  <location>$(GENERATED_INCLUDE)/$(out_dir)
-         <version>$(version)
+         : $(file) $(files)
+         : @transform_hpp_action
+         : <location>$(GENERATED_INCLUDE)/$(out_dir)
+           <version>$(version)
       ;
    }
    return $(files) ;
@@ -188,8 +187,8 @@ rule transform_cpp ( src_dir : version : headers * ) {
    local out_dir = factpp ;
    for local file in $(files) {
       make-singleton $(file:D=$(GENERATED_LIB)/$(out_dir))
-      :  $(file) $(headers)
-      :  @transform_cpp_action
+         :  $(file) $(headers)
+         :  @transform_cpp_action
       ;
    }
    return $(files:D=$(GENERATED_LIB)/$(out_dir)) ;
