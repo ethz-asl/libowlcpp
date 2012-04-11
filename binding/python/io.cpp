@@ -11,16 +11,24 @@ part of owlcpp project.
 #include "boost/python/tuple.hpp"
 #include "boost/python/to_python_converter.hpp"
 #include "boost/python/exception_translator.hpp"
+#include "boost/python/implicit.hpp"
+namespace bp = boost::python;
 #include "boost/tuple/tuple.hpp"
 
 #include "owlcpp/exception.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/io/catalog.hpp"
-#include "owlcpp/io/parse_to_triple_store.hpp"
-namespace owl = owlcpp;
-namespace bp = boost::python;
+#include "owlcpp/io/input.hpp"
+#include "owlcpp/io/read_ontology_iri.hpp"
 
 namespace{
+template<class T1, class T2>
+struct Pair_to_tuple {
+  static PyObject* convert(const std::pair<T1, T2>& pair) {
+    return bp::incref(bp::make_tuple(pair.first, pair.second).ptr());
+  }
+};
+
 template<class T1, class T2> struct Tuple2tuple_converter {
 
   static PyObject* convert(boost::tuple<T1, T2> const& t) {
@@ -50,23 +58,28 @@ void translator(owlcpp::base_exception const& e) {
 
 BOOST_PYTHON_MODULE(io) {
    bp::register_exception_translator<owlcpp::base_exception>(&translator);
-   bp::class_<owl::Catalog>("Catalog")
-      .def("insert", &owl::Catalog::insert)
+   bp::class_<owlcpp::Catalog>("Catalog")
+      .def("insert_doc", &owlcpp::Catalog::insert_doc)
       .def(
             "find_location",
-            &owl::Catalog::find_location,
+            &owlcpp::Catalog::find_location,
             bp::return_value_policy<bp::return_by_value>()
             )
       ;
-   Tuple2tuple_converter<std::string, std::string>();
-   bp::def("ontology_id", &owl::ontology_id);
-   bp::def("find_ontologies", &owl::find_ontologies);
+   bp::implicitly_convertible<std::string,boost::filesystem::path>();
+//   Tuple2tuple_converter<std::string, std::string>();
+   bp::def("ontology_id",
+         static_cast<
+            std::pair<std::string,std::string> (*)
+            (boost::filesystem::path const&, const std::size_t)
+         >(&owlcpp::read_ontology_iri)
+   );
 
    bp::def(
          "load",
          static_cast<
-            void (*) (std::string const&, owl::Triple_store&)
-         >(&owl::load)
+            void (*) (std::string const&, owlcpp::Triple_store&)
+         >(&owlcpp::load)
    );
 
    bp::def(
@@ -74,9 +87,9 @@ BOOST_PYTHON_MODULE(io) {
          static_cast<
             void (*) (
                   std::string const&,
-                  owl::Triple_store&,
-                  owl::Catalog const&
+                  owlcpp::Triple_store&,
+                  owlcpp::Catalog const&
                   )
-         >(&owl::load)
+         >(&owlcpp::load)
    );
 }
