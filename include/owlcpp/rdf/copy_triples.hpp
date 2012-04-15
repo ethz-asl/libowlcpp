@@ -116,7 +116,7 @@ private:
 @throw base_exception if @b ts1 contains document already present in @b ts2
 *******************************************************************************/
 template<class Range, class Src, class Dest> inline void copy_triples(
-         Range r,
+         Range const& r,
          Src const& src,
          Dest& dest
 ) {

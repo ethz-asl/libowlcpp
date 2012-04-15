@@ -9,6 +9,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/nodes_iri_std_crtpb.hpp"
 #include "owlcpp/rdf/nodes_blank_crtpb.hpp"
 #include "owlcpp/rdf/nodes_literal_crtpb.hpp"
+#include "owlcpp/detail/id_tracker.hpp"
 
 namespace owlcpp{
 

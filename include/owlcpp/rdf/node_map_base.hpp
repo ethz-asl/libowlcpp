@@ -19,7 +19,6 @@ part of owlcpp project.
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/rdf/config.hpp"
 #include "owlcpp/rdf/exception.hpp"
-#include "owlcpp/detail/id_tracker.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
 
 namespace owlcpp{
