@@ -30,20 +30,14 @@ public:
 
    Raptor_wrapper();
 
-   template<class Sink> void operator()(
-         std::istream& stream,
-         Sink& sink
-   ) {
+   template<class Sink> void operator()(std::istream& stream, Sink& sink) {
       setup(&sink, &handle_statement<Sink>);
       parse(stream);
    }
 
-   template<class Sink> void operator()(
-         std::string const& file_name,
-         Sink& sink
-   ) {
+   template<class Sink> void operator()(std::string const& file, Sink& sink) {
       setup(&sink, &handle_statement<Sink>);
-      parse(file_name);
+      parse(file);
    }
 
    const boost::function<void()> abort_call() {
