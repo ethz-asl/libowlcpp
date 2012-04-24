@@ -1,9 +1,9 @@
-/** @file "/owlcpp/lib/rdf/test/triple_map_run.cpp" 
+/** @file "/owlcpp/lib/rdf/test/triple_map_02_run.cpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#define BOOST_TEST_MODULE triple_map_run
+#define BOOST_TEST_MODULE triple_map_02_run
 #include "boost/test/unit_test.hpp"
 #include "boost/range.hpp"
 #include "test/exception_fixture.hpp"

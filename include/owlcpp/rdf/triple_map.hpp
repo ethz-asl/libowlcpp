@@ -5,7 +5,12 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_MAP_HPP_
 #define TRIPLE_MAP_HPP_
-#include "owlcpp/rdf/detail/triple_store_types.hpp"
+#include <vector>
+#include "boost/ptr_container/ptr_vector.hpp"
+#include "owlcpp/node_id.hpp"
+#include "owlcpp/doc_id.hpp"
+#include "owlcpp/rdf/triple.hpp"
+#include "owlcpp/rdf/detail/triple_map_types.hpp"
 #include "owlcpp/rdf/detail/triple_store_query.hpp"
 
 namespace owlcpp{
@@ -13,27 +18,40 @@ namespace owlcpp{
 /**@brief Store, index, and search RDF triples
 *******************************************************************************/
 class Triple_map {
-   typedef query_detail::triple_map_store_t store_t;
+   typedef boost::ptr_vector<Triple> triples_t;
 
 public:
-   typedef store_t::iterator iterator;
-   typedef iterator const_iterator;
+   typedef triples_t::iterator iterator;
+   typedef triples_t::const_iterator const_iterator;
+private:
 
    /**
     @return number of stored triples
    */
-   std::size_t size() const {return store_.size();}
-   const_iterator begin() const {return store_.begin();}
-   const_iterator end() const {return store_.end();}
+   std::size_t size() const {return triples_.size();}
+   const_iterator begin() const {return triples_.begin();}
+   const_iterator end() const {return triples_.end();}
 //   Triple const& operator[](const std::size_t i) const {
 //      return store_.get<query_detail::seq_tag>()[i];
 //   }
-   void clear() {store_.clear();}
+   void clear() {
+      index_.clear();
+      triples_.clear();
+   }
 
    /**@brief Insert a new triple
     @param triple
    */
-   void insert(Triple const& triple) { store_.push_back(triple); }
+   void insert(
+            const Node_id subj,
+            const Node_id pred,
+            const Node_id obj,
+            const Doc_id doc
+   ) {
+      Triple* const t = new Triple(subj, pred, obj, doc);
+      triples_.push_back(t);
+      index_.insert(t);
+   }
 
 
    /**@brief Search triples by subject, predicate, object, or document IDs.
@@ -61,10 +79,9 @@ public:
    }
 
 private:
-   store_t store_;
+   triples_t triples_;
+   triple_map::Index index_;
 };
-
-using query_detail::Query;
 
 }//namespace owlcpp
 #endif /* TRIPLE_MAP_HPP_ */

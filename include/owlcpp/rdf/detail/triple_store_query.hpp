@@ -200,5 +200,8 @@ public:
 };
 
 }//namespace query_detail
+
+using query_detail::Query;
+
 }//namespace owlcpp
 #endif /* TRIPLE_STORE_QUERY_HPP_ */
