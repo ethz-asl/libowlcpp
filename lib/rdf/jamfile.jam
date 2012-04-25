@@ -12,7 +12,6 @@ lib owlcpp_rdf
    :  #requirements
       $(LIB_REQUIREMENTS)
       <link>shared:<define>OWLCPP_RDF_DYN_LINK
-      <implicit-dependency>..//version.hpp
    :  #default build options
    :  #usage requirements
       <link>shared:<define>OWLCPP_RDF_DYN_LINK
