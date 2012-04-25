@@ -55,7 +55,7 @@ public:
             const Node_id obj,
             const Doc_id doc
    ) {
-      triple_.insert(Triple(subj, pred, obj, doc));
+      triple_.insert(subj, pred, obj, doc);
    }
 
    void clear() {

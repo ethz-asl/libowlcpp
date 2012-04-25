@@ -49,7 +49,7 @@ public:
             const Node_id pred,
             const Node_id obj
    ) {
-      triple_.insert(Triple(subj, pred, obj, did_));
+      triple_.insert(subj, pred, obj, did_);
    }
 
    Node_id ontology_iri_id(const Doc_id = Doc_id(0)) const {return ontology_iri_;}

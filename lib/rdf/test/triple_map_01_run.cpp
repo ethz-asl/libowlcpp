@@ -4,7 +4,6 @@ part of owlcpp project.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
 #define BOOST_TEST_MODULE triple_map_01_run
-#define BOOST_TEST_MODULE triple_map_02_run
 #include "boost/test/unit_test.hpp"
 #include "boost/range.hpp"
 #include "test/exception_fixture.hpp"

@@ -74,7 +74,7 @@ if [ modules.peek doxygen : .initialized ] {
    import path ;
    local doc_public = [ path.glob-tree include apps : *.hpp *.cpp ] ;
    local doc_all = [ path.glob-tree lib : *.cpp *.hpp ] $(doc_public) ;
-   local alliases = "\"req=\\xrefitem req \\\"Requirement\\\" \\\"Requirements\\\" \"" ;
+   local alliases = "\"decision=\\xrefitem decision \\\"Decision\\\" \\\"Decisions\\\" \"" ;
    local params = 
       "PROJECT_NAME=$(OWLCPP_NAME)"
       "PROJECT_NUMBER=$(OWLCPP_VERSION)"

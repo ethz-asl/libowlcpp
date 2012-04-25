@@ -27,8 +27,6 @@ part of owlcpp project.
 #include "boost/range.hpp"
 #include "boost/type_traits/is_same.hpp"
 
-#include "owlcpp/rdf/detail/triple_store_types.hpp"
-
 BOOST_FUSION_ADAPT_STRUCT(
          owlcpp::Triple,
          (owlcpp::Node_id, subj_)
