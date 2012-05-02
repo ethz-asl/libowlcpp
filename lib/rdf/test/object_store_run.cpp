@@ -20,8 +20,10 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    typedef owlcpp::detail::Object_store<std::string> store_t;
    store_t st;
    BOOST_CHECK_EQUAL(st.size(), 0U);
+   BOOST_CHECK( ! st.have(0) );
    const std::string s1 = "blah";
    const unsigned id1 = st.insert(s1);
+   BOOST_CHECK( st.have(id1) );
    BOOST_CHECK(st.find(s1)->second == id1);
 
    const std::string s2 = "boo";

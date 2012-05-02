@@ -38,16 +38,16 @@ public:
    }
    const_iterator begin() const {return map_.begin();}
    const_iterator end() const {return map_.end();}
-   iterator begin() {return map_.begin();}
-   iterator end() {return map_.end();}
+
+   bool have(const id_type id) const {return id < vector_.size() && vector_[id] != map_.end();}
 
    const_iterator operator[](const id_type id) const {
-      BOOST_ASSERT(id < vector_.size());
+      BOOST_ASSERT(have(id));
       return vector_[id];
    }
 
    const_iterator at(const id_type id) const {
-      if(id >= vector_.size()) BOOST_THROW_EXCEPTION(
+      if( ! have(id) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("invalid ID")
                << Err::int1_t(id)

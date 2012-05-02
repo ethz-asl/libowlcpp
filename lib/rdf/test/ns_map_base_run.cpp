@@ -15,7 +15,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-
+   Ns_map_base map;
 }
 
 }//namespace test
