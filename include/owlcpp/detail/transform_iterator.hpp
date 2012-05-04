@@ -39,7 +39,7 @@ public:
 
 private:
    typename Fun::result_type dereference() const {
-      return Fun()(*this->base());
+      return Fun()(this->base());
    }
 };
 

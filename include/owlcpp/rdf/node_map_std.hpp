@@ -7,7 +7,7 @@ part of owlcpp project.
 #define NODE_MAP_STD_HPP_
 #include "boost/range.hpp"
 #include "boost/range/algorithm/max_element.hpp"
-#include "owlcpp/rdf/iri_map_base.hpp"
+#include "owlcpp/rdf/ns_map_base.hpp"
 #include "owlcpp/rdf/node_map_base.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 

@@ -5,7 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef IRI_MAP_HPP_
 #define IRI_MAP_HPP_
-#include "owlcpp/rdf/iri_map_base.hpp"
+#include "owlcpp/rdf/ns_map_base.hpp"
 #include "owlcpp/detail/id_tracker.hpp"
 #include "owlcpp/rdf/node_map_std.hpp"
 #include "owlcpp/rdf/std_nodes.hpp"
@@ -17,9 +17,9 @@ namespace owlcpp{
 class Iri_map {
 public:
    typedef Ns_id id_type;
-   typedef Iri_map_base::iterator iterator;
-   typedef Iri_map_base::const_iterator const_iterator;
-   typedef Iri_map_base::Err Err;
+   typedef Ns_map_base::iterator iterator;
+   typedef Ns_map_base::const_iterator const_iterator;
+   typedef Ns_map_base::Err Err;
 
    Iri_map(Node_map_std const& std_map = Node_map_std::get(Nodes_none()))
    : smap_(std_map), tracker_(smap_.ns_id_next()), map_() {}
@@ -50,8 +50,8 @@ public:
     @return IRI prefix string or "" if no prefix was defined
    */
    std::string prefix(const Ns_id iid) const {
-      const std::string pref = map_.prefix(iid);
-      return pref.empty() ? smap_.prefix(iid) : pref;
+      if( smap_.is_standard(iid) ) return smap_.prefix(iid);
+      return map_.prefix(iid);
    }
 
    /**
@@ -70,20 +70,23 @@ public:
     namespace IRI.
    */
    void insert_prefix(const Ns_id iid, std::string const& pref) {
-      if( pref.empty() ) return;
+      if( pref.empty() ) {
+         map_.set_prefix(iid);
+         return;
+      }
       BOOST_ASSERT( smap_.is_standard(iid) || map_.have(iid) );
       Ns_id const*const iid0 = find_prefix(pref);
       if( iid0 ) {
          if( *iid0 == iid ) return; //prefix already defined for same IRI
          BOOST_THROW_EXCEPTION(
                   Err()
-                  << Err::msg_t("prefix reserved for another IRI")
+                  << Err::msg_t("prefix reserved for different IRI")
                   << Err::str1_t(pref)
                   << Err::str2_t(at(iid))
                   << Err::str3_t(at(*iid0))
          );
       }
-      map_.insert_prefix(iid, pref);
+      map_.set_prefix(iid, pref);
    }
 
    Ns_id insert(std::string const& iri) {
@@ -106,7 +109,7 @@ private:
    typedef detail::Id_tracker<id_type> tracker_t;
    Node_map_std const& smap_;
    tracker_t tracker_;
-   Iri_map_base map_;
+   Ns_map_base map_;
 };
 
 }//namespace owlcpp

@@ -21,17 +21,18 @@ namespace owlcpp{
 *******************************************************************************/
 class Ns_map_base {
    typedef std::map<std::string,Ns_id> map_t;
-   typedef map_t::const_iterator map_iter_t;
+   typedef map_t::iterator map_iter_t;
    typedef std::pair<map_iter_t,map_iter_t> id_value_t;
    typedef std::vector<id_value_t> vec_t;
+   typedef map_t::const_iterator map_citer_t;
 
-   struct Make_id : public std::unary_function<map_iter_t, Ns_id> {
-      Ns_id operator()(const map_iter_t i) {return i->second;}
+   struct Make_id : public std::unary_function<map_citer_t, Ns_id> {
+      Ns_id operator()(const map_citer_t i) {return i->second;}
    };
 
 public:
    typedef Ns_id id_type;
-   typedef Transform_iterator<Make_id, map_iter_t> const_iterator;
+   typedef Transform_iterator<Make_id, map_citer_t> const_iterator;
    typedef const_iterator iterator;
 
    struct Err : public Rdf_err {};
@@ -66,8 +67,10 @@ public:
     @param iri namespace IRI string
     @return pointer to namespace IRI ID or NULL if iri is unknown
    */
-   const_iterator find_iri(std::string const& iri) const {
-      return iri_.find(iri);
+   Ns_id const* find_iri(std::string const& iri) const {
+      const map_citer_t i = iri_.find(iri);
+      if( i == iri_.end() ) return 0;
+      return &i->second;
    }
 
    std::string prefix(const Ns_id id) const {
@@ -77,17 +80,16 @@ public:
       return v.second->first;
    }
 
-   const_iterator find_prefix(std::string const& pref) const {
-      return pref_.find(pref);
+   Ns_id const* find_prefix(std::string const& pref) const {
+      const map_citer_t i = pref_.find(pref);
+      if( i == pref_.end() ) return 0;
+      return &i->second;
    }
 
    Ns_id insert(std::string const& iri) {
       const map_iter_t i = iri_.find(iri);
       if( i != iri_.end() ) return i->second;
-      const Ns_id id(id_.size());
-      const id_value_t idv(iri_.insert(std::make_pair(iri, id)).first, pref_.end());
-      id_.push_back(idv);
-      return id;
+      return insert(next_id(), iri);
    }
 
    Ns_id insert(const Ns_id id, std::string const& iri) {
@@ -108,12 +110,27 @@ public:
       }
       BOOST_ASSERT(iri_.find(iri) == iri_.end());
       v.first = iri_.insert(std::make_pair(iri, id)).first;
+      v.second = pref_.end();
       return id;
    }
 
-   Ns_id set_prefix(const Ns_id id, std::string const& pref) {
+   /**@brief set or clear a prefix for namespace IRI
+    @param id namespace IRI ID
+    @param pref prefix string for namespace IRI;
+    if \b pref is empty, the existing prefix is cleared from the IRI
+   */
+   void set_prefix(const Ns_id id, std::string const& pref = "") {
       BOOST_ASSERT( have(id) );
       id_value_t& v = id_[id()];
+
+      if( pref.empty() ) {
+         if( v.second != pref_.end() ) {
+            pref_.erase(v.second);
+            v.second = pref_.end();
+         }
+         return;
+      }
+
       if( v.second != pref_.end() ) {
          if( v.second->first != pref ) BOOST_THROW_EXCEPTION(
                   Err()
@@ -123,7 +140,7 @@ public:
                   << Err::str3_t(at(id))
          );
          BOOST_ASSERT(pref_.find(pref) == v.second);
-         return id;
+         return;
       }
 
       if( pref_.find(pref) != pref_.end() ) BOOST_THROW_EXCEPTION(
@@ -143,13 +160,32 @@ public:
                << Err::msg_t("removing non-existing IRI ID")
                << Err::int1_t(id())
       );
+      id_value_t& v = id_[id()];
+      iri_.erase(v.first);
+      v.first = iri_.end();
+      if( v.second != pref_.end() ) pref_.erase(v.second);
+      erased_.push_back(id);
+   }
 
+   void clear() {
+      iri_.clear();
+      pref_.clear();
+      id_.clear();
+      erased_.clear();
    }
 
 private:
    map_t iri_;
    map_t pref_;
    vec_t id_;
+   std::vector<Ns_id> erased_;
+
+   Ns_id next_id() {
+      if( erased_.empty() ) return Ns_id(id_.size());
+      const Ns_id id = erased_.back();
+      erased_.pop_back();
+      return id;
+   }
 };
 
 }//namespace owlcpp
