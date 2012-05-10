@@ -9,10 +9,9 @@ part of owlcpp project.
 #include "boost/iterator/indirect_iterator.hpp"
 #include "boost/ptr_container/ptr_vector.hpp"
 #include "boost/tuple/tuple.hpp"
-#include "owlcpp/node_id.hpp"
-#include "owlcpp/doc_id.hpp"
 #include "owlcpp/rdf/triple.hpp"
-//#include "owlcpp/rdf/detail/triple_store_query.hpp"
+#include "owlcpp/rdf/detail/triple_index.hpp"
+//#include "owlcpp/rdf/detail/triple_query.hpp"
 
 namespace owlcpp{
 
@@ -97,13 +96,13 @@ public:
     For example,
     @code Query<1,0,0,1>::range_t range = triple_map.find(subj, blank(), blank(), doc);
     @endcode
-   template<class Subj, class Pred, class Obj, class Doc>
-   typename query_detail::Query_type<Subj,Pred,Obj,Doc>::range_t
-   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
-      typedef typename query_detail::Query_type<Subj, Pred, Obj, Doc> q_type;
-      return q_type::range(triples_, indices_, subj, pred, obj, doc);
-   }
    */
+//   template<class Subj, class Pred, class Obj, class Doc>
+//   typename query_detail::Query_type<Subj,Pred,Obj,Doc>::range_t
+//   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
+//      typedef typename query_detail::Query_type<Subj, Pred, Obj, Doc> q_type;
+//      return q_type::range(triples_, indices_, subj, pred, obj, doc);
+//   }
 
 private:
    triples_t triples_;
