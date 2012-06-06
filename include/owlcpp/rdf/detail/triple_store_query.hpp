@@ -166,7 +166,7 @@ public:
    static range_t range(
             triple_map_store_t const& tms, const Subj subj,
             const Pred pred, const Obj obj, const Doc doc
-            ) {
+   ) {
       const search_args_t sa(subj, pred, obj, doc);
       std::pair<iter1_t,iter1_t> p = tms.get<tag_t>().equal_range(fusion::at<nmi_t>(sa));
       return range_maker_t::make( p.first, p.second, sa);

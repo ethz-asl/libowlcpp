@@ -5,15 +5,20 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_MAP_HPP_
 #define TRIPLE_MAP_HPP_
-#include <vector>
-#include "boost/iterator/indirect_iterator.hpp"
 #include "boost/ptr_container/ptr_vector.hpp"
+#include "boost/mpl/assert.hpp"
+#include "boost/mpl/contains.hpp"
+#include "boost/fusion/include/at.hpp"
 #include "boost/tuple/tuple.hpp"
 #include "owlcpp/rdf/triple.hpp"
-#include "owlcpp/rdf/detail/triple_index.hpp"
-//#include "owlcpp/rdf/detail/triple_query.hpp"
+#include "owlcpp/rdf/detail/triple_query.hpp"
+#include "owlcpp/rdf/detail/triple_query_tags.hpp"
 
-namespace owlcpp{
+namespace owlcpp{ namespace query_detail{
+
+template<class> class Index;
+
+}//namespace query_detail
 
 /**@brief Store, index, and search RDF triples
 
@@ -40,8 +45,24 @@ class Triple_map {
    */
    typedef boost::ptr_vector<Triple> triples_t;
    typedef std::vector<Triple const*> index_t;
-   typedef boost::tuple<index_t,index_t,index_t> value_t;
+   typedef boost::indirect_iterator<index_t::const_iterator> index_iter_t;
+   typedef boost::iterator_range<index_iter_t> index_range_t;
+   typedef boost::tuple<index_t,index_t> value_t;
    typedef std::vector<value_t> indices_t;
+
+   /** indices in order of priority */
+   typedef boost::mpl::vector<query_detail::Subj_tag,query_detail::Obj_tag>
+   indexed_tags;
+
+   template<class,class> friend class query_detail::Query_impl;
+   template<class> friend class query_detail::Index;
+
+
+   template<class Tag, class Args> index_range_t
+   get_index(Args const& args) const {
+      BOOST_MPL_ASSERT((boost::mpl::contains<indexed_tags, Tag>));
+      return indices_[boost::fusion::at<Tag>(args)]
+   }
 
 public:
    typedef triples_t::iterator iterator;
@@ -75,7 +96,6 @@ public:
       if( max() >= indices_.size() ) indices_.resize(max() + 1);
       indices_[subj()].get<0>().push_back(t);
       indices_[pred()].get<1>().push_back(t);
-      indices_[obj() ].get<2>().push_back(t);
    }
 
 
@@ -97,12 +117,12 @@ public:
     @code Query<1,0,0,1>::range_t range = triple_map.find(subj, blank(), blank(), doc);
     @endcode
    */
-//   template<class Subj, class Pred, class Obj, class Doc>
-//   typename query_detail::Query_type<Subj,Pred,Obj,Doc>::range_t
-//   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
-//      typedef typename query_detail::Query_type<Subj, Pred, Obj, Doc> q_type;
-//      return q_type::range(triples_, indices_, subj, pred, obj, doc);
-//   }
+   template<class Subj, class Pred, class Obj, class Doc>
+   typename query_detail::Query_impl<Subj,Pred,Obj,Doc,Triple_map>::range
+   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
+      typedef query_detail::Query_impl<Subj,Pred,Obj,Doc,Triple_map> q_type;
+      return q_type::make_range(*this, subj, pred, obj, doc);
+   }
 
 private:
    triples_t triples_;

@@ -19,6 +19,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Triple_map tm;
+   Query<1,1,0,0>::range r = tm.find(Node_id(0), Node_id(3), any(), any());
 }
 
 }//namespace test

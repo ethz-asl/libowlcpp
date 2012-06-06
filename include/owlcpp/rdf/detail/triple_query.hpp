@@ -5,30 +5,128 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_QUERY_HPP_
 #define TRIPLE_QUERY_HPP_
+#include "boost/fusion/adapted/struct/adapt_struct.hpp"
+#include "boost/fusion/container/vector.hpp"
+#include "boost/fusion/adapted/mpl.hpp"
+#include "boost/fusion/include/at.hpp"
+#include "boost/fusion/include/fold.hpp"
+#include "boost/fusion/include/nview.hpp"
+#include "boost/iterator/filter_iterator.hpp"
+#include "boost/mpl/and.hpp"
+#include "boost/mpl/bool.hpp"
+#include "boost/mpl/contains.hpp"
+#include "boost/mpl/erase.hpp"
+#include "boost/mpl/find.hpp"
+#include "boost/mpl/if.hpp"
+#include "boost/mpl/push_back.hpp"
+#include "boost/mpl/vector.hpp"
+#include "boost/mpl/vector_c.hpp"
+#include "boost/mpl/size.hpp"
+#include "boost/range.hpp"
+#include "boost/type_traits/is_same.hpp"
+
+#include "owlcpp/rdf/triple.hpp"
+#include "owlcpp/rdf/detail/triple_query_tags.hpp"
+
+BOOST_FUSION_ADAPT_STRUCT(
+         owlcpp::Triple,
+         (owlcpp::Node_id, subj_)
+         (owlcpp::Node_id, pred_)
+         (owlcpp::Node_id, obj_)
+         (owlcpp::Doc_id, doc_)
+)
 
 namespace owlcpp{
 
 struct any{};
+class Triple_map;
 
 namespace query_detail{
+namespace mpl = boost::mpl;
+namespace fusion = boost::fusion;
+namespace fres_of = boost::fusion::result_of;
 
-/**@brief 
+/**@brief
 *******************************************************************************/
-template<class Subj, class Pred, class Obj, class Doc> class Query_type {
+template<class Arg_tags> class Check_triple {
+   typedef typename mpl::fold<
+            Arg_tags,
+            fusion::vector<>,
+            mpl::push_back<mpl::_1, mpl::at<Triple, mpl::_2> >
+   >::type args_t;
 
+public:
+   template<class Args> explicit Check_triple(Args const& args)
+   : args_(fusion::nview<Args, Arg_tags>(args)) {}
+
+private:
+   const args_t args_;
 };
 
-/**
+/**@brief
 *******************************************************************************/
-template<> struct Query_type<any,any,any,any> {
-   typedef triple_map_store_t::iterator iterator_t;
-   typedef boost::iterator_range<iterator_t> range_t;
-   static range_t range(
-            triple_map_store_t const& tms, const any,
-            const any, const any, const any
-            ) {
-      return boost::make_iterator_range( tms.begin(), tms.end() );
+template<class Subj, class Pred, class Obj, class Doc, class Store> class Query_impl {
+   typedef mpl::vector<Subj_tag, Pred_tag, Obj_tag, Doc_tag> tag_vector;
+   typedef fusion::vector<Subj,Pred,Obj,Doc> arguments;
+
+   typedef typename mpl::fold<
+            tag_vector,
+            mpl::vector<>,
+            mpl::if_<
+               boost::is_same<mpl::at<arguments, mpl::_2>, any>,
+               mpl::_1,
+               mpl::push_back<mpl::_1, mpl::_2>
+            >
+   >::type arg_tags;
+
+   typedef typename Store::indexed_tags indexed_tags; //vector of indexed tags
+
+   typedef typename mpl::fold<
+            indexed_tags,
+            any,
+            mpl::if_<
+               mpl::and_<
+                  boost::is_same<mpl::_1, any>,
+                  mpl::contains<arg_tags, mpl::_2>
+               >,
+               mpl::_2,
+               mpl::_1
+            >
+   >::type index_arg_tag; //tag for the optimal index to use
+   typedef typename Store::template index<index_arg_tag>::type index_t;
+   typedef typename mpl::if_<
+            boost::is_same<index_arg_tag, any>,
+            arg_tags,
+            mpl::erase<arg_tags, mpl::find<arg_tags, index_arg_tag> >
+   >::type search_arg_tags;
+
+   typedef Check_triple<search_arg_tags> check_triple_t;
+
+public:
+   typedef typename Store::iterator iterator;
+   typedef boost::iterator_range<iterator> range;
+
+   static range make_range(Store const& store,
+            const Subj subj, const Pred pred, const Obj obj, const Doc doc
+   ) {
+      const arguments args(subj, pred, obj, doc);
+      const typename index_t::range r1 = index_t::get_range(store, args);
    }
+};
+
+/**@brief
+*******************************************************************************/
+template<bool Subj, bool Pred, bool Obj, bool Doc, class Store = Triple_map> class Query {
+   typedef Query_impl<
+            typename mpl::if_c<Subj,typename mpl::at_c<Triple,0>::type, any>::type,
+            typename mpl::if_c<Pred,typename mpl::at_c<Triple,1>::type, any>::type,
+            typename mpl::if_c<Obj, typename mpl::at_c<Triple,2>::type, any>::type,
+            typename mpl::if_c<Doc, typename mpl::at_c<Triple,3>::type, any>::type,
+            Store
+            > query_t;
+public:
+   typedef typename query_t::iterator iterator;
+   typedef typename query_t::range range;
 };
 
 
@@ -37,16 +135,15 @@ template<> struct Query_type<any,any,any,any> {
 
 /**@brief
 *******************************************************************************/
-template<bool S, bool P, bool O, bool D> class Query {
-   typedef typename boost::mpl::if_<boost::mpl::bool_<S>, Node_id, any>::type subj_t;
-   typedef typename boost::mpl::if_<boost::mpl::bool_<P>, Node_id, any>::type pred_t;
-   typedef typename boost::mpl::if_<boost::mpl::bool_<O>, Node_id, any>::type obj_t;
-   typedef typename boost::mpl::if_<boost::mpl::bool_<D>, Doc_id, any>::type doc_t;
-   typedef typename query_detail::Query_type<subj_t, pred_t, obj_t, doc_t> query_t;
+template<class Subj, class Pred, class Obj, class Doc, class Store = Triple_map>
+class Query_type {
+   typedef query_detail::Query_impl<Subj,Pred,Obj,Doc,Store> query_t;
 public:
-   typedef typename query_t::iterator_t iterator;
-   typedef typename query_t::range_t range;
+   typedef typename query_t::iterator iterator;
+   typedef typename query_t::range range;
 };
+
+using query_detail::Query;
 
 }//namespace owlcpp
 #endif /* TRIPLE_QUERY_HPP_ */
