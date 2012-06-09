@@ -13,12 +13,9 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple.hpp"
 #include "owlcpp/rdf/detail/triple_query.hpp"
 #include "owlcpp/rdf/detail/triple_query_tags.hpp"
+#include "owlcpp/rdf/detail/triple_index.hpp"
 
-namespace owlcpp{ namespace query_detail{
-
-template<class> class Index;
-
-}//namespace query_detail
+namespace owlcpp{
 
 /**@brief Store, index, and search RDF triples
 
@@ -37,32 +34,44 @@ template<class> class Index;
    - boost::ptr_vector<Triple>, vector<vector> 1.7GB/110s
 
 *******************************************************************************/
-class Triple_map {
+template<
+   bool Index_subj = 1,
+   bool Index_pred = 0,
+   bool Index_obj = 0,
+   bool Index_doc = 0
+> class Triple_map {
    /**
 
    Create triples on heap, store pointers in boost::ptr_vector
 
    */
    typedef boost::ptr_vector<Triple> triples_t;
-   typedef std::vector<Triple const*> index_t;
-   typedef boost::indirect_iterator<index_t::const_iterator> index_iter_t;
-   typedef boost::iterator_range<index_iter_t> index_range_t;
-   typedef boost::tuple<index_t,index_t> value_t;
-   typedef std::vector<value_t> indices_t;
+   typedef query_detail::Triple_indices<
+            Index_subj,
+            Index_pred,
+            Index_obj,
+            Index_doc
+   > indices_t;
 
-   /** indices in order of priority */
-   typedef boost::mpl::vector<query_detail::Subj_tag,query_detail::Obj_tag>
-   indexed_tags;
-
-   template<class,class> friend class query_detail::Query_impl;
-   template<class> friend class query_detail::Index;
-
-
-   template<class Tag, class Args> index_range_t
-   get_index(Args const& args) const {
-      BOOST_MPL_ASSERT((boost::mpl::contains<indexed_tags, Tag>));
-      return indices_[boost::fusion::at<Tag>(args)]
-   }
+//   typedef std::vector<Triple const*> index_t;
+//   typedef boost::indirect_iterator<index_t::const_iterator> index_iter_t;
+//   typedef boost::iterator_range<index_iter_t> index_range_t;
+//   typedef boost::tuple<index_t,index_t> value_t;
+//   typedef std::vector<value_t> indices_t;
+//
+//   /** indices in order of priority */
+//   typedef boost::mpl::vector<query_detail::Subj_tag,query_detail::Obj_tag>
+//   indexed_tags;
+//
+//   template<class,class> friend class query_detail::Query_impl;
+//   template<class> friend class query_detail::Index;
+//
+//
+//   template<class Tag, class Args> index_range_t
+//   get_index(Args const& args) const {
+//      BOOST_MPL_ASSERT((boost::mpl::contains<indexed_tags, Tag>));
+//      return indices_[boost::fusion::at<Tag>(args)]
+//   }
 
 public:
    typedef triples_t::iterator iterator;
@@ -92,10 +101,11 @@ public:
    ) {
       Triple* const t = new Triple(subj, pred, obj, doc);
       triples_.push_back(t);
-      const Node_id max = subj > pred ? std::max(subj, obj) : std::max(pred, obj) ;
-      if( max() >= indices_.size() ) indices_.resize(max() + 1);
-      indices_[subj()].get<0>().push_back(t);
-      indices_[pred()].get<1>().push_back(t);
+      indices_.add(*t);
+//      const Node_id max = subj > pred ? std::max(subj, obj) : std::max(pred, obj) ;
+//      if( max() >= indices_.size() ) indices_.resize(max() + 1);
+//      indices_[subj()].get<0>().push_back(t);
+//      indices_[pred()].get<1>().push_back(t);
    }
 
 

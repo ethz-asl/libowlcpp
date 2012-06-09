@@ -5,7 +5,6 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_QUERY_HPP_
 #define TRIPLE_QUERY_HPP_
-#include "boost/fusion/adapted/struct/adapt_struct.hpp"
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/adapted/mpl.hpp"
 #include "boost/fusion/include/at.hpp"
@@ -25,21 +24,12 @@ part of owlcpp project.
 #include "boost/range.hpp"
 #include "boost/type_traits/is_same.hpp"
 
-#include "owlcpp/rdf/triple.hpp"
 #include "owlcpp/rdf/detail/triple_query_tags.hpp"
-
-BOOST_FUSION_ADAPT_STRUCT(
-         owlcpp::Triple,
-         (owlcpp::Node_id, subj_)
-         (owlcpp::Node_id, pred_)
-         (owlcpp::Node_id, obj_)
-         (owlcpp::Doc_id, doc_)
-)
+#include "owlcpp/rdf/detail/adapt_triple_fusion.hpp"
 
 namespace owlcpp{
 
 struct any{};
-class Triple_map;
 
 namespace query_detail{
 namespace mpl = boost::mpl;
@@ -116,7 +106,7 @@ public:
 
 /**@brief
 *******************************************************************************/
-template<bool Subj, bool Pred, bool Obj, bool Doc, class Store = Triple_map> class Query {
+template<bool Subj, bool Pred, bool Obj, bool Doc, class Store> class Query {
    typedef Query_impl<
             typename mpl::if_c<Subj,typename mpl::at_c<Triple,0>::type, any>::type,
             typename mpl::if_c<Pred,typename mpl::at_c<Triple,1>::type, any>::type,
@@ -135,7 +125,7 @@ public:
 
 /**@brief
 *******************************************************************************/
-template<class Subj, class Pred, class Obj, class Doc, class Store = Triple_map>
+template<class Subj, class Pred, class Obj, class Doc, class Store>
 class Query_type {
    typedef query_detail::Query_impl<Subj,Pred,Obj,Doc,Store> query_t;
 public:

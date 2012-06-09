@@ -16,6 +16,22 @@ part of owlcpp project.
 #include "owlcpp/rdf/copy_triples.hpp"
 #include "owlcpp/rdf/exception.hpp"
 
+#ifndef OWLCPP_RDF_INDEX_SUBJ
+#define OWLCPP_RDF_INDEX_SUBJ 1
+#endif
+
+#ifndef OWLCPP_RDF_INDEX_PRED
+#define OWLCPP_RDF_INDEX_PRED 0
+#endif
+
+#ifndef OWLCPP_RDF_INDEX_OBJ
+#define OWLCPP_RDF_INDEX_OBJ 0
+#endif
+
+#ifndef OWLCPP_RDF_INDEX_DOC
+#define OWLCPP_RDF_INDEX_DOC 0
+#endif
+
 namespace owlcpp{
 
 /**@brief 
@@ -37,7 +53,12 @@ public:
    struct Err : public Rdf_err {};
    typedef Iri_map iri_map;
    typedef Node_map node_map;
-   typedef Triple_map triple_map;
+   typedef Triple_map<
+            OWLCPP_RDF_INDEX_SUBJ,
+            OWLCPP_RDF_INDEX_PRED,
+            OWLCPP_RDF_INDEX_OBJ,
+            OWLCPP_RDF_INDEX_DOC
+   > triple_map;
 
    Triple_store(Node_map_std const& snodes = Node_map_std::get(Nodes_owl()))
    : iri_(snodes), node_(snodes), triple_()
@@ -47,7 +68,7 @@ public:
    Iri_map const& iris() const {return iri_;}
    node_map& nodes() {return node_;}
    node_map const& nodes() const {return node_;}
-   Triple_map const& triples() const {return triple_;}
+   triple_map const& triples() const {return triple_;}
 
    void insert_triple(
             const Node_id subj,
@@ -68,7 +89,7 @@ public:
 private:
    Iri_map iri_;
    node_map node_;
-   Triple_map triple_;
+   triple_map triple_;
 };
 
 }//namespace owlcpp
