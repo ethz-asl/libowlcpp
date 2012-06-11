@@ -10,6 +10,7 @@ part of owlcpp project.
 #include "boost/assert.hpp"
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/include/for_each.hpp"
+#include "boost/fusion/include/value_at.hpp"
 #include "boost/iterator/indirect_iterator.hpp"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/at.hpp"
@@ -27,13 +28,18 @@ part of owlcpp project.
 namespace owlcpp{ namespace query_detail{
 namespace mpl = boost::mpl;
 namespace fusion = boost::fusion;
+namespace fres = boost::fusion::result_of;
 
+/**
+*******************************************************************************/
 struct Element_index {
    typedef std::vector<Triple const*> type;
    typedef boost::indirect_iterator<type::const_iterator> iterator;
    typedef boost::iterator_range<iterator> range;
 };
 
+/**
+*******************************************************************************/
 template<class Id> class Vector_index {
    typedef std::vector<Element_index::type> stor_t;
 public:
@@ -47,6 +53,8 @@ private:
    stor_t stor_;
 };
 
+/**
+*******************************************************************************/
 template<class Id> class Map_index {
    typedef std::map<Id, Element_index::type> stor_t;
 public:
@@ -58,42 +66,53 @@ private:
    stor_t stor_;
 };
 
-template<class Tag> struct Index : private Vector_index {
-   void add(Triple const& t) { Vector_index::add(fusion::at<Tag>(t), t); }
-};
-
-template<> struct Index<Pred_tag> : private Map_index {
-//   void add(Triple const& t) { Vector_index::add(fusion::at<Tag>(t), t); }
-};
-
-/*
-template<> struct Index<Subj_tag> : public Vector_index {
+/**
+*******************************************************************************/
+template<class Tag> struct Index
+: private Vector_index<typename fres::value_at<Triple,Tag>::type> {
    void add(Triple const& t) {
-
+      Vector_index<typename fres::value_at<Triple,Tag>::type>::add(fusion::at<Tag>(t), t);
    }
 };
 
-template<> struct Index<Pred_tag> : public Vector_index {
+struct Main_store_tag{};
 
+/**
+*******************************************************************************/
+template<> struct Index<Main_store_tag> {
+   typedef Element_index::type stor_t;
+public:
+   void add(Triple const& t) {
+      stor_.push_back(&t);
+   }
+
+private:
+   stor_t stor_;
 };
 
-template<> struct Index<Obj_tag> : public Vector_index {
-
+template<> struct Index<Pred_tag>
+: private Map_index<fres::value_at<Triple,Pred_tag>::type> {
+   void add(Triple const& t) {
+      Map_index<fres::value_at<Triple,Pred_tag>::type>::add(fusion::at<Pred_tag>(t), t);
+   }
 };
-
-template<> struct Index<Doc_tag> : public Vector_index {
-
-};
-*/
 
 typedef mpl::vector<Subj_tag, Pred_tag, Obj_tag, Doc_tag> all_tags;
 
-/** For each true template argument, put the corresponding tag into MPL vector
+/** Make a vector of tags for each index to be created, including the tag for
+the main store of triples.
+The tags are listed in the order of priority for projected optimal search
+performance.
+For example, subject index is expected to be best performing and the possibility
+for using it should be checked first; the main store is expected to have the worst
+performance.
 *******************************************************************************/
-template<bool Subj, bool Pred, bool Obj, bool Doc> struct Tag_vector {
+template<bool Subj, bool Pred, bool Obj, bool Doc> struct Index_tags {
+   //tags in the order of priority
+   typedef mpl::vector<Subj_tag, Obj_tag, Pred_tag, Doc_tag> priority_tags;
    typedef mpl::vector_c<bool,Subj,Pred,Obj,Doc> bool_vector;
    typedef typename mpl::fold<
-            all_tags,
+            priority_tags,
             mpl::vector<>,
             mpl::if_<
                mpl::at<bool_vector, mpl::_2>,
@@ -105,10 +124,19 @@ template<bool Subj, bool Pred, bool Obj, bool Doc> struct Tag_vector {
 
 /**
 *******************************************************************************/
+template<class Inds, class Query> class Index_selector {
+public:
+   typedef XXX index_number;
+   typedef XXX query_2;
+};
+
+/**
+*******************************************************************************/
 template<bool Subj, bool Pred, bool Obj, bool Doc> class Triple_indices {
-   typedef typename Tag_vector<Subj, Pred, Obj, Doc>::type tags_t;
+   typedef typename Index_tags<Subj, Pred, Obj, Doc>::type index_tags;
+   typedef typename mpl::push_back<index_tags, Main_store_tag>::type store_tags;
    typedef typename mpl::fold<
-            tags_t,
+            store_tags,
             fusion::vector<>,
             mpl::push_back<mpl::_1, Index<mpl::_2> >
    >::type stor_t;

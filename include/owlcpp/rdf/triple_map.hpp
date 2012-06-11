@@ -33,6 +33,9 @@ namespace owlcpp{
    - boost::ptr_vector<Triple>, vector<vector> empty 1.4GB/98s
    - boost::ptr_vector<Triple>, vector<vector> 1.7GB/110s
 
+   @decision Storing triples
+   Create triples on heap, store pointers in boost::ptr_vector<Triple>
+
 *******************************************************************************/
 template<
    bool Index_subj = 1,
@@ -83,12 +86,17 @@ public:
    std::size_t size() const {return triples_.size();}
    const_iterator begin() const {return triples_.begin();}
    const_iterator end() const {return triples_.end();}
-//   Triple const& operator[](const std::size_t i) const {
-//      return store_.get<query_detail::seq_tag>()[i];
-//   }
+
    void clear() {
       indices_.clear();
       triples_.clear();
+   }
+
+   /**
+    @param t triple stored in triple map
+   */
+   void erase(Triple const& t) {
+
    }
 
    /**@brief Insert a new triple
