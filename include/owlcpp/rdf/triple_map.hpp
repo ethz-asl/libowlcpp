@@ -5,10 +5,15 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_MAP_HPP_
 #define TRIPLE_MAP_HPP_
-#include "boost/fusion/include/as_vector.hpp"
+#include "boost/fusion/include/at.hpp"
 #include "boost/fusion/include/for_each.hpp"
+#include "boost/fusion/include/mpl.hpp"
+#include "boost/fusion/container/vector.hpp"
+#include "boost/mpl/fold.hpp"
+#include "boost/mpl/push_back.hpp"
 
 #include "owlcpp/rdf/detail/triple_map_detail.hpp"
+#include "owlcpp/rdf/detail/triple_index.hpp"
 
 namespace owlcpp{
 
@@ -41,14 +46,14 @@ template<
    bool Index_doc = 0
 > class Triple_map {
 
-   typedef detail::Index_types<
+   typedef typename detail::Store_config<
             Index_subj,
             Index_pred,
             Index_obj,
             Index_doc
-            > index_types;
+            > store_config;
 
-   typedef typename index_types::store_type store_t;
+   typedef typename store_config::store store_t;
 
    class Insert {
    public:
@@ -111,13 +116,22 @@ public:
     For example,
     @code Query<1,0,0,1>::range_t range = triple_map.find(subj, blank(), blank(), doc);
     @endcode
-   template<class Subj, class Pred, class Obj, class Doc>
-   typename query_detail::Query_impl<Subj,Pred,Obj,Doc,Triple_map>::range
-   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
-      typedef query_detail::Query_impl<Subj,Pred,Obj,Doc,Triple_map> q_type;
-      return q_type::make_range(*this, subj, pred, obj, doc);
-   }
    */
+   template<class Subj, class Pred, class Obj, class Doc>
+//   typename query_detail::Query_impl<Subj,Pred,Obj,Doc,Triple_map>::range
+   void
+   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
+      typedef boost::mpl::vector<Subj,Pred,Obj,Doc> q_args;
+      typedef detail::Search_config<store_config, q_args> config;
+//      typedef typename detail::Query_ft<Subj,Pred,Obj,Doc>::type q1_t;
+//      typedef detail::Search_config<store_tags, q1_t> search_t;
+//      typedef typename search_t::index_num index_num;
+//      typedef typename boost::fusion::at<index_num>::
+//      typedef typename search_t::query2_tags q2_t;
+
+//      typedef query_detail::Query_impl<Subj,Pred,Obj,Doc,Triple_map> q_type;
+//      return q_type::make_range(*this, subj, pred, obj, doc);
+   }
 
 private:
    store_t store_;
