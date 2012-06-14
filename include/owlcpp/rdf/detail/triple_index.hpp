@@ -9,6 +9,8 @@ part of owlcpp project.
 #include <vector>
 
 #include "boost/foreach.hpp"
+#include "boost/fusion/include/at.hpp"
+#include "boost/fusion/include/value_at.hpp"
 #include "boost/iterator/indirect_iterator.hpp"
 #include "boost/ptr_container/ptr_vector.hpp"
 #include "boost/range.hpp"
@@ -69,20 +71,25 @@ private:
 
 /**
 *******************************************************************************/
-template<class Tag> struct Index
+template<class Tag> class Index
 : public Vector_index<typename fusion_rof::value_at<Triple,Tag>::type> {
-   void add(Triple const& t) {
-      Vector_index<typename fusion_rof::value_at<Triple,Tag>::type>::add(fusion::at<Tag>(t), t);
-   }
+
+   typedef Vector_index<typename fusion_rof::value_at<Triple,Tag>::type> base;
+
+public:
+   typedef Tag tag;
+
+   void add(Triple const& t) { base::add(fusion::at<tag>(t), t); }
 };
 
 /**
 *******************************************************************************/
 template<> struct Index<Pred_tag>
 : public Map_index<fusion_rof::value_at<Triple,Pred_tag>::type> {
-   void add(Triple const& t) {
-      Map_index<fusion_rof::value_at<Triple,Pred_tag>::type>::add(fusion::at<Pred_tag>(t), t);
-   }
+   typedef Pred_tag tag;
+   typedef Map_index<fusion_rof::value_at<Triple,tag>::type> base;
+
+   void add(Triple const& t) { base::add(fusion::at<tag>(t), t); }
 };
 
 
@@ -95,6 +102,8 @@ Alternatives:
 *******************************************************************************/
 template<> struct Index<Main_store_tag> : public Element_index {
 public:
+   typedef Main_store_tag tag;
+
    void add(Triple const& t) {
       stor_.push_back(&t);
    }
@@ -107,6 +116,8 @@ public:
    ~Index() {
       BOOST_FOREACH(Triple const* t, stor_) delete t;
    }
+
+   range get_range() const { return stor_; }
 
 private:
    e_index stor_;

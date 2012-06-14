@@ -25,7 +25,8 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    Triple_map<> tm;
    const unsigned t[] = {0,1,0,0};
    insert(tm, t);
-//   Query<1,1,0,0>::range r = tm.find(Node_id(0), Node_id(3), any(), any());
+   /*Query<1,1,0,0>::range r =*/ tm.find(Node_id(0), Node_id(3), any(), any());
+   /*Query<1,1,0,0>::range r =*/ tm.find(any(), Node_id(3), any(), any());
 }
 
 /**

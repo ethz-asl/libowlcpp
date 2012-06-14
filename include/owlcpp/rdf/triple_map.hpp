@@ -8,16 +8,60 @@ part of owlcpp project.
 #include "boost/fusion/include/at.hpp"
 #include "boost/fusion/include/for_each.hpp"
 #include "boost/fusion/include/mpl.hpp"
-#include "boost/fusion/container/vector.hpp"
+#include "boost/mpl/at.hpp"
+#include "boost/mpl/if.hpp"
 #include "boost/mpl/fold.hpp"
 #include "boost/mpl/push_back.hpp"
+#include "boost/mpl/vector.hpp"
+#include "boost/mpl/vector_c.hpp"
 
-#include "owlcpp/rdf/detail/triple_map_detail.hpp"
+#include "owlcpp/rdf/detail/triple_map_config.hpp"
 #include "owlcpp/rdf/detail/triple_index.hpp"
 
 namespace owlcpp{
 
+template<
+   bool Index_subj = 1,
+   bool Index_pred = 0,
+   bool Index_obj = 0,
+   bool Index_doc = 0
+> class Triple_map;
+
 struct any{};
+
+/** Define return type of triple search based on search argument types
+@targ Store triple store type, e.g., Triple_map<>, Triple_store
+@targ Subj type for matching/ignoring triple subject,   e.g., Node_id or any
+@targ Pred type for matching/ignoring triple predicate, e.g., Node_id or any
+@targ Obj  type for matching/ignoring triple object,    e.g., Node_id or any
+@targ Doc  type for matching/ignoring triple document,  e.g., Doc_id  or any
+*******************************************************************************/
+template<class Subj, class Pred, class Obj, class Doc, class Store = Triple_map<> >
+class Ts_result {
+   typedef detail::Search_config<typename Store::config,Subj,Pred,Obj,Doc> config;
+public:
+   typedef typename config::range range;
+};
+
+/** Define return type of triple search based on which node IDs are specified
+@targ Store triple store type, e.g., Triple_map<>, Triple_store
+@targ Subj true if Node_id was specified to match triple subject,   or false for any
+@targ Pred true if Node_id was specified to match triple predicate, or false for any
+@targ Obj  true if Node_id was specified to match triple object,    or false for any
+@targ Doc  true if Doc_id  was specified to match triple document,  or false for any
+*******************************************************************************/
+template<bool Subj, bool Pred, bool Obj, bool Doc, class Store = Triple_map<> >
+class Ts_result_i {
+   typedef typename detail::Deduce_args<Subj,Pred,Obj,Doc>::type q_args;
+public:
+   typedef typename Ts_result<
+            typename boost::mpl::at_c<q_args,0>::type,
+            typename boost::mpl::at_c<q_args,1>::type,
+            typename boost::mpl::at_c<q_args,2>::type,
+            typename boost::mpl::at_c<q_args,3>::type,
+            Store
+   >::range range;
+};
 
 /**@brief Store, index, and search RDF triples
 
@@ -39,21 +83,18 @@ struct any{};
    Create triples on heap, store pointers in boost::ptr_vector<Triple>
 
 *******************************************************************************/
-template<
-   bool Index_subj = 1,
-   bool Index_pred = 0,
-   bool Index_obj = 0,
-   bool Index_doc = 0
-> class Triple_map {
+template<bool Index_subj, bool Index_pred, bool Index_obj, bool Index_doc>
+class Triple_map {
 
-   typedef typename detail::Store_config<
-            Index_subj,
-            Index_pred,
-            Index_obj,
-            Index_doc
-            > store_config;
+   template<class, class, class, class, class> friend class Ts_result;
 
-   typedef typename store_config::store store_t;
+   typedef Triple_map self_t;
+
+   typedef typename
+            detail::Store_config<Index_subj,Index_pred,Index_obj,Index_doc>
+   config;
+
+   typedef typename config::store store_t;
 
    class Insert {
    public:
@@ -118,11 +159,17 @@ public:
     @endcode
    */
    template<class Subj, class Pred, class Obj, class Doc>
-//   typename query_detail::Query_impl<Subj,Pred,Obj,Doc,Triple_map>::range
-   void
+   typename Ts_result<Subj,Pred,Obj,Doc,self_t>::range
    find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
-      typedef boost::mpl::vector<Subj,Pred,Obj,Doc> q_args;
-      typedef detail::Search_config<store_config, q_args> config;
+      typedef detail::Search_config<config,Subj,Pred,Obj,Doc> search_config;
+      typedef typename search_config::index_num index_num;
+      typedef typename boost::mpl::at<store_t, index_num>::type index_t;
+//      typedef typename config::index index_t;
+      index_t const& index = boost::fusion::at<index_num>(store_);
+      typedef typename index_t::range range1_t;
+      typedef detail::Search_range1<index_t> get_range1_t;
+      const range1_t r1 = get_range1_t::get(index,subj,pred,obj,doc);
+
 //      typedef typename detail::Query_ft<Subj,Pred,Obj,Doc>::type q1_t;
 //      typedef detail::Search_config<store_tags, q1_t> search_t;
 //      typedef typename search_t::index_num index_num;

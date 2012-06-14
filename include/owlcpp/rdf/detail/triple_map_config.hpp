@@ -1,13 +1,13 @@
-/** @file "/owlcpp/include/owlcpp/rdf/detail/triple_map_detail.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/detail/triple_map_config.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef TRIPLE_MAP_DETAIL_HPP_
-#define TRIPLE_MAP_DETAIL_HPP_
-
+#ifndef TRIPLE_MAP_CONFIG_HPP_
+#define TRIPLE_MAP_CONFIG_HPP_
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/include/at.hpp"
+#include "boost/fusion/include/make_vector.hpp"
 #include "boost/fusion/include/mpl.hpp"
 #include "boost/fusion/include/size.hpp"
 #include "boost/fusion/include/push_back.hpp"
@@ -29,6 +29,7 @@ part of owlcpp project.
 #include "boost/mpl/vector.hpp"
 #include "boost/mpl/vector_c.hpp"
 
+#include "boost/range.hpp"
 #include "boost/type_traits/is_same.hpp"
 
 #include "owlcpp/rdf/detail/triple_map_tags.hpp"
@@ -74,21 +75,19 @@ template<bool Subj, bool Pred, bool Obj, bool Doc> struct Store_config {
 
 /**
 *******************************************************************************/
-template<class Subj, class Pred, class Obj, class Doc> struct Query_ft {
-   typedef mpl::vector<Subj,Pred,Obj,Doc> args_vector;
+template<class QArgs> struct Query_tags {
    typedef typename mpl::fold<
             triple_tags,
             mpl::vector<>,
             mpl::if_<
-               boost::is_same<mpl::at<args_vector, mpl::_2>, any>,
-               mpl::_1,
-               mpl::push_back<mpl::_1, mpl::_2>
+               boost::is_same<mpl::at<QArgs, mpl::_2>, mpl::at<Triple, mpl::_2> >,
+               mpl::push_back<mpl::_1, mpl::_2>,
+               mpl::_1
             >
-   >::type tags;
+   >::type type;
 };
 
 /**
-*******************************************************************************/
 template<bool Subj, bool Pred, bool Obj, bool Doc> struct Query_fb {
    typedef mpl::vector_c<bool,Subj,Pred,Obj,Doc> args_vector;
    typedef typename mpl::fold<
@@ -100,6 +99,44 @@ template<bool Subj, bool Pred, bool Obj, bool Doc> struct Query_fb {
                mpl::_1
             >
    >::type tags;
+};
+*******************************************************************************/
+
+/**
+*******************************************************************************/
+template<class Indx, class Tag = typename Indx::tag> struct Search_range1 {
+   typedef typename Indx::range range;
+   typedef Tag tag;
+
+   template<class Subj, class Pred, class Obj, class Doc> static range
+   get(Indx const& index,const Subj t1,const Pred t2,const Obj t3,const Doc t4) {
+      return index.find(
+               boost::fusion::at<tag>(
+                        boost::fusion::make_vector(t1, t2, t3, t4)
+               )
+      );
+   }
+};
+
+/**
+*******************************************************************************/
+template<class Indx> struct Search_range1<Indx, Main_store_tag> {
+   typedef typename Indx::range range;
+
+   template<class Subj, class Pred, class Obj, class Doc> static range
+   get(Indx const& index, const Subj,const Pred,const Obj,const Doc) {
+      return index.get_range();
+   }
+};
+
+/**
+- find search index
+- form predicate
+- get index iterator range
+- make filter iterator range
+*******************************************************************************/
+template<class Subj, class Pred, class Obj, class Doc> class Search_predicate {
+
 };
 
 /** Define number of types in sequence that are not @b any
@@ -119,9 +156,21 @@ template<class QArgs> struct Count_qargs {
 
 /**
 *******************************************************************************/
-template<class Ind, class QArgs, std::size_t NArgs = Count_qargs<QArgs>::value>
+template<class Iter, class QArgs, std::size_t NArgs = Count_qargs<QArgs>::value>
 class Search {
 public:
+   typedef Iter iterator;
+   typedef boost::iterator_range<iterator> range;
+
+   static range find(
+            range r,
+            typename mpl::at_c<QArgs,0>::type subj,
+            typename mpl::at_c<QArgs,1>::type pred,
+            typename mpl::at_c<QArgs,2>::type obj,
+            typename mpl::at_c<QArgs,3>::type doc
+   ) {
+      return r;
+   }
 
 private:
 
@@ -129,31 +178,25 @@ private:
 
 /**
 *******************************************************************************/
-template<class Ind, class QArgs> struct Search<Ind,QArgs,0> {
+template<class Iter, class QArgs> struct Search<Iter,QArgs,0> {
+   typedef Iter iterator;
+   typedef boost::iterator_range<iterator> range;
 
-};
-
-
-/**
-- find search index
-- form predicate
-- get index iterator range
-- make filter iterator range
-*******************************************************************************/
-template<class Subj, class Pred, class Obj, class Doc> class Search_predicate {
-
-};
-
-
-template<class Qtags> struct Search<Qtags, 0> {
-   template<class Range, class Pred> static Range find(Range r, Pred) {
+   static range find(
+            range r,
+            typename mpl::at_c<QArgs,0>::type,
+            typename mpl::at_c<QArgs,1>::type,
+            typename mpl::at_c<QArgs,2>::type,
+            typename mpl::at_c<QArgs,3>::type
+   ) {
       return r;
    }
 };
 
-/** Generate a vector of query argument types from booleans
+
+/** Deduce query argument types from booleans
 *******************************************************************************/
-template<bool Subj, bool Pred, bool Obj, bool Doc> class Qargs_bool {
+template<bool Subj, bool Pred, bool Obj, bool Doc> class Deduce_args {
    typedef mpl::vector_c<bool,Subj,Pred,Obj,Doc> args_vector;
 public:
    typedef typename mpl::fold<
@@ -171,22 +214,14 @@ public:
 @targ SConfig specialized Store_config
 @tags QArgs sequence of query arguments
 *******************************************************************************/
-template<class SConfig, class QArgs> class Search_config {
+template<class SConfig, class QArgs> class Search_config_v {
    typedef typename SConfig::tags s_tags;
    BOOST_MPL_ASSERT_RELATION(mpl::size<s_tags>::value, >, 0);
    BOOST_MPL_ASSERT_RELATION(mpl::size<s_tags>::value, <=, 5);
    BOOST_MPL_ASSERT((boost::is_same<typename mpl::front<s_tags>::type, Main_store_tag>));
    BOOST_MPL_ASSERT_RELATION(mpl::size<QArgs>::value, ==, 4);
 
-   typedef typename mpl::fold<
-            triple_tags,
-            mpl::vector<>,
-            mpl::if_<
-               boost::is_same<mpl::at<QArgs, mpl::_2>, any>,
-               mpl::_1,
-               mpl::push_back<mpl::_1, mpl::_2>
-            >
-   >::type q_tags;
+   typedef typename Query_tags<QArgs>::type q_tags;
 
 public:
    typedef typename mpl::fold<
@@ -214,21 +249,22 @@ public:
             >
    >::type q2_args;
 
-   typedef typename mpl::eval_if<
-            boost::is_same<index_tag, Main_store_tag>,
-            mpl::identity<q_tags>,
-            mpl::erase<
-               q_tags,
-               typename mpl::find<q_tags, index_tag>::type
-            >
-   >::type q2_tags;
-
-   typedef typename fusion_rof::at<typename SConfig::store, index_num>::type
+   typedef typename
+            fusion_rof::value_at<typename SConfig::store,index_num>::type
             index;
 
-   typedef Search<index, q2_args> search_type;
+   typedef Search<typename index::iterator, q2_args> search;
+   typedef typename search::iterator iterator;
+   typedef typename search::range range;
 };
+
+/**
+*******************************************************************************/
+template<class SConfig, class Subj, class Pred, class Obj, class Doc>
+class Search_config :
+   public Search_config_v<SConfig, mpl::vector<Subj,Pred,Obj,Doc> >
+{};
 
 }//namespace detail
 }//namespace owlcpp
-#endif /* TRIPLE_MAP_DETAIL_HPP_ */
+#endif /* TRIPLE_MAP_CONFIG_HPP_ */
