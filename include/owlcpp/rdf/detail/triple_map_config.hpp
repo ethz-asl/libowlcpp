@@ -13,6 +13,9 @@ part of owlcpp project.
 #include "boost/fusion/include/push_back.hpp"
 #include "boost/fusion/include/value_at.hpp"
 
+#include "boost/iterator/filter_iterator.hpp"
+
+#include "boost/mpl/assert.hpp"
 #include "boost/mpl/at.hpp"
 #include "boost/mpl/begin.hpp"
 #include "boost/mpl/contains.hpp"
@@ -87,25 +90,10 @@ template<class QArgs> struct Query_tags {
    >::type type;
 };
 
-/**
-template<bool Subj, bool Pred, bool Obj, bool Doc> struct Query_fb {
-   typedef mpl::vector_c<bool,Subj,Pred,Obj,Doc> args_vector;
-   typedef typename mpl::fold<
-            triple_tags,
-            mpl::vector<>,
-            mpl::if_<
-               mpl::at<args_vector, mpl::_2>,
-               mpl::push_back<mpl::_1, mpl::_2>,
-               mpl::_1
-            >
-   >::type tags;
-};
-*******************************************************************************/
-
-/**
+/** Extract range of triples from index
 *******************************************************************************/
 template<class Indx, class Tag = typename Indx::tag> struct Search_range1 {
-   typedef typename Indx::range range;
+   typedef typename Indx::const_range range;
    typedef Tag tag;
 
    template<class Subj, class Pred, class Obj, class Doc> static range
@@ -118,10 +106,10 @@ template<class Indx, class Tag = typename Indx::tag> struct Search_range1 {
    }
 };
 
-/**
+/** Specialize to extract range of triples from main store
 *******************************************************************************/
 template<class Indx> struct Search_range1<Indx, Main_store_tag> {
-   typedef typename Indx::range range;
+   typedef typename Indx::const_range range;
 
    template<class Subj, class Pred, class Obj, class Doc> static range
    get(Indx const& index, const Subj,const Pred,const Obj,const Doc) {
@@ -130,13 +118,23 @@ template<class Indx> struct Search_range1<Indx, Main_store_tag> {
 };
 
 /**
-- find search index
-- form predicate
-- get index iterator range
-- make filter iterator range
 *******************************************************************************/
-template<class Subj, class Pred, class Obj, class Doc> class Search_predicate {
+template<class QArgs> class Query_by_element {
+public:
 
+private:
+};
+
+/** Search range using a predicate
+*******************************************************************************/
+template<class Range1, class Pred> class Search_range2 {
+   typedef typename boost::range_iterator<Range1>::type iter1;
+public:
+   typedef boost::filter_iterator<Pred, iter1> iterator;
+   typedef boost::iterator_range<iterator> range;
+
+   static range get(Range1 r, Pred const& pred) {
+   }
 };
 
 /** Define number of types in sequence that are not @b any
@@ -153,46 +151,6 @@ template<class QArgs> struct Count_qargs {
    >::type type;
    static const std::size_t value  = type::value;
 };
-
-/**
-*******************************************************************************/
-template<class Iter, class QArgs, std::size_t NArgs = Count_qargs<QArgs>::value>
-class Search {
-public:
-   typedef Iter iterator;
-   typedef boost::iterator_range<iterator> range;
-
-   static range find(
-            range r,
-            typename mpl::at_c<QArgs,0>::type subj,
-            typename mpl::at_c<QArgs,1>::type pred,
-            typename mpl::at_c<QArgs,2>::type obj,
-            typename mpl::at_c<QArgs,3>::type doc
-   ) {
-      return r;
-   }
-
-private:
-
-};
-
-/**
-*******************************************************************************/
-template<class Iter, class QArgs> struct Search<Iter,QArgs,0> {
-   typedef Iter iterator;
-   typedef boost::iterator_range<iterator> range;
-
-   static range find(
-            range r,
-            typename mpl::at_c<QArgs,0>::type,
-            typename mpl::at_c<QArgs,1>::type,
-            typename mpl::at_c<QArgs,2>::type,
-            typename mpl::at_c<QArgs,3>::type
-   ) {
-      return r;
-   }
-};
-
 
 /** Deduce query argument types from booleans
 *******************************************************************************/
@@ -252,8 +210,8 @@ public:
    typedef typename
             fusion_rof::value_at<typename SConfig::store,index_num>::type
             index;
-
-   typedef Search<typename index::iterator, q2_args> search;
+   typedef Query_by_element<QArgs> query;
+   typedef Search_range2<typename index::const_range, query> search;
    typedef typename search::iterator iterator;
    typedef typename search::range range;
 };

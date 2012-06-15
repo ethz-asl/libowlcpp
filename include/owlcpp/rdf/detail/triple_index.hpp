@@ -27,8 +27,10 @@ class Element_index {
 protected:
    typedef std::vector<Triple const*> e_index;
 public:
-   typedef boost::indirect_iterator<e_index::const_iterator> iterator;
+   typedef boost::indirect_iterator<e_index::iterator> iterator;
+   typedef boost::indirect_iterator<e_index::const_iterator> const_iterator;
    typedef boost::iterator_range<iterator> range;
+   typedef boost::iterator_range<const_iterator> const_range;
 };
 
 /**
@@ -37,7 +39,7 @@ template<class Id> class Vector_index : public Element_index {
    typedef std::vector<e_index> stor_t;
 
 public:
-   range find(const Id id) const {return stor_[id()];}
+   const_range find(const Id id) const {return stor_[id()];}
 
 protected:
    void add(const Id id, Triple const& t) {
@@ -54,9 +56,9 @@ private:
 template<class Id> class Map_index : public Element_index {
    typedef std::map<Id, e_index> stor_t;
 public:
-   range find(const Id id) const {
+   const_range find(const Id id) const {
       const typename stor_t::const_iterator i = stor_.find(id);
-      if( i == stor_.end() ) return range();
+      if( i == stor_.end() ) return const_range();
       return i->second;
    }
 
@@ -117,7 +119,7 @@ public:
       BOOST_FOREACH(Triple const* t, stor_) delete t;
    }
 
-   range get_range() const { return stor_; }
+   const_range get_range() const { return stor_; }
 
 private:
    e_index stor_;

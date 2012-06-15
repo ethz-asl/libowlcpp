@@ -7,10 +7,12 @@ part of owlcpp project.
 #define TRIPLE_MAP_HPP_
 #include "boost/fusion/include/at.hpp"
 #include "boost/fusion/include/for_each.hpp"
+#include "boost/fusion/include/front.hpp"
 #include "boost/fusion/include/mpl.hpp"
+#include "boost/mpl/assert.hpp"
 #include "boost/mpl/at.hpp"
-#include "boost/mpl/if.hpp"
 #include "boost/mpl/fold.hpp"
+#include "boost/mpl/if.hpp"
 #include "boost/mpl/push_back.hpp"
 #include "boost/mpl/vector.hpp"
 #include "boost/mpl/vector_c.hpp"
@@ -94,7 +96,10 @@ class Triple_map {
             detail::Store_config<Index_subj,Index_pred,Index_obj,Index_doc>
    config;
 
-   typedef typename config::store store_t;
+   typedef typename config::store store;
+   typedef typename boost::mpl::front<store>::type main_store;
+   BOOST_MPL_ASSERT((boost::is_same<typename main_store::tag, detail::Main_store_tag>));
+
 
    class Insert {
    public:
@@ -105,18 +110,19 @@ class Triple_map {
    };
 
 public:
-//   typedef triples_t::iterator iterator;
-//   typedef triples_t::const_iterator const_iterator;
+   typedef typename main_store::iterator iterator;
+   typedef typename main_store::const_iterator const_iterator;
 
    /**
     @return number of stored triples
    */
-//   std::size_t size() const {return triples_.size();}
-//   const_iterator begin() const {return triples_.begin();}
-//   const_iterator end() const {return triples_.end();}
+   std::size_t size() const {return boost::fusion::front(store_).get_range().size();}
+   const_iterator begin() const {return boost::fusion::front(store_).get_range().begin();}
+   const_iterator end() const {return boost::fusion::front(store_).get_range().end();}
 
    void clear() {
 //      triples_.clear();
+      //todo
    }
 
    /**
@@ -157,16 +163,22 @@ public:
     For example,
     @code Query<1,0,0,1>::range_t range = triple_map.find(subj, blank(), blank(), doc);
     @endcode
+
+   - find search index
+   - form predicate
+   - get index iterator range
+   - make filter iterator range
+
    */
    template<class Subj, class Pred, class Obj, class Doc>
    typename Ts_result<Subj,Pred,Obj,Doc,self_t>::range
    find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
       typedef detail::Search_config<config,Subj,Pred,Obj,Doc> search_config;
       typedef typename search_config::index_num index_num;
-      typedef typename boost::mpl::at<store_t, index_num>::type index_t;
+      typedef typename boost::mpl::at<store, index_num>::type index_t;
 //      typedef typename config::index index_t;
       index_t const& index = boost::fusion::at<index_num>(store_);
-      typedef typename index_t::range range1_t;
+      typedef typename index_t::const_range range1_t;
       typedef detail::Search_range1<index_t> get_range1_t;
       const range1_t r1 = get_range1_t::get(index,subj,pred,obj,doc);
 
@@ -181,7 +193,7 @@ public:
    }
 
 private:
-   store_t store_;
+   store store_;
 
 };
 
