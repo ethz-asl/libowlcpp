@@ -1,25 +1,24 @@
-/** @file "/owlcpp/lib/rdf/test/comparable_value_run.cpp"
+/** @file "/owlcpp/lib/rdf/test/object_id_run.cpp"
 part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
-//#include "pch.hpp"
-#define BOOST_TEST_MODULE id_01_run
+#define BOOST_TEST_MODULE object_id
 #include "boost/test/unit_test.hpp"
 #include <iostream>
-#include "owlcpp/detail/comparable_value.hpp"
+#include "test/exception_fixture.hpp"
+#include "owlcpp/node_id.hpp"
 
 namespace owlcpp{ namespace test{
 
-struct Id1 : public detail::Comparable_value<int>{
-   Id1(const int x) : Comparable_value<int>(x) {}
-};
+BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-
-BOOST_AUTO_TEST_CASE( id_01_run_case01 ) {
-   Id1 id1(42);
-   Id1 id2(42);
-   Id1 id3(-42);
+/**@brief
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case01 ) {
+   Node_id id1(42);
+   Node_id id2(42);
+   Node_id id3(0);
    BOOST_CHECK(id1 == id2);
    BOOST_CHECK(id1 != id3);
    BOOST_CHECK(id1 > id3);

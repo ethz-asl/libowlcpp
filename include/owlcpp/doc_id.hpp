@@ -5,16 +5,16 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef DOC_ID_HPP_
 #define DOC_ID_HPP_
-#include "owlcpp/detail/comparable_value.hpp"
+#include "owlcpp/detail/object_id_base.hpp"
 
 namespace owlcpp{
 
 /**@brief Document identifier
 *******************************************************************************/
-class Doc_id : public detail::unsigned_val_t {
+class Doc_id : public detail::Base_id<Doc_id, unsigned> {
 public:
-   explicit Doc_id(const unsigned x) : detail::unsigned_val_t(x) {}
-   Doc_id() : detail::unsigned_val_t(0) {}
+   explicit Doc_id(const unsigned x) : base(x) {}
+   Doc_id() : base(0) {}
 };
 
 

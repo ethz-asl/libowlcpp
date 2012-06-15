@@ -5,16 +5,16 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_ID_HPP_
 #define NODE_ID_HPP_
-#include "owlcpp/detail/comparable_value.hpp"
+#include "owlcpp/detail/object_id_base.hpp"
 
 namespace owlcpp{
 
 /**@brief Term identifier
 *******************************************************************************/
-class Node_id : public detail::unsigned_val_t {
+class Node_id : public detail::Base_id<Node_id, unsigned> {
 public:
-   explicit Node_id(const unsigned x) : detail::unsigned_val_t(x) {}
-   Node_id() : detail::unsigned_val_t(0) {}
+   explicit Node_id(const unsigned x) : base(x) {}
+   Node_id() : base(0) {}
 };
 
 }//namespace owlcpp
