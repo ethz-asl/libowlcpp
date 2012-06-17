@@ -29,66 +29,59 @@ template<
    bool Index_doc = 0
 > class Triple_map;
 
-struct any{};
+/** Equals to any node or document ID.
+Use for searching triples to indicate the elements of a triple that should be
+ignored.
+*******************************************************************************/
+struct any{
+   bool operator==(Node_id const&) const {return true;}
+   bool operator==(Doc_id const&) const {return true;}
+};
 
 /** Define return type of triple search based on search argument types
-@targ Store triple store type, e.g., Triple_map<>, Triple_store
-@targ Subj type for matching/ignoring triple subject,   e.g., Node_id or any
-@targ Pred type for matching/ignoring triple predicate, e.g., Node_id or any
-@targ Obj  type for matching/ignoring triple object,    e.g., Node_id or any
-@targ Doc  type for matching/ignoring triple document,  e.g., Doc_id  or any
+@tparam Store triple store type, e.g., Triple_map<>, Triple_store
+@tparam Subj type for matching/ignoring triple subject,   e.g., Node_id or any
+@tparam Pred type for matching/ignoring triple predicate, e.g., Node_id or any
+@tparam Obj  type for matching/ignoring triple object,    e.g., Node_id or any
+@tparam Doc  type for matching/ignoring triple document,  e.g., Doc_id  or any
 *******************************************************************************/
 template<class Subj, class Pred, class Obj, class Doc, class Store = Triple_map<> >
-class Ts_result {
+class Search {
    typedef detail::Search_config<typename Store::config,Subj,Pred,Obj,Doc> config;
 public:
    typedef typename config::range range;
+   typedef typename config::iterator iterator;
 };
 
-/** Define return type of triple search based on which node IDs are specified
-@targ Store triple store type, e.g., Triple_map<>, Triple_store
-@targ Subj true if Node_id was specified to match triple subject,   or false for any
-@targ Pred true if Node_id was specified to match triple predicate, or false for any
-@targ Obj  true if Node_id was specified to match triple object,    or false for any
-@targ Doc  true if Doc_id  was specified to match triple document,  or false for any
+/** Deduce return type of triple search based on boolean template arguments
+indicating which IDs were specified
+@tparam Subj true if Node_id was specified to match triple subject,   or false for any
+@tparam Pred true if Node_id was specified to match triple predicate, or false for any
+@tparam Obj  true if Node_id was specified to match triple object,    or false for any
+@tparam Doc  true if Doc_id  was specified to match triple document,  or false for any
+@tparam Store triple store type, e.g., Triple_map<>, Triple_store
 *******************************************************************************/
 template<bool Subj, bool Pred, bool Obj, bool Doc, class Store = Triple_map<> >
-class Ts_result_i {
+class Search_b {
    typedef typename detail::Deduce_args<Subj,Pred,Obj,Doc>::type q_args;
-public:
-   typedef typename Ts_result<
+   typedef Search<
             typename boost::mpl::at_c<q_args,0>::type,
             typename boost::mpl::at_c<q_args,1>::type,
             typename boost::mpl::at_c<q_args,2>::type,
             typename boost::mpl::at_c<q_args,3>::type,
             Store
-   >::range range;
+   > search;
+public:
+   typedef typename search::iterator iterator;
+   typedef typename search::range range;
 };
 
 /**@brief Store, index, and search RDF triples
-
-   @decision Storing triples.
-   Options and RAM/time performance:
-   - boost::multi_index 2GB/150s
-   - std::vector<Triple> 0.921GB/91s
-   - boost::ptr_vector<Triple> 1.1GB/98s
-
-   @decision Indexing triples.
-   Options and RAM/time performance:
-   - boost::multi_index 2GB/150s
-   - std::vector<Triple>, no index 0.921GB/91s
-   - boost::ptr_vector<Triple>, no index 1.1GB/98s
-   - boost::ptr_vector<Triple>, vector<vector> empty 1.4GB/98s
-   - boost::ptr_vector<Triple>, vector<vector> 1.7GB/110s
-
-   @decision Storing triples
-   Create triples on heap, store pointers in boost::ptr_vector<Triple>
-
 *******************************************************************************/
 template<bool Index_subj, bool Index_pred, bool Index_obj, bool Index_doc>
 class Triple_map {
 
-   template<class, class, class, class, class> friend class Ts_result;
+   template<class, class, class, class, class> friend class Search;
 
    typedef Triple_map self_t;
 
@@ -159,37 +152,27 @@ public:
     @return iterator range of triples matching the query.
     @details
     The type of the range can be obtained from
-    @code template<bool Subj, bool Pred, bool Obj, bool Doc> class Query; @endcode
+    @code template<bool Subj, bool Pred, bool Obj, bool Doc> class Search_b; @endcode
     For example,
-    @code Query<1,0,0,1>::range_t range = triple_map.find(subj, blank(), blank(), doc);
+    @code Search_b<1,0,0,1>::range_t range = triple_map.find(subj, any(), any(), doc);
     @endcode
-
+   */
+   template<class Subj, class Pred, class Obj, class Doc>
+   typename Search<Subj,Pred,Obj,Doc,self_t>::range
+   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
+   /*
    - find search index
    - form predicate
    - get index iterator range
    - make filter iterator range
-
-   */
-   template<class Subj, class Pred, class Obj, class Doc>
-   typename Ts_result<Subj,Pred,Obj,Doc,self_t>::range
-   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
+    */
       typedef detail::Search_config<config,Subj,Pred,Obj,Doc> search_config;
       typedef typename search_config::index_num index_num;
       typedef typename boost::mpl::at<store, index_num>::type index_t;
-//      typedef typename config::index index_t;
       index_t const& index = boost::fusion::at<index_num>(store_);
       typedef typename index_t::const_range range1_t;
-      typedef detail::Search_range1<index_t> get_range1_t;
-      const range1_t r1 = get_range1_t::get(index,subj,pred,obj,doc);
-
-//      typedef typename detail::Query_ft<Subj,Pred,Obj,Doc>::type q1_t;
-//      typedef detail::Search_config<store_tags, q1_t> search_t;
-//      typedef typename search_t::index_num index_num;
-//      typedef typename boost::fusion::at<index_num>::
-//      typedef typename search_t::query2_tags q2_t;
-
-//      typedef query_detail::Query_impl<Subj,Pred,Obj,Doc,Triple_map> q_type;
-//      return q_type::make_range(*this, subj, pred, obj, doc);
+      const range1_t r1 = detail::Search_range1<index_t>::get(index,subj,pred,obj,doc);
+      return search_config::search::get(r1, subj, pred, obj, doc);
    }
 
 private:

@@ -22,6 +22,22 @@ namespace fusion = boost::fusion;
 namespace fusion_rof = boost::fusion::result_of;
 
 /**
+   @decision Storing triples.
+   Options and RAM/time performance:
+   - boost::multi_index 2GB/150s
+   - std::vector<Triple> 0.921GB/91s
+   - boost::ptr_vector<Triple> 1.1GB/98s
+
+   @decision Indexing triples.
+   Options and RAM/time performance:
+   - boost::multi_index 2GB/150s
+   - std::vector<Triple>, no index 0.921GB/91s
+   - boost::ptr_vector<Triple>, no index 1.1GB/98s
+   - boost::ptr_vector<Triple>, vector<vector> empty 1.4GB/98s
+   - boost::ptr_vector<Triple>, vector<vector> 1.7GB/110s
+
+   @decision Storing triples
+   Create triples on heap, store pointers in boost::ptr_vector<Triple>
 *******************************************************************************/
 class Element_index {
 protected:

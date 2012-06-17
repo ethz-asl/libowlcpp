@@ -6,12 +6,14 @@ part of owlcpp project.
 #ifndef TRIPLE_MAP_CONFIG_HPP_
 #define TRIPLE_MAP_CONFIG_HPP_
 #include "boost/fusion/container/vector.hpp"
+#include "boost/fusion/include/all.hpp"
 #include "boost/fusion/include/at.hpp"
 #include "boost/fusion/include/make_vector.hpp"
 #include "boost/fusion/include/mpl.hpp"
 #include "boost/fusion/include/size.hpp"
 #include "boost/fusion/include/push_back.hpp"
 #include "boost/fusion/include/value_at.hpp"
+#include "boost/fusion/include/zip.hpp"
 
 #include "boost/iterator/filter_iterator.hpp"
 
@@ -34,6 +36,7 @@ part of owlcpp project.
 
 #include "boost/range.hpp"
 #include "boost/type_traits/is_same.hpp"
+#include "boost/type_traits/has_operator.hpp"
 
 #include "owlcpp/rdf/detail/triple_map_tags.hpp"
 
@@ -120,26 +123,39 @@ template<class Indx> struct Search_range1<Indx, Main_store_tag> {
 /**
 *******************************************************************************/
 template<class QArgs> class Query_by_element {
+   typedef typename fusion_rof::as_vector<QArgs>::type store_t;
+
+   struct Compare {
+      template<class T> bool operator()(T const& t) const {
+         BOOST_MPL_ASSERT_RELATION(mpl::size<T>::value, ==, 2);
+         BOOST_MPL_ASSERT((
+                  boost::has_equal_to<
+                     typename mpl::at_c<T,0>::type,
+                     typename mpl::at_c<T,1>::type,
+                     bool
+                  >
+         ));
+         return fusion::at_c<0>(t) == fusion::at_c<1>(t);
+      }
+   };
+
 public:
+   template<class T1,class T2, class T3, class T4>
+   Query_by_element(T1 const& t1, T2 const& t2, T3 const& t3, T4 const& t4)
+   : stor_(t1, t2, t3, t4)
+   {}
+
+   bool operator()(Triple const& t) const {
+      return fusion::all(fusion::zip(stor_, t), Compare());
+   }
 
 private:
-};
-
-/** Search range using a predicate
-*******************************************************************************/
-template<class Range1, class Pred> class Search_range2 {
-   typedef typename boost::range_iterator<Range1>::type iter1;
-public:
-   typedef boost::filter_iterator<Pred, iter1> iterator;
-   typedef boost::iterator_range<iterator> range;
-
-   static range get(Range1 r, Pred const& pred) {
-   }
+   store_t stor_;
 };
 
 /** Define number of types in sequence that are not @b any
 *******************************************************************************/
-template<class QArgs> struct Count_qargs {
+template<class QArgs> struct Count_defined {
    typedef typename mpl::fold<
       QArgs,
       mpl::size_t<0>,
@@ -151,6 +167,45 @@ template<class QArgs> struct Count_qargs {
    >::type type;
    static const std::size_t value  = type::value;
 };
+
+/**
+*******************************************************************************/
+template<class QArgs, class Range1, std::size_t N> class Filter_by_element_impl {
+   typedef typename boost::range_iterator<Range1>::type iter1;
+   typedef Query_by_element<QArgs> query;
+public:
+   typedef boost::filter_iterator<query, iter1> iterator;
+   typedef boost::iterator_range<iterator> range;
+
+   template<class T1,class T2, class T3, class T4> static range get(
+            Range1 r, T1 const& t1, T2 const& t2, T3 const& t3, T4 const& t4
+   ) {
+      query q(t1,t2,t3,t4);
+      return boost::make_iterator_range(
+               iterator(q, boost::begin(r), boost::end(r)),
+               iterator(q, boost::end(r), boost::end(r))
+      );
+   }
+
+};
+
+/**
+*******************************************************************************/
+template<class QArgs, class Range1> struct Filter_by_element_impl<QArgs,Range1,0> {
+   typedef typename boost::range_iterator<Range1>::type iterator;
+   typedef Range1 range;
+   template<class T1,class T2, class T3, class T4> static range get(
+            Range1 r, T1 const&, T2 const&, T3 const&, T4 const&
+   ) {
+      return r;
+   }
+};
+
+/** Filter range of triples by matching each triple's elements
+*******************************************************************************/
+template<class QArgs, class Range1> class Filter_by_element : public
+Filter_by_element_impl<QArgs, Range1, Count_defined<QArgs>::value>
+{};
 
 /** Deduce query argument types from booleans
 *******************************************************************************/
@@ -169,8 +224,8 @@ public:
 };
 
 /** Define the tag for the best search index, secondary query tags
-@targ SConfig specialized Store_config
-@tags QArgs sequence of query arguments
+@tparam SConfig specialized Store_config
+@tparam QArgs sequence of query arguments
 *******************************************************************************/
 template<class SConfig, class QArgs> class Search_config_v {
    typedef typename SConfig::tags s_tags;
@@ -210,8 +265,7 @@ public:
    typedef typename
             fusion_rof::value_at<typename SConfig::store,index_num>::type
             index;
-   typedef Query_by_element<QArgs> query;
-   typedef Search_range2<typename index::const_range, query> search;
+   typedef Filter_by_element<q2_args, typename index::const_range> search;
    typedef typename search::iterator iterator;
    typedef typename search::range range;
 };

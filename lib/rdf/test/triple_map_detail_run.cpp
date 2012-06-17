@@ -25,17 +25,17 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 
    typedef Deduce_args<1,0,0,0>::type qargs1;
    BOOST_MPL_ASSERT_RELATION(mpl::size<qargs1>::value, ==, 4);
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<qargs1>::value, ==, 1);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<qargs1>::value, ==, 1);
    typedef Search_config_v<sconfig, qargs1> sc1;
    typedef sc1::index_tag si1;
    BOOST_MPL_ASSERT((boost::is_same<si1, Main_store_tag>));
    typedef sc1::index_num sin1;
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<sc1::q2_args>::value, ==, 1);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc1::q2_args>::value, ==, 1);
    BOOST_MPL_ASSERT_RELATION(sin1::value, ==, 0);
 
    typedef Deduce_args<1,1,0,1>::type qargs2;
    typedef Search_config_v<sconfig, qargs2> sc2;
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<sc2::q2_args>::value, ==, 3);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc2::q2_args>::value, ==, 3);
    typedef sc2::index_tag si2;
    BOOST_MPL_ASSERT((boost::is_same<si2, Main_store_tag>));
 }
@@ -52,22 +52,22 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    BOOST_MPL_ASSERT((boost::is_same<si1, Main_store_tag>));
    typedef sc1::index_num sin1;
    BOOST_MPL_ASSERT_RELATION(sin1::value, ==, 0);
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<sc1::q2_args>::value, ==, 1);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc1::q2_args>::value, ==, 1);
 
    typedef Deduce_args<1,1,0,1>::type qargs2;
    typedef Search_config_v<sconfig, qargs2> sc2;
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<sc2::q2_args>::value, ==, 2);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc2::q2_args>::value, ==, 2);
    typedef sc2::index_tag si2;
    BOOST_MPL_ASSERT((boost::is_same<si2, Doc_tag>));
    typedef sc2::index_num sin2;
    BOOST_MPL_ASSERT_RELATION(sin2::value, ==, 1);
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<sc2::q2_args>::value, ==, 2);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc2::q2_args>::value, ==, 2);
 
    typedef Deduce_args<1,1,0,0>::type qargs3;
    typedef Search_config_v<sconfig, qargs3> sc3;
    typedef sc3::index_tag si3;
    BOOST_MPL_ASSERT((boost::is_same<si3, Main_store_tag>));
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<sc3::q2_args>::value, ==, 2);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc3::q2_args>::value, ==, 2);
 
    typedef Deduce_args<0,0,1,1>::type qargs4;
    typedef Search_config_v<sconfig, qargs4> sc4;
@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    BOOST_MPL_ASSERT((boost::is_same<si4, Obj_tag>));
    typedef sc4::index_num sin4;
    BOOST_MPL_ASSERT_RELATION(sin4::value, ==, 2);
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<sc4::q2_args>::value, ==, 1);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc4::q2_args>::value, ==, 1);
 }
 
 /** Select optimal triple index
@@ -88,13 +88,13 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    typedef Search_config_v<sconfig, qargs1> sc1;
    typedef sc1::index_tag si1;
    BOOST_MPL_ASSERT((boost::is_same<si1, Subj_tag>));
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<sc1::q2_args>::value, ==, 0);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc1::q2_args>::value, ==, 0);
 
    typedef Deduce_args<1,1,0,1>::type qargs2;
    typedef Search_config_v<sconfig, qargs2> sc2;
    typedef sc2::index_tag si2;
    BOOST_MPL_ASSERT((boost::is_same<si2, Subj_tag>));
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<sc2::q2_args>::value, ==, 2);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc2::q2_args>::value, ==, 2);
 
    typedef Deduce_args<1,1,0,0>::type qargs3;
    typedef Search_config_v<sconfig, qargs3> sc3;
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    typedef Search_config_v<sconfig, qargs7> sc7;
    typedef sc7::index_tag si7;
    BOOST_MPL_ASSERT((boost::is_same<si7, Main_store_tag>));
-   BOOST_MPL_ASSERT_RELATION(Count_qargs<sc7::q2_args>::value, ==, 0);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc7::q2_args>::value, ==, 0);
 }
 
 }//namespace test

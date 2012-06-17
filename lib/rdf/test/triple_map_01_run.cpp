@@ -25,17 +25,23 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    Triple_map<> tm;
    const unsigned t[] = {0,1,0,0};
    insert(tm, t);
-   /*Query<1,1,0,0>::range r =*/ tm.find(Node_id(0), Node_id(3), any(), any());
-   /*Query<1,1,0,0>::range r =*/ tm.find(any(), Node_id(3), any(), any());
+   Search_b<1,1,0,0>::range r1 = tm.find(Node_id(0), Node_id(3), any(), any());
+   BOOST_ASSERT(!r1);
+   Search_b<1,1,0,0>::range r2 = tm.find(Node_id(0), Node_id(1), any(), any());
+   BOOST_ASSERT(r2);
+   Search_b<0,1,0,0>::range r = tm.find(any(), Node_id(3), any(), any());
 }
 
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   Triple_map<0,1,0,0> tm;
+   typedef Triple_map<0,1,0,0> triple_map;
+   triple_map tm;
    const unsigned t[] = {0,1,0,0};
    insert(tm, t);
-//   Query<1,1,0,0>::range r = tm.find(Node_id(0), Node_id(3), any(), any());
+   typedef Search_b<0,1,0,0> search;
+   search::range r = tm.find(any(), Node_id(3), any(), any());
+   BOOST_MPL_ASSERT((boost::is_same<search::iterator, triple_map::const_iterator>));
 }
 
 }//namespace test
