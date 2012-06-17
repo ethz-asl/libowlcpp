@@ -72,8 +72,9 @@ explicit rdf-py io-py api-py ;
 
 if [ modules.peek doxygen : .initialized ] {
    import path ;
-   local doc_public = [ path.glob-tree include apps : *.hpp *.cpp ] ;
-   local doc_all = [ path.glob-tree lib : *.cpp *.hpp ] $(doc_public) ;
+   local doc_api = [ glob include/owlcpp/*/*.hpp : include/owlcpp/detail/* ] ;
+   local doc_apps = [ path.glob-tree apps : *.hpp *.cpp ] ;
+   local doc_all = [ path.glob-tree include apps lib : *.cpp *.hpp ] ;
    local alliases = "\"decision=\\xrefitem decision \\\"Decision\\\" \\\"Decisions\\\" \"" ;
    local params = 
       "PROJECT_NAME=$(OWLCPP_NAME)"
@@ -109,7 +110,7 @@ if [ modules.peek doxygen : .initialized ] {
    ;
    doxygen api.html
       :
-         $(doc_public)
+         $(doc_api) $(doc_apps)
       :
          <doxygen:param>$(params)
    ;
