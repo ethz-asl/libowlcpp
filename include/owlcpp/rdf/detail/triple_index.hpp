@@ -17,7 +17,7 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/detail/triple_map_tags.hpp"
 
-namespace owlcpp{ namespace detail{
+namespace owlcpp{ namespace triple_map_detail{
 namespace fusion = boost::fusion;
 namespace fusion_rof = boost::fusion::result_of;
 
@@ -142,6 +142,6 @@ private:
 };
 
 
-}//namespace detail
+}//namespace triple_map_detail
 }//namespace owlcpp
 #endif /* TRIPLE_INDEX_HPP_ */

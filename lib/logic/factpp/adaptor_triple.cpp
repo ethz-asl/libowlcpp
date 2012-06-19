@@ -366,7 +366,7 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
 
    case T_owl_AllDisjointClasses::index:
    case T_owl_AllDisjointProperties::index: {
-      Query<1,1,0,0>::range r = ts_.triples().find(subj, T_owl_members::id(), any(), any());
+      Triple_store::result_b<1,1,0,0>::type r = ts_.find(subj, T_owl_members::id(), any(), any());
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("_:x owl:members seq triple not found for _:x rdf:type owl:AllDisjoint*")
@@ -376,7 +376,7 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
    }
 
    case T_owl_AllDifferent::index: {
-      Query<1,1,0,0>::range r = ts_.triples().find(subj, T_owl_members::id(), any(), any());
+      Triple_store::result_b<1,1,0,0>::type r = ts_.find(subj, T_owl_members::id(), any(), any());
       if( ! r ) r = ts_.triples().find(subj, T_owl_distinctMembers::id(), any(), any());
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
@@ -612,8 +612,8 @@ TExpressionManager& Adaptor_triple::e_m() {
 /*
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
-   Query<1,1,0,0>::range r1 =
-            ts_.triples().find(nid, T_owl_sourceIndividual::id(), any(), any());
+   Triple_store::result_b<1,1,0,0>::type r1 =
+            ts_.find(nid, T_owl_sourceIndividual::id(), any(), any());
    if( ! r1 ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("no owl:sourceIndividual in owl:NegativePropertyAssertion")
@@ -621,8 +621,8 @@ TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
    );
    const Node_id src_ind = r1.front().object();
 
-   Query<1,1,0,0>::range r2 =
-            ts_.triples().find(nid, T_owl_assertionProperty::id(), any(), any());
+   Triple_store::result_b<1,1,0,0>::type r2 =
+            ts_.find(nid, T_owl_assertionProperty::id(), any(), any());
    if( ! r2 ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("no owl:assertionProperty in owl:NegativePropertyAssertion")
@@ -639,8 +639,8 @@ TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
    const Node_id tiv = nt.is_object() ?
             T_owl_targetIndividual::id() :
             T_owl_targetValue::id();
-   Query<1,1,0,0>::range r3 =
-            ts_.triples().find(nid, tiv, any(), any());
+   Triple_store::result_b<1,1,0,0>::type r3 =
+            ts_.find(nid, tiv, any(), any());
    if( ! r3 ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("no owl:target* in owl:NegativePropertyAssertion")

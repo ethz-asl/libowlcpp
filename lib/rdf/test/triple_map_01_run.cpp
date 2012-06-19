@@ -22,14 +22,15 @@ template<class Tm, class Seq> void insert(Tm& tm, Seq const& s) {
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Triple_map<> tm;
+   typedef Triple_map<> triple_map;
+   triple_map tm;
    const unsigned t[] = {0,1,0,0};
    insert(tm, t);
-   Search_b<1,1,0,0>::range r1 = tm.find(Node_id(0), Node_id(3), any(), any());
+   triple_map::result_b<1,1,0,0>::type r1 = tm.find(Node_id(0), Node_id(3), any(), any());
    BOOST_ASSERT(!r1);
-   Search_b<1,1,0,0>::range r2 = tm.find(Node_id(0), Node_id(1), any(), any());
+   triple_map::result_b<1,1,0,0>::type r2 = tm.find(Node_id(0), Node_id(1), any(), any());
    BOOST_ASSERT(r2);
-   Search_b<0,1,0,0>::range r = tm.find(any(), Node_id(3), any(), any());
+   triple_map::result_b<0,1,0,0>::type r = tm.find(any(), Node_id(3), any(), any());
 }
 
 /**
@@ -39,9 +40,8 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    triple_map tm;
    const unsigned t[] = {0,1,0,0};
    insert(tm, t);
-   typedef Search_b<0,1,0,0> search;
-   search::range r = tm.find(any(), Node_id(3), any(), any());
-   BOOST_MPL_ASSERT((boost::is_same<search::iterator, triple_map::const_iterator>));
+   typedef triple_map::result_b<0,1,0,0> search;
+   search::type r = tm.find(any(), Node_id(3), any(), any());
 }
 
 }//namespace test

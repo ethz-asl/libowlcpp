@@ -5,20 +5,17 @@ part of owlcpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE object_id_01_cfail
 #include "boost/test/unit_test.hpp"
-#include "test/exception_fixture.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/doc_id.hpp"
 
 namespace owlcpp{ namespace test{
-
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    const Node_id id1(42);
    const Doc_id id2(42);
-   BOOST_CHECK(id1 == id2);
+   BOOST_CHECK(id1 == id2); //compilation error
 }
 
 }//namespace test

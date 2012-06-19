@@ -16,22 +16,6 @@ part of owlcpp project.
 #include "owlcpp/rdf/copy_triples.hpp"
 #include "owlcpp/rdf/exception.hpp"
 
-#ifndef OWLCPP_RDF_INDEX_SUBJ
-#define OWLCPP_RDF_INDEX_SUBJ 1
-#endif
-
-#ifndef OWLCPP_RDF_INDEX_PRED
-#define OWLCPP_RDF_INDEX_PRED 0
-#endif
-
-#ifndef OWLCPP_RDF_INDEX_OBJ
-#define OWLCPP_RDF_INDEX_OBJ 0
-#endif
-
-#ifndef OWLCPP_RDF_INDEX_DOC
-#define OWLCPP_RDF_INDEX_DOC 0
-#endif
-
 namespace owlcpp{
 
 /**@brief 
@@ -54,10 +38,29 @@ public:
    typedef Iri_map iri_map;
    typedef Node_map node_map;
    typedef Triple_map<
-            OWLCPP_RDF_INDEX_SUBJ,
-            OWLCPP_RDF_INDEX_PRED,
-            OWLCPP_RDF_INDEX_OBJ,
-            OWLCPP_RDF_INDEX_DOC
+#ifdef OWLCPP_RDF_INDEX_SUBJECT
+            OWLCPP_RDF_INDEX_SUBJECT
+#else
+            1
+#endif
+            ,
+#ifdef OWLCPP_RDF_INDEX_PREDICATE
+            OWLCPP_RDF_INDEX_PREDICATE
+#else
+            0
+#endif
+            ,
+#ifdef OWLCPP_RDF_INDEX_OBJECT
+            OWLCPP_RDF_INDEX_OBJECT
+#else
+            0
+#endif
+            ,
+#ifdef OWLCPP_RDF_INDEX_DOCUMENT
+            OWLCPP_RDF_INDEX_DOCUMENT
+#else
+            0
+#endif
    > triple_map;
 
    Triple_store(Node_map_std const& snodes = Node_map_std::get(Nodes_owl()))
@@ -84,6 +87,18 @@ public:
       documents().clear();
       node_.clear();
       iri_.clear();
+   }
+
+   template<class Subj, class Pred, class Obj, class Doc> struct result
+   : public triple_map::result<Subj,Pred,Obj,Doc> {};
+
+   template<bool Subj, bool Pred, bool Obj, bool Doc> struct result_b
+   : public triple_map::result_b<Subj,Pred,Obj,Doc> {};
+
+   template<class Subj, class Pred, class Obj, class Doc>
+   typename result<Subj,Pred,Obj,Doc>::type
+   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
+      return triple_.find(subj, pred, obj, doc);
    }
 
 private:

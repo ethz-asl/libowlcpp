@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    ts.insert_triple(nb2, terms::T_rdf_first::id(), ni2, did1);
    ts.insert_triple(nb2, terms::T_rdf_rest::id(), terms::T_rdf_nil::id(), did1);
 
-   Rdf_list_iter_m i(nb1, ts.triples()), i1;
+   Rdf_list_iter_s i(nb1, ts), i1;
    BOOST_CHECK(i != i1);
    BOOST_CHECK_EQUAL(*i++, ni1);
    BOOST_CHECK(i != i1);

@@ -21,10 +21,10 @@ _:c1 rdf:rest _:c2
 _:c2 rdf:first <ex:bbb>
 _:c2 rdf:rest rdf:nil
 @endcode
-*******************************************************************************/
 boost::iterator_range<Rdf_list_iter_m> inline rdf_list(const Node_id nid, Triple_map const& tm) {
    return boost::make_iterator_range(Rdf_list_iter_m(nid, tm), Rdf_list_iter_m());
 }
+*******************************************************************************/
 
 /**
 @param nid node ID of the subject of the first triple of RDF list

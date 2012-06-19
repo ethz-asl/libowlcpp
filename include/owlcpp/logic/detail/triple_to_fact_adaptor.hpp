@@ -38,7 +38,7 @@ public:
 
    void submit(Triple const& t) {axiom(t);}
 
-   template<class Range> void submit(Range r) {
+   template<class Range> void submit(Range const& r) {
       BOOST_FOREACH(Triple const& t, r) {
          try{
             submit(t);

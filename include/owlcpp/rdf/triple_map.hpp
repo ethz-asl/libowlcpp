@@ -23,75 +23,47 @@ part of owlcpp project.
 namespace owlcpp{
 
 template<
-   bool Index_subj = 1,
-   bool Index_pred = 0,
-   bool Index_obj = 0,
-   bool Index_doc = 0
+   bool Index_subj =
+#ifdef OWLCPP_RDF_INDEX_SUBJECT
+            OWLCPP_RDF_INDEX_SUBJECT
+#else
+            1
+#endif
+            ,
+   bool Index_pred =
+#ifdef OWLCPP_RDF_INDEX_PREDICATE
+            OWLCPP_RDF_INDEX_PREDICATE
+#else
+            0
+#endif
+            ,
+   bool Index_obj =
+#ifdef OWLCPP_RDF_INDEX_OBJECT
+            OWLCPP_RDF_INDEX_OBJECT
+#else
+            0
+#endif
+            ,
+   bool Index_doc =
+#ifdef OWLCPP_RDF_INDEX_DOCUMENT
+            OWLCPP_RDF_INDEX_DOCUMENT
+#else
+            0
+#endif
 > class Triple_map;
-
-/** Equals to any node or document ID.
-Use for searching triples to indicate the elements of a triple that should be
-ignored.
-*******************************************************************************/
-struct any{
-   bool operator==(Node_id const&) const {return true;}
-   bool operator==(Doc_id const&) const {return true;}
-};
-
-/** Define return type of triple search based on search argument types
-@tparam Store triple store type, e.g., Triple_map<>, Triple_store
-@tparam Subj type for matching/ignoring triple subject,   e.g., Node_id or any
-@tparam Pred type for matching/ignoring triple predicate, e.g., Node_id or any
-@tparam Obj  type for matching/ignoring triple object,    e.g., Node_id or any
-@tparam Doc  type for matching/ignoring triple document,  e.g., Doc_id  or any
-*******************************************************************************/
-template<class Subj, class Pred, class Obj, class Doc, class Store = Triple_map<> >
-class Search {
-   typedef detail::Search_config<typename Store::config,Subj,Pred,Obj,Doc> config;
-public:
-   typedef typename config::range range;
-   typedef typename config::iterator iterator;
-};
-
-/** Deduce return type of triple search based on boolean template arguments
-indicating which IDs were specified
-@tparam Subj true if Node_id was specified to match triple subject,   or false for any
-@tparam Pred true if Node_id was specified to match triple predicate, or false for any
-@tparam Obj  true if Node_id was specified to match triple object,    or false for any
-@tparam Doc  true if Doc_id  was specified to match triple document,  or false for any
-@tparam Store triple store type, e.g., Triple_map<>, Triple_store
-*******************************************************************************/
-template<bool Subj, bool Pred, bool Obj, bool Doc, class Store = Triple_map<> >
-class Search_b {
-   typedef typename detail::Deduce_args<Subj,Pred,Obj,Doc>::type q_args;
-   typedef Search<
-            typename boost::mpl::at_c<q_args,0>::type,
-            typename boost::mpl::at_c<q_args,1>::type,
-            typename boost::mpl::at_c<q_args,2>::type,
-            typename boost::mpl::at_c<q_args,3>::type,
-            Store
-   > search;
-public:
-   typedef typename search::iterator iterator;
-   typedef typename search::range range;
-};
 
 /**@brief Store, index, and search RDF triples
 *******************************************************************************/
 template<bool Index_subj, bool Index_pred, bool Index_obj, bool Index_doc>
 class Triple_map {
 
-   template<class, class, class, class, class> friend class Search;
-
-   typedef Triple_map self_t;
-
    typedef typename
-            detail::Store_config<Index_subj,Index_pred,Index_obj,Index_doc>
+            triple_map_detail::Store_config<Index_subj,Index_pred,Index_obj,Index_doc>
    config;
 
    typedef typename config::store store;
    typedef typename boost::mpl::front<store>::type main_store;
-   BOOST_MPL_ASSERT((boost::is_same<typename main_store::tag, detail::Main_store_tag>));
+   BOOST_MPL_ASSERT((boost::is_same<typename main_store::tag, triple_map_detail::Main_store_tag>));
 
 
    class Insert {
@@ -106,9 +78,40 @@ public:
    typedef typename main_store::iterator iterator;
    typedef typename main_store::const_iterator const_iterator;
 
-   /**
-    @return number of stored triples
-   */
+   /** Define return type of triple search based on search argument types
+   @tparam Subj type for matching/ignoring triple subject,   e.g., Node_id or any
+   @tparam Pred type for matching/ignoring triple predicate, e.g., Node_id or any
+   @tparam Obj  type for matching/ignoring triple object,    e.g., Node_id or any
+   @tparam Doc  type for matching/ignoring triple document,  e.g., Doc_id  or any
+   *******************************************************************************/
+   template<class Subj, class Pred, class Obj, class Doc> struct result {
+      typedef typename
+               triple_map_detail::Search_config<config,Subj,Pred,Obj,Doc>::range
+               type;
+   };
+
+   /** Deduce return type of triple search based on boolean template arguments
+   indicating which IDs were specified
+   @tparam Subj true if Node_id was specified to match triple subject,   or false for any
+   @tparam Pred true if Node_id was specified to match triple predicate, or false for any
+   @tparam Obj  true if Node_id was specified to match triple object,    or false for any
+   @tparam Doc  true if Doc_id  was specified to match triple document,  or false for any
+   *******************************************************************************/
+   template<bool Subj, bool Pred, bool Obj, bool Doc>
+   class result_b {
+      typedef typename triple_map_detail::Deduce_args<Subj,Pred,Obj,Doc>::type q_args;
+      typedef result<
+               typename boost::mpl::at_c<q_args,0>::type,
+               typename boost::mpl::at_c<q_args,1>::type,
+               typename boost::mpl::at_c<q_args,2>::type,
+               typename boost::mpl::at_c<q_args,3>::type
+      > search;
+   public:
+      typedef typename search::type type;
+   };
+
+
+   /** @return number of stored triples */
    std::size_t size() const {return boost::fusion::front(store_).get_range().size();}
    const_iterator begin() const {return boost::fusion::front(store_).get_range().begin();}
    const_iterator end() const {return boost::fusion::front(store_).get_range().end();}
@@ -122,7 +125,7 @@ public:
     @param t triple stored in triple map
    */
    void erase(Triple const& t) {
-
+      //todo
    }
 
    /**@brief Insert a new triple
@@ -140,25 +143,32 @@ public:
 
 
    /**@brief Search triples by subject, predicate, object, or document IDs.
-    @details Polymorphically search stored triples to find ones with matching
-    any combination of node IDs for subject, predicate, or object nodes or
-    document ID.
-    If none of the nodes are specified, the search returns a range containing all
-    stored triples, same as from all() method.
-    @param subj ID for subject node of blank()
-    @param pred ID for predicate node of blank()
-    @param obj ID for object node of blank()
-    @param doc ID for document node of blank()
+    @details Polymorphically search stored triples to find ones that match
+    specified node IDs for subject, predicate, or object nodes or document ID.
+    An instance of \b any matches all values for the corresponding triple
+    element.
+    If none of the nodes are specified, i.e., <tt>find(any(), any(), any(), any())</tt>,
+    the search returns a range of all stored triples, [begin(), end()).
+    @param subj predicate for first element of triple (subject node),
+    e.g., \b Node_id, \b any
+    @param pred predicate for second element of triple (predicate node),
+    e.g., \b Node_id, \b any
+    @param obj predicate for third element of triple (object node),
+    e.g., \b Node_id, \b any
+    @param doc predicate for fourth element of triple (document ID),
+    e.g., \b Doc_id, \b any
     @return iterator range of triples matching the query.
     @details
     The type of the range can be obtained from
-    @code template<bool Subj, bool Pred, bool Obj, bool Doc> class Search_b; @endcode
+    @code template<class Subj, class Pred, class Obj, class Doc> class result; @endcode
+    or from
+    @code template<bool Subj, bool Pred, bool Obj, bool Doc> class result_b; @endcode
     For example,
-    @code Search_b<1,0,0,1>::range_t range = triple_map.find(subj, any(), any(), doc);
+    @code Triple_map<>::result_b<1,0,0,1>::type range = triple_map.find(subj, any(), any(), doc);
     @endcode
    */
    template<class Subj, class Pred, class Obj, class Doc>
-   typename Search<Subj,Pred,Obj,Doc,self_t>::range
+   typename result<Subj,Pred,Obj,Doc>::type
    find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
    /*
    - find search index
@@ -166,12 +176,12 @@ public:
    - get index iterator range
    - make filter iterator range
     */
-      typedef detail::Search_config<config,Subj,Pred,Obj,Doc> search_config;
+      typedef triple_map_detail::Search_config<config,Subj,Pred,Obj,Doc> search_config;
       typedef typename search_config::index_num index_num;
       typedef typename boost::mpl::at<store, index_num>::type index_t;
       index_t const& index = boost::fusion::at<index_num>(store_);
       typedef typename index_t::const_range range1_t;
-      const range1_t r1 = detail::Search_range1<index_t>::get(index,subj,pred,obj,doc);
+      const range1_t r1 = triple_map_detail::Search_range1<index_t>::get(index,subj,pred,obj,doc);
       return search_config::search::get(r1, subj, pred, obj, doc);
    }
 

@@ -11,7 +11,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_map.hpp"
 
 namespace owlcpp{ namespace test{
-using namespace owlcpp::detail;
+using namespace owlcpp::triple_map_detail;
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
@@ -76,6 +76,15 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    typedef sc4::index_num sin4;
    BOOST_MPL_ASSERT_RELATION(sin4::value, ==, 2);
    BOOST_MPL_ASSERT_RELATION(Count_defined<sc4::q2_args>::value, ==, 1);
+
+   typedef Deduce_args<0,0,0,1>::type qargs5;
+   typedef Search_config_v<sconfig, qargs5> sc5;
+   typedef sc5::index_tag si5;
+   BOOST_MPL_ASSERT((boost::is_same<si5, Doc_tag>));
+   typedef sc5::index_num sin5;
+   BOOST_MPL_ASSERT_RELATION(sin5::value, ==, 1);
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc5::q2_args>::value, ==, 0);
+   BOOST_MPL_ASSERT((boost::is_same<sc5::iterator, Element_index::const_iterator>));
 }
 
 /** Select optimal triple index
@@ -115,12 +124,29 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    typedef Search_config_v<sconfig, qargs6> sc6;
    typedef sc6::index_tag si6;
    BOOST_MPL_ASSERT((boost::is_same<si6, Doc_tag>));
+   BOOST_MPL_ASSERT_RELATION(Count_defined<sc6::q2_args>::value, ==, 0);
+   BOOST_MPL_ASSERT((boost::is_same<sc6::iterator, Element_index::const_iterator>));
 
    typedef Deduce_args<0,0,0,0>::type qargs7;
    typedef Search_config_v<sconfig, qargs7> sc7;
    typedef sc7::index_tag si7;
    BOOST_MPL_ASSERT((boost::is_same<si7, Main_store_tag>));
    BOOST_MPL_ASSERT_RELATION(Count_defined<sc7::q2_args>::value, ==, 0);
+}
+
+/** Select optimal triple index
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case04 ) {
+   typedef Store_config<0,1,0,0> sconfig;
+   BOOST_MPL_ASSERT_RELATION(mpl::size<sconfig::tags>::value, ==, 2);
+
+   typedef Deduce_args<0,1,0,0>::type qargs1;
+   typedef Search_config_v<sconfig, qargs1> sc1;
+   typedef sc1::index_tag si1;
+   BOOST_MPL_ASSERT((boost::is_same<si1, Pred_tag>));
+   BOOST_MPL_ASSERT((boost::is_same<sc1::iterator, Element_index::const_iterator>));
+   typedef Triple_map<0,1,0,0>::result_b<0,1,0,0>::type rt;
+   BOOST_MPL_ASSERT((boost::is_same<rt, boost::iterator_range<Element_index::const_iterator> >));
 }
 
 }//namespace test

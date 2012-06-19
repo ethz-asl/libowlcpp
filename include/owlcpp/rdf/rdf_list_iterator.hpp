@@ -13,7 +13,6 @@ part of owlcpp project.
 namespace owlcpp{
 
 /**@brief Iterates over members of RDF list
-*******************************************************************************/
 class Rdf_list_iter_m
 : public boost::iterator_facade<
   Rdf_list_iter_m,
@@ -82,6 +81,7 @@ private:
 
    bool equal(Rdf_list_iter_m const& i) const {return nid_ == i.nid_;}
 };
+*******************************************************************************/
 
 /**@brief Iterates over members of RDF list
 @details Triple store provides additional information for troubleshooting.
@@ -111,7 +111,7 @@ private:
    friend class boost::iterator_core_access;
 
    void increment() {
-      const Query<1,1,0,0>::range r = ts_->triples().find(
+      const Triple_store::result_b<1,1,0,0>::type r = ts_->find(
                nid_,
                terms::T_rdf_rest::id(),
                any(),
@@ -132,7 +132,7 @@ private:
    }
 
    Node_id const& dereference() const {
-      const Query<1,1,0,0>::range r = ts_->triples().find(
+      const Triple_store::result_b<1,1,0,0>::type r = ts_->triples().find(
                nid_,
                terms::T_rdf_first::id(),
                any(),

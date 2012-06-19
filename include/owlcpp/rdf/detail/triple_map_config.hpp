@@ -39,8 +39,9 @@ part of owlcpp project.
 #include "boost/type_traits/has_operator.hpp"
 
 #include "owlcpp/rdf/detail/triple_map_tags.hpp"
+#include "owlcpp/rdf/any_triple_element.hpp"
 
-namespace owlcpp{ namespace detail{
+namespace owlcpp{ namespace triple_map_detail{
 namespace mpl = boost::mpl;
 namespace fusion = boost::fusion;
 namespace fusion_rof = boost::fusion::result_of;
@@ -122,8 +123,21 @@ template<class Indx> struct Search_range1<Indx, Main_store_tag> {
 
 /**
 *******************************************************************************/
+template<class To> struct Converter {
+   static To get(To const& from) {return from;}
+};
+
+template<> struct Converter<any> {
+   static any get(any const &) {return any();}
+   static any get(Node_id const&) {return any();}
+   static any get(Doc_id const&) {return any();}
+};
+
+/**
+*******************************************************************************/
 template<class QArgs> class Query_by_element {
    typedef typename fusion_rof::as_vector<QArgs>::type store_t;
+
 
    struct Compare {
       template<class T> bool operator()(T const& t) const {
@@ -140,9 +154,14 @@ template<class QArgs> class Query_by_element {
    };
 
 public:
-   template<class T1,class T2, class T3, class T4>
-   Query_by_element(T1 const& t1, T2 const& t2, T3 const& t3, T4 const& t4)
-   : stor_(t1, t2, t3, t4)
+   template<class T0, class T1, class T2, class T3>
+   Query_by_element(T0 const& t0, T1 const& t1, T2 const& t2, T3 const& t3)
+   : stor_(
+            Converter<typename mpl::at_c<store_t,0>::type>::get(t0),
+            Converter<typename mpl::at_c<store_t,1>::type>::get(t1),
+            Converter<typename mpl::at_c<store_t,2>::type>::get(t2),
+            Converter<typename mpl::at_c<store_t,3>::type>::get(t3)
+   )
    {}
 
    bool operator()(Triple const& t) const {
@@ -180,7 +199,7 @@ public:
    template<class T1,class T2, class T3, class T4> static range get(
             Range1 r, T1 const& t1, T2 const& t2, T3 const& t3, T4 const& t4
    ) {
-      query q(t1,t2,t3,t4);
+      const query q(t1,t2,t3,t4);
       return boost::make_iterator_range(
                iterator(q, boost::begin(r), boost::end(r)),
                iterator(q, boost::end(r), boost::end(r))
@@ -277,6 +296,6 @@ class Search_config :
    public Search_config_v<SConfig, mpl::vector<Subj,Pred,Obj,Doc> >
 {};
 
-}//namespace detail
+}//namespace triple_map_detail
 }//namespace owlcpp
 #endif /* TRIPLE_MAP_CONFIG_HPP_ */

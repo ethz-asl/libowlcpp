@@ -21,7 +21,7 @@ namespace owlcpp{
 
 struct any;
 
-namespace detail{
+namespace triple_map_detail{
 
 namespace mpl = boost::mpl;
 
@@ -34,6 +34,6 @@ struct Doc_tag  : public mpl::size_t<3> {};
 
 struct Main_store_tag{};
 
-}//namespace detail
+}//namespace triple_map_detail
 }//namespace owlcpp
 #endif /* TRIPLE_MAP_TAGS_HPP_ */
