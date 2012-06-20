@@ -10,18 +10,11 @@ part of owlcpp project.
 #include <iostream>
 
 #include "owlcpp/rdf/triple_map.hpp"
+#include "test_utils.hpp"
 
 namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
-template<class Tm, class Seq> void insert_triple(Tm& tm, Seq const& s) {
-   tm.insert(Node_id(s[0]), Node_id(s[1]), Node_id(s[2]), Doc_id(s[3]));
-}
-
-template<class Tm, class Seq> void insert_seq(Tm& tm, Seq const& s) {
-   for(int i = 0; i != boost::size(s); ++i) insert_triple(tm, s[i]);
-}
 
 const unsigned t[][4] = {
          {0,1,0,0},
@@ -33,15 +26,10 @@ const unsigned t[][4] = {
          {0,4,0,0},
 };
 
-template<class ChT, class Tr> inline std::basic_ostream<ChT,Tr>& operator<<(
-      std::basic_ostream<ChT,Tr>& os, Triple const& t) {
-   return os << t.subj_ << ' ' << t.pred_ << ' ' << t.obj_ << ' ' << t.doc_;
-}
-
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   typedef Triple_map<> triple_map;
+   typedef Triple_map<1,0,0,0> triple_map;
    triple_map tm;
    insert_seq(tm, t);
    typedef triple_map::result_b<1,1,0,0>::type range_t;

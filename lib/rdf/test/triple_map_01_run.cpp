@@ -10,27 +10,44 @@ part of owlcpp project.
 #include <iostream>
 
 #include "owlcpp/rdf/triple_map.hpp"
+#include "test_utils.hpp"
 
 namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-template<class Tm, class Seq> void insert(Tm& tm, Seq const& s) {
-   tm.insert( Node_id(s[0]), Node_id(s[1]), Node_id(s[2]), Doc_id(s[3]) );
-}
+const unsigned t[][4] = {
+         {0,1,0,0},
+         {0,2,0,0},
+         {0,3,0,0},
+         {1,3,0,0},
+         {0,3,1,0},
+         {0,3,0,1},
+         {0,4,0,0},
+};
 
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   typedef Triple_map<> triple_map;
+   typedef Triple_map<1,0,0,0> triple_map;
    triple_map tm;
-   const unsigned t[] = {0,1,0,0};
-   insert(tm, t);
-   triple_map::result_b<1,1,0,0>::type r1 = tm.find(Node_id(0), Node_id(3), any(), any());
-   BOOST_ASSERT(!r1);
+   BOOST_CHECK_EQUAL(tm.size(), 0U);
+   insert_seq(tm, t);
+   BOOST_CHECK_EQUAL(tm.size(), 7U);
+   triple_map::result_b<1,1,0,0>::type r1 = tm.find(Node_id(2), Node_id(3), any(), any());
+   BOOST_CHECK(!r1);
    triple_map::result_b<1,1,0,0>::type r2 = tm.find(Node_id(0), Node_id(1), any(), any());
-   BOOST_ASSERT(r2);
-   triple_map::result_b<0,1,0,0>::type r = tm.find(any(), Node_id(3), any(), any());
+   BOOST_CHECK(r2);
+   BOOST_CHECK_EQUAL(boost::distance(r2), 1);
+   triple_map::result_b<0,1,0,0>::type r3 = tm.find(any(), Node_id(3), any(), any());
+   BOOST_CHECK_EQUAL(boost::distance(r3), 4);
+
+   BOOST_CHECK_THROW( tm.erase(triple(0,13,0,1)), Rdf_err );
+   tm.erase(triple(0,3,0,1));
+   BOOST_CHECK_EQUAL(tm.size(), 6U);
+
+   tm.clear();
+   BOOST_CHECK_EQUAL(tm.size(), 0U);
 }
 
 /**
@@ -38,8 +55,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 BOOST_AUTO_TEST_CASE( case02 ) {
    typedef Triple_map<0,1,0,0> triple_map;
    triple_map tm;
-   const unsigned t[] = {0,1,0,0};
-   insert(tm, t);
+   insert_seq(tm, t);
    typedef triple_map::result_b<0,1,0,0> search;
    search::type r = tm.find(any(), Node_id(3), any(), any());
 }

@@ -26,12 +26,6 @@ public Store_node_blank_crtpb<Triple_store>,
 public Store_node_literal_crtpb<Triple_store>,
 public Store_doc_crtpb<Triple_store>
 {
-/*
-   friend class Store_node_iri_crtpb<Triple_store>;
-   friend class Store_node_literal_crtpb<Triple_store>;
-   friend class Store_node_blank_crtpb<Triple_store>;
-   friend class Store_doc_crtpb<Triple_store>;
-*/
 
 public:
    struct Err : public Rdf_err {};

@@ -8,45 +8,43 @@ part of owlcpp project.
 #include <map>
 #include <vector>
 
-#include "boost/foreach.hpp"
 #include "boost/fusion/include/at.hpp"
 #include "boost/fusion/include/value_at.hpp"
-#include "boost/iterator/indirect_iterator.hpp"
-#include "boost/ptr_container/ptr_vector.hpp"
 #include "boost/range.hpp"
+#include "boost/range/algorithm/find.hpp"
 
 #include "owlcpp/rdf/detail/triple_map_tags.hpp"
+#include "owlcpp/rdf/exception.hpp"
 
 namespace owlcpp{ namespace triple_map_detail{
 namespace fusion = boost::fusion;
 namespace fusion_rof = boost::fusion::result_of;
 
 /**
-   @decision Storing triples.
-   Options and RAM/time performance:
-   - boost::multi_index 2GB/150s
-   - std::vector<Triple> 0.921GB/91s
-   - boost::ptr_vector<Triple> 1.1GB/98s
+@decision Store and index triples by value in std::vector<Triple>.\n
+Alternatives and RAM/time performance for adding many triples:
+- boost::multi_index 2GB/150s
+- ptr_vector tracks ownership; ptr_vector<const Triple> does not work
+- boost::ptr_vector<Triple> 1.1GB/98s
+- std::vector<Triple> 0.921GB/91s
 
-   @decision Indexing triples.
-   Options and RAM/time performance:
-   - boost::multi_index 2GB/150s
-   - std::vector<Triple>, no index 0.921GB/91s
-   - boost::ptr_vector<Triple>, no index 1.1GB/98s
-   - boost::ptr_vector<Triple>, vector<vector> empty 1.4GB/98s
-   - boost::ptr_vector<Triple>, vector<vector> 1.7GB/110s
-
-   @decision Storing triples
-   Create triples on heap, store pointers in boost::ptr_vector<Triple>
+@decision Indexing triples.
+Options and RAM/time performance:
+- boost::multi_index 2GB/150s
+- std::vector<Triple>, no index 0.921GB/91s
+- boost::ptr_vector<Triple>, no index 1.1GB/98s
+- boost::ptr_vector<Triple>, vector<vector> empty 1.4GB/98s
+- boost::ptr_vector<Triple>, vector<vector> 1.7GB/110s
 *******************************************************************************/
 class Element_index {
 protected:
-   typedef std::vector<Triple const*> e_index;
+   typedef std::vector<Triple> e_index;
 public:
-   typedef boost::indirect_iterator<e_index::iterator> iterator;
-   typedef boost::indirect_iterator<e_index::const_iterator> const_iterator;
+   typedef e_index::iterator iterator;
+   typedef e_index::const_iterator const_iterator;
    typedef boost::iterator_range<iterator> range;
    typedef boost::iterator_range<const_iterator> const_range;
+   struct Err : public Rdf_err {};
 };
 
 /**
@@ -55,12 +53,23 @@ template<class Id> class Vector_index : public Element_index {
    typedef std::vector<e_index> stor_t;
 
 public:
-   const_range find(const Id id) const {return stor_[id()];}
+   const_range find(const Id id) const {
+      if( stor_.size() > id() ) return stor_[id()];
+      return const_range();
+   }
+
+   void clear() {stor_.clear();}
 
 protected:
    void add(const Id id, Triple const& t) {
       if( id() >= stor_.size() ) stor_.resize(id() + 1);
-      stor_[id()].push_back(&t);
+      stor_[id()].push_back(t);
+   }
+
+   void erase(const Id id, Triple const& t) {
+      BOOST_ASSERT(stor_.size() > id());
+      e_index& ind = stor_[id()];
+      ind.erase(boost::find(ind, t));
    }
 
 private:
@@ -78,9 +87,18 @@ public:
       return i->second;
    }
 
+   void clear() {stor_.clear();}
+
 protected:
    void add(const Id id, Triple const& t) {
-      stor_[id].push_back(&t);
+      stor_[id].push_back(t);
+   }
+
+   void erase(const Id id, Triple const& t) {
+      const typename stor_t::iterator i = stor_.find(id);
+      BOOST_ASSERT(i != stor_.end());
+      e_index& ind = i->second;
+      ind.erase(boost::find(ind, t));
    }
 
 private:
@@ -98,6 +116,7 @@ public:
    typedef Tag tag;
 
    void add(Triple const& t) { base::add(fusion::at<tag>(t), t); }
+   void erase(Triple const& t) { base::erase(fusion::at<tag>(t), t); }
 };
 
 /**
@@ -108,31 +127,36 @@ template<> struct Index<Pred_tag>
    typedef Map_index<fusion_rof::value_at<Triple,tag>::type> base;
 
    void add(Triple const& t) { base::add(fusion::at<tag>(t), t); }
+   void erase(Triple const& t) { base::erase(fusion::at<tag>(t), t); }
 };
 
 
-/** Container that owns heap-allocated triples
-
-@decision Store triple pointers in std::vector.
+/** Main contiguous storage of all triples
+@decision Store all triples by value in std::vector.\n
 Alternatives:
-- ptr_vector tracks ownership; ptr_vector<const Triple> does not work
-- std::vector<Triple const*> works; same storage as in search indices
+- store triples only in one or many indices:
+   order is not preserved,
+   iterating over all triples is slower
+- track order of triples in vector<pair<uint,uint>>,
+where pair<uint,uint> gives position of the triple in the subject index
 *******************************************************************************/
 template<> struct Index<Main_store_tag> : public Element_index {
 public:
    typedef Main_store_tag tag;
 
    void add(Triple const& t) {
-      stor_.push_back(&t);
+      stor_.push_back(t);
    }
 
-   void clear() {
-      BOOST_FOREACH(Triple const* t, stor_) delete t;
-      stor_.clear();
-   }
+   void clear() {stor_.clear();}
 
-   ~Index() {
-      BOOST_FOREACH(Triple const* t, stor_) delete t;
+   void erase(Triple const& t) {
+      const iterator i = boost::find(stor_, t);
+      if( i == stor_.end()) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("triple not found")
+      );
+      stor_.erase(i);
    }
 
    const_range get_range() const { return stor_; }

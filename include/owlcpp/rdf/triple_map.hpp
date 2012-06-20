@@ -22,36 +22,6 @@ part of owlcpp project.
 
 namespace owlcpp{
 
-template<
-   bool Index_subj =
-#ifdef OWLCPP_RDF_INDEX_SUBJECT
-            OWLCPP_RDF_INDEX_SUBJECT
-#else
-            1
-#endif
-            ,
-   bool Index_pred =
-#ifdef OWLCPP_RDF_INDEX_PREDICATE
-            OWLCPP_RDF_INDEX_PREDICATE
-#else
-            0
-#endif
-            ,
-   bool Index_obj =
-#ifdef OWLCPP_RDF_INDEX_OBJECT
-            OWLCPP_RDF_INDEX_OBJECT
-#else
-            0
-#endif
-            ,
-   bool Index_doc =
-#ifdef OWLCPP_RDF_INDEX_DOCUMENT
-            OWLCPP_RDF_INDEX_DOCUMENT
-#else
-            0
-#endif
-> class Triple_map;
-
 /**@brief Store, index, and search RDF triples
 *******************************************************************************/
 template<bool Index_subj, bool Index_pred, bool Index_obj, bool Index_doc>
@@ -65,13 +35,24 @@ class Triple_map {
    typedef typename boost::mpl::front<store>::type main_store;
    BOOST_MPL_ASSERT((boost::is_same<typename main_store::tag, triple_map_detail::Main_store_tag>));
 
-
    class Insert {
    public:
       Insert(Triple const& t) : t_(t) {}
       template<class Ind> void operator()(Ind& i) const {i.add(t_);}
    private:
       Triple const& t_;
+   };
+
+   struct Clear {
+      template<class Ind> void operator()(Ind& i) const {i.clear();}
+   };
+
+   class Erase {
+   public:
+      Erase(Triple const& t) : t_(t) {}
+      template<class Ind> void operator()(Ind& i) const {i.erase(t_);}
+   private:
+      const Triple t_;
    };
 
 public:
@@ -117,15 +98,17 @@ public:
    const_iterator end() const {return boost::fusion::front(store_).get_range().end();}
 
    void clear() {
-//      triples_.clear();
-      //todo
+      Clear c;
+      boost::fusion::for_each(store_, c);
    }
 
-   /**
+   /** @brief erase one triple
     @param t triple stored in triple map
+    @throw Rdf_err exception if triple is not found
    */
    void erase(Triple const& t) {
-      //todo
+      Erase e(t);
+      boost::fusion::for_each(store_, e);
    }
 
    /**@brief Insert a new triple
@@ -136,8 +119,8 @@ public:
             const Node_id obj,
             const Doc_id doc
    ) {
-      Triple* const t = new Triple(subj, pred, obj, doc);
-      Insert ins(*t);
+      const Triple t(subj, pred, obj, doc);
+      Insert ins(t);
       boost::fusion::for_each(store_, ins);
    }
 
