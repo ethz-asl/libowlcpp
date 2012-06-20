@@ -6,12 +6,13 @@ part of owlcpp project.
 #ifndef OBJECT_ID_BASE_HPP_
 #define OBJECT_ID_BASE_HPP_
 #include <iosfwd>
+#include "boost/cstdint.hpp"
 
 namespace owlcpp{ namespace detail{
 
 /**
 *******************************************************************************/
-template<class Super, class Val> class Base_id {
+template<class Super, class Val = boost::uint_least32_t> class Base_id {
 protected:
    typedef Base_id base;
 public:

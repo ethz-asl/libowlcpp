@@ -11,7 +11,7 @@ namespace owlcpp{
 
 /** Namespace identifier
 *******************************************************************************/
-class Ns_id : public detail::Base_id<Ns_id, unsigned> {
+class Ns_id : public detail::Base_id<Ns_id> {
 public:
    Ns_id() : base(0) {}
    explicit Ns_id(const unsigned x) : base(x) {}

@@ -11,7 +11,7 @@ namespace owlcpp{
 
 /**@brief Document identifier
 *******************************************************************************/
-class Doc_id : public detail::Base_id<Doc_id, unsigned> {
+class Doc_id : public detail::Base_id<Doc_id> {
 public:
    explicit Doc_id(const unsigned x) : base(x) {}
    Doc_id() : base(0) {}

@@ -11,7 +11,7 @@ namespace owlcpp{
 
 /**@brief Term identifier
 *******************************************************************************/
-class Node_id : public detail::Base_id<Node_id, unsigned> {
+class Node_id : public detail::Base_id<Node_id> {
 public:
    explicit Node_id(const unsigned x) : base(x) {}
    Node_id() : base(0) {}
