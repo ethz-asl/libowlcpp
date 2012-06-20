@@ -93,6 +93,7 @@ if [ modules.peek doxygen : .initialized ] {
       "EXTRACT_PRIVATE=YES"
       "EXTRACT_ANON_NSPACES=YES"
       "ALIASES=$(alliases)"
+      "ENABLED_SECTIONS=DEV"
    ;
    doxygen complete.html
       :
