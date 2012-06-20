@@ -26,18 +26,36 @@ public Store_node_blank_crtpb<Triple_store>,
 public Store_node_literal_crtpb<Triple_store>,
 public Store_doc_crtpb<Triple_store>
 {
-/*
-   friend class Store_node_iri_crtpb<Triple_store>;
-   friend class Store_node_literal_crtpb<Triple_store>;
-   friend class Store_node_blank_crtpb<Triple_store>;
-   friend class Store_doc_crtpb<Triple_store>;
-*/
 
 public:
    struct Err : public Rdf_err {};
    typedef Iri_map iri_map;
    typedef Node_map node_map;
-   typedef Triple_map triple_map;
+   typedef Triple_map<
+#ifdef OWLCPP_RDF_INDEX_SUBJECT
+            OWLCPP_RDF_INDEX_SUBJECT
+#else
+            1
+#endif
+            ,
+#ifdef OWLCPP_RDF_INDEX_PREDICATE
+            OWLCPP_RDF_INDEX_PREDICATE
+#else
+            0
+#endif
+            ,
+#ifdef OWLCPP_RDF_INDEX_OBJECT
+            OWLCPP_RDF_INDEX_OBJECT
+#else
+            0
+#endif
+            ,
+#ifdef OWLCPP_RDF_INDEX_DOCUMENT
+            OWLCPP_RDF_INDEX_DOCUMENT
+#else
+            0
+#endif
+   > triple_map;
 
    Triple_store(Node_map_std const& snodes = Node_map_std::get(Nodes_owl()))
    : iri_(snodes), node_(snodes), triple_()
@@ -47,7 +65,7 @@ public:
    Iri_map const& iris() const {return iri_;}
    node_map& nodes() {return node_;}
    node_map const& nodes() const {return node_;}
-   Triple_map const& triples() const {return triple_;}
+   triple_map const& triples() const {return triple_;}
 
    void insert_triple(
             const Node_id subj,
@@ -55,7 +73,7 @@ public:
             const Node_id obj,
             const Doc_id doc
    ) {
-      triple_.insert(Triple(subj, pred, obj, doc));
+      triple_.insert(subj, pred, obj, doc);
    }
 
    void clear() {
@@ -65,10 +83,22 @@ public:
       iri_.clear();
    }
 
+   template<class Subj, class Pred, class Obj, class Doc> struct result
+   : public triple_map::result<Subj,Pred,Obj,Doc> {};
+
+   template<bool Subj, bool Pred, bool Obj, bool Doc> struct result_b
+   : public triple_map::result_b<Subj,Pred,Obj,Doc> {};
+
+   template<class Subj, class Pred, class Obj, class Doc>
+   typename result<Subj,Pred,Obj,Doc>::type
+   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
+      return triple_.find(subj, pred, obj, doc);
+   }
+
 private:
    Iri_map iri_;
    node_map node_;
-   Triple_map triple_;
+   triple_map triple_;
 };
 
 }//namespace owlcpp

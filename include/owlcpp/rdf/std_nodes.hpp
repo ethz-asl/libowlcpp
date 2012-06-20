@@ -10,20 +10,20 @@ part of owlcpp project.
 #include "owlcpp/node_id.hpp"
 
 namespace owlcpp{
-class Iri_map_base;
+class Ns_map_base;
 class Node_map_base;
 
 /**@brief 
 *******************************************************************************/
 struct Nodes_none {
-   void operator()(Iri_map_base& map) const {}
+   void operator()(Ns_map_base& map) const {}
    void operator()(Node_map_base& map) const {}
 };
 
 /**@brief
 *******************************************************************************/
 struct OWLCPP_RDF_DECL Nodes_owl {
-   void operator()(Iri_map_base& map) const;
+   void operator()(Ns_map_base& map) const;
    void operator()(Node_map_base& map) const;
 };
 

@@ -23,7 +23,7 @@ public Store_node_iri_crtpb<Triple_store_temp>,
 public Store_node_literal_crtpb<Triple_store_temp>
 {
 public:
-
+   typedef Triple_map<0,0,0,0> triple_map;
    typedef Node_map node_map_t;
    struct Err : public base_exception {};
 
@@ -38,7 +38,7 @@ public:
    Iri_map const& iris() const {return iri_;}
    node_map_t& nodes() {return node_;}
    node_map_t const& nodes() const {return node_;}
-   Triple_map const& triples() const {return triple_;}
+   triple_map const& triples() const {return triple_;}
 
    Node_id insert_blank_node(std::string const& name) {
       return node_.insert_blank(did_, name);
@@ -49,7 +49,7 @@ public:
             const Node_id pred,
             const Node_id obj
    ) {
-      triple_.insert(Triple(subj, pred, obj, did_));
+      triple_.insert(subj, pred, obj, did_);
    }
 
    Node_id ontology_iri_id(const Doc_id = Doc_id(0)) const {return ontology_iri_;}
@@ -75,7 +75,7 @@ private:
    std::string path_;
    Iri_map iri_;
    node_map_t node_;
-   Triple_map triple_;
+   triple_map triple_;
 };
 
 }//namespace detail

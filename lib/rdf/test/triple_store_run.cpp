@@ -4,10 +4,13 @@ part of owlcpp project.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
 #define BOOST_TEST_MODULE triple_store_run
+#include <iostream>
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
+#include "owlcpp/rdf/query_node.hpp"
+#include "test/sample_triples.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -83,6 +86,25 @@ BOOST_AUTO_TEST_CASE( case04 ) {
    BOOST_CHECK_EQUAL( node1.value_str(), "n1" );
    BOOST_REQUIRE( ts.find_doc_iri(ni1) );
    BOOST_REQUIRE( ts.find_doc_iri(ni2) );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case05 ) {
+   Triple_store ts = sample_triples_01();
+   BOOST_FOREACH(Triple const& t, ts.triples()) {
+      std::cout
+      << '\"'
+      << to_string_short(t.subject(), ts) << "\"\t\""
+      << to_string_short(t.predicate(), ts) << "\"\t\""
+      << to_string_short(t.object(), ts) << "\"\t\n"
+      ;
+      Node const& node = ts.at(t.subject());
+      const Ns_id nsid1 = node.ns_id();
+      const std::string iri = ts[nsid1];
+      const std::string pref = ts.iris().prefix(nsid1);
+   }
+//   BOOST_ERROR("blah");
 }
 
 }//namespace test

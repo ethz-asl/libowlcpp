@@ -7,14 +7,14 @@ part of owlcpp project.
 #define NODE_MAP_STD_HPP_
 #include "boost/range.hpp"
 #include "boost/range/algorithm/max_element.hpp"
-#include "owlcpp/rdf/iri_map_base.hpp"
+#include "owlcpp/rdf/ns_map_base.hpp"
 #include "owlcpp/rdf/node_map_base.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp{
 
 /**@brief immutable static set of IRIs and nodes
-@details Contains at least blank and empty (litaral) namespaces and empty node
+@details Contains at least blank and empty (literal) namespaces and empty node
 *******************************************************************************/
 class Node_map_std {
    Node_map_std();
@@ -22,15 +22,18 @@ class Node_map_std {
    Node_map_std& operator=(Node_map_std const&);
 
    template<class T> explicit Node_map_std(T const& t)
-   : iris_(), ns_id_next_(0), nodes_(), node_id_next_(0)
+   : iris_(Ns_id(0)), ns_id_next_(0), nodes_(), node_id_next_(0)
      {
-      iris_.insert_tag(terms::N_empty());
-      iris_.insert_tag(terms::N_blank());
+      using namespace owlcpp::terms;
+      iris_.insert(N_empty::id(), N_empty::iri());
+      iris_.set_prefix(N_empty::id(), N_empty::prefix());
+      iris_.insert(N_blank::id(), N_blank::iri());
+      iris_.set_prefix(N_blank::id(), N_blank::prefix());
       nodes_.insert_tag(terms::T_empty_());
 
       t(iris_);
       t(nodes_);
-      Iri_map_base::const_iterator i = boost::max_element(iris_);
+      Ns_map_base::const_iterator i = boost::max_element(iris_);
       ns_id_next_ = Ns_id((*i)() + 1);
       Node_map_base::const_iterator j = boost::max_element(nodes_);
       node_id_next_ = Node_id((*j)() + 1);
@@ -82,7 +85,7 @@ public:
    node_range find(Node const& node) const {return nodes_.find(node);}
 
 private:
-   Iri_map_base iris_;
+   Ns_map_base iris_;
    Ns_id ns_id_next_;
    Node_map_base nodes_;
    Node_id node_id_next_;
