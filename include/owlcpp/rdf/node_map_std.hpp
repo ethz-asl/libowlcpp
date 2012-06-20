@@ -22,11 +22,13 @@ class Node_map_std {
    Node_map_std& operator=(Node_map_std const&);
 
    template<class T> explicit Node_map_std(T const& t)
-   : iris_(), ns_id_next_(0), nodes_(), node_id_next_(0)
+   : iris_(Ns_id(0)), ns_id_next_(0), nodes_(), node_id_next_(0)
      {
       using namespace owlcpp::terms;
       iris_.insert(N_empty::id(), N_empty::iri());
+      iris_.set_prefix(N_empty::id(), N_empty::prefix());
       iris_.insert(N_blank::id(), N_blank::iri());
+      iris_.set_prefix(N_blank::id(), N_blank::prefix());
       nodes_.insert_tag(terms::T_empty_());
 
       t(iris_);

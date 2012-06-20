@@ -9,6 +9,8 @@ part of owlcpp project.
 #include "test/sample_triples.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/copy_triples.hpp"
+#include "owlcpp/rdf/query_node.hpp"
+#include "test_utils.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -18,6 +20,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Triple_store ts1( Node_map_std::get(Nodes_none()) );
+//   Triple_store ts1;
    sample_triples_01(ts1);
    Triple_store ts2 = sample_triples_02();
 

@@ -10,6 +10,7 @@ part of owlcpp project.
 #include <vector>
 #include <functional>
 #include "boost/assert.hpp"
+#include "boost/foreach.hpp"
 #include "owlcpp/config.hpp"
 #include "owlcpp/ns_id.hpp"
 #include "owlcpp/rdf/exception.hpp"
@@ -21,6 +22,7 @@ namespace owlcpp{
 *******************************************************************************/
 class Ns_map_base {
    typedef std::map<std::string,Ns_id> map_t;
+   typedef std::pair<std::string,Ns_id> pair_t;
    typedef map_t::iterator map_iter_t;
    typedef std::pair<map_iter_t,map_iter_t> id_value_t;
    typedef std::vector<id_value_t> vec_t;
@@ -30,12 +32,23 @@ class Ns_map_base {
       Ns_id operator()(const map_citer_t i) {return i->second;}
    };
 
+
 public:
    typedef Ns_id id_type;
    typedef Transform_iterator<Make_id, map_citer_t> const_iterator;
    typedef const_iterator iterator;
 
    struct Err : public Rdf_err {};
+
+   Ns_map_base(const id_type id0) : id0_(id0()) {}
+   Ns_map_base(Ns_map_base const& nmb) : id0_(nmb.id0_) {copy(nmb);}
+
+   Ns_map_base& operator=(Ns_map_base const& nmb) {
+      clear();
+      id0_ = nmb.id0_;
+      copy(nmb);
+      return *this;
+   }
 
    std::size_t size() const {
       BOOST_ASSERT(id_.size() >= iri_.size());
@@ -46,12 +59,16 @@ public:
    const_iterator end() const {return iri_.end();}
 
    bool have(const Ns_id id) const {
-      return id() < id_.size() && id_[id()].first != iri_.end();
+      return
+               id() >= id0_ &&
+               id() - id0_ < id_.size() &&
+               get(id).first != iri_.end()
+               ;
    }
 
    std::string operator[](const Ns_id id) const {
       BOOST_ASSERT(have(id));
-      return id_[id()].first->first;
+      return get(id).first->first;
    }
 
    std::string at(const Ns_id id) const {
@@ -60,7 +77,7 @@ public:
                << Err::msg_t("invalid namespace ID")
                << Err::int1_t(id())
       );
-      return id_[id()].first->first;
+      return get(id).first->first;
    }
 
    /**
@@ -75,7 +92,7 @@ public:
 
    std::string prefix(const Ns_id id) const {
       BOOST_ASSERT( have(id) );
-      id_value_t const& v = id_[id()];
+      id_value_t const& v = get(id);
       if( v.second == pref_.end() ) return "";
       return v.second->first;
    }
@@ -93,10 +110,8 @@ public:
    }
 
    Ns_id insert(const Ns_id id, std::string const& iri) {
-      if( id() >= id_.size() ) {
-         id_.resize(id() + 1, std::make_pair(iri_.end(), pref_.end()));
-      }
-      id_value_t& v = id_[id()];
+      resize(id);
+      id_value_t& v = get(id);
       if( v.first != iri_.end() ) {
          if( v.first->first != iri ) BOOST_THROW_EXCEPTION(
                   Err()
@@ -121,7 +136,7 @@ public:
    */
    void set_prefix(const Ns_id id, std::string const& pref = "") {
       BOOST_ASSERT( have(id) );
-      id_value_t& v = id_[id()];
+      id_value_t& v = get(id);
 
       if( pref.empty() ) {
          if( v.second != pref_.end() ) {
@@ -160,7 +175,7 @@ public:
                << Err::msg_t("removing non-existing IRI ID")
                << Err::int1_t(id())
       );
-      id_value_t& v = id_[id()];
+      id_value_t& v = get(id);
       iri_.erase(v.first);
       v.first = iri_.end();
       if( v.second != pref_.end() ) pref_.erase(v.second);
@@ -175,16 +190,50 @@ public:
    }
 
 private:
+   id_type::value_type id0_;
    map_t iri_;
    map_t pref_;
    vec_t id_;
    std::vector<Ns_id> erased_;
 
    Ns_id next_id() {
-      if( erased_.empty() ) return Ns_id(id_.size());
+      if( erased_.empty() ) return Ns_id(id_.size() + id0_);
       const Ns_id id = erased_.back();
       erased_.pop_back();
       return id;
+   }
+
+   id_value_t& get(const Ns_id id) {
+      return id_[id() - id0_];
+   }
+
+   id_value_t const& get(const Ns_id id) const {
+      return id_[id() - id0_];
+   }
+
+   void resize(const Ns_id id) {
+      BOOST_ASSERT(id() >= id0_);
+      id_type::value_type n = id() - id0_;
+      if( n >= id_.size() ) {
+         id_.resize(n + 1, std::make_pair(iri_.end(), pref_.end()));
+      }
+   }
+
+   void copy(Ns_map_base const& nmb) {
+      id_.resize(nmb.id_.size());
+      erased_ = nmb.erased_;
+      //insert elements in the same order as in source map
+      BOOST_FOREACH(pair_t const& p, nmb.iri_) {
+         const Ns_id id = p.second;
+         id_value_t& v0 = get(id);
+         v0.first = iri_.insert(p).first;
+         id_value_t const& v1 = nmb.get(id);
+         if( v1.second != nmb.pref_.end() ) {
+            v0.second = pref_.insert(*v1.second).first;
+         } else {
+            v0.second = pref_.end();
+         }
+      }
    }
 };
 
