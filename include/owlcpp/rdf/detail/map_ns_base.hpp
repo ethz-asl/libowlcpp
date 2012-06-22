@@ -1,26 +1,26 @@
-/** @file "/owlcpp/include/owlcpp/rdf/ns_map_base.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/detail/map_ns_base.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef NS_MAP_BASE_HPP_
-#define NS_MAP_BASE_HPP_
+#ifndef MAP_NS_BASE_HPP_
+#define MAP_NS_BASE_HPP_
 #include <string>
 #include <map>
 #include <vector>
 #include <functional>
 #include "boost/assert.hpp"
 #include "boost/foreach.hpp"
-#include "owlcpp/config.hpp"
+//#include "owlcpp/config.hpp"
 #include "owlcpp/ns_id.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/detail/transform_iterator.hpp"
 
-namespace owlcpp{
+namespace owlcpp{ namespace detail{
 
 /**@brief Map for namespace IRIs
 *******************************************************************************/
-class Ns_map_base {
+class Map_ns_base {
    typedef std::map<std::string,Ns_id> map_t;
    typedef std::pair<std::string,Ns_id> pair_t;
    typedef map_t::iterator map_iter_t;
@@ -40,10 +40,10 @@ public:
 
    struct Err : public Rdf_err {};
 
-   Ns_map_base(const id_type id0) : id0_(id0()) {}
-   Ns_map_base(Ns_map_base const& nmb) : id0_(nmb.id0_) {copy(nmb);}
+   Map_ns_base(const id_type id0) : id0_(id0()) {}
+   Map_ns_base(Map_ns_base const& nmb) : id0_(nmb.id0_) {copy(nmb);}
 
-   Ns_map_base& operator=(Ns_map_base const& nmb) {
+   Map_ns_base& operator=(Map_ns_base const& nmb) {
       clear();
       id0_ = nmb.id0_;
       copy(nmb);
@@ -219,7 +219,7 @@ private:
       }
    }
 
-   void copy(Ns_map_base const& nmb) {
+   void copy(Map_ns_base const& nmb) {
       id_.resize(nmb.id_.size());
       erased_ = nmb.erased_;
       //insert elements in the same order as in source map
@@ -237,5 +237,6 @@ private:
    }
 };
 
+}//namespace detail
 }//namespace owlcpp
-#endif /* NS_MAP_BASE_HPP_ */
+#endif /* MAP_NS_BASE_HPP_ */
