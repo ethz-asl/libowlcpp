@@ -16,14 +16,26 @@ namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-class Node_literal : public Node_v {
+class Node_literal : public Node {
 public:
-   Node_literal(
+   static std::size_t make_hash(
+            std::string const& val,
+            const Node_id dt,
+            std::string const& lang
+   ) {
+      std::size_t x = 0;
+      boost::hash_combine(x, dt());
+      boost::hash_combine(x, boost::hash_value(lang));
+      boost::hash_combine(x, boost::hash_value(val));
+      return x;
+   }
+
+   explicit Node_literal(
             std::string const& val,
             const Node_id dt = terms::T_empty_::id(),
             std::string const& lang = ""
    )
-   : val_(val), lang_(lang), dt_(dt)
+   : val_(val), lang_(lang), hash_(make_hash(val,dt,lang)), dt_(dt)
    {}
 
    std::string const& language() const {return lang_;}
@@ -32,6 +44,7 @@ public:
 private:
    std::string val_;
    std::string lang_;
+   std::size_t hash_;
    Node_id dt_;
 
    //todo
@@ -46,20 +59,14 @@ private:
 
    bool empty_impl() const { return val_.empty() && lang_.empty() && is_empty(dt_); }
 
-   bool equal_impl(const Node_v& n) const {
+   bool equal_impl(const Node& n) const {
       if( Node_literal const*const p = dynamic_cast<Node_literal const*>(&n) ) {
          return dt_ == p->dt_ && lang_ == p->lang_ && val_ == p->val_;
       }
       return false;
    }
 
-   std::size_t hash_impl() const {
-      std::size_t x = 0;
-      boost::hash_combine(x, dt_());
-      boost::hash_combine(x, boost::hash_value(lang_));
-      boost::hash_combine(x, boost::hash_value(val_));
-      return x;
-   }
+   std::size_t hash_impl() const { return hash_; }
 
 };
 

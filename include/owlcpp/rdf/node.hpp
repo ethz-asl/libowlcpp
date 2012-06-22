@@ -15,7 +15,7 @@ namespace owlcpp{
 
 /**@brief Pure virtual interface for RDF nodes
 *******************************************************************************/
-class Node_v {
+class Node {
 public:
    /**
     @return value string of the node
@@ -35,12 +35,12 @@ public:
 
    bool empty() const {return empty_impl();}
 
-   bool operator== (const Node_v& n) const {return equal_impl(n);}
-   bool operator!= (const Node_v& n) const {return ! equal_impl(n);}
+   bool operator== (const Node& n) const {return equal_impl(n);}
+   bool operator!= (const Node& n) const {return ! equal_impl(n);}
 
    std::size_t hash() const {return hash_impl();}
 
-   virtual ~Node_v() {}
+   virtual ~Node() {}
 private:
    virtual std::string value_str_impl() const =0;
 
@@ -50,10 +50,15 @@ private:
 
    virtual bool empty_impl() const =0;
 
-   virtual bool equal_impl(const Node_v& n) const =0;
+   virtual bool equal_impl(const Node& n) const =0;
 
    virtual std::size_t hash_impl() const =0;
 };
+
+/**
+*******************************************************************************/
+inline std::size_t hash_value(Node const& node) { return node.hash(); }
+
 
 }//namespace owlcpp
 #endif /* RDF_NODE_HPP_ */

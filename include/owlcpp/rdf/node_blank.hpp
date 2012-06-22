@@ -16,7 +16,7 @@ namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-class Node_blank : public Node_v {
+class Node_blank : public Node {
 public:
    Node_blank(const unsigned n, const Doc_id doc)
    : n_(n), doc_(doc) {}
@@ -39,7 +39,7 @@ private:
 
    bool empty_impl() const { return false; }
 
-   bool equal_impl(const Node_v& n) const {
+   bool equal_impl(const Node& n) const {
       if( Node_blank const*const p = dynamic_cast<Node_blank const*>(&n) ) {
          return n_ == p->n_ && doc_ == p->doc_;
       }

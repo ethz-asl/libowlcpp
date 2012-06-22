@@ -14,10 +14,17 @@ namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-class Node_iri : public Node_v {
+class Node_iri : public Node {
 public:
-   Node_iri(const Ns_id ns = terms::N_empty::id(), std::string const& val = "")
-   : val_(val), ns_(ns)
+   static std::size_t make_hash(const Ns_id ns, std::string const& val) {
+      std::size_t x = 0;
+      boost::hash_combine(x, ns());
+      boost::hash_combine(x, boost::hash_value(val));
+      return x;
+   }
+
+   explicit Node_iri(const Ns_id ns = terms::N_empty::id(), std::string const& val = "")
+   : val_(val), hash_(make_hash(ns, val)), ns_(ns)
    {
       if( is_blank(ns_) ) BOOST_THROW_EXCEPTION(
                Rdf_err() << Rdf_err::msg_t("blank \"_\" namespace in IRI node")
@@ -26,6 +33,7 @@ public:
 
 private:
    std::string val_;
+   std::size_t hash_;
    Ns_id ns_;
 
    std::string value_str_impl() const {return val_;}
@@ -38,19 +46,14 @@ private:
 
    bool empty_impl() const { return is_empty(ns_) && val_.empty(); }
 
-   bool equal_impl(const Node_v& n) const {
+   bool equal_impl(const Node& n) const {
       if( Node_iri const*const p = dynamic_cast<Node_iri const*>(&n) ) {
          return ns_ == p->ns_ && val_ == p->val_;
       }
       return false;
    }
 
-   std::size_t hash_impl() const {
-      std::size_t x = 0;
-      boost::hash_combine(x, ns_());
-      boost::hash_combine(x, boost::hash_value(val_));
-      return x;
-   }
+   std::size_t hash_impl() const { return hash_; }
 
 };
 
