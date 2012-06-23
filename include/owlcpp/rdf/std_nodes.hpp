@@ -16,15 +16,13 @@ class Node_map_base;
 /**@brief 
 *******************************************************************************/
 struct Nodes_none {
-   void operator()(Ns_map_base& map) const {}
-   void operator()(Node_map_base& map) const {}
+   void operator()(Map_node_std& map) const {}
 };
 
 /**@brief
 *******************************************************************************/
 struct OWLCPP_RDF_DECL Nodes_owl {
-   void operator()(Ns_map_base& map) const;
-   void operator()(Node_map_base& map) const;
+   void operator()(Map_node_std& map) const;
 };
 
 

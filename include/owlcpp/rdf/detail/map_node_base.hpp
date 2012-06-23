@@ -127,10 +127,6 @@ public:
       insert(id, np);
    }
 
-   template<class Tag> void insert_iri_tag(Tag const&) {
-      insert_iri(Tag::id(), Tag::ns_type::id(), Tag::name());
-   }
-
    Node_id insert_literal(
             std::string const& val,
             const Node_id dt = terms::T_empty_::id(),
