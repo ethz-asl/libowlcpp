@@ -14,7 +14,7 @@ part of owlcpp project.
 //#include "owlcpp/config.hpp"
 #include "owlcpp/ns_id.hpp"
 #include "owlcpp/rdf/exception.hpp"
-#include "owlcpp/detail/transform_iterator.hpp"
+#include "owlcpp/detail/member_iterator.hpp"
 
 namespace owlcpp{ namespace detail{
 
@@ -28,15 +28,15 @@ class Map_ns_base {
    typedef std::vector<id_value_t> vec_t;
    typedef map_t::const_iterator map_citer_t;
 
-   struct Make_id : public std::unary_function<map_citer_t, Ns_id> {
-      Ns_id operator()(const map_citer_t i) {return i->second;}
-   };
-
-
 public:
    typedef Ns_id id_type;
-   typedef Transform_iterator<Make_id, map_citer_t> const_iterator;
-   typedef const_iterator iterator;
+   typedef Member_iterator<
+            map_citer_t,
+            Ns_id,
+            &std::pair<const std::string,Ns_id>::second
+   > iterator;
+
+   typedef iterator const_iterator;
 
    struct Err : public Rdf_err {};
 
