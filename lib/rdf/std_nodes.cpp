@@ -13,51 +13,43 @@ part of owlcpp project.
 #include "iri_tag_vector.hpp"
 #include "node_tag_vector_system.hpp"
 #include "node_tag_vector_owl.hpp"
-#include "owlcpp/rdf/node_map_base.hpp"
-#include "owlcpp/rdf/ns_map_base.hpp"
+#include "owlcpp/rdf/map_node_std.hpp"
 
-namespace owlcpp {
-
-namespace{
+namespace owlcpp{ namespace{
 
 struct Node_tag_inserter {
-   explicit Node_tag_inserter(Node_map_base& map) : map_(&map) {}
+   explicit Node_tag_inserter(Map_node_std& map) : map_(&map) {}
 
-   template<class T> void operator()(T const&) const {
-      map_->insert_tag(T());
+   template<class T> void operator()(T const& t) const {
+      map_->insert_node_tag(t);
    }
 
-   mutable Node_map_base* map_;
+   mutable Map_node_std* map_;
 };
 
 struct Ns_tag_inserter {
-   explicit Ns_tag_inserter(Ns_map_base& map) : map_(&map) {}
+   explicit Ns_tag_inserter(Map_node_std& map) : map_(&map) {}
 
-   template<class T> void operator()(T const&) const {
-      map_->insert(T::id(), T::iri());
-      map_->set_prefix(T::id(), T::prefix());
+   template<class T> void operator()(T const& t) const {
+      map_->insert_ns_tag(t);
    }
 
-   mutable Ns_map_base* map_;
+   mutable Map_node_std* map_;
 };
 }//namespace anonymous
 
 /*
 *******************************************************************************/
-void Nodes_owl::operator()(Ns_map_base& map) const {
-   Ns_tag_inserter ti(map);
-   boost::mpl::for_each<terms::mpl_vector_iris_t>(ti);
-}
+void Nodes_owl::operator()(Map_node_std& map) const {
+   Ns_tag_inserter ns_ins(map);
+   boost::mpl::for_each<terms::mpl_vector_iris_t>(ns_ins);
 
-/*
-*******************************************************************************/
-void Nodes_owl::operator()(Node_map_base& map) const {
-   Node_tag_inserter ti(map);
-   boost::mpl::for_each<terms::mpl_vector_terms_rdfs_t>(ti);
-   boost::mpl::for_each<terms::mpl_vector_terms_rdf_t>(ti);
-   boost::mpl::for_each<terms::mpl_vector_terms_xsd_t>(ti);
-   boost::mpl::for_each<terms::mpl_vector_terms_owl1_t>(ti);
-   boost::mpl::for_each<terms::mpl_vector_terms_owl2_t>(ti);
+   Node_tag_inserter node_ins(map);
+   boost::mpl::for_each<terms::mpl_vector_terms_rdfs_t>(node_ins);
+   boost::mpl::for_each<terms::mpl_vector_terms_rdf_t>(node_ins);
+   boost::mpl::for_each<terms::mpl_vector_terms_xsd_t>(node_ins);
+   boost::mpl::for_each<terms::mpl_vector_terms_owl1_t>(node_ins);
+   boost::mpl::for_each<terms::mpl_vector_terms_owl2_t>(node_ins);
 }
 
 }//namespace owlcpp

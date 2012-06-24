@@ -6,12 +6,9 @@ part of owlcpp project.
 #ifndef STD_NODES_HPP_
 #define STD_NODES_HPP_
 #include "owlcpp/rdf/config.hpp"
-#include "owlcpp/ns_id.hpp"
-#include "owlcpp/node_id.hpp"
 
 namespace owlcpp{
-class Ns_map_base;
-class Node_map_base;
+class Map_node_std;
 
 /**@brief 
 *******************************************************************************/

@@ -57,6 +57,7 @@ public:
 
    const_iterator begin() const {return iri_.begin();}
    const_iterator end() const {return iri_.end();}
+   bool empty() const {return iri_.empty();}
 
    bool have(const Ns_id id) const {
       return
