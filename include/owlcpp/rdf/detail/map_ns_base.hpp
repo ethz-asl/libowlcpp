@@ -32,7 +32,7 @@ public:
    typedef Ns_id id_type;
    typedef Member_iterator<
             map_citer_t,
-            Ns_id,
+            Ns_id const,
             &std::pair<const std::string,Ns_id>::second
    > iterator;
 

@@ -47,7 +47,7 @@ private:
 public:
    typedef Member_iterator<
             map_citer_t,
-            Node_id,
+            Node_id const,
             &std::pair<Node const*const,Node_id>::second
    > iterator;
    typedef iterator const_iterator;
