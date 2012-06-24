@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/rdf/std_nodes.cpp" 
+/** @file "/owlcpp/lib/rdf/nodes_std.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef OWLCPP_RDF_SOURCE
 #define OWLCPP_RDF_SOURCE
 #endif
-#include "owlcpp/rdf/std_nodes.hpp"
+#include "owlcpp/rdf/nodes_std.hpp"
 
 #include "boost/mpl/for_each.hpp"
 
@@ -51,5 +51,4 @@ void Nodes_owl::operator()(Map_node_std& map) const {
    boost::mpl::for_each<terms::mpl_vector_terms_owl1_t>(node_ins);
    boost::mpl::for_each<terms::mpl_vector_terms_owl2_t>(node_ins);
 }
-
 }//namespace owlcpp

@@ -7,7 +7,7 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/map_node_std.hpp"
-#include "owlcpp/rdf/std_nodes.hpp"
+#include "owlcpp/rdf/nodes_std.hpp"
 #include "owlcpp/rdf/node_iri.hpp"
 #include "owlcpp/terms/iri_tags.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
