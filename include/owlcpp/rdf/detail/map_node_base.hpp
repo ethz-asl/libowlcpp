@@ -59,6 +59,7 @@ public:
    std::size_t size() const { return m_.size(); }
    const_iterator begin() const {return m_.begin();}
    const_iterator end() const {return m_.end();}
+   bool empty() const {return m_.empty();}
 
    bool have(const Node_id id) const {return valid(id);}
 
@@ -105,15 +106,17 @@ public:
                << Err::int1_t(id())
       );
 
+      Node* p = np.get();
       //ignore erased_
       const std::size_t n = sz(id);
       if( n < v_.size() ) {
          v_.replace(n, np);
-         return;
+      } else {
+         //v_.resize(n,0) does not compile for some reason
+         while( n > v_.size() ) v_.push_back(0);
+         v_.push_back(np);
       }
-      //v_.resize(n,0) does not compile for some reason
-      while( n > v_.size() ) v_.push_back(0);
-      v_.push_back(np);
+      m_.emplace(p, id);
    }
 
    Node_id insert_iri(const Ns_id ns, std::string const& val) {

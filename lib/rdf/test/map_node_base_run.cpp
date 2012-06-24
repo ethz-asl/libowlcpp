@@ -66,7 +66,13 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 
 BOOST_AUTO_TEST_CASE( case02 ) {
    d::Map_node_base mnb(( Node_id() ));
-   mnb.insert_iri_tag(t::T_owl_AsymmetricProperty());
+   BOOST_CHECK( mnb.empty() );
+   mnb.insert_iri(
+            t::T_owl_AsymmetricProperty::id(),
+            t::T_owl_AsymmetricProperty::ns_type::id(),
+            t::T_owl_AsymmetricProperty::name()
+   );
+   BOOST_CHECK( ! mnb.empty() );
    const Node_id id1 = t::T_owl_AsymmetricProperty::id();
    BOOST_CHECK( mnb.have(id1) );
    BOOST_CHECK_EQUAL(
