@@ -45,13 +45,13 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 /** OWL-aware node map
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   Map_node mn( Node_map_std::get(Nodes_owl()) );
+   Map_node mn(( Nodes_owl() ));
    BOOST_CHECK_EQUAL(mn.size(), 0U);
 
    Node const& node1 = mn.at(t::T_owl_Class::id());
    BOOST_CHECK_EQUAL(node1.ns_id(), t::N_owl::id());
 
-   Map_node::ns_range r1 = mn.find(t::N_owl::id());
+   Ns_id const* nsid1 = mn.find(t::N_owl::id());
 
    const Node_id nid1 = mn.insert_iri(
             t::T_owl_Class::ns_type::id(), t::T_owl_Class::name()

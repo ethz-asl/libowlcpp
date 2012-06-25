@@ -46,8 +46,29 @@ public:
     @throw Rdf_err if @b id does not exist
    */
    Node const& at(const Node_id id) const {
-      return id < smap_.node_id_next() ? smap_at(id) : map_at(id);
+      return id < smap_.node_id_next() ? smap_.at(id) : map_.at(id);
    }
+
+   /**@brief Insert IRI node
+    @param nsid namespace IRI id
+    @param name fragment name
+    @return node ID
+   */
+   Node_id insert_iri(const Ns_id nsid, std::string const& name) {
+      if( smap_.is_standard(nsid) ) {
+         const Node_iri node(nsid, name);
+         if( Node_id const* nid = smap_.find(node) ) return *nid;
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << typename Err::msg_t("new term cannot be inserted into standard namespace")
+                  << typename Err::str1_t( name )
+                  << typename Err::str2_t( smap_.at(nsid) )
+         );
+      }
+
+      //todo
+   }
+
 
    /**@brief Remove node with specified ID
     @param id node ID
