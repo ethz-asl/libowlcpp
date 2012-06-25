@@ -84,6 +84,12 @@ public:
    }
 
    void insert(const Node_id id, Node_iri const& node) {
+      if( id() < n0_ ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("invalid ID")
+               << Err::int1_t(id())
+      );
+
       if( Node_id const* id0 = find(node) ) {
          if( *id0 == id ) return;
          BOOST_THROW_EXCEPTION(

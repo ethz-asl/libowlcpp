@@ -64,5 +64,17 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    mnb.insert(Node_id(42), Ns_id(142), "new_node");
 }
 
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case02 ) {
+   const Node_id id0(( 13 ));
+   d::Map_node_iri_base mnb(id0);
+
+   const Node_id id_1(( 10 ));
+   BOOST_CHECK_THROW( mnb.insert(id_1, Ns_id(43), "blah"), Rdf_err );
+
+   mnb.insert(id0, Ns_id(43), "blah");
+
+}
 }//namespace test
 }//namespace owlcpp
