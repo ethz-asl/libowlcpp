@@ -79,55 +79,10 @@ public:
       return i == m_.end() ? 0 : &i->second;
    }
 
-   Node_id insert(std::auto_ptr<Node> np) {
-      insert_t ip = m_.emplace(np.get(), Node_id());
-      if( ip.second ) {
-         const Node_id id = make_id(np);
-         ip.first->second = id;
-         return id;
-      }
-      return ip.first->second;
-   }
-
-   void insert(const Node_id id, std::auto_ptr<Node> np) {
-      Node_id const* id0 = find(*np);
-      if( id0 ) {
-         if( *id0 == id ) return;
-         BOOST_THROW_EXCEPTION(
-                  Err()
-                  << Err::msg_t("node already exists")
-                  << Err::int1_t(np->ns_id()())
-                  << Err::str1_t(np->value_str())
-         );
-      }
-      if( valid(id) ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("node ID is reserved")
-               << Err::int1_t(id())
-      );
-
-      Node* p = np.get();
-      //ignore erased_
-      const std::size_t n = sz(id);
-      if( n < v_.size() ) {
-         v_.replace(n, np);
-      } else {
-         //v_.resize(n,0) does not compile for some reason
-         while( n > v_.size() ) v_.push_back(0);
-         v_.push_back(np);
-      }
-      m_.emplace(p, id);
-   }
-
    Node_id insert_iri(const Ns_id ns, std::string const& val) {
       //todo: do not new if node already stored
       std::auto_ptr<Node> np(new Node_iri(ns,val));
       return insert(np);
-   }
-
-   void insert_iri(const Node_id id, const Ns_id ns, std::string const& val) {
-      std::auto_ptr<Node> np(new Node_iri(ns,val));
-      insert(id, np);
    }
 
    Node_id insert_literal(
@@ -193,6 +148,46 @@ private:
       BOOST_ASSERT(v_.is_null(n));
       v_.replace(n, np);
       return id;
+   }
+
+   Node_id insert(std::auto_ptr<Node> np) {
+      insert_t ip = m_.emplace(np.get(), Node_id());
+      if( ip.second ) {
+         const Node_id id = make_id(np);
+         ip.first->second = id;
+         return id;
+      }
+      return ip.first->second;
+   }
+
+   void insert(const Node_id id, std::auto_ptr<Node> np) {
+      Node_id const* id0 = find(*np);
+      if( id0 ) {
+         if( *id0 == id ) return;
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("node already exists")
+                  << Err::int1_t(np->ns_id()())
+                  << Err::str1_t(np->value_str())
+         );
+      }
+      if( valid(id) ) BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t("node ID is reserved")
+               << Err::int1_t(id())
+      );
+
+      Node* p = np.get();
+      //ignore erased_
+      const std::size_t n = sz(id);
+      if( n < v_.size() ) {
+         v_.replace(n, np);
+      } else {
+         //v_.resize(n,0) does not compile for some reason
+         while( n > v_.size() ) v_.push_back(0);
+         v_.push_back(np);
+      }
+      m_.emplace(p, id);
    }
 
 };

@@ -45,40 +45,6 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    const Node_id id5 = mnb.insert_iri(Ns_id(42), "blah");
    BOOST_CHECK( mnb.have(id5) );
    BOOST_CHECK_NE(id1, id5);
-
-   //insert existing node with new ID
-   BOOST_CHECK_THROW(
-            mnb.insert_iri(Node_id(42), Ns_id(42), "blah"),
-            Rdf_err
-   );
-
-   //insert new node with existing ID
-   BOOST_CHECK_THROW(
-            mnb.insert_iri(id5, Ns_id(142), "new_node"),
-            Rdf_err
-   );
-
-   //insert existing node with its current ID (NOP)
-   mnb.insert_iri(id5, Ns_id(42), "blah");
-
-   mnb.insert_iri(Node_id(42), Ns_id(142), "new_node");
-}
-
-BOOST_AUTO_TEST_CASE( case02 ) {
-   d::Map_node_base mnb(( Node_id() ));
-   BOOST_CHECK( mnb.empty() );
-   mnb.insert_iri(
-            t::T_owl_AsymmetricProperty::id(),
-            t::T_owl_AsymmetricProperty::ns_type::id(),
-            t::T_owl_AsymmetricProperty::name()
-   );
-   BOOST_CHECK( ! mnb.empty() );
-   const Node_id id1 = t::T_owl_AsymmetricProperty::id();
-   BOOST_CHECK( mnb.have(id1) );
-   BOOST_CHECK_EQUAL(
-            mnb.at(id1).value_str(),
-            t::T_owl_AsymmetricProperty::name()
-   );
 }
 
 }//namespace test
