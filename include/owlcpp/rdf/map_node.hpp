@@ -7,6 +7,9 @@ part of owlcpp project.
 #define MAP_NODE_HPP_
 #include "owlcpp/rdf/detail/map_node_base.hpp"
 #include "owlcpp/rdf/map_node_std.hpp"
+#include "owlcpp/rdf/nodes_std.hpp"
+#include "owlcpp/rdf/map_node_iri_crtpb.hpp"
+#include "owlcpp/rdf/map_ns_std_crtpb.hpp"
 
 namespace owlcpp{
 
@@ -15,7 +18,10 @@ namespace owlcpp{
 Validity of node IDs is assumed and asserted in debug mode.
 Calling node map methods with invalid node IDs results in undefined behavior.
 *******************************************************************************/
-class Map_node {
+class Map_node :
+public Map_ns_std_crtpb<Map_node>
+{
+   friend class Map_ns_std_crtpb<Map_node>;
    typedef detail::Map_node_base map_node;
 
 public:
@@ -28,6 +34,10 @@ public:
    : smap_(Map_node_std::get(nodes)), map_(smap_.node_id_next())
    {}
 
+   explicit Map_node()
+   : smap_(Map_node_std::get(Nodes_none())), map_(smap_.node_id_next())
+   {}
+
    explicit Map_node(Map_node_std const& snode)
    : smap_(snode), map_(smap_.node_id_next())
    {}
@@ -35,6 +45,7 @@ public:
    std::size_t size() const {return map_.size();}
    const_iterator begin() const {return map_.begin();}
    const_iterator end() const {return map_.end();}
+   bool empty() const {return map_.empty();}
 
    Node const& operator[](const Node_id id) const {
       return id < smap_.node_id_next() ? smap_[id] : map_[id];
@@ -65,9 +76,21 @@ public:
                   << typename Err::str2_t( smap_.at(nsid) )
          );
       }
-
-      //todo
+      return map_.insert_iri(nsid, name);
    }
+
+   Node_id insert_literal(
+            std::string const& val,
+            const Node_id dt = terms::T_empty_::id(),
+            std::string const& lang = ""
+   ) {
+      return map_.insert_literal(val, dt, lang);
+   }
+
+   Node_id insert_blank(const unsigned n, const Doc_id doc) {
+      return map_.insert_blank(n, doc);
+   }
+
 
 
    /**@brief Remove node with specified ID

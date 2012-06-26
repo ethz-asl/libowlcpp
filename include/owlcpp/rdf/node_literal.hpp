@@ -60,6 +60,7 @@ private:
    bool empty_impl() const { return val_.empty() && lang_.empty() && is_empty(dt_); }
 
    bool equal_impl(const Node& n) const {
+      //todo: use typeid()?
       if( Node_literal const*const p = dynamic_cast<Node_literal const*>(&n) ) {
          return dt_ == p->dt_ && lang_ == p->lang_ && val_ == p->val_;
       }

@@ -8,7 +8,8 @@ project lib/rdf
 
 lib owlcpp_rdf
    :  #sources
-      [ glob *.cpp ] ..//lib_info
+#      [ glob *.cpp ] ..//lib_info
+      nodes_std.cpp
    :  #requirements
       $(LIB_REQUIREMENTS)
       <link>shared:<define>OWLCPP_RDF_DYN_LINK

@@ -47,6 +47,7 @@ private:
    bool empty_impl() const { return is_empty(ns_) && val_.empty(); }
 
    bool equal_impl(const Node& n) const {
+      //todo: use typeid()?
       if( Node_iri const*const p = dynamic_cast<Node_iri const*>(&n) ) {
          return ns_ == p->ns_ && val_ == p->val_;
       }

@@ -40,6 +40,7 @@ private:
    bool empty_impl() const { return false; }
 
    bool equal_impl(const Node& n) const {
+      //todo: use typeid()?
       if( Node_blank const*const p = dynamic_cast<Node_blank const*>(&n) ) {
          return n_ == p->n_ && doc_ == p->doc_;
       }
