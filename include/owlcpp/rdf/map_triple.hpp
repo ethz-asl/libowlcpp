@@ -1,10 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/rdf/triple_map.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/map_triple.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef TRIPLE_MAP_HPP_
-#define TRIPLE_MAP_HPP_
+#ifndef MAP_TRIPLE_HPP_
+#define MAP_TRIPLE_HPP_
 #include "boost/fusion/include/at.hpp"
 #include "boost/fusion/include/for_each.hpp"
 #include "boost/fusion/include/front.hpp"
@@ -17,7 +17,7 @@ part of owlcpp project.
 #include "boost/mpl/vector.hpp"
 #include "boost/mpl/vector_c.hpp"
 
-#include "owlcpp/rdf/detail/triple_map_config.hpp"
+#include "owlcpp/rdf/detail/map_triple_config.hpp"
 #include "owlcpp/rdf/detail/triple_index.hpp"
 
 namespace owlcpp{
@@ -25,15 +25,15 @@ namespace owlcpp{
 /**@brief Store, index, and search RDF triples
 *******************************************************************************/
 template<bool Index_subj, bool Index_pred, bool Index_obj, bool Index_doc>
-class Triple_map {
+class Map_triple {
 
    typedef typename
-            triple_map_detail::Store_config<Index_subj,Index_pred,Index_obj,Index_doc>
+            map_triple_detail::Store_config<Index_subj,Index_pred,Index_obj,Index_doc>
    config;
 
    typedef typename config::store store;
    typedef typename boost::mpl::front<store>::type main_store;
-   BOOST_MPL_ASSERT((boost::is_same<typename main_store::tag, triple_map_detail::Main_store_tag>));
+   BOOST_MPL_ASSERT((boost::is_same<typename main_store::tag, map_triple_detail::Main_store_tag>));
 
    class Insert {
    public:
@@ -67,7 +67,7 @@ public:
    *******************************************************************************/
    template<class Subj, class Pred, class Obj, class Doc> struct result {
       typedef typename
-               triple_map_detail::Search_config<config,Subj,Pred,Obj,Doc>::range
+               map_triple_detail::Search_config<config,Subj,Pred,Obj,Doc>::range
                type;
    };
 
@@ -80,7 +80,7 @@ public:
    *******************************************************************************/
    template<bool Subj, bool Pred, bool Obj, bool Doc>
    class result_b {
-      typedef typename triple_map_detail::Deduce_args<Subj,Pred,Obj,Doc>::type q_args;
+      typedef typename map_triple_detail::Deduce_args<Subj,Pred,Obj,Doc>::type q_args;
       typedef result<
                typename boost::mpl::at_c<q_args,0>::type,
                typename boost::mpl::at_c<q_args,1>::type,
@@ -159,12 +159,12 @@ public:
    - get index iterator range
    - make filter iterator range
     */
-      typedef triple_map_detail::Search_config<config,Subj,Pred,Obj,Doc> search_config;
+      typedef map_triple_detail::Search_config<config,Subj,Pred,Obj,Doc> search_config;
       typedef typename search_config::index_num index_num;
       typedef typename boost::mpl::at<store, index_num>::type index_t;
       index_t const& index = boost::fusion::at<index_num>(store_);
       typedef typename index_t::const_range range1_t;
-      const range1_t r1 = triple_map_detail::Search_range1<index_t>::get(index,subj,pred,obj,doc);
+      const range1_t r1 = map_triple_detail::Search_range1<index_t>::get(index,subj,pred,obj,doc);
       return search_config::search::get(r1, subj, pred, obj, doc);
    }
 
@@ -174,4 +174,4 @@ private:
 };
 
 }//namespace owlcpp
-#endif /* TRIPLE_MAP_HPP_ */
+#endif /* MAP_TRIPLE_HPP_ */

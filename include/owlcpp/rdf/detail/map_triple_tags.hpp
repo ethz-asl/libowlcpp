@@ -1,10 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/rdf/detail/triple_map_tags.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/detail/map_triple_tags.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef TRIPLE_MAP_TAGS_HPP_
-#define TRIPLE_MAP_TAGS_HPP_
+#ifndef MAP_TRIPLE_TAGS_HPP_
+#define MAP_TRIPLE_TAGS_HPP_
 #include "boost/fusion/adapted/struct/adapt_struct.hpp"
 
 #include "owlcpp/rdf/triple.hpp"
@@ -21,7 +21,7 @@ namespace owlcpp{
 
 struct any;
 
-namespace triple_map_detail{
+namespace map_triple_detail{
 
 namespace mpl = boost::mpl;
 
@@ -34,6 +34,6 @@ struct Doc_tag  : public mpl::size_t<3> {};
 
 struct Main_store_tag{};
 
-}//namespace triple_map_detail
+}//namespace map_triple_detail
 }//namespace owlcpp
-#endif /* TRIPLE_MAP_TAGS_HPP_ */
+#endif /* MAP_TRIPLE_TAGS_HPP_ */

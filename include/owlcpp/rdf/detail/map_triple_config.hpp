@@ -1,10 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/rdf/detail/triple_map_config.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/detail/map_triple_config.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef TRIPLE_MAP_CONFIG_HPP_
-#define TRIPLE_MAP_CONFIG_HPP_
+#ifndef MAP_TRIPLE_CONFIG_HPP_
+#define MAP_TRIPLE_CONFIG_HPP_
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/include/all.hpp"
 #include "boost/fusion/include/at.hpp"
@@ -38,10 +38,10 @@ part of owlcpp project.
 #include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/has_operator.hpp"
 
-#include "owlcpp/rdf/detail/triple_map_tags.hpp"
+#include "owlcpp/rdf/detail/map_triple_tags.hpp"
 #include "owlcpp/rdf/any_triple_element.hpp"
 
-namespace owlcpp{ namespace triple_map_detail{
+namespace owlcpp{ namespace map_triple_detail{
 namespace mpl = boost::mpl;
 namespace fusion = boost::fusion;
 namespace fusion_rof = boost::fusion::result_of;
@@ -296,6 +296,6 @@ class Search_config :
    public Search_config_v<SConfig, mpl::vector<Subj,Pred,Obj,Doc> >
 {};
 
-}//namespace triple_map_detail
+}//namespace map_triple_detail
 }//namespace owlcpp
-#endif /* TRIPLE_MAP_CONFIG_HPP_ */
+#endif /* MAP_TRIPLE_CONFIG_HPP_ */

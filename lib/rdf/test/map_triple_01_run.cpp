@@ -1,4 +1,4 @@
-/** @file "/owlcpp/lib/rdf/test/triple_map_01_run.cpp" 
+/** @file "/owlcpp/lib/rdf/test/map_triple_01_run.cpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -9,7 +9,7 @@ part of owlcpp project.
 #include "test/exception_fixture.hpp"
 #include <iostream>
 
-#include "owlcpp/rdf/triple_map.hpp"
+#include "owlcpp/rdf/map_triple.hpp"
 #include "test_utils.hpp"
 
 namespace owlcpp{ namespace test{
@@ -29,7 +29,7 @@ const unsigned t[][4] = {
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   typedef Triple_map<1,0,0,0> triple_map;
+   typedef Map_triple<1,0,0,0> triple_map;
    triple_map tm;
    BOOST_CHECK_EQUAL(tm.size(), 0U);
    insert_seq(tm, t);
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   typedef Triple_map<0,1,0,0> triple_map;
+   typedef Map_triple<0,1,0,0> triple_map;
    triple_map tm;
    insert_seq(tm, t);
    typedef triple_map::result_b<0,1,0,0> search;

@@ -13,10 +13,10 @@ part of owlcpp project.
 #include "boost/range.hpp"
 #include "boost/range/algorithm/find.hpp"
 
-#include "owlcpp/rdf/detail/triple_map_tags.hpp"
+#include "owlcpp/rdf/detail/map_triple_tags.hpp"
 #include "owlcpp/rdf/exception.hpp"
 
-namespace owlcpp{ namespace triple_map_detail{
+namespace owlcpp{ namespace map_triple_detail{
 namespace fusion = boost::fusion;
 namespace fusion_rof = boost::fusion::result_of;
 
@@ -167,6 +167,6 @@ private:
 };
 
 
-}//namespace triple_map_detail
+}//namespace map_triple_detail
 }//namespace owlcpp
 #endif /* TRIPLE_INDEX_HPP_ */
