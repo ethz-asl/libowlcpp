@@ -12,16 +12,27 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+const std::string ns1 = "http://example.xyz/example1";
+const std::string ns1p = "ex1";
+const std::string ns2 = "http://example.xyz/example2";
+const std::string ns2p = "ex2";
+
+/** Test namespaces
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Store_triple ts(( Nodes_none() ));
    BOOST_CHECK_EQUAL(ts.namespaces().size(), 0U);
-   const Ns_id nsid1 = ts.insert_ns("blah");
+   const Ns_id nsid1 = ts.insert_ns(ns1);
    BOOST_CHECK_EQUAL(ts.namespaces().size(), 1U);
+   BOOST_CHECK_EQUAL(ts[nsid1], ns1);
+   ts.insert_prefix(nsid1, ns1p);
+   BOOST_CHECK_EQUAL(ts.prefix(nsid1), ns1p);
+   BOOST_REQUIRE( ts.find_prefix(ns1p) );
+   BOOST_CHECK_EQUAL(*ts.find_prefix(ns1p), nsid1);
+   BOOST_CHECK( ! ts.find_prefix(ns2p) );
 }
 
-/**
+/** Test nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
    Store_triple ts(( Nodes_none() ));
@@ -45,7 +56,7 @@ BOOST_AUTO_TEST_CASE( case02 ) {
 
 /** OWL-aware triple store
 BOOST_AUTO_TEST_CASE( case03 ) {
-   Triple_store ts; //default constructor makes OWL-aware store
+   Store_triple ts; //default constructor makes OWL-aware store
 
    //correct term
    const Node_id nid3 = ts.insert_iri_node(terms::N_owl::iri() + "#Ontology");
@@ -54,20 +65,20 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    //misspelled term
    BOOST_CHECK_THROW(
             ts.insert_iri_node(terms::N_owl::iri() + "#Ontolog"),
-            Triple_store::Err
+            Store_triple::Err
    );
 
    //empty fragment
    BOOST_CHECK_THROW(
             ts.insert_iri_node(terms::N_owl::iri()),
-            Triple_store::Err
+            Store_triple::Err
    );
 }
 *******************************************************************************/
 
 /** Empty IRI node maps to T_empty_::id() ID
 BOOST_AUTO_TEST_CASE( case04 ) {
-   Triple_store ts(Node_map_std::get(Nodes_none()));
+   Store_triple ts(Node_map_std::get(Nodes_none()));
    Node_id const* nid = ts.find_iri_node("");
    BOOST_REQUIRE(nid);
    BOOST_CHECK_EQUAL(*nid, terms::T_empty_::id());
@@ -76,7 +87,7 @@ BOOST_AUTO_TEST_CASE( case04 ) {
 
 /**
 BOOST_AUTO_TEST_CASE( case05 ) {
-   Triple_store ts;
+   Store_triple ts;
    BOOST_CHECK_EQUAL(ts.documents().size(), 0U);
    const Doc_id did = ts.insert_doc("path", ni1, ni2).first;
    BOOST_REQUIRE_EQUAL( ts.documents().size(), 1u );
@@ -92,7 +103,7 @@ BOOST_AUTO_TEST_CASE( case05 ) {
 
 /**
 BOOST_AUTO_TEST_CASE( case06 ) {
-   Triple_store ts = sample_triples_01();
+   Store_triple ts = sample_triples_01();
    BOOST_FOREACH(Triple const& t, ts.triples()) {
       std::cout
       << '\"'
