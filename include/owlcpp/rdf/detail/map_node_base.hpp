@@ -74,6 +74,11 @@ public:
       return get(id);
    }
 
+   Node const* find(const Node_id id) const {
+      if( id() < n0_ || id() >= v_.size() + n0_ ) return 0;
+      return  &v_[sz(id)];
+   }
+
    Node_id const* find(Node const& node) const {
       const map_citer_t i = m_.find(&node);
       return i == m_.end() ? 0 : &i->second;
