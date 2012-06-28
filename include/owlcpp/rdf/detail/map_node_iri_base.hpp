@@ -68,6 +68,10 @@ public:
       return id() < n0_ || id() >= v_.size() + n0_ ? 0 : v_[sz(id)];
    }
 
+   Node_id const* find(const Ns_id ns, std::string const& val) const {
+      return find(Node_iri(ns,val));
+   }
+
    Node_id const* find(Node_iri const& node) const {
       const map_citer_t i = m_.find(node);
       return i == m_.end() ? 0 : &i->second;
