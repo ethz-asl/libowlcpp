@@ -1,10 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/rdf/map_ns_std_crtpb.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/crtpb_ns_std.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef MAP_NS_STD_CRTPB_HPP_
-#define MAP_NS_STD_CRTPB_HPP_
+#ifndef CRTPB_NS_STD_HPP_
+#define CRTPB_NS_STD_HPP_
 #include <string>
 
 #include "owlcpp/rdf/detail/map_traits.hpp"
@@ -14,9 +14,9 @@ namespace owlcpp{
 
 /** Enable interaction between a map of user namespaces and
 a map of standard namespaces.
-Base for curiously recursive template pattern.
+Base for CRTP (Curiously Recurring Template Pattern).
 *******************************************************************************/
-template<class Super> class Map_ns_std_crtpb {
+template<class Super> class Crtpb_ns_std {
 
    typedef typename Map_traits<Super>::map_ns_t map_ns_t;
    typedef typename Map_traits<Super>::map_node_std_t map_node_std_t;
@@ -50,7 +50,7 @@ public:
    */
    std::string prefix(const Ns_id iid) const {
       if( iid < smap().ns_id_next() ) return smap().prefix(iid);
-      return ns.prefix(iid);
+      return ns().prefix(iid);
    }
 
    /**
@@ -68,7 +68,7 @@ public:
    */
    Ns_id const* find_prefix(std::string const& pref) const {
       Ns_id const*const id = smap().find_prefix(pref);
-      return id ? id : ns.find_prefix(pref);
+      return id ? id : ns().find_prefix(pref);
    }
 
    Ns_id insert_ns(std::string const& iri) {
@@ -87,9 +87,9 @@ public:
          if( pref.empty() || pref == smap().prefix(iid) ) return;
          BOOST_THROW_EXCEPTION(
                   Err()
-                  << Err::msg_t("cannot re-define standard prefix")
-                  << Err::str1_t(pref)
-                  << Err::str2_t(smap().prefix(iid))
+                  << typename Err::msg_t("cannot re-define standard prefix")
+                  << typename Err::str1_t(pref)
+                  << typename Err::str2_t(smap().prefix(iid))
          );
       }
       BOOST_ASSERT( ns().have(iid) );
@@ -102,10 +102,10 @@ public:
          if( *iid0 == iid ) return; //prefix already defined for same IRI
          BOOST_THROW_EXCEPTION(
                   Err()
-                  << Err::msg_t("prefix reserved for different IRI")
-                  << Err::str1_t(pref)
-                  << Err::str2_t(at(iid))
-                  << Err::str3_t(at(*iid0))
+                  << typename Err::msg_t("prefix reserved for different IRI")
+                  << typename Err::str1_t(pref)
+                  << typename Err::str2_t(at(iid))
+                  << typename Err::str3_t(at(*iid0))
          );
       }
       ns().set_prefix(iid, pref);
@@ -114,4 +114,4 @@ public:
 };
 
 }//namespace owlcpp
-#endif /* MAP_NS_STD_CRTPB_HPP_ */
+#endif /* CRTPB_NS_STD_HPP_ */
