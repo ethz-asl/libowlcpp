@@ -27,6 +27,7 @@ template<> struct Map_traits<Store_triple> {
    typedef detail::Map_node_base map_node_t;
    typedef Map_node_std map_node_std_t;
    typedef Map_doc map_doc_t;
+
    typedef Map_triple<
 #ifdef OWLCPP_RDF_INDEX_SUBJECT
             OWLCPP_RDF_INDEX_SUBJECT

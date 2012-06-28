@@ -16,8 +16,8 @@ part of owlcpp project.
 
 namespace owlcpp{
 
-/**@brief immutable static set of IRIs and nodes
-@details Contains at least blank and empty (literal) namespaces and empty node
+/**@brief Immutable static set of namespace IRIs and nodes
+@details Contains at least blank and empty (literal) namespaces and empty node.
 *******************************************************************************/
 class Map_node_std : boost::noncopyable {
    typedef detail::Map_ns_base map_ns;
@@ -100,6 +100,11 @@ public:
    Node_iri const& operator[](const Node_id nid) const {return node_[nid];}
    Node_iri const& at(const Node_id nid) const {return node_.at(nid);}
    Node_id const* find(Node_iri const& node) const {return node_.find(node);}
+
+   Node_id const* find(const Ns_id ns, std::string const& val) const {
+      if( is_blank(ns) || ns >= ns_id_next_ ) return 0;
+      return node_.find(Node_iri(ns, val));
+   }
 
 private:
    map_ns ns_;

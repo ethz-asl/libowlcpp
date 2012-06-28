@@ -11,7 +11,9 @@ part of owlcpp project.
 #include "owlcpp/rdf/map_doc.hpp"
 #include "owlcpp/rdf/map_node_std.hpp"
 #include "owlcpp/rdf/map_triple.hpp"
-#include "owlcpp/rdf/map_ns_std_crtpb.hpp"
+#include "owlcpp/rdf/crtpb_ns_std.hpp"
+#include "owlcpp/rdf/crtpb_node_std.hpp"
+#include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
 #include "owlcpp/rdf/nodes_std.hpp"
 
 namespace owlcpp{
@@ -19,9 +21,13 @@ namespace owlcpp{
 /**@brief 
 *******************************************************************************/
 class Store_triple :
-public Map_ns_std_crtpb<Store_triple>
+public Crtpb_ns_node_iri<Store_triple>,
+public Crtpb_node_std<Store_triple>,
+public Crtpb_ns_std<Store_triple>
 {
-   friend class Map_ns_std_crtpb<Store_triple>;
+   friend class Crtpb_ns_node_iri<Store_triple>;
+   friend class Crtpb_ns_std<Store_triple>;
+   friend class Crtpb_node_std<Store_triple>;
 
    typedef typename Map_traits<Store_triple>::map_ns_t map_ns_t;
    typedef typename Map_traits<Store_triple>::map_node_t map_node_t;

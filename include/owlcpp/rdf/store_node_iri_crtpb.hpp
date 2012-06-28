@@ -43,7 +43,6 @@ template<class T> struct Store_node_iri_crtpb {
       }
    }
 
-
    /**
     @param iri node IRI
     @return pointer to node ID or NULL if not found.
