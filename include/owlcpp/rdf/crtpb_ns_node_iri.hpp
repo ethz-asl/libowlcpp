@@ -33,6 +33,33 @@ template<class Super> class Crtpb_ns_node_iri {
 
 public:
 
+   /**@brief if not already present, store IRI reference node
+    @param iri node IRI string;
+    consistent uniform representation of non-ascii characters is assumed
+    (e.g., UTF-8, or %HH)
+    @return node ID
+   */
+   Node_id parse_iri(std::string const& iri) {
+      const std::size_t n = iri.find('#');
+      const Ns_id iid =
+               std::string::npos == n ?
+                        ns().insert(iri) :
+                        ns().insert(iri.substr(0,n));
+
+      const std::string name = std::string::npos == n ? "" : iri.substr(n+1);
+      try{
+         return static_cast<Super&>(*this).insert_node_iri( iid, name );
+      } catch(...) {
+         typedef typename Super::Err Err;
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << typename Err::msg_t("error inserting IRI")
+                  << typename Err::str1_t( iri )
+                  << typename Err::nested_t(boost::current_exception())
+         );
+      }
+   }
+
 };
 
 

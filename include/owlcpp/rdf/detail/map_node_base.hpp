@@ -31,6 +31,7 @@ Calling node map methods with invalid node IDs results in undefined behavior.
 class Map_node_base {
 public:
    typedef Node_id id_type;
+   typedef Node node_type;
 private:
    typedef boost::ptr_vector<boost::nullable<Node> > vector_t;
    typedef boost::unordered_map<

@@ -21,6 +21,7 @@ Base for CRTP (Curiously Recurring Template Pattern).
 template<class Super> class Crtpb_node_std {
    typedef typename Map_traits<Super>::map_node_std_t map_node_std_t;
    typedef typename Map_traits<Super>::map_node_t map_node_t;
+   typedef typename map_node_t::node_type node_type;
 
    map_node_std_t const& smap() const {
       return static_cast<Super const&>(*this).snode_;
@@ -35,6 +36,19 @@ template<class Super> class Crtpb_node_std {
    }
 
 public:
+
+   node_type const& operator[](const Node_id id) const {
+      return id < smap().node_id_next() ? smap()[id] : nodes()[id];
+   }
+
+   /**
+    @param id node ID
+    @return immutable reference to node object with specified ID
+    @throw Rdf_err if @b id does not exist
+   */
+   node_type const& at(const Node_id id) const {
+      return id < smap().node_id_next() ? smap().at(id) : nodes().at(id);
+   }
 
    /**@brief Insert IRI node
     @param nsid namespace IRI id

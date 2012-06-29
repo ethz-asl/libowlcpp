@@ -16,6 +16,8 @@ const std::string ns1 = "http://example.xyz/example1";
 const std::string ns1p = "ex1";
 const std::string ns2 = "http://example.xyz/example2";
 const std::string ns2p = "ex2";
+const std::string ni1 = "http://example.xyz/example1#node1";
+const std::string ni2 = "http://example.xyz/example1#node2";
 
 /** Test namespaces
 *******************************************************************************/
@@ -37,11 +39,11 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 BOOST_AUTO_TEST_CASE( case02 ) {
    Store_triple ts(( Nodes_none() ));
 
-   const Node_id nid1 = ts.insert_iri_node(ni1);
-   const Node_id nid1a = ts.insert_iri_node(ni1);
+   const Node_id nid1 = ts.parse_iri(ni1);
+   const Node_id nid1a = ts.parse_iri(ni1);
    BOOST_CHECK_EQUAL(nid1, nid1a);
    BOOST_CHECK_EQUAL(ts.string(nid1), ni1);
-   const Node_id nid2 = ts.insert_iri_node(ni2);
+   const Node_id nid2 = ts.parse_iri(ni2);
    BOOST_CHECK_NE(nid1, nid2);
 
    //same namespace IRIs
@@ -49,9 +51,9 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    //different fragment names
    BOOST_CHECK_NE(ts[nid1].value_str(), ts[nid2].value_str());
 
-   const Node_id nid3 = ts.insert_iri_node(terms::N_owl::iri() + "#Ontology");
+   const Node_id nid3 = ts.parse_iri(terms::N_owl::iri() + "#Ontology");
    BOOST_CHECK_NE(nid3, terms::T_owl_Ontology::id()); //non-standard ID
-   ts.insert_iri_node(terms::N_owl::iri() + "#blah"); //inserting new node into standard namespace
+   ts.parse_iri(terms::N_owl::iri() + "#blah"); //inserting new node into standard namespace
 }
 
 /** OWL-aware triple store
@@ -59,18 +61,18 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    Store_triple ts; //default constructor makes OWL-aware store
 
    //correct term
-   const Node_id nid3 = ts.insert_iri_node(terms::N_owl::iri() + "#Ontology");
+   const Node_id nid3 = ts.parse_iri(terms::N_owl::iri() + "#Ontology");
    BOOST_CHECK_EQUAL(nid3, terms::T_owl_Ontology::id());
 
    //misspelled term
    BOOST_CHECK_THROW(
-            ts.insert_iri_node(terms::N_owl::iri() + "#Ontolog"),
+            ts.parse_iri(terms::N_owl::iri() + "#Ontolog"),
             Store_triple::Err
    );
 
    //empty fragment
    BOOST_CHECK_THROW(
-            ts.insert_iri_node(terms::N_owl::iri()),
+            ts.parse_iri(terms::N_owl::iri()),
             Store_triple::Err
    );
 }

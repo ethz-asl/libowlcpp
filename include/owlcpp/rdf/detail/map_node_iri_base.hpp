@@ -25,6 +25,7 @@ Calling node map methods with invalid node IDs results in undefined behavior.
 class Map_node_iri_base {
 public:
    typedef Node_id id_type;
+   typedef Node_iri node_type;
 private:
    typedef boost::unordered_map<Node_iri, Node_id> map_t;
    typedef map_t::iterator map_iter_t;
