@@ -15,6 +15,7 @@ template<class Super> class Crtpb_ns_node_iri {
    typedef typename Map_traits<Super>::map_ns_t map_ns_t;
    typedef typename Map_traits<Super>::map_node_t map_node_t;
 
+/*
    map_ns_t const& ns() const {
       return static_cast<Super const&>(*this).namespaces();
    }
@@ -30,6 +31,7 @@ template<class Super> class Crtpb_ns_node_iri {
    map_node_t& nodes() {
       return static_cast<Super&>(*this).node_;
    }
+*/
 
 public:
 
@@ -39,12 +41,12 @@ public:
     (e.g., UTF-8, or %HH)
     @return node ID
    */
-   Node_id parse_iri(std::string const& iri) {
+   Node_id insert_node_iri(std::string const& iri) {
       const std::size_t n = iri.find('#');
       const Ns_id iid =
                std::string::npos == n ?
-                        ns().insert(iri) :
-                        ns().insert(iri.substr(0,n));
+                        static_cast<Super&>(*this).insert_ns(iri) :
+                        static_cast<Super&>(*this).insert_ns(iri.substr(0,n));
 
       const std::string name = std::string::npos == n ? "" : iri.substr(n+1);
       try{

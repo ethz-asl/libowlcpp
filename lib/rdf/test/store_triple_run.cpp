@@ -7,10 +7,14 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/store_triple.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
+//#include "owlcpp/rdf/query_node.hpp"
 
 namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
+
+namespace t = owlcpp::terms;
 
 const std::string ns1 = "http://example.xyz/example1";
 const std::string ns1p = "ex1";
@@ -39,11 +43,11 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 BOOST_AUTO_TEST_CASE( case02 ) {
    Store_triple ts(( Nodes_none() ));
 
-   const Node_id nid1 = ts.parse_iri(ni1);
-   const Node_id nid1a = ts.parse_iri(ni1);
+   const Node_id nid1 = ts.insert_node_iri(ni1);
+   const Node_id nid1a = ts.insert_node_iri(ni1);
    BOOST_CHECK_EQUAL(nid1, nid1a);
-   BOOST_CHECK_EQUAL(ts.string(nid1), ni1);
-   const Node_id nid2 = ts.parse_iri(ni2);
+//   BOOST_CHECK_EQUAL(to_string(nid1, ts), ni1);
+   const Node_id nid2 = ts.insert_node_iri(ni2);
    BOOST_CHECK_NE(nid1, nid2);
 
    //same namespace IRIs
@@ -51,39 +55,49 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    //different fragment names
    BOOST_CHECK_NE(ts[nid1].value_str(), ts[nid2].value_str());
 
-   const Node_id nid3 = ts.parse_iri(terms::N_owl::iri() + "#Ontology");
-   BOOST_CHECK_NE(nid3, terms::T_owl_Ontology::id()); //non-standard ID
-   ts.parse_iri(terms::N_owl::iri() + "#blah"); //inserting new node into standard namespace
+   const Node_id nid3 = ts.insert_node_iri(t::N_owl::iri() + "#Ontology");
+   BOOST_CHECK_NE(nid3, t::T_owl_Ontology::id()); //non-standard ID
+   ts.insert_node_iri(t::N_owl::iri() + "#blah"); //inserting new node into standard namespace
 }
 
 /** OWL-aware triple store
+*******************************************************************************/
 BOOST_AUTO_TEST_CASE( case03 ) {
    Store_triple ts; //default constructor makes OWL-aware store
 
+   BOOST_CHECK_EQUAL(
+            ts.at(t::T_owl_Ontology::id()).value_str(),
+            t::T_owl_Ontology::name()
+   );
+
    //correct term
-   const Node_id nid3 = ts.parse_iri(terms::N_owl::iri() + "#Ontology");
-   BOOST_CHECK_EQUAL(nid3, terms::T_owl_Ontology::id());
+   const Node_id nid1 = ts.insert_node_iri(t::N_owl::id(), t::T_owl_Ontology::name());
+   BOOST_CHECK_EQUAL(nid1, t::T_owl_Ontology::id());
+
+   const Node_id nid2 = ts.insert_node_iri(t::N_owl::iri() + "#Ontology");
+   const Ns_id nsid2 = ts.at(nid2).ns_id();
+   BOOST_CHECK_EQUAL(nsid2, t::N_owl::id());
+   BOOST_CHECK_EQUAL(nid2, t::T_owl_Ontology::id());
 
    //misspelled term
    BOOST_CHECK_THROW(
-            ts.parse_iri(terms::N_owl::iri() + "#Ontolog"),
+            ts.insert_node_iri(t::N_owl::iri() + "#Ontolog"),
             Store_triple::Err
    );
 
    //empty fragment
    BOOST_CHECK_THROW(
-            ts.parse_iri(terms::N_owl::iri()),
+            ts.insert_node_iri(t::N_owl::iri()),
             Store_triple::Err
    );
 }
-*******************************************************************************/
 
 /** Empty IRI node maps to T_empty_::id() ID
 BOOST_AUTO_TEST_CASE( case04 ) {
    Store_triple ts(Node_map_std::get(Nodes_none()));
    Node_id const* nid = ts.find_iri_node("");
    BOOST_REQUIRE(nid);
-   BOOST_CHECK_EQUAL(*nid, terms::T_empty_::id());
+   BOOST_CHECK_EQUAL(*nid, t::T_empty_::id());
 }
 *******************************************************************************/
 

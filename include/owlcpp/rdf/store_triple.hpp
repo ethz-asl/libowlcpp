@@ -25,7 +25,7 @@ public Crtpb_ns_node_iri<Store_triple>,
 public Crtpb_node_std<Store_triple>,
 public Crtpb_ns_std<Store_triple>
 {
-   friend class Crtpb_ns_node_iri<Store_triple>;
+//   friend class Crtpb_ns_node_iri<Store_triple>; //public access is enough
    friend class Crtpb_ns_std<Store_triple>;
    friend class Crtpb_node_std<Store_triple>;
 
@@ -58,6 +58,15 @@ public:
    map_node_t const& nodes() const {return node_;}
    map_doc_t const& docs() const {return doc_;}
    map_triple_t const& triples() const {return triple_;}
+
+   //bring in overloaded methods
+   using Crtpb_node_std<Store_triple>::operator[];
+   using Crtpb_ns_std<Store_triple>::operator[];
+   using Crtpb_node_std<Store_triple>::at;
+   using Crtpb_ns_std<Store_triple>::at;
+
+   using Crtpb_ns_node_iri<Store_triple>::insert_node_iri;
+   using Crtpb_node_std<Store_triple>::insert_node_iri;
 
 private:
    map_node_std_t const& snode_;
