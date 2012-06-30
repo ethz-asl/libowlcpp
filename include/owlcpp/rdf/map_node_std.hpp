@@ -90,6 +90,7 @@ public:
    }
 
    Ns_id ns_id_next() const {return ns_id_next_;}
+   bool have(const Ns_id nsid) const {return ns_.have(nsid);}
    Ns_id const* find_iri(std::string const& iri) const {return ns_.find_iri(iri);}
    Ns_id const* find_prefix(std::string const& pref) const {return ns_.find_prefix(pref);}
    std::string operator[](const Ns_id nsid) const {return ns_[nsid];}

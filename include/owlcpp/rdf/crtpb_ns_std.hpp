@@ -44,6 +44,10 @@ public:
       return id < smap().ns_id_next() ? smap().at(id) : ns().at(id);
    }
 
+   bool valid(const Ns_id nsid) const {
+      return smap().have(nsid) != ns().have(nsid);
+   }
+
    /**
     @param iid namespace IRI ID
     @return IRI prefix string or "" if no prefix was defined

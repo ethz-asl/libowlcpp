@@ -5,6 +5,8 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef CRTPB_NODE_STD_HPP_
 #define CRTPB_NODE_STD_HPP_
+#include "boost/assert.hpp"
+
 #include "owlcpp/rdf/detail/map_traits.hpp"
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/node_iri.hpp"
@@ -19,9 +21,14 @@ of standard IRI nodes.
 Base for CRTP (Curiously Recurring Template Pattern).
 *******************************************************************************/
 template<class Super> class Crtpb_node_std {
+   typedef typename Map_traits<Super>::map_ns_t map_ns_t;
    typedef typename Map_traits<Super>::map_node_std_t map_node_std_t;
    typedef typename Map_traits<Super>::map_node_t map_node_t;
    typedef typename map_node_t::node_type node_type;
+
+   map_ns_t const& ns() const {
+      return static_cast<Super const&>(*this).namespaces();
+   }
 
    map_node_std_t const& smap() const {
       return static_cast<Super const&>(*this).snode_;
@@ -56,6 +63,7 @@ public:
     @return node ID
    */
    Node_id insert_node_iri(const Ns_id nsid, std::string const& name) {
+      BOOST_ASSERT( static_cast<Super const&>(*this).valid(nsid) && "invalid namespace ID" );
       typedef typename Super::Err Err;
       if( is_blank(nsid) ) {
          BOOST_THROW_EXCEPTION(
