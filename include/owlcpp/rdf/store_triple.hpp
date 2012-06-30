@@ -14,6 +14,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/crtpb_ns_std.hpp"
 #include "owlcpp/rdf/crtpb_node_std.hpp"
 #include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
+#include "owlcpp/rdf/crtpb_doc.hpp"
 #include "owlcpp/rdf/nodes_std.hpp"
 
 namespace owlcpp{

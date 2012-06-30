@@ -172,8 +172,8 @@ public:
    */
    std::pair<Doc_id,bool> insert(
             const Node_id iri,
-            const Node_id vers = terms::T_empty_::id(),
-            std::string const& path = ""
+            std::string const& path = "",
+            const Node_id vers = terms::T_empty_::id()
    ) {
       if( iri == terms::T_empty_::id() ) BOOST_THROW_EXCEPTION(
                Err()
