@@ -24,32 +24,32 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 
    //empty ontology IRI
    BOOST_CHECK_THROW(
-            dm.insert(t::T_empty_::id(), Node_id(42), path1),
+            dm.insert(t::T_empty_::id(), path1, Node_id(42)),
             Map_doc::Err
    );
 
-   dm.insert(Node_id(42), t::T_empty_::id(), path1);
+   dm.insert(Node_id(42), path1, t::T_empty_::id());
 
    //same path, different IRI
    BOOST_CHECK_THROW(
-            dm.insert(Node_id(12), t::T_empty_::id(), path1),
+            dm.insert(Node_id(12), path1, t::T_empty_::id()),
             Map_doc::Err
    );
 
    //empty path
-   std::pair<Doc_id, bool> p1 = dm.insert(Node_id(13), Node_id());
+   std::pair<Doc_id, bool> p1 = dm.insert(Node_id(13));
    BOOST_CHECK(p1.second);
-   std::pair<Doc_id, bool> p2 = dm.insert(Node_id(13), Node_id());
+   std::pair<Doc_id, bool> p2 = dm.insert(Node_id(13));
    BOOST_CHECK(! p2.second);
    BOOST_CHECK_EQUAL(p1.first, p2.first);
 
-   std::pair<Doc_id, bool> p3 = dm.insert(Node_id(12), Node_id());
+   std::pair<Doc_id, bool> p3 = dm.insert(Node_id(12));
    BOOST_CHECK(p3.second);
    BOOST_CHECK_NE(p1.first, p3.first);
 
    const Node_id nid1(13);
    const Node_id nid2(42);
-   dm.insert(nid1, nid2, path2);
+   dm.insert(nid1, path2, nid2);
    Map_doc::iri_range ir1 = dm.find_iri(nid1);
    BOOST_CHECK(ir1);
    const Doc_id id1 = ir1.front();
