@@ -6,6 +6,7 @@ part of owlcpp project.
 #ifndef CRTPB_NS_STD_HPP_
 #define CRTPB_NS_STD_HPP_
 #include <string>
+#include "boost/assert.hpp"
 
 #include "owlcpp/rdf/detail/map_traits.hpp"
 #include "owlcpp/ns_id.hpp"
@@ -45,7 +46,8 @@ public:
    }
 
    bool valid(const Ns_id nsid) const {
-      return smap().have(nsid) != ns().have(nsid);
+      BOOST_ASSERT(! (smap().have(nsid) && ns().have(nsid)) );
+      return smap().have(nsid) || ns().have(nsid);
    }
 
    /**
@@ -62,8 +64,8 @@ public:
     @return pointer to namespace IRI ID or NULL if iri is unknown
    */
    Ns_id const* find_ns(std::string const& iri) const {
-      Ns_id const*const id = smap().find_iri(iri);
-      return id ? id : ns().find_iri(iri);
+      if( Ns_id const*const id = smap().find_iri(iri) ) return id;
+      return ns().find_iri(iri);
    }
 
    /**
@@ -71,13 +73,13 @@ public:
     @return pointer to namespace IRI ID or NULL if prefix is unknown
    */
    Ns_id const* find_prefix(std::string const& pref) const {
-      Ns_id const*const id = smap().find_prefix(pref);
-      return id ? id : ns().find_prefix(pref);
+      if( Ns_id const*const id = smap().find_prefix(pref) ) return id;
+      return ns().find_prefix(pref);
    }
 
    Ns_id insert_ns(std::string const& iri) {
-      Ns_id const*const iid = find_ns(iri);
-      return iid ? *iid : ns().insert(iri);
+      if( Ns_id const*const iid = find_ns(iri) ) return *iid;
+      return ns().insert(iri);
    }
 
    /**

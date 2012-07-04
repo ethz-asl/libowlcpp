@@ -85,6 +85,20 @@ public:
       return i == m_.end() ? 0 : &i->second;
    }
 
+   Node_id const* find_iri(const Ns_id ns, std::string const& val) const {
+      return find(Node_iri(ns, val));
+   }
+
+   Node_id const* find_literal(
+            std::string const& val, const Node_id dt, std::string const& lang
+   ) const {
+      return find(Node_literal(val, dt, lang));
+   }
+
+   Node_id const* find_blank(const unsigned n, const Doc_id doc) const {
+      return find(Node_blank(n, doc));
+   }
+
    Node_id insert_iri(const Ns_id ns, std::string const& val) {
       //todo: do not new if node already stored
       std::auto_ptr<Node> np(new Node_iri(ns,val));

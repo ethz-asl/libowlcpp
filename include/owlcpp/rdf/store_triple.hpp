@@ -24,11 +24,13 @@ namespace owlcpp{
 class Store_triple :
 public Crtpb_ns_node_iri<Store_triple>,
 public Crtpb_node_std<Store_triple>,
+public Crtpb_doc<Store_triple>,
 public Crtpb_ns_std<Store_triple>
 {
 //   friend class Crtpb_ns_node_iri<Store_triple>; //public access is enough
    friend class Crtpb_ns_std<Store_triple>;
    friend class Crtpb_node_std<Store_triple>;
+   friend class Crtpb_doc<Store_triple>;
 
    typedef typename Map_traits<Store_triple>::map_ns_t map_ns_t;
    typedef typename Map_traits<Store_triple>::map_node_t map_node_t;
@@ -38,6 +40,9 @@ public Crtpb_ns_std<Store_triple>
 
 public:
    struct Err : public Rdf_err {};
+
+   typedef map_doc_t::iri_range doc_iri_range;
+   typedef map_doc_t::version_range doc_version_range;
 
    Store_triple()
    : snode_(Map_node_std::get(Nodes_owl())),
@@ -63,11 +68,16 @@ public:
    //bring in overloaded methods
    using Crtpb_node_std<Store_triple>::operator[];
    using Crtpb_ns_std<Store_triple>::operator[];
+   using Crtpb_doc<Store_triple>::operator[];
    using Crtpb_node_std<Store_triple>::at;
    using Crtpb_ns_std<Store_triple>::at;
+   using Crtpb_doc<Store_triple>::at;
 
    using Crtpb_ns_node_iri<Store_triple>::insert_node_iri;
    using Crtpb_node_std<Store_triple>::insert_node_iri;
+
+   using Crtpb_ns_std<Store_triple>::valid;
+   using Crtpb_node_std<Store_triple>::valid;
 
 private:
    map_node_std_t const& snode_;

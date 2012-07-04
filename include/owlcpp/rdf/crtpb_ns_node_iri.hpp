@@ -40,6 +40,17 @@ template<class Super> struct Crtpb_ns_node_iri {
       }
    }
 
+   Node_id const* find_node_iri(std::string const& iri) const {
+      const std::size_t n = iri.find('#');
+      Ns_id const*const ns_id =
+               std::string::npos == n ?
+                        static_cast<Super&>(*this).find_ns(iri) :
+                        static_cast<Super&>(*this).find_ns(iri.substr(0,n));
+      if( ! ns_id ) return 0;
+      const std::string name = std::string::npos == n ? "" : iri.substr(n+1);
+      return static_cast<Super&>(*this).find_node_iri( *ns_id, name );
+   }
+
 };
 
 

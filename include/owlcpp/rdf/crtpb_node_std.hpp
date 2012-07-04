@@ -44,6 +44,11 @@ template<class Super> class Crtpb_node_std {
 
 public:
 
+   bool valid(const Node_id nid) const {
+      BOOST_ASSERT( ! (smap().have(nid) && nodes().have(nid)) );
+      return smap().have(nid) || nodes().have(nid);
+   }
+
    node_type const& operator[](const Node_id id) const {
       return id < smap().node_id_next() ? smap()[id] : nodes()[id];
    }
@@ -84,6 +89,13 @@ public:
       }
       return nodes().insert_iri(nsid, name);
    }
+
+   Node_id const* find_node_iri(const Ns_id nsid, std::string const& name) {
+      BOOST_ASSERT( static_cast<Super const&>(*this).valid(nsid) && "invalid namespace ID" );
+      if( Node_id const*const nid = smap().find(nsid, name) ) return nid;
+      return nodes().find_ir(nsid, name);
+   }
+
 };
 
 }//namespace owlcpp

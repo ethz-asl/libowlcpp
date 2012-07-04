@@ -115,7 +115,10 @@ public:
    const_iterator end() const {return m_.end();}
 
    Doc_meta const& operator[](const Doc_id id) const {
-      return m_.get<id_tag>().find(id)->dm_;
+      id_index_t const& index = m_.get<id_tag>();
+      const id_index_t::const_iterator iter = index.find(id);
+      BOOST_ASSERT( iter != index.end() );
+      return iter->dm_;
    }
 
    Doc_meta const& at(const Doc_id id) const {
@@ -150,8 +153,8 @@ public:
    }
 
    /**@brief Add document info: location, ontologyIRI, and versionIRI.
-    @param path document location
     @param iri ontologyIRI
+    @param path document location
     @param vers versionIRI
     @return document ID and whether new document info was actually added
     @throw Err if an entry with the same non-empty @a path and different @a iri or @a version

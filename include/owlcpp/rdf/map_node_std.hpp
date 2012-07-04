@@ -98,6 +98,7 @@ public:
    std::string prefix(const Ns_id nsid) const {return ns_.prefix(nsid);}
 
    Node_id node_id_next() const {return node_id_next_;}
+   bool have(const Node_id nid) const {return node_.have(nid);}
    Node_iri const& operator[](const Node_id nid) const {return node_[nid];}
    Node_iri const& at(const Node_id nid) const {return node_.at(nid);}
    Node_id const* find(Node_iri const& node) const {return node_.find(node);}

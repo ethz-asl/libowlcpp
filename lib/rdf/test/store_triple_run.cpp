@@ -20,8 +20,12 @@ const std::string ns1 = "http://example.xyz/example1";
 const std::string ns1p = "ex1";
 const std::string ns2 = "http://example.xyz/example2";
 const std::string ns2p = "ex2";
-const std::string ni1 = "http://example.xyz/example1#node1";
-const std::string ni2 = "http://example.xyz/example1#node2";
+const std::string ni1 = ns1 + "#node1";
+const std::string ni2 = ns1 + "#node2";
+const std::string ni3 = ns2 + "#node3";
+const std::string ni4 = ns2 + "#node4";
+const std::string path1 = "path1";
+const std::string path2 = "path2";
 
 /** Test namespaces
 *******************************************************************************/
@@ -93,29 +97,48 @@ BOOST_AUTO_TEST_CASE( case03 ) {
 }
 
 /** Empty IRI node maps to T_empty_::id() ID
-BOOST_AUTO_TEST_CASE( case04 ) {
-   Store_triple ts(Node_map_std::get(Nodes_none()));
-   Node_id const* nid = ts.find_iri_node("");
-   BOOST_REQUIRE(nid);
-   BOOST_CHECK_EQUAL(*nid, t::T_empty_::id());
-}
 *******************************************************************************/
+BOOST_AUTO_TEST_CASE( case04 ) {
+   Store_triple ts(( Nodes_none() ));
+   const Node_id nid = ts.insert_node_iri("");
+   BOOST_CHECK_EQUAL(nid, t::T_empty_::id());
+}
 
 /**
+*******************************************************************************/
 BOOST_AUTO_TEST_CASE( case05 ) {
    Store_triple ts;
-   BOOST_CHECK_EQUAL(ts.documents().size(), 0U);
-   const Doc_id did = ts.insert_doc("path", ni1, ni2).first;
-   BOOST_REQUIRE_EQUAL( ts.documents().size(), 1u );
-   BOOST_CHECK_EQUAL( *ts.documents().begin(), did );
-   BOOST_CHECK_EQUAL( ts.path(did), "path" );
-   const Node_id nid1 = ts.ontology_iri_id(did);
+   BOOST_CHECK_EQUAL(ts.docs().size(), 0U);
+   const Node_id nid1 = ts.insert_node_iri(ni1);
+   const Node_id nid2 = ts.insert_node_iri(ni2);
+   const Doc_id did1 = ts.insert_doc(nid1, path1, nid2).first;
+   BOOST_REQUIRE_EQUAL( ts.docs().size(), 1u );
+   BOOST_CHECK_EQUAL( *ts.docs().begin(), did1 );
+
+   BOOST_CHECK_EQUAL( ts.at(did1).path(), path1 );
+   const Node_id nid1a = ts[did1].ontology_iri();
+   BOOST_CHECK_EQUAL( nid1, nid1a );
+
+   const Doc_id did2 = ts.insert_doc(ni3, path2, ni4).first;
+   BOOST_CHECK_EQUAL( ts.docs().size(), 2u );
+   const Node_id nid3 = ts[did2].ontology_iri();
+   BOOST_CHECK_EQUAL( ts[nid3].value_str(), "node3" ); //same value
+   BOOST_CHECK_EQUAL( ts[ts[nid3].ns_id()], ns2 ); //same namespace IRI
+   const Node_id nid4 = ts[did2].version_iri();
+   BOOST_CHECK_EQUAL( ts[nid4].value_str(), "node4" );
+   BOOST_CHECK_EQUAL( ts[ts[nid4].ns_id()], ns2 );
+
+   Store_triple::doc_iri_range r1 = ts.find_doc_iri(nid3);
+   BOOST_REQUIRE_EQUAL(boost::distance(r1), 1);
+   BOOST_CHECK_EQUAL()
+
+/*
    Node const& node1 = ts.at(nid1);
    BOOST_CHECK_EQUAL( node1.value_str(), "n1" );
    BOOST_REQUIRE( ts.find_doc_iri(ni1) );
    BOOST_REQUIRE( ts.find_doc_iri(ni2) );
+*/
 }
-*******************************************************************************/
 
 /**
 BOOST_AUTO_TEST_CASE( case06 ) {
