@@ -130,9 +130,9 @@ BOOST_AUTO_TEST_CASE( case05 ) {
 
    Store_triple::doc_iri_range r1 = ts.find_doc_iri(nid3);
    BOOST_REQUIRE_EQUAL(boost::distance(r1), 1);
+/*
    BOOST_CHECK_EQUAL()
 
-/*
    Node const& node1 = ts.at(nid1);
    BOOST_CHECK_EQUAL( node1.value_str(), "n1" );
    BOOST_REQUIRE( ts.find_doc_iri(ni1) );
