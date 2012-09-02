@@ -10,8 +10,9 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{ namespace detail{
 
-void translate(owlcpp::base_exception const& e) {
-   BOOST_FAIL(boost::diagnostic_information(e));
+void translate(boost::exception const& e) {
+   std::cerr << boost::diagnostic_information(e) << std::endl;
+   throw boost::enable_current_exception(e);
 }
 }//namespace detail
 
@@ -20,7 +21,7 @@ void translate(owlcpp::base_exception const& e) {
 struct Exception_fixture {
    Exception_fixture() {
       ::boost::unit_test::unit_test_monitor.
-      register_exception_translator<owlcpp::base_exception>(&detail::translate);
+      register_exception_translator<boost::exception>(&detail::translate);
    }
 };
 
