@@ -41,11 +41,21 @@ if $(os) = LINUX {
 
    LIBXML2_H ?= /usr/include/libxml2 ;
    
-   if $(LIBXML2_DLL) { 
-      lib libxml2 : : <file>$(LIBXML2_DLL) <link>shared : : <include>$(LIBXML2_H) ; 
-   } else { 
-      lib libxml2 : : <name>xml2 <link>shared : : <include>$(LIBXML2_H) ; 
+   local libxml2_id = <name>xml2 ;
+   if $(LIBXML2_DLL) {
+      libxml2_id = <file>$(LIBXML2_DLL) ;
    }
+   
+   lib libxml2 
+      : 
+      : 
+         $(libxml2_id)
+#         <link>shared 
+      : 
+      : <include>$(LIBXML2_H) <library>zlib 
+   ;
+
+   lib zlib : : <name>z ;
    
 } else if $(os) = NT {
 
@@ -70,19 +80,23 @@ if $(os) = LINUX {
       " ;
    }
 
-   LIBXML2_LIB ?= $(LIBXML2)/lib/libxml2.lib ;
+   LIBXML2_LIB ?= 
+#      $(LIBXML2)/lib/libxml2.lib 
+      $(LIBXML2)/lib/libxml2_a.lib 
+   ;
+   
    LIBXML2_DLL ?= 
       $(LIBXML2)/lib/libxml2.lib 
       $(LIBXML2)/bin/libxml2.dll 
    ;
    LIBXML2_H ?= $(LIBXML2)/include ;
    
-   ICONV_LIB ?= $(ICONV)/lib/iconv.lib ;
-   ICONV_DLL ?= $(ICONV)/bin/iconv.dll ;
+   ICONV_LIB ?= $(ICONV)/lib/iconv_a.lib ;
+   ICONV_DLL ?= $(ICONV)/bin/iconv.dll $(ICONV)/lib/iconv.lib ;
    ICONV_H ?= $(ICONV)/include ;
    
    ZLIB_LIB ?= $(ZLIB)/lib/zlib.lib ;
-   ZLIB_DLL ?= $(ZLIB)/bin/zlib1.dll ;
+   ZLIB_DLL ?= $(ZLIB)/bin/zlib1.dll $(ZLIB)/lib/zdll.lib ;
 #   ZLIB_H ?= $(ZLIB)/include ;
 
    lib libxml2
@@ -92,8 +106,9 @@ if $(os) = LINUX {
          <file>$(LIBXML2_LIB)
          <file>$(ICONV_LIB)
          <file>$(ZLIB_LIB)
+         <file>"C:/Program Files/Microsoft SDKs/Windows/v6.0A/Lib/wsock32.lib"
       : 
-      : <include>$(LIBXML2_H) <include>$(ICONV_H)
+      : <include>$(LIBXML2_H) <include>$(ICONV_H) <define>LIBXML_STATIC
    ;
    
    lib libxml2

@@ -90,8 +90,8 @@ public:
    std::string version_iri(const Doc_id did) const {
       return static_cast<T const*>(this)->string(version_iri_id(did));
    }
-protected:
    Doc_map& documents() {return docs_;}
+protected:
 
 private:
    doc_map_t docs_;
