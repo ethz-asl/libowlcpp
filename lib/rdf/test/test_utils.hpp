@@ -21,7 +21,7 @@ template<class Tm, class Seq> void insert_triple(Tm& tm, Seq const& s) {
 }
 
 template<class Tm, class Seq> void insert_seq(Tm& tm, Seq const& s) {
-   for(int i = 0; i != boost::size(s); ++i) insert_triple(tm, s[i]);
+   for(std::size_t i = 0; i != boost::size(s); ++i) insert_triple(tm, s[i]);
 }
 
 template<class ChT, class Tr> inline std::basic_ostream<ChT,Tr>& operator<<(
