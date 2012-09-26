@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(nms0.node_id_next()(), terms::T_empty_::index + 1);
 
    BOOST_CHECK_EQUAL(nms1.ns_id_next()(), terms::N_owl::index + 1 );
-   BOOST_CHECK_EQUAL(nms1.node_id_next()(), terms::T_xsd_positiveInteger::index + 1);
+   BOOST_CHECK_EQUAL(nms1.node_id_next()(), terms::T_xsd_unsignedShort::index + 1);
 }
 
 /**

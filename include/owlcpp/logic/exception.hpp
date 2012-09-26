@@ -6,11 +6,15 @@ part of owlcpp project.
 #ifndef REASONER_EXCEPTION_HPP_
 #define REASONER_EXCEPTION_HPP_
 #include "owlcpp/exception.hpp"
+#include "owlcpp/node_id.hpp"
+
 namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-struct Logic_err : public base_exception {};
+struct Logic_err : public base_exception {
+   typedef boost::error_info<struct errinfo_node_id_, Node_id> node_id_t;
+};
 
 }//namespace owlcpp
 #endif /* REASONER_EXCEPTION_HPP_ */
