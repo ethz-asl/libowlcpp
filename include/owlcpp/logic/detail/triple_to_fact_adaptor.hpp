@@ -10,7 +10,6 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/logic/exception.hpp"
-#include "owlcpp/logic/detail/node_declaration.hpp"
 #include "owlcpp/logic/config.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 

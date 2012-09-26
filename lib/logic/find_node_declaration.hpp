@@ -1,17 +1,15 @@
-/** @file "/owlcpp/include/owlcpp/logic/detail/node_declaration.hpp" 
+/** @file "/owlcpp/lib/logic/find_node_declaration.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef NODE_DECLARATION_HPP_
-#define NODE_DECLARATION_HPP_
+#ifndef LOGIC_FIND_NODE_DECLARATION_HPP_
+#define LOGIC_FIND_NODE_DECLARATION_HPP_
 #include "boost/foreach.hpp"
 #include "boost/range.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
-#include "owlcpp/logic/detail/node_type.hpp"
-#include "owlcpp/logic/detail/node_property.hpp"
 #include "owlcpp/logic/exception.hpp"
 
 namespace owlcpp{ namespace logic{
@@ -21,58 +19,48 @@ namespace owlcpp{ namespace logic{
 template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts) {
    using namespace owlcpp::terms;
    Decl d;
-   if( ts.is_standard(nid) ) {
-      switch (nid()) {
-      case T_owl_Thing::index:
-      case T_owl_Nothing::index:
-         d.set(T_owl_Class::id());
-         break;
+   try {
+      if( ts.is_standard(nid) ) d.set(nid);
 
-      case T_owl_topObjectProperty::index:
-      case T_owl_bottomObjectProperty::index:
-         d.set(T_owl_ObjectProperty::id());
-         break;
-
-      case T_rdfs_Literal::index:
-         d.set(T_owl_DataRange::id());
-         break;
-
-      case T_owl_topDataProperty::index:
-      case T_owl_bottomDataProperty::index:
-         d.set(T_owl_DatatypeProperty::id());
-         break;
-
-      default: BOOST_THROW_EXCEPTION(
-               Logic_err()
-               << Logic_err::msg_t("unknown node type")
-               << Logic_err::str1_t(to_string_short(nid, ts))
-      );
+      BOOST_FOREACH( Triple const& t, ts.triples().find(nid, any(), any(), any()) ) {
+         if( t.predicate() == T_rdf_type::id() ) {
+            d.set(t.object());
+            continue;
+         }
+         d.set(t.predicate());
       }
-   }
 
-   BOOST_FOREACH( Triple const& t, ts.triples().find(nid, any(), any(), any()) ) {
-      if( t.predicate() == T_rdf_type::id() ) {
-         d.set(t.object());
-         continue;
-      }
-      d.set(t.predicate());
-   }
-
-   BOOST_FOREACH(
-            Triple const& t,
-            ts.triples().find(any(), T_owl_annotatedSource::id(), nid, any())) {
-
-      const Node_id x = t.subject();
-      if( ts[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
-               Logic_err()
-               << Logic_err::msg_t("non-blank subject in _:x owl:annotatedSource y")
-               << Logic_err::str1_t(to_string_short(nid, ts))
-      );
       BOOST_FOREACH(
                Triple const& t,
-               ts.triples().find(x, T_owl_annotatedTarget::id(), any(), any())) {
-         d.set(t.object());
+               ts.triples().find(any(), T_owl_annotatedSource::id(), nid, any())) {
+
+         const Node_id x = t.subject();
+         if( ts[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
+                  Logic_err()
+                  << Logic_err::msg_t("non-blank subject in _:x owl:annotatedSource y")
+                  << Logic_err::node_id_t(x)
+         );
+         BOOST_FOREACH(
+                  Triple const& t,
+                  ts.triples().find(x, T_owl_annotatedTarget::id(), any(), any())) {
+            d.set(t.object());
+         }
       }
+   } catch( Logic_err const& e) {
+      if(
+               Node_id const* nidp =
+                        boost::get_error_info<Logic_err::node_id_t>(e)
+      ) {
+         e << Logic_err::str1_t(to_string_short(*nidp, ts));
+      }
+
+      Logic_err e2;
+      e2
+      << Logic_err::msg_t("node declaration error")
+      << Logic_err::str1_t(to_string_short(nid, ts))
+      << Logic_err::nested_t(boost::copy_exception(e))
+      ;
+      BOOST_THROW_EXCEPTION(e2);
    }
    return d;
 }
@@ -151,4 +139,4 @@ check_same_declaration(const Node_id n1, const Node_id n2, Triple_store const& t
 
 }//namespace logic
 }//namespace owlcpp
-#endif /* NODE_DECLARATION_HPP_ */
+#endif /* LOGIC_FIND_NODE_DECLARATION_HPP_ */

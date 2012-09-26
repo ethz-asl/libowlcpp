@@ -12,7 +12,7 @@ part of owlcpp project.
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/logic/exception.hpp"
-#include "expression_args.hpp"
+#include "logic/expression_args.hpp"
 
 class ReasoningKernel;
 class TDLConceptExpression;
