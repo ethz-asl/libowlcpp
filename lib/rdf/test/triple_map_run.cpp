@@ -22,7 +22,7 @@ template<class Seq> void insert(Triple_map& tm, Seq const& s) {
 template<class Seq> Triple_map sample_tm(Seq const& s) {
    Triple_map tm;
    typedef typename boost::range_iterator<const Seq>::type iter_t;
-   for(int i = 0; i != boost::size(s); ++i) insert(tm, s[i]);
+   for(std::size_t i = 0; i != boost::size(s); ++i) insert(tm, s[i]);
    return tm;
 }
 

@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE( case00 ) {
    Node const& node1 = ts.at(nid1);
    BOOST_CHECK( node1.value_str().empty() );
    BOOST_CHECK_EQUAL( ts.ontology_iri(did), iri1 );
-   BOOST_CHECK_EQUAL( ts.triples().size(), 15u );
+   BOOST_CHECK_EQUAL( ts.triples().size(), 16u );
    BOOST_CHECK( ts.find_doc_iri(iri1) );
 }
 
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    Triple_store ts;
    boost::filesystem::ifstream ifs(path1);
    load(ifs, ts);
-   BOOST_CHECK_EQUAL( ts.triples().size(), 15u );
+   BOOST_CHECK_EQUAL( ts.triples().size(), 16u );
 }
 
 /**
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    cat.add(sample_file_path());
    load_file(path2, ts, cat);
 
-   BOOST_CHECK_EQUAL( ts.triples().size(), 18u );
+   BOOST_CHECK_EQUAL( ts.triples().size(), 19u );
 }
 
 /**
