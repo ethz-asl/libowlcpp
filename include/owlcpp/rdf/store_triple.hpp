@@ -21,22 +21,22 @@ namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-class Store_triple :
-public Crtpb_ns_node_iri<Store_triple>,
-public Crtpb_node_std<Store_triple>,
-public Crtpb_doc<Store_triple>,
-public Crtpb_ns_std<Store_triple>
+class Triple_store :
+public Crtpb_ns_node_iri<Triple_store>,
+public Crtpb_node_std<Triple_store>,
+public Crtpb_doc<Triple_store>,
+public Crtpb_ns_std<Triple_store>
 {
-//   friend class Crtpb_ns_node_iri<Store_triple>; //public access is enough
-   friend class Crtpb_ns_std<Store_triple>;
-   friend class Crtpb_node_std<Store_triple>;
-   friend class Crtpb_doc<Store_triple>;
+//   friend class Crtpb_ns_node_iri<Triple_store>; //public access is enough
+   friend class Crtpb_ns_std<Triple_store>;
+   friend class Crtpb_node_std<Triple_store>;
+   friend class Crtpb_doc<Triple_store>;
 
-   typedef typename Map_traits<Store_triple>::map_ns_t map_ns_t;
-   typedef typename Map_traits<Store_triple>::map_node_t map_node_t;
-   typedef typename Map_traits<Store_triple>::map_node_std_t map_node_std_t;
-   typedef typename Map_traits<Store_triple>::map_doc_t map_doc_t;
-   typedef typename Map_traits<Store_triple>::map_triple_t map_triple_t;
+   typedef typename Map_traits<Triple_store>::map_ns_t map_ns_t;
+   typedef typename Map_traits<Triple_store>::map_node_t map_node_t;
+   typedef typename Map_traits<Triple_store>::map_node_std_t map_node_std_t;
+   typedef typename Map_traits<Triple_store>::map_doc_t map_doc_t;
+   typedef typename Map_traits<Triple_store>::map_triple_t map_triple_t;
 
 public:
    struct Err : public Rdf_err {};
@@ -44,7 +44,7 @@ public:
    typedef map_doc_t::iri_range doc_iri_range;
    typedef map_doc_t::version_range doc_version_range;
 
-   Store_triple()
+   Triple_store()
    : snode_(Map_node_std::get(Nodes_owl())),
      ns_(snode_.ns_id_next()),
      node_(snode_.node_id_next()),
@@ -52,7 +52,7 @@ public:
      triple_()
    {}
 
-   template<class Nodes> explicit Store_triple(Nodes const& nodes)
+   template<class Nodes> explicit Triple_store(Nodes const& nodes)
    : snode_(Map_node_std::get(nodes)),
      ns_(snode_.ns_id_next()),
      node_(snode_.node_id_next()),
@@ -66,18 +66,18 @@ public:
    map_triple_t const& triples() const {return triple_;}
 
    //bring in overloaded methods
-   using Crtpb_node_std<Store_triple>::operator[];
-   using Crtpb_ns_std<Store_triple>::operator[];
-   using Crtpb_doc<Store_triple>::operator[];
-   using Crtpb_node_std<Store_triple>::at;
-   using Crtpb_ns_std<Store_triple>::at;
-   using Crtpb_doc<Store_triple>::at;
+   using Crtpb_node_std<Triple_store>::operator[];
+   using Crtpb_ns_std<Triple_store>::operator[];
+   using Crtpb_doc<Triple_store>::operator[];
+   using Crtpb_node_std<Triple_store>::at;
+   using Crtpb_ns_std<Triple_store>::at;
+   using Crtpb_doc<Triple_store>::at;
 
-   using Crtpb_ns_node_iri<Store_triple>::insert_node_iri;
-   using Crtpb_node_std<Store_triple>::insert_node_iri;
+   using Crtpb_ns_node_iri<Triple_store>::insert_node_iri;
+   using Crtpb_node_std<Triple_store>::insert_node_iri;
 
-   using Crtpb_ns_std<Store_triple>::valid;
-   using Crtpb_node_std<Store_triple>::valid;
+   using Crtpb_ns_std<Triple_store>::valid;
+   using Crtpb_node_std<Triple_store>::valid;
 
 private:
    map_node_std_t const& snode_;

@@ -2,12 +2,12 @@
 
 r'''
 >>> import owlcpp.rdf
->>> ts = owlcpp.rdf.Triple_store()
+>>> ts = owlcpp.rdf.Store_triple()
 >>> ts.n_triples()
 0
 '''
 
-def run(args = None):
+def run(args=None):
     if args is not None:
         import sys
         sys.argv = args

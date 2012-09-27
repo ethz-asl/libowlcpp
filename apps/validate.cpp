@@ -10,7 +10,7 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "boost/filesystem.hpp"
 #include "factpp/Kernel.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/store_triple.hpp"
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"

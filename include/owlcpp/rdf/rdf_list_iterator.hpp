@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef RDF_LIST_ITERATOR_HPP_
 #define RDF_LIST_ITERATOR_HPP_
 #include "boost/iterator/iterator_facade.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/store_triple.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 

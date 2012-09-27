@@ -15,14 +15,14 @@ class Map_node_base;
 *******************************************************************************/
 template<class M> struct Map_traits;
 
-class Store_triple;
+class Triple_store;
 class Map_node_std;
 class Map_doc;
 template<bool,bool,bool,bool> class Map_triple;
 
 /**@brief
 *******************************************************************************/
-template<> struct Map_traits<Store_triple> {
+template<> struct Map_traits<Triple_store> {
    typedef detail::Map_ns_base map_ns_t;
    typedef detail::Map_node_base map_node_t;
    typedef Map_node_std map_node_std_t;

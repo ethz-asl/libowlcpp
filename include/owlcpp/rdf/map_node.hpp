@@ -8,8 +8,8 @@ part of owlcpp project.
 #include "owlcpp/rdf/detail/map_node_base.hpp"
 #include "owlcpp/rdf/map_node_std.hpp"
 #include "owlcpp/rdf/nodes_std.hpp"
-#include "owlcpp/rdf/map_node_iri_crtpb.hpp"
-#include "owlcpp/rdf/map_ns_std_crtpb.hpp"
+//#include "owlcpp/rdf/map_node_iri_crtpb.hpp"
+//#include "owlcpp/rdf/map_ns_std_crtpb.hpp"
 
 namespace owlcpp{
 

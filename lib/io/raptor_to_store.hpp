@@ -16,7 +16,7 @@ part of owlcpp project.
 #include "triple_store_temp.hpp"
 #include "owlcpp/io/raptor_wrapper.hpp"
 #include "owlcpp/io/check_ontology_id.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/store_triple.hpp"
 #include "owlcpp/rdf/copy_triples.hpp"
 
 namespace owlcpp{ namespace detail{

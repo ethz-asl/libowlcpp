@@ -7,7 +7,7 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "test/sample_triples.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/store_triple.hpp"
 #include "owlcpp/rdf/copy_triples.hpp"
 #include "owlcpp/rdf/query_node.hpp"
 #include "test_utils.hpp"

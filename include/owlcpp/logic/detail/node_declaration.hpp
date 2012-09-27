@@ -7,7 +7,7 @@ part of owlcpp project.
 #define NODE_DECLARATION_HPP_
 #include "boost/foreach.hpp"
 #include "boost/range.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/store_triple.hpp"
 #include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/logic/detail/node_type.hpp"
