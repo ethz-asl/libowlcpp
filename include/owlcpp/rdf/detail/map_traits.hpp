@@ -6,27 +6,27 @@ part of owlcpp project.
 #ifndef MAP_TRAITS_HPP_
 #define MAP_TRAITS_HPP_
 
-namespace owlcpp{ namespace detail{
-class Map_ns_base;
-class Map_node_base;
-}//namespace detail
+namespace owlcpp{
+class Map_ns;
+class Map_node;
+class Triple_store;
+class Map_std;
+class Map_doc;
+template<bool,bool,bool,bool> class Map_triple;
 
+namespace detail{
 /**@brief 
 *******************************************************************************/
 template<class M> struct Map_traits;
 
-class Triple_store;
-class Map_node_std;
-class Map_doc;
-template<bool,bool,bool,bool> class Map_triple;
 
 /**@brief
 *******************************************************************************/
 template<> struct Map_traits<Triple_store> {
-   typedef detail::Map_ns_base map_ns_t;
-   typedef detail::Map_node_base map_node_t;
-   typedef Map_node_std map_node_std_t;
-   typedef Map_doc map_doc_t;
+   typedef Map_ns map_ns_type;
+   typedef Map_node map_node_type;
+   typedef Map_std map_std_type;
+   typedef Map_doc map_doc_type;
 
    typedef Map_triple<
 #ifdef OWLCPP_RDF_INDEX_SUBJECT
@@ -52,9 +52,10 @@ template<> struct Map_traits<Triple_store> {
 #else
             0
 #endif
-   > map_triple_t;
+   > map_triple_type;
 
 };
 
+}//namespace detail
 }//namespace owlcpp
 #endif /* MAP_TRAITS_HPP_ */
