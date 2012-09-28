@@ -12,7 +12,7 @@ part of owlcpp project.
 #include "boost/type_traits/is_floating_point.hpp"
 
 #include "owlcpp/rdf/config.hpp"
-#include "owlcpp/rdf/store_triple.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/terms/term_methods.hpp"
 

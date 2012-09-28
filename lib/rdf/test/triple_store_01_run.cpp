@@ -1,13 +1,13 @@
-/** @file "/owlcpp/lib/rdf/test/triple_store_run.cpp" 
+/** @file "/owlcpp/lib/rdf/test/triple_store_01_run.cpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#define BOOST_TEST_MODULE triple_store_run
+#define BOOST_TEST_MODULE triple_store_01_run
 #include <iostream>
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
-#include "owlcpp/rdf/store_triple.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/rdf/query_node.hpp"
 #include "test/sample_triples.hpp"

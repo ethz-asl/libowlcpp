@@ -5,7 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef SAMPLE_TRIPLES_HPP_
 #define SAMPLE_TRIPLES_HPP_
-#include "owlcpp/rdf/store_triple.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 
 namespace owlcpp{ namespace test{
 

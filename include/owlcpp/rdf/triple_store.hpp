@@ -9,33 +9,28 @@ part of owlcpp project.
 #include "owlcpp/rdf/detail/map_node_base.hpp"
 #include "owlcpp/rdf/detail/map_traits.hpp"
 #include "owlcpp/rdf/map_doc.hpp"
-#include "owlcpp/rdf/map_std.hpp"
+#include "owlcpp/rdf/map_std_crtpb.hpp"
+#include "owlcpp/rdf/nodes_std.hpp"
 #include "owlcpp/rdf/map_triple.hpp"
-#include "owlcpp/rdf/crtpb_ns_std.hpp"
-#include "owlcpp/rdf/crtpb_node_std.hpp"
 #include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
 #include "owlcpp/rdf/crtpb_doc.hpp"
-#include "owlcpp/rdf/nodes_std.hpp"
 
 namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
 class Triple_store :
+public Map_std_crtpb<Triple_store>,
 public Crtpb_ns_node_iri<Triple_store>,
-public Crtpb_node_std<Triple_store>,
-public Crtpb_doc<Triple_store>,
-public Crtpb_ns_std<Triple_store>
+public Crtpb_doc<Triple_store>
 {
-//   friend class Crtpb_ns_node_iri<Triple_store>; //public access is enough
-   friend class Crtpb_ns_std<Triple_store>;
-   friend class Crtpb_node_std<Triple_store>;
+   typedef Map_std_crtpb<Triple_store> map_std_type;
+   friend class Map_std_crtpb<Triple_store>;
    friend class Crtpb_doc<Triple_store>;
 
    typedef detail::Map_traits<Triple_store> traits;
    typedef typename traits::map_ns_type map_ns_type;
    typedef typename traits::map_node_type map_node_type;
-   typedef typename traits::map_std_type map_std_type;
    typedef typename traits::map_doc_type map_doc_type;
    typedef typename traits::map_triple_type map_triple_type;
 
@@ -46,17 +41,17 @@ public:
    typedef map_doc_type::version_range doc_version_range;
 
    Triple_store()
-   : map_std_(Map_node_std::get(Nodes_owl())),
-     map_ns_(map_std_.ns_id_next()),
-     map_node_(map_std_.node_id_next()),
+   : map_std_type(Map_std::get(Nodes_owl())),
+     map_ns_(map_std_type::ns_id_next()),
+     map_node_(map_std_type::node_id_next()),
      map_doc_(),
      map_triple_()
    {}
 
    template<class Nodes> explicit Triple_store(Nodes const& nodes)
-   : map_std_(Map_node_std::get(nodes)),
-     map_ns_(map_std_.ns_id_next()),
-     map_node_(map_std_.node_id_next()),
+   : map_std_type(Map_std::get(nodes)),
+     map_ns_(map_std_type::ns_id_next()),
+     map_node_(map_std_type::node_id_next()),
      map_doc_(),
      map_triple_()
    {}
@@ -81,7 +76,6 @@ public:
    using Crtpb_node_std<Triple_store>::valid;
 
 private:
-   map_std_type const& map_std_;
    map_ns_type map_ns_;
    map_node_type map_node_;
    map_doc_type map_doc_;
