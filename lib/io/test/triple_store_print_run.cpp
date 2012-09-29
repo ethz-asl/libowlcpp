@@ -10,7 +10,7 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "boost/lexical_cast.hpp"
 #include "test/sample_data.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/store_triple.hpp"
 #include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"

@@ -18,14 +18,14 @@ a map of IRI nodes.
 Base for CRTP (Curiously Recurring Template Pattern).
 *******************************************************************************/
 template<class Super> class Crtpb_doc {
-   typedef typename Map_traits<Super>::map_node_t map_node_t;
-   typedef typename Map_traits<Super>::map_doc_t map_doc_t;
+   typedef typename detail::Map_traits<Super>::map_node_type map_node_t;
+   typedef typename detail::Map_traits<Super>::map_doc_type map_doc_type;
 
-   map_doc_t const& doc() const {
+   map_doc_type const& doc() const {
       return static_cast<Super const&>(*this).docs();
    }
 
-   map_doc_t& doc() {
+   map_doc_type& doc() {
       return static_cast<Super&>(*this).doc_;
    }
 
@@ -80,17 +80,17 @@ public:
       return insert_doc(iri_id, path, vers_id);
    }
 
-   typename map_doc_t::iri_range find_doc_iri(const Node_id iri) const {
+   typename map_doc_type::iri_range find_doc_iri(const Node_id iri) const {
       BOOST_ASSERT( static_cast<Super const&>(*this).valid(iri) && "invalid ontology IRI ID" );
       return doc().find_iri(iri);
    }
 
-   typename map_doc_t::iri_range find_doc_iri(std::string const& iri) const {
+   typename map_doc_type::iri_range find_doc_iri(std::string const& iri) const {
       if(
                Node_id const*const nid =
                         static_cast<Super const&>(*this).find_node_iri(iri)
       ) return doc().find_iri(nid);
-      return typename map_doc_t::iri_range();
+      return typename map_doc_type::iri_range();
    }
 };
 

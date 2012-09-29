@@ -8,18 +8,18 @@ part of owlcpp project.
 #include "owlcpp/rdf/config.hpp"
 
 namespace owlcpp{
-class Map_node_std;
+class Map_std;
 
 /**@brief
 *******************************************************************************/
 struct Nodes_none {
-   void operator()(Map_node_std&) const {}
+   void operator()(Map_std&) const {}
 };
 
 /**@brief
 *******************************************************************************/
 struct OWLCPP_RDF_DECL Nodes_owl {
-   void operator()(Map_node_std&) const;
+   void operator()(Map_std&) const;
 };
 
 }//namespace owlcpp

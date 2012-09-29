@@ -8,7 +8,7 @@ part of owlcpp project.
 #include <vector>
 #include <memory>
 
-#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/store_triple.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/logic/exception.hpp"

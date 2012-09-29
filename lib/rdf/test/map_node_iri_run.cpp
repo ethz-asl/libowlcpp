@@ -1,12 +1,12 @@
-/** @file "/owlcpp/lib/rdf/test/map_node_iri_base_run.cpp" 
+/** @file "/owlcpp/lib/rdf/test/map_node_iri_run.cpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#define BOOST_TEST_MODULE map_node_iri_base_run
+#define BOOST_TEST_MODULE map_node_iri_run
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
-#include "owlcpp/rdf/detail/map_node_iri_base.hpp"
+#include "owlcpp/rdf/map_node_iri.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
@@ -14,13 +14,12 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-namespace d = owlcpp::detail;
 namespace t = owlcpp::terms;
 
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   d::Map_node_iri_base mnb(( Node_id() ));
+   Map_node_iri mnb(( Node_id() ));
    BOOST_CHECK( ! mnb.have(Node_id(42)) );
 
    const Node_id id1 = mnb.insert(Ns_id(42), "blah");
@@ -68,7 +67,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
    const Node_id id0(( 13 ));
-   d::Map_node_iri_base mnb(id0);
+   Map_node_iri mnb(id0);
 
    const Node_id id_1(( 10 ));
    BOOST_CHECK_THROW( mnb.insert(id_1, Ns_id(43), "blah"), Rdf_err );

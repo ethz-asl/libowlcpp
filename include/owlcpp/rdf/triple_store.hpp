@@ -1,104 +1,89 @@
-/** @file "/owlcpp/include/owlcpp/rdf/triple_store.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/triple_store.hpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
 #ifndef TRIPLE_STORE_HPP_
 #define TRIPLE_STORE_HPP_
-
-#include "owlcpp/rdf/store_node_iri_crtpb.hpp"
-#include "owlcpp/rdf/store_node_blank_crtpb.hpp"
-#include "owlcpp/rdf/store_node_literal_crtpb.hpp"
-#include "owlcpp/rdf/store_doc_crtpb.hpp"
-#include "owlcpp/rdf/triple_map.hpp"
-#include "owlcpp/rdf/node_map.hpp"
-#include "owlcpp/rdf/iri_map.hpp"
-#include "owlcpp/rdf/copy_triples.hpp"
-#include "owlcpp/rdf/exception.hpp"
+#include "owlcpp/rdf/map_ns.hpp"
+#include "owlcpp/rdf/map_node.hpp"
+#include "owlcpp/rdf/detail/map_traits.hpp"
+#include "owlcpp/rdf/map_doc.hpp"
+#include "owlcpp/rdf/map_std_crtpb.hpp"
+#include "owlcpp/rdf/nodes_std.hpp"
+#include "owlcpp/rdf/map_triple.hpp"
+#include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
+#include "owlcpp/rdf/crtpb_doc.hpp"
 
 namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
 class Triple_store :
-public Store_node_iri_crtpb<Triple_store>,
-public Store_node_blank_crtpb<Triple_store>,
-public Store_node_literal_crtpb<Triple_store>,
-public Store_doc_crtpb<Triple_store>
+public Map_std_crtpb<Triple_store>,
+public Crtpb_ns_node_iri<Triple_store>,
+public Crtpb_doc<Triple_store>
 {
+   typedef Map_std_crtpb<Triple_store> map_std_type;
+   friend class Map_std_crtpb<Triple_store>;
+   friend class Crtpb_doc<Triple_store>;
+
+   typedef detail::Map_traits<Triple_store> traits;
 
 public:
-   struct Err : public Rdf_err {};
-   typedef Iri_map iri_map;
-   typedef Node_map node_map;
-   typedef Triple_map<
-#ifdef OWLCPP_RDF_INDEX_SUBJECT
-            OWLCPP_RDF_INDEX_SUBJECT
-#else
-            1
-#endif
-            ,
-#ifdef OWLCPP_RDF_INDEX_PREDICATE
-            OWLCPP_RDF_INDEX_PREDICATE
-#else
-            0
-#endif
-            ,
-#ifdef OWLCPP_RDF_INDEX_OBJECT
-            OWLCPP_RDF_INDEX_OBJECT
-#else
-            0
-#endif
-            ,
-#ifdef OWLCPP_RDF_INDEX_DOCUMENT
-            OWLCPP_RDF_INDEX_DOCUMENT
-#else
-            0
-#endif
-   > triple_map;
+   typedef typename traits::map_ns_type map_ns_type;
+   typedef typename traits::map_node_type map_node_type;
+   typedef typename traits::map_doc_type map_doc_type;
+   typedef typename traits::map_triple_type map_triple_type;
 
-   Triple_store(Node_map_std const& snodes = Node_map_std::get(Nodes_owl()))
-   : iri_(snodes), node_(snodes), triple_()
+   struct Err : public Rdf_err {};
+
+   typedef map_doc_type::iri_range doc_iri_range;
+   typedef map_doc_type::version_range doc_version_range;
+
+   Triple_store()
+   : map_std_type(Nodes_owl()),
+     map_ns_(map_std_type::ns_id_next()),
+     map_node_(map_std_type::node_id_next()),
+     map_doc_(),
+     map_triple_()
    {}
 
-   Iri_map& iris() {return iri_;}
-   Iri_map const& iris() const {return iri_;}
-   node_map& nodes() {return node_;}
-   node_map const& nodes() const {return node_;}
-   triple_map const& triples() const {return triple_;}
+   template<class Nodes_std> explicit Triple_store(Nodes_std const& nodes_std)
+   : map_std_type(nodes_std),
+     map_ns_(map_std_type::ns_id_next()),
+     map_node_(map_std_type::node_id_next()),
+     map_doc_(),
+     map_triple_()
+   {}
 
-   void insert_triple(
-            const Node_id subj,
-            const Node_id pred,
-            const Node_id obj,
-            const Doc_id doc
-   ) {
-      triple_.insert(subj, pred, obj, doc);
-   }
+   map_ns_type const& map_ns() const {return map_ns_;}
+   map_node_type const& nodes() const {return map_node_;}
+   map_doc_type const& docs() const {return map_doc_;}
+   map_triple_type const& triples() const {return map_triple_;}
 
-   void clear() {
-      triple_.clear();
-      documents().clear();
-      node_.clear();
-      iri_.clear();
-   }
+   //bring in overloaded methods
+/*
+   using Crtpb_node_std<Triple_store>::operator[];
+   using Crtpb_ns_std<Triple_store>::operator[];
+   using Crtpb_doc<Triple_store>::operator[];
+   using Crtpb_node_std<Triple_store>::at;
+   using Crtpb_ns_std<Triple_store>::at;
+   using Crtpb_doc<Triple_store>::at;
 
-   template<class Subj, class Pred, class Obj, class Doc> struct result
-   : public triple_map::result<Subj,Pred,Obj,Doc> {};
+   using Crtpb_ns_node_iri<Triple_store>::insert_node_iri;
+   using Crtpb_node_std<Triple_store>::insert_node_iri;
 
-   template<bool Subj, bool Pred, bool Obj, bool Doc> struct result_b
-   : public triple_map::result_b<Subj,Pred,Obj,Doc> {};
-
-   template<class Subj, class Pred, class Obj, class Doc>
-   typename result<Subj,Pred,Obj,Doc>::type
-   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
-      return triple_.find(subj, pred, obj, doc);
-   }
+   using Crtpb_ns_std<Triple_store>::valid;
+   using Crtpb_node_std<Triple_store>::valid;
+*/
 
 private:
-   Iri_map iri_;
-   node_map node_;
-   triple_map triple_;
+   map_ns_type map_ns_;
+   map_node_type map_node_;
+   map_doc_type map_doc_;
+   map_triple_type map_triple_;
+
 };
 
 }//namespace owlcpp

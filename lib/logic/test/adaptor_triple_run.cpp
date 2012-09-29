@@ -10,7 +10,7 @@ part of owlcpp project.
 #include "test/exception_fixture.hpp"
 #include "owlcpp/logic/detail/triple_to_fact_adaptor.hpp"
 #include "test/sample_data.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/store_triple.hpp"
 #include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/io/input.hpp"
 #include "factpp/Kernel.hpp"

@@ -13,7 +13,7 @@ part of owlcpp project.
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/io/raptor_wrapper.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/store_triple.hpp"
 #include "raptor_to_store.hpp"
 
 namespace owlcpp{ namespace test{

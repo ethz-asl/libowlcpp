@@ -1,12 +1,12 @@
-/** @file "/owlcpp/lib/rdf/test/store_triple_run.cpp" 
+/** @file "/owlcpp/lib/rdf/test/triple_store_02_run.cpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#define BOOST_TEST_MODULE store_triple_run
+#define BOOST_TEST_MODULE triple_store_02_run
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
-#include "owlcpp/rdf/store_triple.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 //#include "owlcpp/rdf/query_node.hpp"
 
@@ -30,7 +30,7 @@ const std::string path2 = "path2";
 /** Test namespaces
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Store_triple ts(( Nodes_none() ));
+   Triple_store ts(( Nodes_none() ));
    BOOST_CHECK_EQUAL(ts.namespaces().size(), 0U);
    const Ns_id nsid1 = ts.insert_ns(ns1);
    BOOST_CHECK_EQUAL(ts.namespaces().size(), 1U);
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 /** Test nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   Store_triple ts(( Nodes_none() ));
+   Triple_store ts(( Nodes_none() ));
 
    const Node_id nid1 = ts.insert_node_iri(ni1);
    const Node_id nid1a = ts.insert_node_iri(ni1);
@@ -62,12 +62,13 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    const Node_id nid3 = ts.insert_node_iri(t::N_owl::iri() + "#Ontology");
    BOOST_CHECK_NE(nid3, t::T_owl_Ontology::id()); //non-standard ID
    ts.insert_node_iri(t::N_owl::iri() + "#blah"); //inserting new node into standard namespace
+   BOOST_CHECK_EQUAL(ts.map_node().size(), 1U);
 }
 
 /** OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case03 ) {
-   Store_triple ts; //default constructor makes OWL-aware store
+   Triple_store ts; //default constructor makes OWL-aware store
 
    BOOST_CHECK_EQUAL(
             ts.at(t::T_owl_Ontology::id()).value_str(),
@@ -86,20 +87,20 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    //misspelled term
    BOOST_CHECK_THROW(
             ts.insert_node_iri(t::N_owl::iri() + "#Ontolog"),
-            Store_triple::Err
+            Triple_store::Err
    );
 
    //empty fragment
    BOOST_CHECK_THROW(
             ts.insert_node_iri(t::N_owl::iri()),
-            Store_triple::Err
+            Triple_store::Err
    );
 }
 
 /** Empty IRI node maps to T_empty_::id() ID
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case04 ) {
-   Store_triple ts(( Nodes_none() ));
+   Triple_store ts(( Nodes_none() ));
    const Node_id nid = ts.insert_node_iri("");
    BOOST_CHECK_EQUAL(nid, t::T_empty_::id());
 }
@@ -107,7 +108,7 @@ BOOST_AUTO_TEST_CASE( case04 ) {
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case05 ) {
-   Store_triple ts;
+   Triple_store ts;
    BOOST_CHECK_EQUAL(ts.docs().size(), 0U);
    const Node_id nid1 = ts.insert_node_iri(ni1);
    const Node_id nid2 = ts.insert_node_iri(ni2);
@@ -128,7 +129,7 @@ BOOST_AUTO_TEST_CASE( case05 ) {
    BOOST_CHECK_EQUAL( ts[nid4].value_str(), "node4" );
    BOOST_CHECK_EQUAL( ts[ts[nid4].ns_id()], ns2 );
 
-   Store_triple::doc_iri_range r1 = ts.find_doc_iri(nid3);
+   Triple_store::doc_iri_range r1 = ts.find_doc_iri(nid3);
    BOOST_REQUIRE_EQUAL(boost::distance(r1), 1);
 /*
    BOOST_CHECK_EQUAL()
@@ -142,7 +143,7 @@ BOOST_AUTO_TEST_CASE( case05 ) {
 
 /**
 BOOST_AUTO_TEST_CASE( case06 ) {
-   Store_triple ts = sample_triples_01();
+   Triple_store ts = sample_triples_01();
    BOOST_FOREACH(Triple const& t, ts.triples()) {
       std::cout
       << '\"'

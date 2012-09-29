@@ -6,7 +6,7 @@ part of owlcpp project.
 #define BOOST_TEST_MODULE map_node_base_run
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
-#include "owlcpp/rdf/detail/map_node_base.hpp"
+#include "owlcpp/rdf/map_node.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
@@ -14,13 +14,12 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-namespace d = owlcpp::detail;
 namespace t = owlcpp::terms;
 
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   d::Map_node_base mnb(( Node_id() ));
+   Map_node mnb(( Node_id() ));
    BOOST_CHECK( ! mnb.have(Node_id(42)) );
 
    const Node_id id1 = mnb.insert_iri(Ns_id(42), "blah");

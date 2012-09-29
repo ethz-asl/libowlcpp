@@ -9,7 +9,7 @@ part of owlcpp project.
 #include "boost/python/operators.hpp"
 #include "boost/utility.hpp"
 
-#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/store_triple.hpp"
 
 BOOST_PYTHON_MODULE(rdf) {
    namespace owl = owlcpp;

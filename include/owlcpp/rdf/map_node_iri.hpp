@@ -1,10 +1,10 @@
-/** @file "/owlcpp/include/owlcpp/rdf/detail/map_node_iri_base.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/map_node_iri.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef MAP_NODE_IRI_BASE_HPP_
-#define MAP_NODE_IRI_BASE_HPP_
+#ifndef MAP_NODE_IRI_HPP_
+#define MAP_NODE_IRI_HPP_
 #include <string>
 #include <vector>
 #include "boost/assert.hpp"
@@ -15,14 +15,14 @@ part of owlcpp project.
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
 
-namespace owlcpp{ namespace detail{
+namespace owlcpp{
 
 /**@brief Store RDF IRI nodes
 @details
 Validity of node IDs is assumed and asserted in debug mode.
 Calling node map methods with invalid node IDs results in undefined behavior.
 *******************************************************************************/
-class Map_node_iri_base {
+class Map_node_iri {
 public:
    typedef Node_id id_type;
    typedef Node_iri node_type;
@@ -45,7 +45,7 @@ public:
 
    struct Err : public Rdf_err {};
 
-   Map_node_iri_base(const Node_id id0) : n0_(id0()) {}
+   Map_node_iri(const Node_id id0) : n0_(id0()) {}
 
    std::size_t size() const { return m_.size(); }
    const_iterator begin() const {return m_.begin();}
@@ -183,6 +183,5 @@ private:
 
 };
 
-}//namespace detail
 }//namespace owlcpp
-#endif /* MAP_NODE_IRI_BASE_HPP_ */
+#endif /* MAP_NODE_IRI_HPP_ */

@@ -17,7 +17,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 /** Iterate over members of RDF list
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   Triple_store ts(Node_std::get(Nodes_owl()));
    sample_triples_01(ts);
    sample_triples_02(ts);
    Triple_store::doc_map_t::path_range r = ts.documents().find_path(path1);
