@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef TRIPLE_STORE_HPP_
 #define TRIPLE_STORE_HPP_
 #include "owlcpp/rdf/map_ns.hpp"
-#include "owlcpp/rdf/detail/map_node_base.hpp"
+#include "owlcpp/rdf/map_node.hpp"
 #include "owlcpp/rdf/detail/map_traits.hpp"
 #include "owlcpp/rdf/map_doc.hpp"
 #include "owlcpp/rdf/map_std_crtpb.hpp"
@@ -29,39 +29,41 @@ public Crtpb_doc<Triple_store>
    friend class Crtpb_doc<Triple_store>;
 
    typedef detail::Map_traits<Triple_store> traits;
+
+public:
    typedef typename traits::map_ns_type map_ns_type;
    typedef typename traits::map_node_type map_node_type;
    typedef typename traits::map_doc_type map_doc_type;
    typedef typename traits::map_triple_type map_triple_type;
 
-public:
    struct Err : public Rdf_err {};
 
    typedef map_doc_type::iri_range doc_iri_range;
    typedef map_doc_type::version_range doc_version_range;
 
    Triple_store()
-   : map_std_type(Map_std::get(Nodes_owl())),
+   : map_std_type(Nodes_owl()),
      map_ns_(map_std_type::ns_id_next()),
      map_node_(map_std_type::node_id_next()),
      map_doc_(),
      map_triple_()
    {}
 
-   template<class Nodes> explicit Triple_store(Nodes const& nodes)
-   : map_std_type(Map_std::get(nodes)),
+   template<class Nodes_std> explicit Triple_store(Nodes_std const& nodes_std)
+   : map_std_type(nodes_std),
      map_ns_(map_std_type::ns_id_next()),
      map_node_(map_std_type::node_id_next()),
      map_doc_(),
      map_triple_()
    {}
 
-   map_ns_type const& namespaces() const {return map_ns_;}
+   map_ns_type const& map_ns() const {return map_ns_;}
    map_node_type const& nodes() const {return map_node_;}
    map_doc_type const& docs() const {return map_doc_;}
    map_triple_type const& triples() const {return map_triple_;}
 
    //bring in overloaded methods
+/*
    using Crtpb_node_std<Triple_store>::operator[];
    using Crtpb_ns_std<Triple_store>::operator[];
    using Crtpb_doc<Triple_store>::operator[];
@@ -74,6 +76,7 @@ public:
 
    using Crtpb_ns_std<Triple_store>::valid;
    using Crtpb_node_std<Triple_store>::valid;
+*/
 
 private:
    map_ns_type map_ns_;

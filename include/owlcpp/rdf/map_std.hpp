@@ -9,6 +9,7 @@ part of owlcpp project.
 #include "boost/range.hpp"
 #include "boost/range/algorithm/max_element.hpp"
 #include "boost/utility.hpp"
+#include "boost/concept/assert.hpp"
 
 #include "owlcpp/rdf/map_ns.hpp"
 #include "owlcpp/rdf/map_node_iri.hpp"
@@ -54,7 +55,8 @@ public:
 
    */
    template<class T> static Map_std const& get(T const& t) {
-      static const Map_std map(( t ));
+      BOOST_CONCEPT_ASSERT((boost::UnaryFunction<T, void, Map_std&>));
+      static const Map_std map(t);
       return map;
    }
 
