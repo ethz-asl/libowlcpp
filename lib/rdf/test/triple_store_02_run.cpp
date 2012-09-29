@@ -62,6 +62,7 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    const Node_id nid3 = ts.insert_node_iri(t::N_owl::iri() + "#Ontology");
    BOOST_CHECK_NE(nid3, t::T_owl_Ontology::id()); //non-standard ID
    ts.insert_node_iri(t::N_owl::iri() + "#blah"); //inserting new node into standard namespace
+   BOOST_CHECK_EQUAL(ts.map_node().size(), 1U);
 }
 
 /** OWL-aware triple store

@@ -1,12 +1,12 @@
-/** @file "/owlcpp/lib/rdf/test/map_node_std_run.cpp" 
+/** @file "/owlcpp/lib/rdf/test/map_std_run.cpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#define BOOST_TEST_MODULE map_node_std_run
+#define BOOST_TEST_MODULE map_std_run
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
-#include "owlcpp/rdf/map_node_std.hpp"
+#include "owlcpp/rdf/map_std.hpp"
 #include "owlcpp/rdf/nodes_std.hpp"
 #include "owlcpp/rdf/node_iri.hpp"
 #include "owlcpp/terms/iri_tags.hpp"
@@ -26,8 +26,8 @@ namespace t = owlcpp::terms;
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Map_node_std const& nms0 = Map_node_std::get(Nodes_none());
-   Map_node_std const& nms1 = Map_node_std::get(Nodes_owl());
+   Map_std const& nms0 = Map_std::get(Nodes_none());
+   Map_std const& nms1 = Map_std::get(Nodes_owl());
 
    BOOST_CHECK_EQUAL(nms0.ns_id_next()(), t::N_blank::index + 1 );
    BOOST_CHECK_EQUAL(nms0.node_id_next()(), t::T_empty_::index + 1);
@@ -39,9 +39,9 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 /** Standard node classes are singletons
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   Map_node_std const& nms0 = Map_node_std::get(Nodes_none());
-   Map_node_std const& nms1 = Map_node_std::get(Nodes_owl());
-   Map_node_std const& nms2 = Map_node_std::get(Nodes_owl());
+   Map_std const& nms0 = Map_std::get(Nodes_none());
+   Map_std const& nms1 = Map_std::get(Nodes_owl());
+   Map_std const& nms2 = Map_std::get(Nodes_owl());
    BOOST_CHECK_NE(&nms0, &nms1); //different instances
    BOOST_CHECK_EQUAL(&nms1, &nms2); //same instance
 }
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE( case02 ) {
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case03 ) {
-   Map_node_std const& nms = Map_node_std::get(Nodes_owl());
+   Map_std const& nms = Map_std::get(Nodes_owl());
 
    BOOST_CHECK_THROW(nms.at(Node_id(3000)), Rdf_err);
    BOOST_CHECK_THROW(nms.at(Node_id(3)), Rdf_err);

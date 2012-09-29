@@ -21,7 +21,7 @@ part of owlcpp project.
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
 
-namespace owlcpp{ namespace detail{
+namespace owlcpp{
 
 /**@brief Store polymorphic RDF nodes
 @details
@@ -212,6 +212,5 @@ private:
 
 };
 
-}//namespace detail
 }//namespace owlcpp
 #endif /* MAP_NODE_BASE_HPP_ */
