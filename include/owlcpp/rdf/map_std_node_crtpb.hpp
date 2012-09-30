@@ -1,56 +1,48 @@
-/** @file "/owlcpp/include/owlcpp/rdf/crtpb_node_std.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/map_std_node_crtpb.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef CRTPB_NODE_STD_HPP_
-#define CRTPB_NODE_STD_HPP_
+#ifndef MAP_STD_NODE_CRTPB_HPP_
+#define MAP_STD_NODE_CRTPB_HPP_
 #include "boost/assert.hpp"
+#include "boost/concept/assert.hpp"
 
 #include "owlcpp/rdf/detail/map_traits.hpp"
-#include "owlcpp/rdf/node.hpp"
-#include "owlcpp/rdf/node_iri.hpp"
-#include "owlcpp/node_id.hpp"
-#include "owlcpp/ns_id.hpp"
-#include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp{
 
-/**Enable interaction between a mutable map of user nodes and constant map
-of standard IRI nodes.
+/**Enable interaction between a mutable maps of namespaces and nodes and
+immutable map of standard IRI nodes.
 Base for CRTP (Curiously Recurring Template Pattern).
 *******************************************************************************/
-template<class Super> class Crtpb_node_std {
-   typedef typename Map_traits<Super>::map_ns_t map_ns_t;
-   typedef typename Map_traits<Super>::map_node_std_t map_node_std_t;
-   typedef typename Map_traits<Super>::map_node_t map_node_t;
-   typedef typename map_node_t::node_type node_type;
+template<class Super> class Map_std_node_crtpb {
+   typedef detail::Map_traits<Super> traits;
+   typedef typename traits::map_std_type map_std_type;
+   typedef typename traits::map_node_type map_node_type;
+   typedef typename traits::node_type node_type;
 
-   map_ns_t const& ns() const {
-      return static_cast<Super const&>(*this).namespaces();
+   map_std_type const& _map_std() const {
+      return static_cast<Super const&>(*this).map_std_;
    }
 
-   map_node_std_t const& smap() const {
-      return static_cast<Super const&>(*this).snode_;
+   map_node_type const& _map_node() const {
+      return static_cast<Super const&>(*this).map_node_;
    }
 
-   map_node_t const& nodes() const {
-      return static_cast<Super const&>(*this).nodes();
-   }
-
-   map_node_t& nodes() {
-      return static_cast<Super&>(*this).node_;
+   map_node_type& _map_node() {
+      return static_cast<Super&>(*this).map_node_;
    }
 
 public:
 
    bool valid(const Node_id nid) const {
-      BOOST_ASSERT( ! (smap().have(nid) && nodes().have(nid)) );
-      return smap().have(nid) || nodes().have(nid);
+      BOOST_ASSERT( ! (_map_std().have(nid) && _map_node().have(nid)) );
+      return _map_std().have(nid) || _map_node().have(nid);
    }
 
    node_type const& operator[](const Node_id id) const {
-      return id < smap().node_id_next() ? smap()[id] : nodes()[id];
+      return id < _map_std().node_id_next() ? _map_std()[id] : _map_node()[id];
    }
 
    /**
@@ -59,7 +51,7 @@ public:
     @throw Rdf_err if @b id does not exist
    */
    node_type const& at(const Node_id id) const {
-      return id < smap().node_id_next() ? smap().at(id) : nodes().at(id);
+      return id < _map_std().node_id_next() ? _map_std().at(id) : _map_node().at(id);
    }
 
    /**@brief Insert IRI node
@@ -77,26 +69,26 @@ public:
                   << typename Err::str1_t(name)
          );
       }
-      if( Node_id const*const nid = smap().find(nsid, name) ) return *nid;
+      if( Node_id const*const nid = _map_std().find(nsid, name) ) return *nid;
 
-      if( smap().is_standard(nsid) ) {
+      if( _map_std().is_standard(nsid) ) {
          BOOST_THROW_EXCEPTION(
                   Err()
                   << typename Err::msg_t("new term cannot be inserted into standard namespace")
                   << typename Err::str1_t( name )
-                  << typename Err::str2_t( smap().at(nsid) )
+                  << typename Err::str2_t( _map_std().at(nsid) )
          );
       }
-      return nodes().insert_iri(nsid, name);
+      return _map_node().insert_iri(nsid, name);
    }
 
    Node_id const* find_node_iri(const Ns_id nsid, std::string const& name) {
       BOOST_ASSERT( static_cast<Super const&>(*this).valid(nsid) && "invalid namespace ID" );
-      if( Node_id const*const nid = smap().find(nsid, name) ) return nid;
-      return nodes().find_ir(nsid, name);
+      if( Node_id const*const nid = _map_std().find(nsid, name) ) return nid;
+      return _map_node().find_ir(nsid, name);
    }
 
 };
 
 }//namespace owlcpp
-#endif /* CRTPB_NODE_STD_HPP_ */
+#endif /* MAP_STD_NODE_CRTPB_HPP_ */

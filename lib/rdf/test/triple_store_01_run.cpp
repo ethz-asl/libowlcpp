@@ -16,11 +16,69 @@ namespace owlcpp{ namespace test{
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 namespace t = owlcpp::terms;
 
+const std::string ns1 = "http://example.xyz/example1";
+const std::string ns1p = "ex1";
+const std::string ns2 = "http://example.xyz/example2";
+const std::string ns2p = "ex2";
+const std::string ni1 = ns1 + "#node1";
+const std::string ni2 = ns1 + "#node2";
+const std::string ni3 = ns2 + "#node3";
+const std::string ni4 = ns2 + "#node4";
+const std::string path1 = "path1";
+const std::string path2 = "path2";
+
+/**Test namespaces, OWL-unaware triple store
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_namespaces ) {
+   Triple_store ts(( Nodes_none() ));
+   BOOST_CHECK(   ts.valid(t::N_empty::id()));
+   BOOST_CHECK( ! ts.valid(t::N_owl::id()));
+}
+
 /**Test namespaces, OWL-aware triple store
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_namespaces_owl ) {
    Triple_store ts;
    BOOST_CHECK(ts.valid(t::N_empty::id()));
+   BOOST_CHECK(ts.valid(t::N_owl::id()));
+
+   BOOST_CHECK_EQUAL(ts.map_ns().size(), 0U);
+   const Ns_id nsid1 = ts.insert_ns(ns1);
+   BOOST_CHECK_EQUAL(ts.map_ns().size(), 1U);
+   BOOST_CHECK_EQUAL(ts[nsid1], ns1);
+   ts.insert_prefix(nsid1, ns1p);
+   BOOST_CHECK_EQUAL(ts.prefix(nsid1), ns1p);
+   BOOST_REQUIRE( ts.find_prefix(ns1p) );
+   BOOST_CHECK_EQUAL(*ts.find_prefix(ns1p), nsid1);
+   BOOST_CHECK( ! ts.find_prefix(ns2p) );
+}
+
+/** Test nodes, OWL-unaware triple store
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_nodes ) {
+   Triple_store ts(( Nodes_none() ));
+
+   BOOST_CHECK_EQUAL(ts.map_node().size(), 0U);
+   const Node_id nid1 = ts.insert_node_iri(ni1);
+   BOOST_CHECK_EQUAL(ts.map_node().size(), 1U);
+   const Node_id nid1a = ts.insert_node_iri(ni1);
+   BOOST_CHECK_EQUAL(ts.map_node().size(), 1U);
+   BOOST_CHECK_EQUAL(nid1, nid1a);
+//   BOOST_CHECK_EQUAL(to_string(nid1, ts), ni1);
+   const Node_id nid2 = ts.insert_node_iri(ni2);
+   BOOST_CHECK_NE(nid1, nid2);
+   BOOST_CHECK_EQUAL(ts.map_node().size(), 2U);
+
+   //same namespace IRIs
+   BOOST_CHECK_EQUAL(ts[nid1].ns_id(), ts[nid2].ns_id());
+   //different fragment names
+   BOOST_CHECK_NE(ts[nid1].value_str(), ts[nid2].value_str());
+
+   const Node_id nid3 = ts.insert_node_iri(t::N_owl::iri() + "#Ontology");
+   BOOST_CHECK_EQUAL(ts.map_node().size(), 3U);
+   BOOST_CHECK_NE(nid3, t::T_owl_Ontology::id()); //non-standard ID
+   ts.insert_node_iri(t::N_owl::iri() + "#blah"); //inserting new node into standard namespace
+   BOOST_CHECK_EQUAL(ts.map_node().size(), 4U);
 }
 
 }//namespace test

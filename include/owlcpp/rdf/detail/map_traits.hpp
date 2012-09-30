@@ -12,6 +12,7 @@ class Map_node;
 class Triple_store;
 class Map_std;
 class Map_doc;
+class Node;
 template<bool,bool,bool,bool> class Map_triple;
 
 namespace detail{
@@ -27,6 +28,7 @@ template<> struct Map_traits<Triple_store> {
    typedef Map_node map_node_type;
    typedef Map_std map_std_type;
    typedef Map_doc map_doc_type;
+   typedef Node node_type;
 
    typedef Map_triple<
 #ifdef OWLCPP_RDF_INDEX_SUBJECT
