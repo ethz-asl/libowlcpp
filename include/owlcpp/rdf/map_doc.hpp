@@ -114,20 +114,26 @@ public:
    const_iterator begin() const {return m_.begin();}
    const_iterator end() const {return m_.end();}
 
-   Doc_meta const& operator[](const Doc_id id) const {
+   bool valid(const Doc_id did) const {
       id_index_t const& index = m_.get<id_tag>();
-      const id_index_t::const_iterator iter = index.find(id);
+      const id_index_t::const_iterator iter = index.find(did);
+      return iter != index.end();
+   }
+
+   Doc_meta const& operator[](const Doc_id did) const {
+      id_index_t const& index = m_.get<id_tag>();
+      const id_index_t::const_iterator iter = index.find(did);
       BOOST_ASSERT( iter != index.end() );
       return iter->dm_;
    }
 
-   Doc_meta const& at(const Doc_id id) const {
+   Doc_meta const& at(const Doc_id did) const {
       id_index_t const& index = m_.get<id_tag>();
-      const id_index_t::const_iterator iter = index.find(id);
+      const id_index_t::const_iterator iter = index.find(did);
       if( iter == index.end() ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("invalid document ID")
-               << Err::int1_t(id())
+               << Err::int1_t(did())
       );
       return iter->dm_;
    }
@@ -220,7 +226,8 @@ private:
             BOOST_ASSERT( ! is_empty(dmw.ontology_iri()) );
             if( dmw.ontology_iri() != iri ) BOOST_THROW_EXCEPTION(
                      Err()
-                     << Err::msg_t("document with same versionIRI and different ontologyIRI exists")
+                     << Err::msg_t("document with same versionIRI and "
+                              "different ontologyIRI exists")
                      << Err::int1_t(dmw.id_())
             );
             if( path == dmw.path() ) idp = &dmw.id_;
@@ -236,7 +243,8 @@ private:
             if( dmw.ontology_iri() != iri || dmw.version_iri() != vers )
                BOOST_THROW_EXCEPTION(
                         Err()
-                        << Err::msg_t("different versionIRI or ontologyIRI is recorded for same document")
+                        << Err::msg_t("different versionIRI or ontologyIRI is "
+                                 "recorded for same document")
                         << Err::str1_t(path)
                         << Err::int1_t(dmw.id_())
                );

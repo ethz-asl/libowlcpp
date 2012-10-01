@@ -17,6 +17,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/map_node_literal_crtpb.hpp"
 #include "owlcpp/rdf/map_node_blank_crtpb.hpp"
 #include "owlcpp/rdf/map_triple.hpp"
+#include "owlcpp/rdf/map_triple_crtpb.hpp"
 #include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
 
 namespace owlcpp{
@@ -34,13 +35,15 @@ public Map_std_node_crtpb<Triple_store>,
 public Crtpb_ns_node_iri<Triple_store>,
 public Map_doc_crtpb<Triple_store>,
 public Map_node_literal_crtpb<Triple_store>,
-public Map_node_blank_crtpb<Triple_store>
+public Map_node_blank_crtpb<Triple_store>,
+public Map_triple_crtpb<Triple_store>
 {
    friend class Map_std_ns_crtpb<Triple_store>;
    friend class Map_std_node_crtpb<Triple_store>;
    friend class Map_node_literal_crtpb<Triple_store>;
    friend class Map_node_blank_crtpb<Triple_store>;
    friend class Map_doc_crtpb<Triple_store>;
+   friend class Map_triple_crtpb<Triple_store>;
 
    typedef detail::Map_traits<Triple_store> traits;
    typedef typename traits::map_std_type map_std_type;
@@ -90,6 +93,7 @@ public:
 
    using Map_std_ns_crtpb<Triple_store>::valid;
    using Map_std_node_crtpb<Triple_store>::valid;
+   using Map_doc_crtpb<Triple_store>::valid;
 
 private:
    map_std_type const& map_std_;

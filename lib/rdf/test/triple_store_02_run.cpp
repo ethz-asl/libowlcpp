@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE( test_docs ) {
    BOOST_CHECK_EQUAL( ts[nid4].value_str(), "node4" );
    BOOST_CHECK_EQUAL( ts[ts[nid4].ns_id()], ns2 );
 
-   Triple_store::doc_iri_range r1 = ts.find_doc_iri(nid3);
+   Triple_store::doc_iri_range r1 = ts.map_doc().find_iri(nid3);
    BOOST_REQUIRE_EQUAL(boost::distance(r1), 1);
 
    Node const& node1 = ts.at(nid1);

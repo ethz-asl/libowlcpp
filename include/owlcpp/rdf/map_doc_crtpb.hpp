@@ -34,6 +34,8 @@ public:
    typedef typename map_doc_type::iri_range doc_iri_range;
    typedef typename map_doc_type::version_range doc_version_range;
 
+   bool valid(const Doc_id did) const {return _map_doc().valid(did);}
+
    doc_type const& operator[](const Doc_id did) const {
       return _map_doc()[did];
    }

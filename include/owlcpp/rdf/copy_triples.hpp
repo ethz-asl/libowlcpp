@@ -42,9 +42,9 @@ public:
       const doc_map_t::const_iterator i = dm_.find(did0);
       if( i != dm_.end() ) return i->second;
       const std::pair<Doc_id,bool> p = dest_.insert_doc(
-               src_.path(did0),
-               insert(src_.ontology_iri_id(did0)),
-               insert(src_.version_iri_id(did0))
+               insert(src_[did0].ontology_iri()),
+               src_[did0].path(),
+               insert(src_[did0].version_iri())
       );
       BOOST_ASSERT(p.second);
       dm_.emplace(did0, p.first);
@@ -55,7 +55,7 @@ public:
       const ns_map_t::const_iterator i = nsm_.find(nsid0);
       if( i != nsm_.end() ) return i->second;
       const Ns_id nsid1 = dest_.insert_ns(src_[nsid0]);
-      dest_.insert_prefix(nsid1, src_.iris().prefix(nsid0));
+      dest_.insert_prefix(nsid1, src_.prefix(nsid0));
       nsm_.emplace(nsid0, nsid1);
       return nsid1;
    }
@@ -72,7 +72,7 @@ private:
             std::string const& name
    ) {
 
-      const Node_id nid1 = dest_.insert_blank_node(
+      const Node_id nid1 = dest_.insert_blank(
                insert(src_.nodes().blank_node_doc(nid0)),
                name
       );
@@ -81,7 +81,7 @@ private:
    }
 
    Node_id insert_iri(const Node_id nid0, Node const& node) {
-      const Node_id nid1 = dest_.nodes().insert_iri(
+      const Node_id nid1 = dest_.insert_node_iri(
                insert(node.ns_id()),
                node.value_str()
       );
@@ -95,7 +95,7 @@ private:
             const Node_id nid0,
             std::string const& val
    ) {
-      const Node_id nid1 = dest_.nodes().insert_literal(
+      const Node_id nid1 = dest_.insert_literal(
                val,
                insert_iri( src_.nodes().datatype(nid0) ),
                src_.nodes().language(nid0)
