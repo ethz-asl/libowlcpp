@@ -82,10 +82,10 @@ public:
       return _map_node().insert_iri(nsid, name);
    }
 
-   Node_id const* find_node_iri(const Ns_id nsid, std::string const& name) {
+   Node_id const* find_node_iri(const Ns_id nsid, std::string const& name) const {
       BOOST_ASSERT( static_cast<Super const&>(*this).valid(nsid) && "invalid namespace ID" );
       if( Node_id const*const nid = _map_std().find(nsid, name) ) return nid;
-      return _map_node().find_ir(nsid, name);
+      return _map_node().find_iri(nsid, name);
    }
 
 };

@@ -6,10 +6,9 @@ part of owlcpp project.
 #ifndef MAP_STD_NS_CRTPB_HPP_
 #define MAP_STD_NS_CRTPB_HPP_
 #include "boost/assert.hpp"
-#include "boost/concept/assert.hpp"
 
 #include "owlcpp/rdf/detail/map_traits.hpp"
-#include "owlcpp/rdf/store_node_concept.hpp"
+#include "owlcpp/rdf/store_concepts.hpp"
 
 namespace owlcpp{
 
@@ -27,12 +26,10 @@ template<class Super> class Map_std_ns_crtpb {
    }
 
    map_ns_type const& _map_ns() const {
-      BOOST_CONCEPT_ASSERT((Store_node_concept<Super>));
       return static_cast<Super const&>(*this).map_ns_;
    }
 
    map_ns_type& _map_ns() {
-      BOOST_CONCEPT_ASSERT((Store_node_concept<Super>));
       return static_cast<Super&>(*this).map_ns_;
    }
 

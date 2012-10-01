@@ -9,13 +9,13 @@ part of owlcpp project.
 #include "owlcpp/rdf/map_ns.hpp"
 #include "owlcpp/rdf/map_node.hpp"
 #include "owlcpp/rdf/map_doc.hpp"
+#include "owlcpp/rdf/map_doc_crtpb.hpp"
 #include "owlcpp/rdf/map_std.hpp"
 #include "owlcpp/rdf/map_std_ns_crtpb.hpp"
 #include "owlcpp/rdf/map_std_node_crtpb.hpp"
 #include "owlcpp/rdf/nodes_std.hpp"
 #include "owlcpp/rdf/map_triple.hpp"
 #include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
-#include "owlcpp/rdf/crtpb_doc.hpp"
 
 namespace owlcpp{
 
@@ -30,11 +30,11 @@ class Triple_store :
 public Map_std_ns_crtpb<Triple_store>,
 public Map_std_node_crtpb<Triple_store>,
 public Crtpb_ns_node_iri<Triple_store>,
-public Crtpb_doc<Triple_store>
+public Map_doc_crtpb<Triple_store>
 {
    friend class Map_std_ns_crtpb<Triple_store>;
    friend class Map_std_node_crtpb<Triple_store>;
-   friend class Crtpb_doc<Triple_store>;
+   friend class Map_doc_crtpb<Triple_store>;
 
    typedef detail::Map_traits<Triple_store> traits;
    typedef typename traits::map_std_type map_std_type;
@@ -46,9 +46,6 @@ public:
    typedef typename traits::map_triple_type map_triple_type;
 
    struct Err : public Rdf_err {};
-
-   typedef map_doc_type::iri_range doc_iri_range;
-   typedef map_doc_type::version_range doc_version_range;
 
    Triple_store()
    : map_std_(Map_std::get(Nodes_owl())),
@@ -74,19 +71,19 @@ public:
    //bring in overloaded methods
    using Map_std_ns_crtpb<Triple_store>::operator[];
    using Map_std_node_crtpb<Triple_store>::operator[];
-//   using Crtpb_ns_std<Triple_store>::operator[];
-//   using Crtpb_doc<Triple_store>::operator[];
+   using Map_doc_crtpb<Triple_store>::operator[];
    using Map_std_ns_crtpb<Triple_store>::at;
    using Map_std_node_crtpb<Triple_store>::at;
-//   using Crtpb_ns_std<Triple_store>::at;
-//   using Crtpb_doc<Triple_store>::at;
-//
+   using Map_doc_crtpb<Triple_store>::at;
+
    using Map_std_node_crtpb<Triple_store>::insert_node_iri;
    using Crtpb_ns_node_iri<Triple_store>::insert_node_iri;
 
+   using Map_std_node_crtpb<Triple_store>::find_node_iri;
+   using Crtpb_ns_node_iri<Triple_store>::find_node_iri;
+
    using Map_std_ns_crtpb<Triple_store>::valid;
    using Map_std_node_crtpb<Triple_store>::valid;
-//   using Crtpb_node_std<Triple_store>::valid;
 
 private:
    map_std_type const& map_std_;

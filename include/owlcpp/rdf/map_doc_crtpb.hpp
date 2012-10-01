@@ -1,15 +1,14 @@
-/** @file "/owlcpp/include/owlcpp/rdf/crtpb_doc.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/map_doc_crtpb.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef CRTPB_DOC_HPP_
-#define CRTPB_DOC_HPP_
-#include <string>
+#ifndef MAP_DOC_CRTPB_HPP_
+#define MAP_DOC_CRTPB_HPP_
 #include "boost/assert.hpp"
 
 #include "owlcpp/rdf/detail/map_traits.hpp"
-#include "owlcpp/node_id.hpp"
+#include "owlcpp/rdf/store_concepts.hpp"
 
 namespace owlcpp{
 
@@ -17,26 +16,30 @@ namespace owlcpp{
 a map of IRI nodes.
 Base for CRTP (Curiously Recurring Template Pattern).
 *******************************************************************************/
-template<class Super> class Crtpb_doc {
-   typedef typename detail::Map_traits<Super>::map_node_type map_node_t;
-   typedef typename detail::Map_traits<Super>::map_doc_type map_doc_type;
+template<class Super> class Map_doc_crtpb {
+   typedef detail::Map_traits<Super> traits;
+   typedef typename traits::map_node_type map_node_t;
+   typedef typename traits::map_doc_type map_doc_type;
+   typedef typename traits::doc_type doc_type;
 
-   map_doc_type const& doc() const {
-      return static_cast<Super const&>(*this).docs();
+   map_doc_type const& _map_doc() const {
+      return static_cast<Super const&>(*this).map_doc_;
    }
 
-   map_doc_type& doc() {
-      return static_cast<Super&>(*this).doc_;
+   map_doc_type& _map_doc() {
+      return static_cast<Super&>(*this).map_doc_;
    }
 
 public:
+   typedef typename map_doc_type::iri_range doc_iri_range;
+   typedef typename map_doc_type::version_range doc_version_range;
 
-   Doc_meta const& operator[](const Doc_id did) const {
-      return doc()[did];
+   doc_type const& operator[](const Doc_id did) const {
+      return _map_doc()[did];
    }
 
-   Doc_meta const& at(const Doc_id did) const {
-      return doc().at(did);
+   doc_type const& at(const Doc_id did) const {
+      return _map_doc().at(did);
    }
 
    /**@brief Add document info: location, ontologyIRI, and versionIRI.
@@ -61,13 +64,14 @@ public:
     are allowed.
    */
    std::pair<Doc_id,bool> insert_doc(
-            const Node_id iri,
+            const Node_id iri_id,
             std::string const& path = "",
-            const Node_id vers = terms::T_empty_::id()
+            const Node_id vers_id = terms::T_empty_::id()
    ) {
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(iri) && "invalid ontology IRI ID" );
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(vers) && "invalid version IRI ID" );
-      return doc().insert(iri, path, vers);
+      BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
+      BOOST_ASSERT( static_cast<Super const&>(*this).valid(iri_id) && "invalid ontology IRI ID" );
+      BOOST_ASSERT( static_cast<Super const&>(*this).valid(vers_id) && "invalid version IRI ID" );
+      return _map_doc().insert(iri_id, path, vers_id);
    }
 
    std::pair<Doc_id,bool> insert_doc(
@@ -75,24 +79,27 @@ public:
             std::string const& path = "",
             std::string const& vers = ""
    ) {
+      BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
       const Node_id iri_id = static_cast<Super&>(*this).insert_node_iri(iri);
       const Node_id vers_id = static_cast<Super&>(*this).insert_node_iri(vers);
       return insert_doc(iri_id, path, vers_id);
    }
 
-   typename map_doc_type::iri_range find_doc_iri(const Node_id iri) const {
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(iri) && "invalid ontology IRI ID" );
-      return doc().find_iri(iri);
+   doc_iri_range find_doc_iri(const Node_id nid) const {
+      BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
+      BOOST_ASSERT( static_cast<Super const&>(*this).valid(nid) && "invalid ontology IRI ID" );
+      return _map_doc().find_iri(nid);
    }
 
-   typename map_doc_type::iri_range find_doc_iri(std::string const& iri) const {
+   doc_iri_range find_doc_iri(std::string const& iri) const {
+      BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
       if(
                Node_id const*const nid =
                         static_cast<Super const&>(*this).find_node_iri(iri)
-      ) return doc().find_iri(nid);
-      return typename map_doc_type::iri_range();
+      ) return _map_doc().find_iri(*nid);
+      return doc_iri_range();
    }
 };
 
 }//namespace owlcpp
-#endif /* CRTPB_DOC_HPP_ */
+#endif /* MAP_DOC_CRTPB_HPP_ */

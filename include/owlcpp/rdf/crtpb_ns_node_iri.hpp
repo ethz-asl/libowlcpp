@@ -5,6 +5,8 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef CRTPB_NS_NODE_IRI_HPP_
 #define CRTPB_NS_NODE_IRI_HPP_
+#include "owlcpp/rdf/detail/map_traits.hpp"
+#include "owlcpp/rdf/store_concepts.hpp"
 
 namespace owlcpp{
 
@@ -20,6 +22,8 @@ template<class Super> struct Crtpb_ns_node_iri {
     @return node ID
    */
    Node_id insert_node_iri(std::string const& iri) {
+      BOOST_CONCEPT_ASSERT((Ns_store<Super>));
+      BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
       const std::size_t n = iri.find('#');
       const Ns_id iid =
                std::string::npos == n ?
@@ -41,14 +45,16 @@ template<class Super> struct Crtpb_ns_node_iri {
    }
 
    Node_id const* find_node_iri(std::string const& iri) const {
+      BOOST_CONCEPT_ASSERT((Ns_store<Super>));
+      BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
       const std::size_t n = iri.find('#');
       Ns_id const*const ns_id =
                std::string::npos == n ?
-                        static_cast<Super&>(*this).find_ns(iri) :
-                        static_cast<Super&>(*this).find_ns(iri.substr(0,n));
+                        static_cast<Super const&>(*this).find_ns(iri) :
+                        static_cast<Super const&>(*this).find_ns(iri.substr(0,n));
       if( ! ns_id ) return 0;
       const std::string name = std::string::npos == n ? "" : iri.substr(n+1);
-      return static_cast<Super&>(*this).find_node_iri( *ns_id, name );
+      return static_cast<Super const&>(*this).find_node_iri( *ns_id, name );
    }
 
 };
