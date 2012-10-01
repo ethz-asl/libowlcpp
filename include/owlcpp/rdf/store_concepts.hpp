@@ -76,6 +76,38 @@ private:
 };
 
 /**
+Document info store concept
+*******************************************************************************/
+BOOST_concept(Doc_store, (T)) {
+public:
+   typedef detail::Map_traits<T> traits;
+   typedef typename traits::map_doc_type map_doc_type;
+   typedef typename traits::doc_id_type doc_id_type;
+   typedef typename traits::node_id_type node_id_type;
+
+   BOOST_CONCEPT_USAGE(Doc_store) {
+      const bool b = t_.valid(did_);
+      boost::ignore_unused_variable_warning(b);
+
+      map_doc_type const& map_doc = t_.map_doc();
+      boost::ignore_unused_variable_warning(map_doc);
+
+      std::pair<doc_id_type,bool> p = t_.insert_doc(nid_, str_, nid_);
+      p = t_.insert_doc(nid_, str_);
+      p = t_.insert_doc(nid_);
+      p = t_.insert_doc(str_, str_, str_);
+      p = t_.insert_doc(str_, str_);
+      p = t_.insert_doc(str_);
+   }
+
+private:
+   T t_;
+   std::string str_;
+   node_id_type nid_;
+   doc_id_type did_;
+};
+
+/**
 IRI, blank and literal node store concept
 *******************************************************************************/
 BOOST_concept(Node_store, (T)) : Iri_node_store<T> {

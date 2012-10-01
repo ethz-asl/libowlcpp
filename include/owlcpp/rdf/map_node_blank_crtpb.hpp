@@ -35,10 +35,14 @@ public:
     @return node ID
    */
    Node_id insert_blank(const unsigned n, const Doc_id did) {
+      BOOST_CONCEPT_ASSERT((Doc_store<Super>));
+      BOOST_ASSERT(static_cast<Super const&>(*this).valid(did));
       return _map_node().insert_blank(n, did);
    }
 
    Node_id const* find_blank(const unsigned n, const Doc_id did) const {
+      BOOST_CONCEPT_ASSERT((Doc_store<Super>));
+      BOOST_ASSERT(static_cast<Super const&>(*this).valid(did));
       return _map_node().find_blank(n, did);
    }
 

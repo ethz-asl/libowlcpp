@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE( test_namespaces_owl ) {
    BOOST_CHECK( ! ts.find_prefix(ns2p) );
 }
 
-/** Test nodes, OWL-unaware triple store
+/** Test IRI nodes, OWL-unaware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_nodes ) {
    Triple_store ts(( Nodes_none() ));
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE( test_nodes ) {
    BOOST_CHECK_EQUAL(ts.map_node().size(), 4U);
 }
 
-/** Test nodes, OWL-aware triple store
+/** Test IRI nodes, OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_nodes_owl ) {
    Triple_store ts;

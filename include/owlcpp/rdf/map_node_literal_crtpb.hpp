@@ -58,12 +58,17 @@ public:
             const Node_id dt_id = terms::T_empty_::id(),
             std::string const& lang = ""
    ) {
+      BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
+      BOOST_ASSERT(
+               static_cast<Super const&>(*this).valid(dt_id) &&
+               "invalid datatype ID"
+      );
       return _map_node().insert_literal(value, dt_id, lang);
    }
 
    /**@brief Insert literal node
     @param value
-    @param dt_iri datatype node ID
+    @param dt_iri datatype IRI or empty string
     @param lang language tag string for the literal node or
     "" if the language is not defined.
     The tag string format SHOULD be according to RFC 5646
@@ -76,7 +81,11 @@ public:
             std::string const& dt_iri,
             std::string const& lang = ""
    ) {
-      const Node_id dt_id = static_cast<Super&>(*this).insert_node_iri(dt_iri);
+      BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
+      const Node_id dt_id = dt_iri.empty() ?
+               terms::T_empty_::id() :
+               static_cast<Super&>(*this).insert_node_iri(dt_iri)
+               ;
       return _map_node().insert_literal(value, dt_id, lang);
    }
 };
