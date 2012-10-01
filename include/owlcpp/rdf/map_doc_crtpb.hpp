@@ -85,12 +85,6 @@ public:
       return insert_doc(iri_id, path, vers_id);
    }
 
-   doc_iri_range find_doc_iri(const Node_id nid) const {
-      BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(nid) && "invalid ontology IRI ID" );
-      return _map_doc().find_iri(nid);
-   }
-
    doc_iri_range find_doc_iri(std::string const& iri) const {
       BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
       if(
