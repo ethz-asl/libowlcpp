@@ -27,11 +27,13 @@ OWLCPP_RDF_DECL std::string to_string(const Node_id nid);
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string(const Node_id nid, Triple_store const& ts);
 
-/**@brief print node value replacing namespace IRI with a prefix if declared
+/**@brief print node value replacing namespace IRI with a prefix
+if one is declared
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string_short(const Node_id nid, Triple_store const& ts);
 
-/**@brief print node value replacing namespace IRI with a prefix always
+/**@brief print node value replacing namespace IRI with a prefix,
+generated if needed
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string_shortest(const Node_id nid, Triple_store const& ts);
 

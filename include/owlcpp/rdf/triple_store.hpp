@@ -14,6 +14,8 @@ part of owlcpp project.
 #include "owlcpp/rdf/map_std_ns_crtpb.hpp"
 #include "owlcpp/rdf/map_std_node_crtpb.hpp"
 #include "owlcpp/rdf/nodes_std.hpp"
+#include "owlcpp/rdf/map_node_literal_crtpb.hpp"
+#include "owlcpp/rdf/map_node_blank_crtpb.hpp"
 #include "owlcpp/rdf/map_triple.hpp"
 #include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
 
@@ -30,10 +32,14 @@ class Triple_store :
 public Map_std_ns_crtpb<Triple_store>,
 public Map_std_node_crtpb<Triple_store>,
 public Crtpb_ns_node_iri<Triple_store>,
-public Map_doc_crtpb<Triple_store>
+public Map_doc_crtpb<Triple_store>,
+public Map_node_literal_crtpb<Triple_store>,
+public Map_node_blank_crtpb<Triple_store>
 {
    friend class Map_std_ns_crtpb<Triple_store>;
    friend class Map_std_node_crtpb<Triple_store>;
+   friend class Map_node_literal_crtpb<Triple_store>;
+   friend class Map_node_blank_crtpb<Triple_store>;
    friend class Map_doc_crtpb<Triple_store>;
 
    typedef detail::Map_traits<Triple_store> traits;

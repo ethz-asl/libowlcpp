@@ -54,8 +54,8 @@ public:
    Ns_id insert(const Ns_id nsid0) {
       const ns_map_t::const_iterator i = nsm_.find(nsid0);
       if( i != nsm_.end() ) return i->second;
-      const Ns_id nsid1 = dest_.iris().insert(src_[nsid0]);
-      dest_.iris().insert_prefix(nsid1, src_.iris().prefix(nsid0));
+      const Ns_id nsid1 = dest_.insert_ns(src_[nsid0]);
+      dest_.insert_prefix(nsid1, src_.iris().prefix(nsid0));
       nsm_.emplace(nsid0, nsid1);
       return nsid1;
    }
@@ -131,7 +131,7 @@ template<class Range, class Src, class Dest> inline void copy_triples(
 @throw base_exception if @b ts1 contains document already present in @b ts2
 *******************************************************************************/
 template<class Src, class Dest> inline void copy_triples(Src const& src, Dest& dest) {
-   copy_triples(src.triples(), src, dest);
+   copy_triples(src.map_triple(), src, dest);
 }
 
 }//namespace owlcpp

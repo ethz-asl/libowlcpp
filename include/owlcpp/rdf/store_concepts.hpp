@@ -76,9 +76,33 @@ private:
 };
 
 /**
+IRI, blank and literal node store concept
+*******************************************************************************/
+BOOST_concept(Node_store, (T)) : Iri_node_store<T> {
+public:
+   typedef detail::Map_traits<T> traits;
+   typedef typename traits::map_node_type map_node_type;
+   typedef typename traits::node_id_type node_id_type;
+   typedef typename traits::ns_id_type ns_id_type;
+
+   BOOST_CONCEPT_USAGE(Node_store) {
+      node_id_type const* nid = t_.find_literal(str_, nid_, str_);
+      nid = t_.find_literal(str_, nid_);
+      nid = t_.find_literal(str_);
+      boost::ignore_unused_variable_warning(nid);
+   }
+
+private:
+   T t_;
+   std::string str_;
+   node_id_type nid_;
+   ns_id_type nsid_;
+};
+
+/**
 Namespace IRI and node IRI store concept
 *******************************************************************************/
-BOOST_concept(Ns_iri_node_store, (T)) {
+BOOST_concept(Ns_iri_node_store, (T)) : Iri_node_store<T>, Ns_store<T> {
 public:
    typedef detail::Map_traits<T> traits;
    typedef typename traits::map_node_type map_node_type;
