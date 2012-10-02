@@ -50,7 +50,7 @@ template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts)
       }
    }
 
-   BOOST_FOREACH( Triple const& t, ts.triples().find(nid, any(), any(), any()) ) {
+   BOOST_FOREACH( Triple const& t, ts.find_triple(nid, any(), any(), any()) ) {
       if( t.predicate() == T_rdf_type::id() ) {
          d.set(t.object());
          continue;
@@ -60,7 +60,7 @@ template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts)
 
    BOOST_FOREACH(
             Triple const& t,
-            ts.triples().find(any(), T_owl_annotatedSource::id(), nid, any())) {
+            ts.find_triple(any(), T_owl_annotatedSource::id(), nid, any())) {
 
       const Node_id x = t.subject();
       if( ts[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
@@ -70,7 +70,7 @@ template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts)
       );
       BOOST_FOREACH(
                Triple const& t,
-               ts.triples().find(x, T_owl_annotatedTarget::id(), any(), any())) {
+               ts.find_triple(x, T_owl_annotatedTarget::id(), any(), any())) {
          d.set(t.object());
       }
    }
