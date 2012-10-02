@@ -62,7 +62,11 @@ public:
    const_iterator end() const {return m_.end();}
    bool empty() const {return m_.empty();}
 
-   bool have(const Node_id id) const {return valid(id);}
+   bool valid(const Node_id id) const {
+      if( id() < n0_ ) return false;
+      const std::size_t n = sz(id);
+      return n < v_.size() && ! v_.is_null(n);
+   }
 
    Node const& operator[](const Node_id id) const {return get(id);}
 
@@ -149,12 +153,6 @@ private:
    Node_id nid(const std::size_t n) const {return Node_id(n + n0_);}
 
    Node const& get(const Node_id id) const {return v_[sz(id)];}
-
-   bool valid(const Node_id id) const {
-      if( id() < n0_ ) return false;
-      const std::size_t n = sz(id);
-      return n < v_.size() && ! v_.is_null(n);
-   }
 
    Node_id make_id(std::auto_ptr<Node> np) {
       if( erased_.empty() ) {

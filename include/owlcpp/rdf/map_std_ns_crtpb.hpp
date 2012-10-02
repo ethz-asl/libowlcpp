@@ -35,8 +35,8 @@ template<class Super> class Map_std_ns_crtpb {
 
 public:
    bool valid(const Ns_id nsid) const {
-      BOOST_ASSERT(! (_map_std().have(nsid) && _map_ns().have(nsid)) );
-      return _map_std().have(nsid) || _map_ns().have(nsid);
+      BOOST_ASSERT(! (_map_std().valid(nsid) && _map_ns().valid(nsid)) );
+      return _map_std().valid(nsid) || _map_ns().valid(nsid);
    }
 
    std::string operator[](const Ns_id nsid) const {
@@ -98,7 +98,7 @@ public:
                   << typename Err::str2_t(_map_std().prefix(nsid))
          );
       }
-      BOOST_ASSERT( _map_ns().have(nsid) );
+      BOOST_ASSERT( _map_ns().valid(nsid) );
       if( pref.empty() ) {
          _map_ns().set_prefix(nsid);
          return;

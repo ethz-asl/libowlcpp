@@ -59,7 +59,7 @@ public:
    const_iterator end() const {return iri_.end();}
    bool empty() const {return iri_.empty();}
 
-   bool have(const Ns_id id) const {
+   bool valid(const Ns_id id) const {
       return
                id() >= id0_ &&
                id() - id0_ < id_.size() &&
@@ -68,12 +68,12 @@ public:
    }
 
    std::string operator[](const Ns_id id) const {
-      BOOST_ASSERT(have(id));
+      BOOST_ASSERT(valid(id));
       return get(id).first->first;
    }
 
    std::string at(const Ns_id id) const {
-      if( ! have(id) ) BOOST_THROW_EXCEPTION(
+      if( ! valid(id) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("invalid namespace ID")
                << Err::int1_t(id())
@@ -92,7 +92,7 @@ public:
    }
 
    std::string prefix(const Ns_id id) const {
-      BOOST_ASSERT( have(id) );
+      BOOST_ASSERT( valid(id) );
       id_value_t const& v = get(id);
       if( v.second == pref_.end() ) return "";
       return v.second->first;
@@ -136,7 +136,7 @@ public:
     if \b pref is empty, the existing prefix is cleared from the IRI
    */
    void set_prefix(const Ns_id id, std::string const& pref = "") {
-      BOOST_ASSERT( have(id) );
+      BOOST_ASSERT( valid(id) );
       id_value_t& v = get(id);
 
       if( pref.empty() ) {
@@ -171,7 +171,7 @@ public:
    }
 
    void remove(const Ns_id id) {
-      if( ! have(id) ) BOOST_THROW_EXCEPTION(
+      if( ! valid(id) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("removing non-existing IRI ID")
                << Err::int1_t(id())

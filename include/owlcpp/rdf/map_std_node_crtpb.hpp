@@ -37,9 +37,11 @@ template<class Super> class Map_std_node_crtpb {
 public:
 
    bool valid(const Node_id nid) const {
-      BOOST_ASSERT( ! (_map_std().have(nid) && _map_node().have(nid)) );
-      return _map_std().have(nid) || _map_node().have(nid);
+      BOOST_ASSERT( ! (_map_std().valid(nid) && _map_node().valid(nid)) );
+      return _map_std().valid(nid) || _map_node().valid(nid);
    }
+
+   bool is_standard(const Node_id nid) const {return _map_std().valid(nid);}
 
    node_type const& operator[](const Node_id id) const {
       return id < _map_std().node_id_next() ? _map_std()[id] : _map_node()[id];

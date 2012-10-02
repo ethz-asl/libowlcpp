@@ -90,7 +90,7 @@ public:
    }
 
    Ns_id ns_id_next() const {return ns_id_next_;}
-   bool have(const Ns_id nsid) const {return ns_.have(nsid);}
+   bool valid(const Ns_id nsid) const {return ns_.valid(nsid);}
    Ns_id const* find_iri(std::string const& iri) const {return ns_.find_iri(iri);}
    Ns_id const* find_prefix(std::string const& pref) const {return ns_.find_prefix(pref);}
    std::string operator[](const Ns_id nsid) const {return ns_[nsid];}
@@ -98,7 +98,7 @@ public:
    std::string prefix(const Ns_id nsid) const {return ns_.prefix(nsid);}
 
    Node_id node_id_next() const {return node_id_next_;}
-   bool have(const Node_id nid) const {return node_.have(nid);}
+   bool valid(const Node_id nid) const {return node_.valid(nid);}
    Node_iri const& operator[](const Node_id nid) const {return node_[nid];}
    Node_iri const& at(const Node_id nid) const {return node_.at(nid);}
    Node_id const* find(Node_iri const& node) const {return node_.find(node);}

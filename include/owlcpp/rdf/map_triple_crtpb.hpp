@@ -62,7 +62,7 @@ public:
    */
    template<class Subj, class Pred, class Obj, class Doc>
    typename result<Subj,Pred,Obj,Doc>::type
-   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
+   find_triple(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
       return _map_triple().find(subj, pred, obj, doc);
    }
 
