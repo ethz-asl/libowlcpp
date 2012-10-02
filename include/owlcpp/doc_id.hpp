@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef DOC_ID_HPP_
 #define DOC_ID_HPP_
+#include <iosfwd>
 #include "owlcpp/detail/object_id_base.hpp"
 
 namespace owlcpp{
@@ -17,6 +18,14 @@ public:
    Doc_id() : base(0) {}
 };
 
+/**
+*******************************************************************************/
+template<class ChT, class Tr> inline std::basic_ostream<ChT,Tr>& operator<<(
+      std::basic_ostream<ChT,Tr>& os,
+      Doc_id const& id
+) {
+   return os << "DocID" << id;
+}
 
 }//namespace owlcpp
 #endif /* DOC_ID_HPP_ */

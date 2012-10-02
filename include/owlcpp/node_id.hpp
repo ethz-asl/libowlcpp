@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_ID_HPP_
 #define NODE_ID_HPP_
+#include <iosfwd>
 #include "owlcpp/detail/object_id_base.hpp"
 
 namespace owlcpp{
@@ -16,6 +17,15 @@ public:
    explicit Node_id(const unsigned x) : base(x) {}
    Node_id() : base(0) {}
 };
+
+/**
+*******************************************************************************/
+template<class ChT, class Tr> inline std::basic_ostream<ChT,Tr>& operator<<(
+      std::basic_ostream<ChT,Tr>& os,
+      Node_id const& id
+) {
+   return os << "NodeID" << id;
+}
 
 }//namespace owlcpp
 #endif /* NODE_ID_HPP_ */

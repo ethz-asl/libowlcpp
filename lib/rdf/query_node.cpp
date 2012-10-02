@@ -7,7 +7,6 @@ part of owlcpp project.
 #define OWLCPP_RDF_SOURCE
 #endif
 #include "owlcpp/rdf/query_node.hpp"
-#include "owlcpp/rdf/node_map_std.hpp"
 #include "owlcpp/terms/iri_tags.hpp"
 
 namespace owlcpp {
@@ -15,7 +14,7 @@ namespace owlcpp {
 /*
 *******************************************************************************/
 std::string to_string(const Node_id nid) {
-   return "NodeID" + boost::lexical_cast<std::string>(nid());
+   return boost::lexical_cast<std::string>(nid());
 }
 
 /*
