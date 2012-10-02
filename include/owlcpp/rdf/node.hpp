@@ -18,41 +18,17 @@ namespace owlcpp{
 *******************************************************************************/
 class Node {
 public:
-   /**
-    @return value string of the node
-    @cond DEV
-    @decision return by std::string value.\n
-    Alternatives:
-    - std::string const&: assumes existence of long-term std::string object;
-    not every kind of node will have this.
-    - std::string: may return newly generated object, which maybe slower
-    @endcond
-    */
-   std::string value_str() const {return value_str_impl();}
-
-   std::ostream& value_print(std::ostream& os) const {return print_impl(os);}
-
    Ns_id ns_id() const {return ns_id_impl();}
-
    bool empty() const {return empty_impl();}
-
    bool operator== (const Node& n) const {return equal_impl(n);}
    bool operator!= (const Node& n) const {return ! equal_impl(n);}
-
    void accept(Visitor_node& visitor) const {accept_impl(visitor);}
-
    virtual ~Node() {}
+
 private:
-   virtual std::string value_str_impl() const =0;
-
-   virtual std::ostream& print_impl(std::ostream&) const =0;
-
    virtual Ns_id ns_id_impl() const =0;
-
    virtual bool empty_impl() const =0;
-
    virtual bool equal_impl(const Node& n) const =0;
-
    virtual void accept_impl(Visitor_node&) const = 0;
 };
 

@@ -25,17 +25,13 @@ public:
       );
    }
 
+   std::string const& name() const {return val_;}
+
 private:
    std::string val_;
    Ns_id ns_;
 
    OWLCPP_VISITABLE
-
-   std::string value_str_impl() const {return val_;}
-
-   std::ostream& print_impl(std::ostream& os) const {
-      return os << val_;
-   }
 
    Ns_id ns_id_impl() const { return ns_; }
 

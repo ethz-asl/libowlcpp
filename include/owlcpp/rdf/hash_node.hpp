@@ -18,7 +18,7 @@ struct Hash_node : public Visitor_node {
 
    void visit_impl(Node_iri const& n) {
       boost::hash_combine(hash_, n.ns_id());
-      boost::hash_combine(hash_, n.value_str());
+      boost::hash_combine(hash_, n.name());
    }
 
    void visit_impl(Node_blank const& n) {

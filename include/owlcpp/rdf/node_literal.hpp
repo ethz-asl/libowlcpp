@@ -29,6 +29,7 @@ public:
 
    std::string const& language() const {return lang_;}
    Node_id datatype() const {return dt_;}
+   std::string const& value_str() const {return val_;}
 
 private:
    std::string val_;
@@ -36,14 +37,6 @@ private:
    Node_id dt_;
 
    OWLCPP_VISITABLE
-
-   //todo
-   std::string value_str_impl() const {return val_;}
-
-   //todo
-   std::ostream& print_impl(std::ostream& os) const {
-      return os << val_;
-   }
 
    Ns_id ns_id_impl() const { return terms::N_empty::id(); }
 
