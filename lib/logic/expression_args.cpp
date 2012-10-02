@@ -8,7 +8,7 @@ part of owlcpp project.
 
 #include "boost/foreach.hpp"
 
-#include "owlcpp/rdf/store_triple.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 

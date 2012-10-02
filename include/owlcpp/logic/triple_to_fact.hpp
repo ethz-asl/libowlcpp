@@ -7,7 +7,7 @@ part of owlcpp project.
 #define TRIPLE_TO_FACT_HPP_
 //#include "owlcpp/logic/config.hpp"
 #include "owlcpp/logic/detail/triple_to_fact_adaptor.hpp"
-#include "owlcpp/rdf/store_triple.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 #include "factpp/config.hpp"
 
 class /*FACTPP_KERNEL_DECL*/ ReasoningKernel;

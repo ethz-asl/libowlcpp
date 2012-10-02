@@ -9,7 +9,7 @@ part of owlcpp project.
 #include "boost/program_options.hpp"
 #include "boost/filesystem.hpp"
 #include "boost/foreach.hpp"
-#include "owlcpp/rdf/store_triple.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/io/input.hpp"
 

@@ -9,11 +9,6 @@ part of owlcpp project.
 #include "boost/filesystem/path.hpp"
 
 #include "owlcpp/io/config.hpp"
-#include "owlcpp/rdf/store_node_iri_crtpb.hpp"
-#include "owlcpp/rdf/store_doc_crtpb.hpp"
-#include "owlcpp/rdf/iri_map.hpp"
-#include "owlcpp/rdf/node_map.hpp"
-#include "owlcpp/rdf/doc_info_map.hpp"
 #include "owlcpp/io/exception.hpp"
 
 namespace owlcpp{

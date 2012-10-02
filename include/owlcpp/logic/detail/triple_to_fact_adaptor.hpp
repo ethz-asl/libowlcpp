@@ -7,7 +7,7 @@ part of owlcpp project.
 #define TRIPLE_TO_FACT_ADAPTOR_HPP_
 #include "boost/foreach.hpp"
 #include "boost/range.hpp"
-#include "owlcpp/rdf/store_triple.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/logic/exception.hpp"
 #include "owlcpp/logic/detail/node_declaration.hpp"

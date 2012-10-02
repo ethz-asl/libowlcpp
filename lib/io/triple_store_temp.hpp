@@ -5,13 +5,6 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_STORE_TEMP_HPP_
 #define TRIPLE_STORE_TEMP_HPP_
-#include "owlcpp/rdf/store_node_iri_crtpb.hpp"
-#include "owlcpp/rdf/store_node_blank_crtpb.hpp"
-#include "owlcpp/rdf/store_node_literal_crtpb.hpp"
-#include "owlcpp/rdf/store_doc_crtpb.hpp"
-#include "owlcpp/rdf/triple_map.hpp"
-#include "owlcpp/rdf/node_map.hpp"
-#include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp{ namespace detail{

@@ -17,7 +17,6 @@ part of owlcpp project.
 #include "owlcpp/terms/term_methods.hpp"
 
 namespace owlcpp{
-class Triple_store;
 
 /**@brief print node ID
 *******************************************************************************/
