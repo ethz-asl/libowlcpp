@@ -10,6 +10,7 @@ part of owlcpp project.
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/ns_id.hpp"
 #include "owlcpp/terms/iri_tags.hpp"
+#include "owlcpp/rdf/visitor_node.hpp"
 
 namespace owlcpp{
 
@@ -38,7 +39,7 @@ public:
    bool operator== (const Node& n) const {return equal_impl(n);}
    bool operator!= (const Node& n) const {return ! equal_impl(n);}
 
-   std::size_t hash() const {return hash_impl();}
+   void accept(Visitor_node& visitor) const {accept_impl(visitor);}
 
    virtual ~Node() {}
 private:
@@ -52,12 +53,8 @@ private:
 
    virtual bool equal_impl(const Node& n) const =0;
 
-   virtual std::size_t hash_impl() const =0;
+   virtual void accept_impl(Visitor_node&) const = 0;
 };
-
-/**
-*******************************************************************************/
-inline std::size_t hash_value(Node const& node) { return node.hash(); }
 
 
 }//namespace owlcpp

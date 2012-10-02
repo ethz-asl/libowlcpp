@@ -16,15 +16,9 @@ namespace owlcpp{
 *******************************************************************************/
 class Node_iri : public Node {
 public:
-   static std::size_t make_hash(const Ns_id ns, std::string const& val) {
-      std::size_t x = 0;
-      boost::hash_combine(x, ns());
-      boost::hash_combine(x, boost::hash_value(val));
-      return x;
-   }
 
    explicit Node_iri(const Ns_id ns = terms::N_empty::id(), std::string const& val = "")
-   : val_(val), hash_(make_hash(ns, val)), ns_(ns)
+   : val_(val), ns_(ns)
    {
       if( is_blank(ns_) ) BOOST_THROW_EXCEPTION(
                Rdf_err() << Rdf_err::msg_t("blank \"_\" namespace in IRI node")
@@ -33,8 +27,9 @@ public:
 
 private:
    std::string val_;
-   std::size_t hash_;
    Ns_id ns_;
+
+   OWLCPP_VISITABLE
 
    std::string value_str_impl() const {return val_;}
 
@@ -53,9 +48,6 @@ private:
       }
       return false;
    }
-
-   std::size_t hash_impl() const { return hash_; }
-
 };
 
 }//namespace owlcpp

@@ -21,9 +21,14 @@ public:
    Node_blank(const unsigned n, const Doc_id doc)
    : n_(n), doc_(doc) {}
 
+   unsigned index() const {return n_;}
+   Doc_id document() const {return doc_;}
+
 private:
    unsigned n_;
    Doc_id doc_;
+
+   OWLCPP_VISITABLE
 
    std::string value_str_impl() const {
       std::stringstream ss;
@@ -46,13 +51,6 @@ private:
       }
       return false;
    }
-
-   std::size_t hash_impl() const {
-      std::size_t x = n_;
-      boost::hash_combine(x, hash_value(doc_));
-      return x;
-   }
-
 };
 
 }//namespace owlcpp
