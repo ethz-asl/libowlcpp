@@ -1,34 +1,26 @@
-/** @file "/owlcpp/lib/rdf/node_literal.cpp" 
+/** @file "/owlcpp/include/owlcpp/terms/detail/datatype_impl.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef OWLCPP_RDF_SOURCE
-#define OWLCPP_RDF_SOURCE
-#endif
-#include "owlcpp/rdf/node_literal.hpp"
-
-#include "boost/lexical_cast.hpp"
-#include "boost/numeric/conversion/cast.hpp"
-
+#ifndef DATATYPE_IMPL_HPP_
+#define DATATYPE_IMPL_HPP_
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
-#include "owlcpp/rdf/exception.hpp"
-#include "owlcpp/rdf/query_node.hpp"
 
-namespace owlcpp {
-using namespace owlcpp::terms;
+namespace owlcpp{ namespace terms{
 
-/**@brief
+enum Internal_type_id {
+   Empty_tid, Bool_tid, Int_tid, Unsigned_tid, Double_tid, String_tid, Unknown_tid
+};
+
+/**@brief 
 *******************************************************************************/
-std::auto_ptr<Node> make_node_literal(
-         std::string const& val,
-         const Node_id dt,
-         std::string const& lang
-) {
-   typedef std::auto_ptr<Node> ptr;
+Internal_type_id internal_type_id(const Node_id nid) {
    switch (dt()) {
    case T_empty_::index:
+      return Empty_tid;
+
    case T_xsd_string::index:
    case T_xsd_anyURI::index:
    case T_xsd_normalizedString::index:
@@ -46,17 +38,15 @@ std::auto_ptr<Node> make_node_literal(
    case T_xsd_gMonthDay::index:
    case T_xsd_gDay::index:
    case T_xsd_gMonth::index:
-      return ptr(new Node_string(val, dt, lang));
+      return String_tid;
 
    case T_xsd_boolean::index:
-      if( val == "true" ) return ptr(new Node_bool(true, dt));
-      if( val == "false" ) return ptr(new Node_bool(false, dt));
-      return ptr(new Node_bool(boost::lexical_cast<bool>(val), dt));
+      return Bool_tid;
 
    case T_xsd_decimal::index:
    case T_xsd_float::index:
    case T_xsd_double::index:
-      return ptr(new Node_double(boost::lexical_cast<double>(val), dt));
+      return Double_tid;
 
    case T_xsd_hexBinary::index:
    case T_xsd_base64Binary::index:
@@ -66,7 +56,7 @@ std::auto_ptr<Node> make_node_literal(
    case T_xsd_long::index:
    case T_xsd_int::index:
    case T_xsd_short::index:
-      return ptr(new Node_int(boost::lexical_cast<Node_int::value_type>(val), dt));
+      return Int_tid;
 
    case T_xsd_byte::index:
    case T_xsd_nonNegativeInteger::index:
@@ -75,14 +65,13 @@ std::auto_ptr<Node> make_node_literal(
    case T_xsd_unsignedShort::index:
    case T_xsd_unsignedByte::index:
    case T_xsd_positiveInteger::index:
-      return ptr(new Node_unsigned(boost::lexical_cast<Node_unsigned::value_type>(val), dt));
+      return Unsigned_tid;
 
-   default: BOOST_THROW_EXCEPTION(
-            Rdf_err()
-            << Rdf_err::msg_t("unsupported data type")
-            << Rdf_err::str1_t(to_string(dt))
-   );
+   default:
+      return Unknown_tid;
    }
 }
 
+}//namespace terms
 }//namespace owlcpp
+#endif /* DATATYPE_IMPL_HPP_ */

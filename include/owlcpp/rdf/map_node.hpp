@@ -202,7 +202,7 @@ private:
          v_.replace(n, np);
       } else {
          //v_.resize(n,0) does not compile for some reason
-         while( n > v_.size() ) v_.push_back(0);
+         for( ; n > v_.size(); v_.push_back(0));
          v_.push_back(np);
       }
       m_.emplace(p, id);

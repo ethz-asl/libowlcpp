@@ -6,9 +6,7 @@ part of owlcpp project.
 #ifndef NODE_LITERAL_HPP_
 #define NODE_LITERAL_HPP_
 #include <string>
-#include <memory>
 #include "boost/functional/hash.hpp"
-#include "owlcpp/rdf/config.hpp"
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/node_id.hpp"
@@ -107,17 +105,6 @@ private:
    }
 };
 
-/**@brief
-*******************************************************************************/
-OWLCPP_RDF_DECL std::auto_ptr<Node> make_node_literal(
-         std::string const& val,
-         const Node_id dt = terms::T_empty_::id(),
-         std::string const& lang = ""
-);
-
 }//namespace detail
-
-
-
 }//namespace owlcpp
 #endif /* NODE_LITERAL_HPP_ */
