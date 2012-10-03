@@ -13,12 +13,6 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-std::string to_string(const Node_id nid) {
-   return boost::lexical_cast<std::string>(nid);
-}
-
-/*
-*******************************************************************************/
 std::string to_string(const Node_id nid, Triple_store const& ts) {
    if( is_empty(nid) ) return "";
    Node const& node = ts[nid];
