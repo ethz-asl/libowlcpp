@@ -8,7 +8,9 @@ part of owlcpp project.
 #include "boost/assert.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
 #include "owlcpp/rdf/query_node.hpp"
-#include "owlcpp/logic/detail/node_declaration.hpp"
+#include "logic/node_property_declaration.hpp"
+#include "logic/node_type_declaration.hpp"
+#include "logic/find_node_declaration.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;

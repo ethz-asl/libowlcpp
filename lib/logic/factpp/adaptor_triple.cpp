@@ -16,6 +16,9 @@ part of owlcpp project.
 #include "expression.hpp"
 #include "obj_type.hpp"
 #include "obj_property.hpp"
+#include "logic/node_property_declaration.hpp"
+#include "logic/node_type_declaration.hpp"
+#include "logic/find_node_declaration.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;

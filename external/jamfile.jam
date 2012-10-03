@@ -41,11 +41,21 @@ if $(os) = LINUX {
 
    LIBXML2_H ?= /usr/include/libxml2 ;
    
-   if $(LIBXML2_DLL) { 
-      lib libxml2 : : <file>$(LIBXML2_DLL) <link>shared : : <include>$(LIBXML2_H) ; 
-   } else { 
-      lib libxml2 : : <name>xml2 <link>shared : : <include>$(LIBXML2_H) ; 
+   local libxml2_id = <name>xml2 ;
+   if $(LIBXML2_DLL) {
+      libxml2_id = <file>$(LIBXML2_DLL) ;
    }
+   
+   lib libxml2 
+      : 
+      : 
+         $(libxml2_id)
+#         <link>shared 
+      : 
+      : <include>$(LIBXML2_H) <library>zlib 
+   ;
+
+   lib zlib : : <name>z ;
    
 } else if $(os) = NT {
 
