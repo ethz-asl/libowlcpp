@@ -5,7 +5,6 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_IRI_HPP_
 #define NODE_IRI_HPP_
-#include <iostream>
 #include "boost/functional/hash.hpp"
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/exception.hpp"
@@ -44,6 +43,14 @@ private:
       }
       return false;
    }
+
+   std::size_t hash_impl() const {
+      std::size_t h = 0;
+      boost::hash_combine(h, val_);
+      boost::hash_combine(h, ns_);
+      return h;
+   }
+
 };
 
 }//namespace owlcpp

@@ -5,8 +5,6 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_BLANK_HPP_
 #define NODE_BLANK_HPP_
-#include <iostream>
-#include <sstream>
 #include "boost/functional/hash.hpp"
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/exception.hpp"
@@ -30,16 +28,6 @@ private:
 
    OWLCPP_VISITABLE
 
-   std::string value_str_impl() const {
-      std::stringstream ss;
-      print_impl(ss);
-      return ss.str();
-   }
-
-   std::ostream& print_impl(std::ostream& os) const {
-      return os << 'n' << doc_ << '_' << n_;
-   }
-
    Ns_id ns_id_impl() const { return terms::N_blank::id(); }
 
    bool empty_impl() const { return false; }
@@ -51,6 +39,14 @@ private:
       }
       return false;
    }
+
+   std::size_t hash_impl() const {
+      std::size_t h = 0;
+      boost::hash_combine(h, n_);
+      boost::hash_combine(h, doc_);
+      return h;
+   }
+
 };
 
 }//namespace owlcpp
