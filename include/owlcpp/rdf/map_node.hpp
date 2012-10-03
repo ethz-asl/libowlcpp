@@ -20,6 +20,7 @@ part of owlcpp project.
 #include "owlcpp/doc_id.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
+#include "owlcpp/detail/datatype_impl.hpp"
 
 namespace owlcpp{
 
@@ -96,7 +97,21 @@ public:
    Node_id const* find_literal(
             std::string const& val, const Node_id dt, std::string const& lang
    ) const {
-      return find(Node_literal(val, dt, lang));
+      switch(internal_type_id(dt)) {
+      case detail::Bool_tid:
+         return find(Node_bool(val, dt));
+      case detail::Int_tid:
+         return find(Node_int(val, dt));
+      case detail::Unsigned_tid:
+         return find(Node_unsigned(val, dt));
+      case detail::Double_tid:
+         return find(Node_double(val, dt));
+      case detail::Empty_tid:
+      case detail::String_tid:
+      case detail::Unknown_tid:
+      default:
+         return find(Node_string(val, dt, lang));
+      }
    }
 
    Node_id const* find_blank(const unsigned n, const Doc_id doc) const {
@@ -185,8 +200,8 @@ private:
          BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("node already exists")
-                  << Err::int1_t(np->ns_id()())
-                  << Err::str1_t(np->value_str())
+                  << Err::node_id_t(*id0)
+                  << Err::str1_t(to_string(*np))
          );
       }
       if( valid(id) ) BOOST_THROW_EXCEPTION(

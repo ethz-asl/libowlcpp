@@ -6,12 +6,13 @@ part of owlcpp project.
 #ifndef PRINT_NODE_HPP_
 #define PRINT_NODE_HPP_
 #include <ostream>
+#include "boost/lexical_cast.hpp"
 #include "owlcpp/rdf/config.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/rdf/node_iri.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 
 namespace owlcpp{
-class Triple_store;
 
 /**@brief 
 *******************************************************************************/
@@ -20,7 +21,9 @@ template<class Ch, class Tr> inline std::basic_ostream<Ch,Tr>&
 
 /**@return node ID string
 *******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string(const Node_id nid);
+inline std::string to_string(const Node_id nid) {
+   return "NodeID" + boost::lexical_cast<std::string>(nid());
+}
 
 /**@return IRI node string with generated namespace prefix
 *******************************************************************************/
@@ -30,7 +33,10 @@ std::string to_string(Node_iri const& node) {
 
 /**@return IRI node string with complete namespace
 *******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string_full(Node_iri const&, Triple_store const&);
+inline std::string to_string_full(Node_iri const& node, Triple_store const& ts) {
+   if( node.name().empty() ) return ts[node.ns_id()];
+   return ts[node.ns_id()] + '#' + node.name();
+}
 
 /**@return IRI node string with namespace prefix
 *******************************************************************************/

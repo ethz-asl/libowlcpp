@@ -1,4 +1,4 @@
-/** @file "/owlcpp/include/owlcpp/terms/detail/datatype_impl.hpp" 
+/** @file "/owlcpp/include/owlcpp/detail/datatype_impl.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -8,16 +8,20 @@ part of owlcpp project.
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
-namespace owlcpp{ namespace terms{
+namespace owlcpp{ namespace detail{
 
 enum Internal_type_id {
    Empty_tid, Bool_tid, Int_tid, Unsigned_tid, Double_tid, String_tid, Unknown_tid
 };
 
+}//namespace detail
+
 /**@brief 
 *******************************************************************************/
-Internal_type_id internal_type_id(const Node_id nid) {
-   switch (dt()) {
+detail::Internal_type_id internal_type_id(const Node_id nid) {
+   using namespace owlcpp::terms;
+   using namespace detail;
+   switch (nid()) {
    case T_empty_::index:
       return Empty_tid;
 
@@ -72,6 +76,5 @@ Internal_type_id internal_type_id(const Node_id nid) {
    }
 }
 
-}//namespace terms
 }//namespace owlcpp
 #endif /* DATATYPE_IMPL_HPP_ */

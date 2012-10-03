@@ -7,12 +7,27 @@ part of owlcpp project.
 #define NODE_LITERAL_HPP_
 #include <string>
 #include "boost/functional/hash.hpp"
+#include "boost/lexical_cast.hpp"
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp{ namespace detail{
+
+template<class Out> struct Convert {
+   Out operator()(std::string const& in) {
+      return boost::lexical_cast<Out>(in);
+   }
+};
+
+template<> struct Convert<bool> {
+   bool operator()(std::string const& in) {
+      if( in == "true" ) return true;
+      if( in == "false" ) return false;
+      return boost::lexical_cast<Out>(in);
+   }
+};
 
 /**@brief 
 *******************************************************************************/
@@ -26,6 +41,13 @@ public:
             const Node_id dt = terms::T_empty_::id()
    )
    : val_(val), dt_(dt)
+   {}
+
+   explicit Node_literal(
+            std::string const& val,
+            const Node_id dt = terms::T_empty_::id()
+   )
+   : val_(Convert<value_type>()(val)), dt_(dt)
    {}
 
    Node_id datatype() const {return dt_;}
