@@ -14,7 +14,7 @@ namespace owlcpp {
 /*
 *******************************************************************************/
 std::string to_string(const Node_id nid) {
-   return boost::lexical_cast<std::string>(nid());
+   return boost::lexical_cast<std::string>(nid);
 }
 
 /*
