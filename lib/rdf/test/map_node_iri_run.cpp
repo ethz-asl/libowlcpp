@@ -20,18 +20,18 @@ namespace t = owlcpp::terms;
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Map_node_iri mnb(( Node_id() ));
-   BOOST_CHECK( ! mnb.have(Node_id(42)) );
+   BOOST_CHECK( ! mnb.valid(Node_id(42)) );
 
    const Node_id id1 = mnb.insert(Ns_id(42), "blah");
-   BOOST_REQUIRE( mnb.have(id1) );
+   BOOST_REQUIRE( mnb.valid(id1) );
 
    const Node_id id2 = mnb.insert(Ns_id(42), "blah");
-   BOOST_CHECK( mnb.have(id2) );
+   BOOST_CHECK( mnb.valid(id2) );
 
    BOOST_CHECK_EQUAL(id1, id2);
 
    const Node_id id3 = mnb.insert(Ns_id(43), "blah");
-   BOOST_CHECK( mnb.have(id3) );
+   BOOST_CHECK( mnb.valid(id3) );
 
    BOOST_CHECK_NE(id1, id3);
 
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK( ! mnb.find(id1) );
 
    const Node_id id4 = mnb.insert(Ns_id(13), "blahblah");
-   BOOST_CHECK( mnb.have(id4) );
+   BOOST_CHECK( mnb.valid(id4) );
    BOOST_CHECK_EQUAL(id1, id4); //ID got recycled
 
    //insert existing node with new ID
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    //insert existing node with its current ID (NOP)
    mnb.insert(id4, Ns_id(13), "blahblah");
 
-   BOOST_CHECK( ! mnb.have(Node_id(42)) );
+   BOOST_CHECK( ! mnb.valid(Node_id(42)) );
    mnb.insert(Node_id(42), Ns_id(142), "new_node");
 }
 

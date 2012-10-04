@@ -3,7 +3,7 @@ part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#define BOOST_TEST_MODULE triple_map_02_run
+#define BOOST_TEST_MODULE map_triple_02_run
 #include "boost/test/unit_test.hpp"
 #include "boost/range.hpp"
 #include "test/exception_fixture.hpp"
@@ -31,7 +31,9 @@ const unsigned t[][4] = {
 BOOST_AUTO_TEST_CASE( case01 ) {
    typedef Map_triple<1,0,0,0> triple_map;
    triple_map tm;
+   BOOST_REQUIRE_EQUAL(tm.size(), 0U);
    insert_seq(tm, t);
+   BOOST_REQUIRE_EQUAL(tm.size(), 7U);
    typedef triple_map::result_b<1,1,0,0>::type range_t;
    range_t r = tm.find(Node_id(0), Node_id(3), any(), any());
    range_t::iterator qi = r.begin();

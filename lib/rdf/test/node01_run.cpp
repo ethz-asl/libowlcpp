@@ -51,18 +51,18 @@ BOOST_AUTO_TEST_CASE( test_iri_node ) {
 /** Literal nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_node ) {
-   const Node_literal n1("blah", Node_id(42), "en");
+   const Node_string n1("blah", Node_id(42), "en");
    BOOST_CHECK_EQUAL(n1.ns_id(), owlcpp::terms::N_empty::id());
-   const Node_literal n2("blah", Node_id(42), "en");
+   const Node_string n2("blah", Node_id(42), "en");
    BOOST_CHECK(n1 == n2);
 
-   const Node_literal n3("blahh", Node_id(42), "en");
+   const Node_string n3("blahh", Node_id(42), "en");
    BOOST_CHECK(n1 != n3);
 
-   const Node_literal n4("blah", Node_id(41), "en");
+   const Node_string n4("blah", Node_id(41), "en");
    BOOST_CHECK(n1 != n4);
 
-   const Node_literal n5("blah", Node_id(42), "fr");
+   const Node_string n5("blah", Node_id(42), "fr");
    BOOST_CHECK(n1 != n5);
 }
 
@@ -88,10 +88,10 @@ BOOST_AUTO_TEST_CASE( test_compare ) {
    const Node_blank n2(1, Doc_id(42));
    BOOST_CHECK(n1 != n2);
 
-   const Node_literal n3("blah", Node_id(42));
+   const Node_string n3("blah", Node_id(42));
    BOOST_CHECK(n1 != n3);
 
-   const Node_literal n4("");
+   const Node_string n4("");
    BOOST_CHECK(n1 != n4);
 
    const Node_iri n5;
@@ -101,14 +101,14 @@ BOOST_AUTO_TEST_CASE( test_compare ) {
 /** node hash
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_hash ) {
-   const Node_literal n1("blah", Node_id(42), "en");
-   const Node_literal n2("blah", Node_id(42), "fr");
-   const Node_literal n3("blah", Node_id(42), "en");
+   const Node_string n1("blah", Node_id(42), "en");
+   const Node_string n2("blah", Node_id(42), "fr");
+   const Node_string n3("blah", Node_id(42), "en");
    const Node_iri n4(Ns_id(42), "blah");
    const Node_blank n5(0, Doc_id(42));
    const Node_blank n6(42, Doc_id(0));
    const Node_blank n7(1, Doc_id(42));
-   const Node_literal n8("", Node_id(0));
+   const Node_string n8("", Node_id(0));
    const Node_blank n9(0, Doc_id(0));
 
    std::vector<std::size_t> h;

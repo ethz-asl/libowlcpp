@@ -37,12 +37,12 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    map.remove(id2);
    BOOST_CHECK_EQUAL(map.size(), 2U);
    BOOST_CHECK(! map.find_prefix("p2"));
-   BOOST_CHECK( ! map.have(id2) );
+   BOOST_CHECK( ! map.valid(id2) );
 
    map.remove(id10);
-   BOOST_CHECK( ! map.have(id10) );
+   BOOST_CHECK( ! map.valid(id10) );
    map.remove(id1);
-   BOOST_CHECK( ! map.have(id1) );
+   BOOST_CHECK( ! map.valid(id1) );
 
    const Ns_id id13 = map.insert("i13");
    //removed IDs are recycled

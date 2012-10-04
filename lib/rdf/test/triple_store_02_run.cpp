@@ -8,7 +8,7 @@ part of owlcpp project.
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
-#include "owlcpp/rdf/query_node.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -45,17 +45,17 @@ BOOST_AUTO_TEST_CASE( test_docs ) {
    const Doc_id did2 = ts.insert_doc(ni3, path2, ni4).first;
    BOOST_CHECK_EQUAL( ts.map_doc().size(), 2u );
    const Node_id nid3 = ts[did2].ontology_iri();
-   BOOST_CHECK_EQUAL( ts[nid3].value_str(), "node3" ); //same value
+   BOOST_CHECK_EQUAL( to_string(ts[nid3]), "node3" ); //same value
    BOOST_CHECK_EQUAL( ts[ts[nid3].ns_id()], ns2 ); //same namespace IRI
    const Node_id nid4 = ts[did2].version_iri();
-   BOOST_CHECK_EQUAL( ts[nid4].value_str(), "node4" );
+   BOOST_CHECK_EQUAL( to_string(ts[nid4]), "node4" );
    BOOST_CHECK_EQUAL( ts[ts[nid4].ns_id()], ns2 );
 
    Triple_store::doc_iri_range r1 = ts.map_doc().find_iri(nid3);
    BOOST_REQUIRE_EQUAL(boost::distance(r1), 1);
 
    Node const& node1 = ts.at(nid1);
-   BOOST_CHECK_EQUAL( node1.value_str(), "node1" );
+   BOOST_CHECK_EQUAL( to_string(node1), "node1" );
    BOOST_CHECK( ts.find_doc_iri(ni1) );
    BOOST_CHECK( ts.find_doc_iri(ni3) );
 }

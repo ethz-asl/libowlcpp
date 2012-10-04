@@ -25,7 +25,7 @@ template<> struct Convert<bool> {
    bool operator()(std::string const& in) {
       if( in == "true" ) return true;
       if( in == "false" ) return false;
-      return boost::lexical_cast<Out>(in);
+      return boost::lexical_cast<bool>(in);
    }
 };
 

@@ -20,16 +20,16 @@ namespace t = owlcpp::terms;
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Map_node mnb(( Node_id() ));
-   BOOST_CHECK( ! mnb.have(Node_id(42)) );
+   BOOST_CHECK( ! mnb.valid(Node_id(42)) );
 
    const Node_id id1 = mnb.insert_iri(Ns_id(42), "blah");
-   BOOST_CHECK( mnb.have(id1) );
+   BOOST_CHECK( mnb.valid(id1) );
 
    const Node_id id2 = mnb.insert_blank(42, Doc_id(5));
-   BOOST_CHECK( mnb.have(id2) );
+   BOOST_CHECK( mnb.valid(id2) );
 
    const Node_id id3 = mnb.insert_literal("blah", Node_id(5), "en");
-   BOOST_CHECK( mnb.have(id3) );
+   BOOST_CHECK( mnb.valid(id3) );
 
    BOOST_CHECK_NE(id1, id2);
    BOOST_CHECK_NE(id1, id3);
@@ -38,11 +38,11 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK( ! mnb.find(*p1) );
 
    const Node_id id4 = mnb.insert_literal("blahblah", Node_id(5), "fr");
-   BOOST_CHECK( mnb.have(id4) );
+   BOOST_CHECK( mnb.valid(id4) );
    BOOST_CHECK_EQUAL( id1, id4 );
 
    const Node_id id5 = mnb.insert_iri(Ns_id(42), "blah");
-   BOOST_CHECK( mnb.have(id5) );
+   BOOST_CHECK( mnb.valid(id5) );
    BOOST_CHECK_NE(id1, id5);
 }
 
