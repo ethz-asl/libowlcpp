@@ -17,6 +17,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_iri.hpp"
 #include "owlcpp/rdf/node_literal.hpp"
 #include "owlcpp/rdf/exception.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 #include "owlcpp/doc_id.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
@@ -34,6 +35,7 @@ public:
    typedef Node_id id_type;
    typedef Node node_type;
 private:
+   typedef std::auto_ptr<node_type> ptr_t;
    typedef boost::ptr_vector<boost::nullable<Node> > vector_t;
    typedef boost::unordered_map<
             Node const*,
@@ -120,7 +122,7 @@ public:
 
    Node_id insert_iri(const Ns_id ns, std::string const& val) {
       //todo: do not new if node already stored
-      std::auto_ptr<Node> np(new Node_iri(ns,val));
+      ptr_t np(new Node_iri(ns,val));
       return insert(np);
    }
 
@@ -130,13 +132,33 @@ public:
             std::string const& lang = ""
    ) {
       //todo: do not new if node already stored
-      std::auto_ptr<Node> np(new Node_literal(val, dt, lang));
+      ptr_t np;
+      switch(internal_type_id(dt)) {
+      case detail::Bool_tid:
+         np.reset( new Node_bool(val, dt) );
+         break;
+      case detail::Int_tid:
+         np.reset( new Node_int(val, dt) );
+         break;
+      case detail::Unsigned_tid:
+         np.reset( new Node_unsigned(val, dt) );
+         break;
+      case detail::Double_tid:
+         np.reset( new Node_double(val, dt) );
+         break;
+      case detail::Empty_tid:
+      case detail::String_tid:
+      case detail::Unknown_tid:
+      default:
+         np.reset( new Node_string(val, dt, lang) );
+         break;
+      }
       return insert(np);
    }
 
    Node_id insert_blank(const unsigned n, const Doc_id doc) {
       //todo: do not new if node already stored
-      std::auto_ptr<Node> np(new Node_blank(n, doc));
+      ptr_t np(new Node_blank(n, doc));
       return insert(np);
    }
 
@@ -145,7 +167,7 @@ public:
       const std::size_t n = m_.erase(&get(id));
       BOOST_ASSERT(n);
       erased_.push_back(id);
-      return std::auto_ptr<Node>( v_.replace(sz(id), 0).release() );
+      return ptr_t( v_.replace(sz(id), 0).release() );
    }
 
    void clear() {
@@ -169,7 +191,7 @@ private:
 
    Node const& get(const Node_id id) const {return v_[sz(id)];}
 
-   Node_id make_id(std::auto_ptr<Node> np) {
+   Node_id make_id(ptr_t np) {
       if( erased_.empty() ) {
          const Node_id id = nid(v_.size());
          v_.push_back(np);
@@ -183,7 +205,7 @@ private:
       return id;
    }
 
-   Node_id insert(std::auto_ptr<Node> np) {
+   Node_id insert(ptr_t np) {
       insert_t ip = m_.emplace(np.get(), Node_id());
       if( ip.second ) {
          const Node_id id = make_id(np);
@@ -193,15 +215,16 @@ private:
       return ip.first->second;
    }
 
-   void insert(const Node_id id, std::auto_ptr<Node> np) {
+   void insert(const Node_id id, ptr_t np) {
       Node_id const* id0 = find(*np);
       if( id0 ) {
          if( *id0 == id ) return;
+         Node const& node = *np;
          BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("node already exists")
                   << Err::node_id_t(*id0)
-                  << Err::str1_t(to_string(*np))
+                  << Err::str1_t(to_string(node))
          );
       }
       if( valid(id) ) BOOST_THROW_EXCEPTION(

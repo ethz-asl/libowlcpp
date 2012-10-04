@@ -10,8 +10,11 @@ part of owlcpp project.
 
 namespace owlcpp{
 
-/**@brief 
+/**@return namespace ID string
 *******************************************************************************/
+inline std::string to_string(const Ns_id nsid) {
+   return "NsID" + boost::lexical_cast<std::string>(nsid());
+}
 
 
 }//namespace owlcpp
