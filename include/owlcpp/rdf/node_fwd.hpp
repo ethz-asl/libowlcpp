@@ -9,16 +9,21 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace detail{
 template<class> class Node_literal;
+struct Datatype_bool;
+struct Datatype_int;
+struct Datatype_unsigned;
+struct Datatype_real;
+struct Datatype_string;
 }//namespace detail
 
 class Node;
 class Node_iri;
 class Node_blank;
-typedef detail::Node_literal<bool> Node_bool;
-typedef detail::Node_literal<boost::intmax_t> Node_int;
-typedef detail::Node_literal<boost::uintmax_t> Node_unsigned;
-typedef detail::Node_literal<double> Node_double;
-typedef detail::Node_literal<std::string> Node_string;
+typedef detail::Node_literal<detail::Datatype_bool> Node_bool;
+typedef detail::Node_literal<detail::Datatype_int> Node_int;
+typedef detail::Node_literal<detail::Datatype_unsigned> Node_unsigned;
+typedef detail::Node_literal<detail::Datatype_real> Node_double;
+typedef detail::Node_literal<detail::Datatype_string> Node_string;
 
 }//namespace owlcpp
 #endif /* NODE_FWD_HPP_ */

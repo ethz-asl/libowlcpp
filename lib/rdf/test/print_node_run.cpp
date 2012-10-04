@@ -37,7 +37,6 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(to_string(rbo1), "true");
 
    const Node_bool nbo2("false");
-   BOOST_CHECK( ! nbo2.value() );
    BOOST_CHECK_EQUAL(to_string(nbo2), "false");
    Node const& rbo2 = nbo2;
    BOOST_CHECK_EQUAL(to_string(rbo2), "false");
@@ -47,15 +46,16 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    Node const& rs = ns;
    BOOST_CHECK_EQUAL(to_string(rs), "\"blah\"");
 
+   BOOST_CHECK_THROW(Node_int("0.1"), Rdf_err);
    const Node_int ni("-1");
    BOOST_CHECK_EQUAL(to_string(ni), "\"-1\"");
    Node const& ri = ni;
    BOOST_CHECK_EQUAL(to_string(ri), "\"-1\"");
 
-   const Node_unsigned nu("-1");
-   BOOST_CHECK_EQUAL(to_string(nu), "\"-1\"");
+   const Node_unsigned nu("1123123");
+   BOOST_CHECK_EQUAL(to_string(nu), "\"1123123\"");
    Node const& ru = nu;
-   BOOST_CHECK_EQUAL(to_string(ru), "\"-1\"");
+   BOOST_CHECK_EQUAL(to_string(ru), "\"1123123\"");
 }
 
 }//namespace test

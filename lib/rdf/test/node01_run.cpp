@@ -48,9 +48,9 @@ BOOST_AUTO_TEST_CASE( test_iri_node ) {
    BOOST_CHECK(n5 != n7);
 }
 
-/** Literal nodes
+/** Literal string nodes
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( test_literal_node ) {
+BOOST_AUTO_TEST_CASE( test_literal_string_node ) {
    const Node_string n1("blah", Node_id(42), "en");
    BOOST_CHECK_EQUAL(n1.ns_id(), owlcpp::terms::N_empty::id());
    const Node_string n2("blah", Node_id(42), "en");
@@ -64,6 +64,41 @@ BOOST_AUTO_TEST_CASE( test_literal_node ) {
 
    const Node_string n5("blah", Node_id(42), "fr");
    BOOST_CHECK(n1 != n5);
+}
+
+/** Literal bool nodes
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_literal_bool_node ) {
+   BOOST_CHECK_THROW(Node_bool("falsee"), Rdf_err);
+   const Node_bool nbo2("false");
+   BOOST_CHECK( ! nbo2.value() );
+}
+
+/** Literal int nodes
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_literal_int_node ) {
+   BOOST_CHECK_THROW(Node_int("blah"), Rdf_err);
+   BOOST_CHECK_EQUAL(Node_int("-1").value(), -1);
+
+   BOOST_CHECK_EQUAL(Node_int(0.9).value(), 0);
+   BOOST_CHECK_THROW(Node_int("0.9"), Rdf_err);
+   BOOST_CHECK_EQUAL(Node_int(1e10).value(), 1e10);
+   BOOST_CHECK_THROW(Node_int("1e10"), Rdf_err);
+}
+
+/** Literal unsigned nodes
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_literal_unsigned_node ) {
+   BOOST_CHECK_THROW(Node_unsigned(-1), Rdf_err);
+   BOOST_CHECK_THROW(Node_unsigned("-1"), Rdf_err);
+
+   BOOST_CHECK_EQUAL(Node_unsigned(1e10).value(), 1e10);
+}
+
+/** Literal real nodes
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_literal_real_node ) {
+
 }
 
 /** Blank nodes

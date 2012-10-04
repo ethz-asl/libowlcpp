@@ -7,49 +7,58 @@ part of owlcpp project.
 #define NODE_LITERAL_HPP_
 #include <string>
 #include "boost/functional/hash.hpp"
-#include "boost/lexical_cast.hpp"
-#include "boost/numeric/conversion/cast.hpp"
 
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
+#include "owlcpp/rdf/literal_datatypes.hpp"
 #include "owlcpp/rdf/node_fwd.hpp"
 
 namespace owlcpp{ namespace detail{
 
-template<class Out> struct Convert {
-   static Out conv(std::string const& in) {
-      return boost::lexical_cast<Out>(in);
-   }
-};
-
 /**@brief 
 *******************************************************************************/
-template<class T> class Node_literal : public Node {
+template<class Dt> class Node_literal : public Node {
    typedef Node_literal self_type;
-public:
-   typedef T value_type;
 
-   explicit Node_literal(
-            const value_type val,
+   template<class In> static value_type convert(In const& in, const Node_id dt) {
+      try{
+         return Dt::convert(in, dt);
+      } catch(std::bad_cast const&) {
+         BOOST_THROW_EXCEPTION(
+                  Rdf_err()
+                  << Rdf_err::msg_t(
+                           std::string("error converting to ") + Dt::name_str(dt)
+                  )
+                  << Rdf_err::str1_t(boost::lexical_cast<std::string>(in))
+//                  << Rdf_err::nested_t(boost::current_exception())
+         );
+      }
+   }
+
+public:
+   typedef typename Dt::value_type value_type;
+
+   template<class T> explicit Node_literal(
+            T const& val,
             const Node_id dt = terms::T_empty_::id()
    )
-   : val_(val), dt_(dt)
+   : val_(convert(val, dt)), dt_(dt)
    {}
 
    explicit Node_literal(
             char const* val,
             const Node_id dt = terms::T_empty_::id()
    )
-   : val_(Convert<value_type>::conv(val)), dt_(dt)
+   : val_(Dt::parse(val, dt)), dt_(dt)
    {}
 
    explicit Node_literal(
             std::string const& val,
             const Node_id dt = terms::T_empty_::id()
    )
-   : val_(Convert<value_type>::conv(val)), dt_(dt)
+   : val_(Dt::parse(val, dt)), dt_(dt)
    {}
 
    Node_id datatype() const {return dt_;}
@@ -82,36 +91,28 @@ private:
 
 };
 
-template<> struct Convert<Node_bool::value_type> {
-   static Node_bool::value_type conv(std::string const& in) {
-      if( in == "true" ) return true;
-      if( in == "false" ) return false;
-      return boost::lexical_cast<Node_bool::value_type>(in);
-   }
-};
-
-template<> struct Convert<Node_unsigned::value_type> {
-   static Node_unsigned::value_type conv(std::string const& in) {
-      return boost::numeric_cast<Node_unsigned::value_type>(
-               boost::lexical_cast<Node_int::value_type>(in)
-      );
-   }
-};
-
-
 /**@brief
 *******************************************************************************/
-template<> class Node_literal<std::string> : public Node {
+template<> class Node_literal<Datatype_string> : public Node {
    typedef Node_literal self_type;
+
+   static std::size_t _hash(std::string const& val, const Node_id dt, std::string const& lang) {
+      std::size_t h = 0;
+      boost::hash_combine(h, val);
+      boost::hash_combine(h, lang);
+      boost::hash_combine(h, dt);
+      return h;
+   }
+
 public:
-   typedef std::string value_type;
+   typedef Datatype_string::value_type value_type;
 
    explicit Node_literal(
             std::string const& val,
             const Node_id dt = terms::T_empty_::id(),
             std::string const& lang = ""
    )
-   : val_(val), lang_(lang), dt_(dt)
+   : val_(val), lang_(lang), hash_(_hash(val, dt, lang)), dt_(dt)
    {}
 
    std::string const& language() const {return lang_;}
@@ -121,6 +122,7 @@ public:
 private:
    std::string val_;
    std::string lang_;
+   std::size_t hash_;
    Node_id dt_;
 
    OWLCPP_VISITABLE
@@ -137,13 +139,7 @@ private:
       return false;
    }
 
-   std::size_t hash_impl() const {
-      std::size_t h = 0;
-      boost::hash_combine(h, val_);
-      boost::hash_combine(h, lang_);
-      boost::hash_combine(h, dt_);
-      return h;
-   }
+   std::size_t hash_impl() const {return hash_;}
 };
 
 }//namespace detail
