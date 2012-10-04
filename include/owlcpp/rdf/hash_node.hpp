@@ -8,9 +8,7 @@ part of owlcpp project.
 #include "boost/functional/hash.hpp"
 
 #include "owlcpp/rdf/node.hpp"
-#include "owlcpp/rdf/node_blank.hpp"
 #include "owlcpp/rdf/node_iri.hpp"
-#include "owlcpp/rdf/node_literal.hpp"
 
 namespace owlcpp{
 
