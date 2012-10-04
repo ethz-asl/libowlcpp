@@ -6,19 +6,9 @@ part of owlcpp project.
 #ifndef VISITOR_NODE_HPP_
 #define VISITOR_NODE_HPP_
 #include <string>
-#include "boost/cstdint.hpp"
+#include "owlcpp/rdf/node_fwd.hpp"
 
-namespace owlcpp{ namespace detail{
-template<class> class Node_literal;
-}//namespace detail
-
-class Node_iri;
-class Node_blank;
-typedef detail::Node_literal<bool> Node_bool;
-typedef detail::Node_literal<boost::intmax_t> Node_int;
-typedef detail::Node_literal<boost::uintmax_t> Node_unsigned;
-typedef detail::Node_literal<double> Node_double;
-typedef detail::Node_literal<std::string> Node_string;
+namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/

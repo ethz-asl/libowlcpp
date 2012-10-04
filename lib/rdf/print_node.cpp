@@ -16,22 +16,10 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_blank.hpp"
 #include "owlcpp/rdf/node_literal.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/print_ns.hpp"
+#include "owlcpp/rdf/print_id.hpp"
 
 
 namespace owlcpp {
-
-/*
-*******************************************************************************/
-std::string to_string(const Node_id nid) {
-   return "Node" + boost::lexical_cast<std::string>(nid());
-}
-
-/*
-*******************************************************************************/
-std::string to_string(Node_iri const& node) {
-   return to_string(node.ns_id()) + ':' + node.name();
-}
 
 /*
 *******************************************************************************/
@@ -51,38 +39,60 @@ std::string to_string(Node_iri const& node, Triple_store const& ts) {
 }
 *******************************************************************************/
 
+/*
+*******************************************************************************/
+std::string to_string(Node_iri const& node) {
+   return to_string(node.ns_id()) + ':' + node.name();
+}
+
+/*
+*******************************************************************************/
+std::string to_string(Node_blank const& node) {
+   return "_:" + to_string(node.document()) + '-' +
+            boost::lexical_cast<std::string>(node.index());
+}
+
+/*
+*******************************************************************************/
+std::string to_string(Node_bool const& node) {
+   return node.value() ? "true" : "false";
+}
+
+/*
+*******************************************************************************/
+std::string to_string(Node_int const& node) {
+   return '"' + boost::lexical_cast<std::string>(node.value()) + '"';
+}
+
+/*
+*******************************************************************************/
+std::string to_string(Node_unsigned const& node) {
+   return '"' + boost::lexical_cast<std::string>(node.value()) + '"';
+}
+
+/*
+*******************************************************************************/
+std::string to_string(Node_double const& node) {
+   return '"' + boost::lexical_cast<std::string>(node.value()) + '"';
+}
+
+/*
+*******************************************************************************/
+std::string to_string(Node_string const& node) {
+   return '"' + node.value() + '"';
+}
+
 namespace{
 /*
 *******************************************************************************/
 class To_string : public Visitor_node {
-   void visit_impl(Node_iri const& node) {
-      str_ = to_string(node.ns_id()) + ':' + node.name();
-   }
-
-   void visit_impl(Node_blank const& node) {
-
-   }
-
-   void visit_impl(Node_bool const& node) {
-
-   }
-
-   void visit_impl(Node_int const& node) {
-
-   }
-
-   void visit_impl(Node_unsigned const& node) {
-
-   }
-
-   void visit_impl(Node_double const& node) {
-
-   }
-
-   void visit_impl(Node_string const& node) {
-
-   }
-
+   void visit_impl(Node_iri const& node) {str_ = to_string(node);}
+   void visit_impl(Node_blank const& node) {str_ = to_string(node);}
+   void visit_impl(Node_bool const& node) {str_ = to_string(node);}
+   void visit_impl(Node_int const& node) {str_ = to_string(node);}
+   void visit_impl(Node_unsigned const& node) {str_ = to_string(node);}
+   void visit_impl(Node_double const& node) {str_ = to_string(node);}
+   void visit_impl(Node_string const& node) {str_ = to_string(node);}
 public:
    std::string str_;
 };

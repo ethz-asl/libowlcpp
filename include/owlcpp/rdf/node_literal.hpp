@@ -16,13 +16,13 @@ part of owlcpp project.
 namespace owlcpp{ namespace detail{
 
 template<class Out> struct Convert {
-   Out operator()(std::string const& in) {
+   static Out conv(std::string const& in) {
       return boost::lexical_cast<Out>(in);
    }
 };
 
 template<> struct Convert<bool> {
-   bool operator()(std::string const& in) {
+   static bool conv(std::string const& in) {
       if( in == "true" ) return true;
       if( in == "false" ) return false;
       return boost::lexical_cast<bool>(in);
@@ -44,10 +44,17 @@ public:
    {}
 
    explicit Node_literal(
+            char const* val,
+            const Node_id dt = terms::T_empty_::id()
+   )
+   : val_(Convert<value_type>::conv(val)), dt_(dt)
+   {}
+
+   explicit Node_literal(
             std::string const& val,
             const Node_id dt = terms::T_empty_::id()
    )
-   : val_(Convert<value_type>()(val)), dt_(dt)
+   : val_(Convert<value_type>::conv(val)), dt_(dt)
    {}
 
    Node_id datatype() const {return dt_;}
