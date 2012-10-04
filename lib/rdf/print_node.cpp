@@ -24,7 +24,7 @@ namespace owlcpp {
 /*
 *******************************************************************************/
 std::string to_string(const Node_id nid) {
-   return "NodeID" + boost::lexical_cast<std::string>(nid());
+   return "Node" + boost::lexical_cast<std::string>(nid());
 }
 
 /*
@@ -41,20 +41,60 @@ std::string to_string_full(Node_iri const& node, Triple_store const& ts) {
 }
 
 /*
-std::string to_string_pref(Node_iri const&, Triple_store const&) {
+std::string to_string_pref(Node_iri const& node, Triple_store const& ts) {
 
 }
 *******************************************************************************/
 
 /*
-std::string to_string(Node_iri const&, Triple_store const&) {
+std::string to_string(Node_iri const& node, Triple_store const& ts) {
 }
 *******************************************************************************/
 
+namespace{
 /*
 *******************************************************************************/
-std::string to_string(Node const&) {
-   return "blah"; //todo
+class To_string : public Visitor_node {
+   void visit_impl(Node_iri const& node) {
+      str_ = to_string(node.ns_id()) + ':' + node.name();
+   }
+
+   void visit_impl(Node_blank const& node) {
+
+   }
+
+   void visit_impl(Node_bool const& node) {
+
+   }
+
+   void visit_impl(Node_int const& node) {
+
+   }
+
+   void visit_impl(Node_unsigned const& node) {
+
+   }
+
+   void visit_impl(Node_double const& node) {
+
+   }
+
+   void visit_impl(Node_string const& node) {
+
+   }
+
+public:
+   std::string str_;
+};
+
+}//namespace anonymous
+
+/*
+*******************************************************************************/
+std::string to_string(Node const& node) {
+   To_string tstr;
+   node.accept(tstr);
+   return tstr.str_;
 }
 
 }//namespace owlcpp

@@ -1,20 +1,22 @@
-/** @file "/owlcpp/include/owlcpp/rdf/print_ns.hpp" 
+/** @file "/owlcpp/lib/rdf/print_ns.cpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#ifndef PRINT_NS_HPP_
-#define PRINT_NS_HPP_
-#include <string>
-#include "owlcpp/ns_id.hpp"
-#include "owlcpp/rdf/config.hpp"
+#ifndef OWLCPP_RDF_SOURCE
+#define OWLCPP_RDF_SOURCE
+#endif
+#include "owlcpp/rdf/print_ns.hpp"
 
-namespace owlcpp{
+#include "boost/lexical_cast.hpp"
+
+namespace owlcpp {
 
 /**@return namespace ID string
 *******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string(const Ns_id nsid);
+std::string to_string(const Ns_id nsid) {
+   return "Ns" + boost::lexical_cast<std::string>(nsid());
+}
 
 
 }//namespace owlcpp
-#endif /* PRINT_NS_HPP_ */
