@@ -51,6 +51,11 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(to_string(ni), "\"-1\"");
    Node const& ri = ni;
    BOOST_CHECK_EQUAL(to_string(ri), "\"-1\"");
+
+   const Node_unsigned nu("-1");
+   BOOST_CHECK_EQUAL(to_string(nu), "\"-1\"");
+   Node const& ru = nu;
+   BOOST_CHECK_EQUAL(to_string(ru), "\"-1\"");
 }
 
 }//namespace test

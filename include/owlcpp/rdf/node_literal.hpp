@@ -8,24 +8,19 @@ part of owlcpp project.
 #include <string>
 #include "boost/functional/hash.hpp"
 #include "boost/lexical_cast.hpp"
+#include "boost/numeric/conversion/cast.hpp"
+
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
+#include "owlcpp/rdf/node_fwd.hpp"
 
 namespace owlcpp{ namespace detail{
 
 template<class Out> struct Convert {
    static Out conv(std::string const& in) {
       return boost::lexical_cast<Out>(in);
-   }
-};
-
-template<> struct Convert<bool> {
-   static bool conv(std::string const& in) {
-      if( in == "true" ) return true;
-      if( in == "false" ) return false;
-      return boost::lexical_cast<bool>(in);
    }
 };
 
@@ -86,6 +81,23 @@ private:
    }
 
 };
+
+template<> struct Convert<Node_bool::value_type> {
+   static Node_bool::value_type conv(std::string const& in) {
+      if( in == "true" ) return true;
+      if( in == "false" ) return false;
+      return boost::lexical_cast<Node_bool::value_type>(in);
+   }
+};
+
+template<> struct Convert<Node_unsigned::value_type> {
+   static Node_unsigned::value_type conv(std::string const& in) {
+      return boost::numeric_cast<Node_unsigned::value_type>(
+               boost::lexical_cast<Node_int::value_type>(in)
+      );
+   }
+};
+
 
 /**@brief
 *******************************************************************************/
