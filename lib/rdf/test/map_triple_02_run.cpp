@@ -10,7 +10,7 @@ part of owlcpp project.
 #include <iostream>
 
 #include "owlcpp/rdf/map_triple.hpp"
-#include "test_utils.hpp"
+#include "rdf/test/test_utils.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -40,6 +40,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    triple_map::const_iterator i = tm.begin();
 
    std::cout << *i << std::endl;
+   //qi.predicate() returns predicate object from boost::filter_iterator
    BOOST_CHECK( ! qi.predicate()(*i++) );
 
    std::cout << *i << std::endl;

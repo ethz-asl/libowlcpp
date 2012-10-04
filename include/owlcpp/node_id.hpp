@@ -24,7 +24,7 @@ template<class ChT, class Tr> inline std::basic_ostream<ChT,Tr>& operator<<(
       std::basic_ostream<ChT,Tr>& os,
       Node_id const& id
 ) {
-   return os << "NodeID" << id;
+   return os << "Node" << id();
 }
 
 }//namespace owlcpp
