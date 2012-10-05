@@ -36,28 +36,23 @@ struct Datatype_bool {
    typedef bool value_type;
    typedef owlcpp::terms::T_xsd_boolean def_type;
 
-   static value_type parse(std::string const& str, const Node_id dt) {
+   static value_type convert(std::string const& str, const Node_id dt) {
       if( str == "true" ) return true;
       if( str == "false" ) return false;
-      try{
-         return boost::lexical_cast<value_type>(str);
-      } catch(std::bad_cast const&) {
-         BOOST_THROW_EXCEPTION(
-                  Rdf_err()
-                  << Rdf_err::msg_t(
-                           std::string("error converting to ") + name_str()
-                  )
-                  << Rdf_err::str1_t(str)
-                  << Rdf_err::nested_t(boost::current_exception())
-         );
-      }
+      return boost::lexical_cast<value_type>(str);
    }
 
-   template<class T> static value_type cast(const T x, const Node_id) {return x;}
+   template<class T> static value_type convert(const T x, const Node_id) {
+      return boost::numeric_cast<value_type>(x);
+   }
 
-   static std::string const& name_str() {
+   static std::string const& name_str(const Node_id) {
       static const std::string name(to_string_short(def_type()));
       return name;
+   }
+
+   static std::string to_string(value_type const v, const Node_id) {
+      return v ? "true" : "false";
    }
 };
 
@@ -67,39 +62,21 @@ struct Datatype_int{
    typedef boost::intmax_t value_type;
    typedef owlcpp::terms::T_xsd_int def_type;
 
-   static value_type parse(std::string const& str, const Node_id dt) {
-      try{
-         return boost::lexical_cast<value_type>(str);
-      } catch(std::bad_cast const&) {
-         BOOST_THROW_EXCEPTION(
-                  Rdf_err()
-                  << Rdf_err::msg_t(
-                           std::string("error converting to ") + name_str()
-                  )
-                  << Rdf_err::str1_t(str)
-                  << Rdf_err::nested_t(boost::current_exception())
-         );
-      }
+   static value_type convert(std::string const& str, const Node_id dt) {
+      return boost::lexical_cast<value_type>(str);
    }
 
-   template<class T> static value_type cast(const T x, const Node_id) {
-      try{
-         return boost::numeric_cast<value_type>(x);
-      } catch(std::bad_cast const&) {
-         BOOST_THROW_EXCEPTION(
-                  Rdf_err()
-                  << Rdf_err::msg_t(
-                           std::string("error converting to ") + name_str()
-                  )
-                  << Rdf_err::str1_t(boost::lexical_cast<std::string>(x))
-                  << Rdf_err::nested_t(boost::current_exception())
-         );
-      }
+   template<class T> static value_type convert(const T x, const Node_id) {
+      return boost::numeric_cast<value_type>(x);
    }
 
-   static std::string const& name_str() {
+   static std::string const& name_str(const Node_id) {
       static const std::string name(to_string_short(def_type()));
       return name;
+   }
+
+   static std::string to_string(value_type const v, const Node_id) {
+      return boost::lexical_cast<std::string>(v);
    }
 };
 
@@ -109,28 +86,23 @@ struct Datatype_unsigned{
    typedef boost::uintmax_t value_type;
    typedef owlcpp::terms::T_xsd_unsignedInt def_type;
 
-   static value_type parse(std::string const& str, const Node_id dt) {
-      try{
-         return boost::numeric_cast<value_type>(
-                  boost::lexical_cast<Datatype_int::value_type>(str)
-         );
-      } catch(std::bad_cast const&) {
-         BOOST_THROW_EXCEPTION(
-                  Rdf_err()
-                  << Rdf_err::msg_t(
-                           std::string("error converting to ") + name_str()
-                  )
-                  << Rdf_err::str1_t(boost::lexical_cast<std::string>(x))
-                  << Rdf_err::nested_t(boost::current_exception())
-         );
-      }
+   static value_type convert(std::string const& str, const Node_id dt) {
+      return boost::numeric_cast<value_type>(
+               boost::lexical_cast<Datatype_int::value_type>(str)
+      );
    }
 
-   template<class T> static value_type cast(const T x, const Node_id) {return x;}
+   template<class T> static value_type convert(const T x, const Node_id) {
+      return boost::numeric_cast<value_type>(x);
+   }
 
-   static std::string const& name_str() {
+   static std::string const& name_str(const Node_id) {
       static const std::string name(to_string_short(def_type()));
       return name;
+   }
+
+   static std::string to_string(value_type const v, const Node_id) {
+      return boost::lexical_cast<std::string>(v);
    }
 };
 
@@ -140,15 +112,21 @@ struct Datatype_real{
    typedef double value_type;
    typedef owlcpp::terms::T_xsd_double def_type;
 
-   static value_type parse(std::string const& str, const Node_id dt) {
+   static value_type convert(std::string const& str, const Node_id dt) {
       return boost::lexical_cast<value_type>(str);
    }
 
-   template<class T> static value_type cast(const T x, const Node_id) {return x;}
+   template<class T> static value_type convert(const T x, const Node_id) {
+      return boost::numeric_cast<value_type>(x);
+   }
 
-   static std::string const& name_str() {
+   static std::string const& name_str(const Node_id) {
       static const std::string name(to_string_short(def_type()));
       return name;
+   }
+
+   static std::string to_string(value_type const v, const Node_id) {
+      return boost::lexical_cast<std::string>(v);
    }
 };
 
@@ -158,13 +136,13 @@ struct Datatype_string{
    typedef std::string value_type;
    typedef owlcpp::terms::T_xsd_string def_type;
 
-   static value_type parse(std::string const& str, const Node_id dt) {
+   static value_type const& convert(std::string const& str, const Node_id dt) {
       return str;
    }
 
-   template<class T> static value_type cast(const T x) {return x;}
+   template<class T> static value_type convert(const T x) {return x;}
 
-   static std::string const& name_str() {
+   static std::string const& name_str(const Node_id) {
       static const std::string name(to_string_short(def_type()));
       return name;
    }

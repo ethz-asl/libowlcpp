@@ -22,6 +22,9 @@ namespace owlcpp{ namespace detail{
 template<class Dt> class Node_literal : public Node {
    typedef Node_literal self_type;
 
+public:
+   typedef typename Dt::value_type value_type;
+
    template<class In> static value_type convert(In const& in, const Node_id dt) {
       try{
          return Dt::convert(in, dt);
@@ -32,37 +35,34 @@ template<class Dt> class Node_literal : public Node {
                            std::string("error converting to ") + Dt::name_str(dt)
                   )
                   << Rdf_err::str1_t(boost::lexical_cast<std::string>(in))
-//                  << Rdf_err::nested_t(boost::current_exception())
          );
       }
    }
-
-public:
-   typedef typename Dt::value_type value_type;
 
    template<class T> explicit Node_literal(
             T const& val,
             const Node_id dt = terms::T_empty_::id()
    )
-   : val_(convert(val, dt)), dt_(dt)
+   : val_(convert<T>(val, dt)), dt_(dt)
    {}
 
    explicit Node_literal(
             char const* val,
             const Node_id dt = terms::T_empty_::id()
    )
-   : val_(Dt::parse(val, dt)), dt_(dt)
+   : val_(convert(std::string(val), dt)), dt_(dt)
    {}
 
    explicit Node_literal(
             std::string const& val,
             const Node_id dt = terms::T_empty_::id()
    )
-   : val_(Dt::parse(val, dt)), dt_(dt)
+   : val_(convert(val, dt)), dt_(dt)
    {}
 
    Node_id datatype() const {return dt_;}
    value_type value() const {return val_;}
+   std::string value_str() const {return Dt::to_string(val_, dt_);}
 
 private:
    value_type val_;

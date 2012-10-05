@@ -54,27 +54,19 @@ std::string to_string(Node_blank const& node) {
 
 /*
 *******************************************************************************/
-std::string to_string(Node_bool const& node) {
-   return node.value() ? "true" : "false";
-}
+std::string to_string(Node_bool const& node) {return node.value_str();}
 
 /*
 *******************************************************************************/
-std::string to_string(Node_int const& node) {
-   return '"' + boost::lexical_cast<std::string>(node.value()) + '"';
-}
+std::string to_string(Node_int const& node) {return node.value_str();}
 
 /*
 *******************************************************************************/
-std::string to_string(Node_unsigned const& node) {
-   return '"' + boost::lexical_cast<std::string>(node.value()) + '"';
-}
+std::string to_string(Node_unsigned const& node) {return node.value_str();}
 
 /*
 *******************************************************************************/
-std::string to_string(Node_double const& node) {
-   return '"' + boost::lexical_cast<std::string>(node.value()) + '"';
-}
+std::string to_string(Node_double const& node) {return node.value_str();}
 
 /*
 *******************************************************************************/

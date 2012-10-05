@@ -48,14 +48,19 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 
    BOOST_CHECK_THROW(Node_int("0.1"), Rdf_err);
    const Node_int ni("-1");
-   BOOST_CHECK_EQUAL(to_string(ni), "\"-1\"");
+   BOOST_CHECK_EQUAL(to_string(ni), "-1");
    Node const& ri = ni;
-   BOOST_CHECK_EQUAL(to_string(ri), "\"-1\"");
+   BOOST_CHECK_EQUAL(to_string(ri), "-1");
 
    const Node_unsigned nu("1123123");
-   BOOST_CHECK_EQUAL(to_string(nu), "\"1123123\"");
+   BOOST_CHECK_EQUAL(to_string(nu), "1123123");
    Node const& ru = nu;
-   BOOST_CHECK_EQUAL(to_string(ru), "\"1123123\"");
+   BOOST_CHECK_EQUAL(to_string(ru), "1123123");
+
+   const Node_double nd("1.23");
+   BOOST_CHECK_EQUAL(to_string(nd), "1.23");
+   Node const& rd = nd;
+   BOOST_CHECK_EQUAL(to_string(rd), "1.23");
 }
 
 }//namespace test
