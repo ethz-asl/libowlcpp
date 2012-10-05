@@ -9,9 +9,94 @@ part of owlcpp project.
 #include "boost/unordered_map.hpp"
 
 #include "owlcpp/rdf/triple.hpp"
+#include "owlcpp/rdf/detail/map_traits.hpp"
+#include "owlcpp/rdf/visitor_node.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp{ namespace detail{
+
+template<class Src, class Dest> class Node_copier : public Visitor_node {
+   typedef boost::unordered_map<Node_id,Node_id> node_map_t;
+   typedef node_map_t::const_iterator node_iter_t;
+   typedef boost::unordered_map<Doc_id,Doc_id> doc_map_t;
+   typedef doc_map_t::const_iterator doc_iter_t;
+   typedef boost::unordered_map<Ns_id,Ns_id> ns_map_t;
+   typedef ns_map_t::const_iterator ns_iter_t;
+
+   typedef detail::Map_traits<Src> traits;
+   typedef typename traits::doc_type doc_type;
+
+public:
+   Node_copier(Src const& src, Dest& dest)
+   : src_(src), dest_(dest)
+   {}
+
+   void operator()(Triple const& tr) {
+      const Node_id subj = cp(t.subject());
+      const Node_id pred = cp(t.predicate());
+      const Node_id obj  = cp(t.object());
+      const  Doc_id doc  = cp(t.document());
+      dest_.insert_triple(subj, pred, obj, doc);
+   }
+
+   Node_id cp(const Node_id nid0) {
+      const node_iter_t i = nm_.find(nid0);
+      if( i != nm_.end() ) return i->second;
+      Node const& node = src_[nid0];
+      node.accept(*this);
+   }
+
+   Doc_id cp(const Doc_id did0) {
+      const doc_iter_t i = dm_.find(did0);
+      if( i != dm_.end() ) return i->second;
+      Node const& node = src_[did0];
+
+   }
+
+   Ns_id cp(const Ns_id nsid0) {
+      const node_iter_t i = nm_.find(nid0);
+      if( i != nm_.end() ) return i->second;
+      Node const& node = src_[nid0];
+
+   }
+
+private:
+   Src const& src_;
+   Dest& dest_;
+   node_map_t nm_;
+   doc_map_t dm_;
+   ns_map_t nsm_;
+
+   void visit_impl(Node_iri const& node) {
+
+   }
+
+   void visit_impl(Node_blank const& node) {
+
+   }
+
+   void visit_impl(Node_bool const& node) {
+
+   }
+
+   void visit_impl(Node_int const& node) {
+
+   }
+
+   void visit_impl(Node_unsigned const& node) {
+
+   }
+
+   void visit_impl(Node_double const& node) {
+
+   }
+
+   void visit_impl(Node_string const& node) {
+
+   }
+};
+
+
 template<class Src, class Dest> class Copy_adaptor{
    typedef boost::unordered_map<Node_id,Node_id> node_map_t;
    typedef boost::unordered_map<Doc_id,Doc_id> doc_map_t;
@@ -120,8 +205,8 @@ template<class Range, class Src, class Dest> inline void copy_triples(
          Src const& src,
          Dest& dest
 ) {
-   detail::Copy_adaptor<Src, Dest> ca(src, dest);
-   BOOST_FOREACH(Triple const& t, r) ca(t);
+   detail::Node_copier<Src, Dest> copier(src, dest);
+   BOOST_FOREACH(Triple const& t, r) copier(t);
 }
 
 /**@brief copy all triples from one store to another

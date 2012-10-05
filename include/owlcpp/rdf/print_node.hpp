@@ -50,17 +50,33 @@ OWLCPP_RDF_DECL std::string to_string(Node_double const& node);
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string(Node_string const& node);
 
-/**@return IRI node string with complete namespace
+/**@return IRI node string with complete namespace or prefix (if defined)
 *******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string_full(Node_iri const& node, Triple_store const& ts);
+OWLCPP_RDF_DECL std::string to_string(Node const&, Triple_store const&);
 
-/**@return IRI node string with namespace prefix, generated, if needed
+/**@return IRI node string with complete namespace or prefix (if defined)
 *******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string_pref(Node_iri const&, Triple_store const&);
+OWLCPP_RDF_DECL std::string to_string(const Node_id, Triple_store const&);
 
 /**@return IRI node string with complete namespace or prefix (if defined)
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string(Node_iri const&, Triple_store const&);
+
+/**@return node string with complete namespace
+*******************************************************************************/
+OWLCPP_RDF_DECL std::string to_string_full(Node const&, Triple_store const&);
+
+/**@return IRI node string with complete namespace
+*******************************************************************************/
+OWLCPP_RDF_DECL std::string to_string_full(Node_iri const&, Triple_store const&);
+
+/**@return IRI node string with namespace prefix, generated, if needed
+*******************************************************************************/
+OWLCPP_RDF_DECL std::string to_string_pref(Node const&, Triple_store const&);
+
+/**@return IRI node string with namespace prefix, generated, if needed
+*******************************************************************************/
+OWLCPP_RDF_DECL std::string to_string_pref(Node_iri const&, Triple_store const&);
 
 }//namespace owlcpp
 #endif /* PRINT_NODE_HPP_ */

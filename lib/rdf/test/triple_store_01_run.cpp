@@ -10,6 +10,7 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -64,7 +65,7 @@ BOOST_AUTO_TEST_CASE( test_nodes ) {
    const Node_id nid1a = ts.insert_node_iri(ni1);
    BOOST_CHECK_EQUAL(ts.map_node().size(), 1U);
    BOOST_CHECK_EQUAL(nid1, nid1a);
-//   BOOST_CHECK_EQUAL(to_string(nid1, ts), ni1);
+   BOOST_CHECK_EQUAL(to_string(nid1, ts), ni1);
    const Node_id nid2 = ts.insert_node_iri(ni2);
    BOOST_CHECK_NE(nid1, nid2);
    BOOST_CHECK_EQUAL(ts.map_node().size(), 2U);
@@ -83,11 +84,12 @@ BOOST_AUTO_TEST_CASE( test_nodes ) {
 
 /** Test IRI nodes, OWL-aware triple store
 *******************************************************************************/
+/*
 BOOST_AUTO_TEST_CASE( test_nodes_owl ) {
    Triple_store ts;
 
    BOOST_CHECK_EQUAL(
-            ts.at(t::T_owl_Ontology::id()),
+            to_string(ts.at(t::T_owl_Ontology::id())),
             t::T_owl_Ontology::name()
    );
 
@@ -112,9 +114,11 @@ BOOST_AUTO_TEST_CASE( test_nodes_owl ) {
             Triple_store::Err
    );
 }
+*/
 
 /** Empty IRI node maps to T_empty_::id() ID
 *******************************************************************************/
+/*
 BOOST_AUTO_TEST_CASE( test_empty_iri ) {
    Triple_store ts1(( Nodes_none() ));
    Node_id nid = ts1.insert_node_iri("");
@@ -124,6 +128,7 @@ BOOST_AUTO_TEST_CASE( test_empty_iri ) {
    nid = ts1.insert_node_iri("");
    BOOST_CHECK_EQUAL(nid, t::T_empty_::id());
 }
+*/
 
 }//namespace test
 }//namespace owlcpp

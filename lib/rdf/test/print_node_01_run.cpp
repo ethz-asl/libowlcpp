@@ -1,15 +1,17 @@
-/** @file "/owlcpp/lib/rdf/test/print_node_run.cpp" 
+/** @file "/owlcpp/lib/rdf/test/print_node_01_run.cpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
 *******************************************************************************/
-#define BOOST_TEST_MODULE print_node_run
+#define BOOST_TEST_MODULE print_node_01_run
 #include <iostream>
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/print_node.hpp"
+#include "owlcpp/rdf/node_iri.hpp"
+#include "owlcpp/rdf/node_blank.hpp"
+#include "owlcpp/rdf/node_literal.hpp"
 
 namespace owlcpp{ namespace test{
 
