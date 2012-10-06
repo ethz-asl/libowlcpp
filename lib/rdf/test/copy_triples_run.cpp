@@ -9,7 +9,7 @@ part of owlcpp project.
 #include "test/sample_triples.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/copy_triples.hpp"
-#include "owlcpp/rdf/query_node.hpp"
+//#include "owlcpp/rdf/query_node.hpp"
 #include "test_utils.hpp"
 
 namespace owlcpp{ namespace test{
@@ -47,8 +47,8 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    const Doc_id did2 = ts2.map_doc().find_path(path2).front();
    BOOST_CHECK_EQUAL( ts2.at(did1).path(), path1 );
    BOOST_CHECK_EQUAL( ts2.at(did2).path(), path2 );
-   BOOST_CHECK_EQUAL( ts2.at(did1).ontology_iri(), doc1 );
-   BOOST_CHECK_EQUAL( ts2.at(did2).ontology_iri(), doc2 );
+   BOOST_CHECK_EQUAL( ts2.at(did1).ontology_iri(), *ts2.find_node_iri(doc1) );
+   BOOST_CHECK_EQUAL( ts2.at(did2).ontology_iri(), *ts2.find_node_iri(doc2) );
 }
 
 }//namespace test
