@@ -36,13 +36,28 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    ts.insert_prefix(nsid1, ns1p);
    const Node_id nid1 = ts.insert_node_iri(ni1);
    const Node_id nid2 = ts.insert_node_iri(ni3);
+
+   //namespace IRI string
    BOOST_CHECK_EQUAL(ts[nsid1], ns1);
-   BOOST_CHECK_EQUAL(     to_string(nid1, ts), ni1);
-   BOOST_CHECK_EQUAL(to_string_pref(nid1, ts), ni1);
+   BOOST_CHECK_EQUAL(ts.prefix(nsid1), ns1p);
+
+   //prefix is defined for ns1, to_string() uses it
+   BOOST_CHECK_EQUAL(     to_string(nid1, ts), "ex1:node1");
+
+   //prefix is defined for ns1, to_string() uses it
+   BOOST_CHECK_EQUAL(to_string_pref(nid1, ts), "ex1:node1");
+
+   //full namespace IRI is produced
    BOOST_CHECK_EQUAL(to_string_full(nid1, ts), ni1);
-   BOOST_CHECK_EQUAL(     to_string(nid2, ts), ni1);
-   BOOST_CHECK_EQUAL(to_string_pref(nid2, ts), ni1);
-   BOOST_CHECK_EQUAL(to_string_full(nid2, ts), ni1);
+
+   //prefix is not defined, full namespace IRI is used
+   BOOST_CHECK_EQUAL(     to_string(nid2, ts), ni3);
+
+   //prefix is not defined, it is generated
+   BOOST_CHECK_EQUAL(to_string_pref(nid2, ts), "Ns7:node3");
+
+   //full namespace IRI is used
+   BOOST_CHECK_EQUAL(to_string_full(nid2, ts), ni3);
 }
 
 }//namespace test

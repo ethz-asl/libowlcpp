@@ -10,6 +10,7 @@ part of owlcpp project.
 
 #include "boost/numeric/conversion/cast.hpp"
 #include "boost/lexical_cast.hpp"
+#include "boost/functional.hpp"
 
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/rdf/node_iri.hpp"
@@ -103,21 +104,33 @@ private:
    void visit_impl(Node_string const& node) {str_ = to_string(node);}
 };
 
+template<class IRIPrint> std::string run_to_string(
+         IRIPrint const& iri_print, Node const& node
+) {
+   return To_string<IRIPrint>(iri_print, node).str_;
+}
+
 }//namespace anonymous
 
 /*
 *******************************************************************************/
 std::string to_string(Node const& node) {
-   To_string<std::string(&)(Node_iri const&)> tstr(to_string, node);
-   return tstr.str_;
+   return run_to_string(
+            static_cast<std::string(&)(Node_iri const&)>(to_string),
+            node
+   );
 }
 
 /**@return IRI node string with complete namespace or prefix (if defined)
 *******************************************************************************/
 std::string to_string(Node const& node, Triple_store const& ts) {
-//   To_string_ts tstr(ts, node);
-//   return tstr.str_;
-   return to_string(node);
+   return run_to_string(
+            boost::bind2nd(
+                     static_cast<std::string(&)(Node_iri const&, Triple_store const&)>(to_string),
+                     ts
+            ),
+            node
+   );
 }
 
 /**@return IRI node string with complete namespace or prefix (if defined)
@@ -128,14 +141,38 @@ std::string to_string(const Node_id nid, Triple_store const& ts) {
 
 /**@return IRI node string with namespace prefix, generated, if needed
 *******************************************************************************/
-//std::string to_string_pref(Node const& node, Triple_store const& ts) {
-//
-//}
+std::string to_string_pref(Node const& node, Triple_store const& ts) {
+   return run_to_string(
+            boost::bind2nd(
+                     static_cast<std::string(&)(Node_iri const&, Triple_store const&)>(to_string_pref),
+                     ts
+            ),
+            node
+   );
+}
+
+/**@return IRI node string with namespace prefix, generated, if needed
+*******************************************************************************/
+std::string to_string_pref(const Node_id nid, Triple_store const& ts) {
+   return to_string_pref(ts[nid], ts);
+}
 
 /**@return node string with complete namespace
 *******************************************************************************/
-//std::string to_string_full(Node const& node, Triple_store const& ts) {
-//
-//}
+std::string to_string_full(Node const& node, Triple_store const& ts) {
+   return run_to_string(
+            boost::bind2nd(
+                     static_cast<std::string(&)(Node_iri const&, Triple_store const&)>(to_string_full),
+                     ts
+            ),
+            node
+   );
+}
+
+/**@return node string with complete namespace
+*******************************************************************************/
+std::string to_string_full(const Node_id nid, Triple_store const& ts) {
+   return to_string_full(ts[nid], ts);
+}
 
 }//namespace owlcpp
