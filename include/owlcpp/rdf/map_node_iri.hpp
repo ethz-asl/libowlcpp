@@ -46,15 +46,13 @@ public:
 
    struct Err : public Rdf_err {};
 
-   Map_node_iri(const Node_id id0) : n0_(id0()) {}
-
    std::size_t size() const { return m_.size(); }
    const_iterator begin() const {return m_.begin();}
    const_iterator end() const {return m_.end();}
    bool empty() const {return m_.empty();}
 
    bool valid(const Node_id id) const {
-      if( id() < n0_ ) return false;
+      if( id < detail::max_std_node_id() ) return false;
       const std::size_t n = sz(id);
       return n < v_.size() && v_[n];
    }
@@ -74,7 +72,12 @@ public:
    }
 
    Node_iri const* find(const Node_id id) const {
-      return id() < n0_ || id() >= v_.size() + n0_ ? 0 : v_[sz(id)];
+      return
+               id < detail::max_std_node_id() ||
+               id() >= v_.size() + detail::max_std_node_id()() ?
+                        0 :
+                        v_[sz(id)]
+                           ;
    }
 
    Node_id const* find(const Ns_id ns, std::string const& val) const {
@@ -97,7 +100,7 @@ public:
    }
 
    void insert(const Node_id id, Node_iri const& node) {
-      if( id() < n0_ ) BOOST_THROW_EXCEPTION(
+      if( id < detail::max_std_node_id() ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("invalid ID")
                << Err::int1_t(id())
@@ -154,17 +157,18 @@ public:
    }
 
 private:
-   std::size_t n0_;
    vector_t v_;
    map_t m_;
    std::vector<Node_id> erased_;
 
    std::size_t sz(const Node_id id) const {
-      BOOST_ASSERT(id() >= n0_);
-      return id() - n0_;
+      BOOST_ASSERT(id >= detail::max_std_node_id());
+      return id() - detail::max_std_node_id()();
    }
 
-   Node_id nid(const std::size_t n) const {return Node_id(n + n0_);}
+   Node_id nid(const std::size_t n) const {
+      return Node_id(n + detail::max_std_node_id()());
+   }
 
    Node_iri const& get(const Node_id id) const {return *v_[sz(id)];}
 

@@ -9,6 +9,7 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/detail/map_traits.hpp"
 #include "owlcpp/rdf/store_concepts.hpp"
+#include "owlcpp/terms/detail/max_standard_id.hpp"
 
 namespace owlcpp{
 
@@ -41,11 +42,11 @@ public:
 
    std::string operator[](const Ns_id nsid) const {
       BOOST_ASSERT( valid(nsid) );
-      return nsid < _map_std().ns_id_next() ? _map_std()[nsid] : _map_ns()[nsid];
+      return nsid < detail::max_std_ns_id() ? _map_std()[nsid] : _map_ns()[nsid];
    }
 
    std::string at(const Ns_id nsid) const {
-      return nsid < _map_std().ns_id_next() ?
+      return nsid < detail::max_std_ns_id() ?
                _map_std().at(nsid) : _map_ns().at(nsid);
    }
 
@@ -55,7 +56,7 @@ public:
    */
    std::string prefix(const Ns_id nsid) const {
       BOOST_ASSERT( valid(nsid) );
-      return nsid < _map_std().ns_id_next() ?
+      return nsid < detail::max_std_ns_id() ?
                _map_std().prefix(nsid) : _map_ns().prefix(nsid);
    }
 
@@ -89,7 +90,7 @@ public:
    */
    void insert_prefix(const Ns_id nsid, std::string const& pref) {
       typedef typename Super::Err Err;
-      if( nsid < _map_std().ns_id_next() ) {
+      if( nsid < detail::max_std_ns_id() ) {
          if( pref.empty() || pref == _map_std().prefix(nsid) ) return;
          BOOST_THROW_EXCEPTION(
                   Err()

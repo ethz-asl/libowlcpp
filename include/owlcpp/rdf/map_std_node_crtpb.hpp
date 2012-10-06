@@ -9,6 +9,7 @@ part of owlcpp project.
 #include "boost/concept/assert.hpp"
 
 #include "owlcpp/rdf/detail/map_traits.hpp"
+#include "owlcpp/terms/detail/max_standard_id.hpp"
 
 namespace owlcpp{
 
@@ -44,7 +45,7 @@ public:
    bool is_standard(const Node_id nid) const {return _map_std().valid(nid);}
 
    node_type const& operator[](const Node_id id) const {
-      return id < _map_std().node_id_next() ? _map_std()[id] : _map_node()[id];
+      return id < detail::max_std_node_id() ? _map_std()[id] : _map_node()[id];
    }
 
    /**

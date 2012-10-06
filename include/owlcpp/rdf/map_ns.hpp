@@ -15,6 +15,7 @@ part of owlcpp project.
 #include "owlcpp/ns_id.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
+#include "owlcpp/terms/detail/max_standard_id.hpp"
 
 namespace owlcpp{
 
@@ -40,12 +41,12 @@ public:
 
    struct Err : public Rdf_err {};
 
-   Map_ns(const id_type id0) : id0_(id0()) {}
-   Map_ns(Map_ns const& nmb) : id0_(nmb.id0_) {copy(nmb);}
+   Map_ns() {}
+
+   Map_ns(Map_ns const& nmb) {copy(nmb);}
 
    Map_ns& operator=(Map_ns const& nmb) {
       clear();
-      id0_ = nmb.id0_;
       copy(nmb);
       return *this;
    }
@@ -61,8 +62,8 @@ public:
 
    bool valid(const Ns_id id) const {
       return
-               id() >= id0_ &&
-               id() - id0_ < id_.size() &&
+               id >= detail::max_std_ns_id() &&
+               id() - detail::max_std_ns_id()() < id_.size() &&
                get(id).first != iri_.end()
                ;
    }
@@ -191,30 +192,29 @@ public:
    }
 
 private:
-   id_type::value_type id0_;
    map_t iri_;
    map_t pref_;
    vec_t id_;
    std::vector<Ns_id> erased_;
 
    Ns_id next_id() {
-      if( erased_.empty() ) return Ns_id(id_.size() + id0_);
+      if( erased_.empty() ) return Ns_id(id_.size() + detail::max_std_ns_id()());
       const Ns_id id = erased_.back();
       erased_.pop_back();
       return id;
    }
 
    id_value_t& get(const Ns_id id) {
-      return id_[id() - id0_];
+      return id_[id() - detail::max_std_ns_id()()];
    }
 
    id_value_t const& get(const Ns_id id) const {
-      return id_[id() - id0_];
+      return id_[id() - detail::max_std_ns_id()()];
    }
 
    void resize(const Ns_id id) {
-      BOOST_ASSERT(id() >= id0_);
-      id_type::value_type n = id() - id0_;
+      BOOST_ASSERT(id >= detail::max_std_ns_id());
+      id_type::value_type n = id() - detail::max_std_ns_id()();
       if( n >= id_.size() ) {
          id_.resize(n + 1, std::make_pair(iri_.end(), pref_.end()));
       }

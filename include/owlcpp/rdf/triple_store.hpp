@@ -57,17 +57,11 @@ public:
    struct Err : public Rdf_err {};
 
    Triple_store()
-   : map_std_(Map_std::get(Nodes_owl())),
-     map_ns_(map_std_.ns_id_next()),
-     map_node_(map_std_.node_id_next()),
-     map_doc_(),
-     map_triple_()
+   : map_std_(Map_std::get(Nodes_owl()))
    {}
 
    template<class Nodes_std> explicit Triple_store(Nodes_std const& nodes_std)
    : map_std_(Map_std::get(nodes_std)),
-     map_ns_(map_std_.ns_id_next()),
-     map_node_(map_std_.node_id_next()),
      map_doc_(),
      map_triple_()
    {}
