@@ -28,15 +28,9 @@ namespace t = owlcpp::terms;
 BOOST_AUTO_TEST_CASE( case01 ) {
    Map_std const& nms0 = Map_std::get(Nodes_none());
    Map_std const& nms1 = Map_std::get(Nodes_owl());
-
-   BOOST_CHECK_EQUAL(nms0.ns_id_next()(), t::N_blank::index + 1 );
-   BOOST_CHECK_EQUAL(nms0.node_id_next()(), t::T_empty_::index + 1);
-
-   BOOST_CHECK_EQUAL(nms1.ns_id_next()(), t::N_owl::index + 1 );
-   BOOST_CHECK_GT(nms1.node_id_next()(), 100);
 }
 
-/** Standard node classes are singletons
+/** Standard node maps are singletons
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
    Map_std const& nms0 = Map_std::get(Nodes_none());

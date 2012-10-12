@@ -19,7 +19,7 @@ namespace t = owlcpp::terms;
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Map_node mnb(( Node_id() ));
+   Map_node mnb;
    BOOST_CHECK( ! mnb.valid(Node_id(42)) );
 
    const Node_id id1 = mnb.insert_iri(Ns_id(42), "blah");

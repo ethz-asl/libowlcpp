@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE( test_nodes ) {
    //same namespace IRIs
    BOOST_CHECK_EQUAL(ts[nid1].ns_id(), ts[nid2].ns_id());
    //different fragment names
-   BOOST_CHECK_NE(ts[nid1], ts[nid2]);
+   BOOST_CHECK_NE(to_string(nid1, ts), to_string(nid2, ts));
 
    const Node_id nid3 = ts.insert_node_iri(t::N_owl::iri() + "#Ontology");
    BOOST_CHECK_EQUAL(ts.map_node().size(), 3U);

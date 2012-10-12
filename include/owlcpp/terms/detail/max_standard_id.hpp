@@ -11,7 +11,9 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace detail{
 
-inline Ns_id max_std_ns_id() {
+/**@return starting ID for user-defined namespace IRIs
+*******************************************************************************/
+inline Ns_id min_ns_id() {
    return Ns_id(
 #ifdef OWLCPP_MAX_NUMBER_OF_STD_NAMESPACES
          OWLCPP_MAX_NUMBER_OF_STD_NAMESPACES
@@ -21,7 +23,9 @@ inline Ns_id max_std_ns_id() {
    );
 }
 
-inline Node_id max_std_node_id() {
+/**@return starting ID for user-defined nodes
+*******************************************************************************/
+inline Node_id min_node_id() {
    return Node_id(
 #ifdef OWLCPP_MAX_NUMBER_OF_STD_TERMS
          OWLCPP_MAX_NUMBER_OF_STD_TERMS

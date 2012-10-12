@@ -9,6 +9,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/map_node_iri.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
+#include "owlcpp/terms/detail/max_standard_id.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -19,7 +20,7 @@ namespace t = owlcpp::terms;
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Map_node_iri mnb(( Node_id() ));
+   Map_node_iri mnb;
    BOOST_CHECK( ! mnb.valid(Node_id(42)) );
 
    const Node_id id1 = mnb.insert(Ns_id(42), "blah");
@@ -66,13 +67,13 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   const Node_id id0(( 13 ));
-   Map_node_iri mnb(id0);
+   const Node_id min_id = ::owlcpp::detail::min_node_id();
+   Map_node_iri mnb;
 
    const Node_id id_1(( 10 ));
    BOOST_CHECK_THROW( mnb.insert(id_1, Ns_id(43), "blah"), Rdf_err );
 
-   mnb.insert(id0, Ns_id(43), "blah");
+   mnb.insert(min_id, Ns_id(43), "blah");
 
 }
 }//namespace test

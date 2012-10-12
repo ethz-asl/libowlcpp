@@ -41,7 +41,9 @@ public:
 
    struct Err : public Rdf_err {};
 
-   Map_ns() {}
+   Map_ns(const Ns_id min_id = detail::min_ns_id())
+   : min_id_(min_id)
+   {}
 
    Map_ns(Map_ns const& nmb) {copy(nmb);}
 
@@ -62,8 +64,8 @@ public:
 
    bool valid(const Ns_id id) const {
       return
-               id >= detail::max_std_ns_id() &&
-               id() - detail::max_std_ns_id()() < id_.size() &&
+               id >= min_id_ &&
+               id() - min_id_() < id_.size() &&
                get(id).first != iri_.end()
                ;
    }
@@ -196,25 +198,26 @@ private:
    map_t pref_;
    vec_t id_;
    std::vector<Ns_id> erased_;
+   const Ns_id min_id_;
 
    Ns_id next_id() {
-      if( erased_.empty() ) return Ns_id(id_.size() + detail::max_std_ns_id()());
+      if( erased_.empty() ) return Ns_id(id_.size() + min_id_());
       const Ns_id id = erased_.back();
       erased_.pop_back();
       return id;
    }
 
    id_value_t& get(const Ns_id id) {
-      return id_[id() - detail::max_std_ns_id()()];
+      return id_[id() - min_id_()];
    }
 
    id_value_t const& get(const Ns_id id) const {
-      return id_[id() - detail::max_std_ns_id()()];
+      return id_[id() - min_id_()];
    }
 
    void resize(const Ns_id id) {
-      BOOST_ASSERT(id >= detail::max_std_ns_id());
-      id_type::value_type n = id() - detail::max_std_ns_id()();
+      BOOST_ASSERT(id >= min_id_);
+      id_type::value_type n = id() - min_id_();
       if( n >= id_.size() ) {
          id_.resize(n + 1, std::make_pair(iri_.end(), pref_.end()));
       }

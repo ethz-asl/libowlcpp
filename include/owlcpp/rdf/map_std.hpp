@@ -24,6 +24,7 @@ namespace owlcpp{
 class Map_std : boost::noncopyable {
 
    template<class Inserter> explicit Map_std(Inserter const& ins)
+   : ns_(Ns_id(0)), node_(Node_id(0))
    {
       insert_ns_tag(terms::N_empty());
       insert_ns_tag(terms::N_blank());
@@ -55,7 +56,7 @@ public:
    /**Insert standard namespace;
    non-constant method, can be used only during construction */
    template<class NsTag> void insert_ns_tag(NsTag const&) {
-      BOOST_ASSERT(ns_.size() < detail::max_std_ns_id()());
+      BOOST_ASSERT(ns_.size() < detail::min_ns_id()());
       ns_.insert(NsTag::id(), NsTag::iri());
       ns_.set_prefix(NsTag::id(), NsTag::prefix());
    }
@@ -63,7 +64,7 @@ public:
    /**Insert standard IRI node;
    non-constant method, can be used only during construction */
    template<class NTag> void insert_node_tag(NTag const&) {
-      BOOST_ASSERT(node_.size() < detail::max_std_node_id()());
+      BOOST_ASSERT(node_.size() < detail::min_node_id()());
       typedef typename NTag::ns_type ns_type;
       insert_ns_tag(ns_type());
       node_.insert(NTag::id(), ns_type::id(), NTag::name());
@@ -79,7 +80,7 @@ public:
       return
                ! is_empty(nsid) &&
                ! is_blank(nsid) &&
-               nsid < detail::max_std_ns_id()
+               nsid < detail::min_ns_id()
                ;
    }
 
@@ -96,7 +97,7 @@ public:
    Node_id const* find(Node_iri const& node) const {return node_.find(node);}
 
    Node_id const* find(const Ns_id ns, std::string const& val) const {
-      if( is_blank(ns) || ns >= detail::max_std_ns_id() ) return 0;
+      if( is_blank(ns) || ns >= detail::min_ns_id() ) return 0;
       return node_.find(Node_iri(ns, val));
    }
 

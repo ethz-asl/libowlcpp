@@ -66,7 +66,7 @@ public:
    bool empty() const {return m_.empty();}
 
    bool valid(const Node_id id) const {
-      if( id < detail::max_std_node_id() ) return false;
+      if( id < detail::min_node_id() ) return false;
       const std::size_t n = sz(id);
       return n < v_.size() && ! v_.is_null(n);
    }
@@ -84,8 +84,8 @@ public:
 
    Node const* find(const Node_id id) const {
       if(
-               id < detail::max_std_node_id() ||
-               id() >= v_.size() + detail::max_std_node_id()()
+               id < detail::min_node_id() ||
+               id() >= v_.size() + detail::min_node_id()()
       ) return 0;
       return  &v_[sz(id)];
    }
@@ -185,11 +185,11 @@ private:
    std::vector<Node_id> erased_;
 
    std::size_t sz(const Node_id id) const {
-      BOOST_ASSERT(id >= detail::max_std_node_id());
-      return id() - detail::max_std_node_id()();
+      BOOST_ASSERT(id >= detail::min_node_id());
+      return id() - detail::min_node_id()();
    }
 
-   Node_id nid(const std::size_t n) const {return Node_id(n + detail::max_std_node_id()());}
+   Node_id nid(const std::size_t n) const {return Node_id(n + detail::min_node_id()());}
 
    Node const& get(const Node_id id) const {return v_[sz(id)];}
 

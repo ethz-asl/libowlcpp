@@ -15,6 +15,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/hash_node.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
+#include "owlcpp/terms/detail/max_standard_id.hpp"
 
 namespace owlcpp{
 
@@ -46,13 +47,17 @@ public:
 
    struct Err : public Rdf_err {};
 
+   Map_node_iri(const Node_id min_id = detail::min_node_id())
+   : min_id_(min_id)
+   {}
+
    std::size_t size() const { return m_.size(); }
    const_iterator begin() const {return m_.begin();}
    const_iterator end() const {return m_.end();}
    bool empty() const {return m_.empty();}
 
    bool valid(const Node_id id) const {
-      if( id < detail::max_std_node_id() ) return false;
+      if( id < min_id_ ) return false;
       const std::size_t n = sz(id);
       return n < v_.size() && v_[n];
    }
@@ -73,8 +78,8 @@ public:
 
    Node_iri const* find(const Node_id id) const {
       return
-               id < detail::max_std_node_id() ||
-               id() >= v_.size() + detail::max_std_node_id()() ?
+               id < min_id_ ||
+               id() >= v_.size() + min_id_() ?
                         0 :
                         v_[sz(id)]
                            ;
@@ -100,7 +105,7 @@ public:
    }
 
    void insert(const Node_id id, Node_iri const& node) {
-      if( id < detail::max_std_node_id() ) BOOST_THROW_EXCEPTION(
+      if( id < min_id_ ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("invalid ID")
                << Err::int1_t(id())
@@ -160,14 +165,15 @@ private:
    vector_t v_;
    map_t m_;
    std::vector<Node_id> erased_;
+   const Node_id min_id_;
 
    std::size_t sz(const Node_id id) const {
-      BOOST_ASSERT(id >= detail::max_std_node_id());
-      return id() - detail::max_std_node_id()();
+      BOOST_ASSERT(id >= min_id_);
+      return id() - min_id_();
    }
 
    Node_id nid(const std::size_t n) const {
-      return Node_id(n + detail::max_std_node_id()());
+      return Node_id(n + min_id_());
    }
 
    Node_iri const& get(const Node_id id) const {return *v_[sz(id)];}

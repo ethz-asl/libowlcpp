@@ -42,11 +42,11 @@ public:
 
    std::string operator[](const Ns_id nsid) const {
       BOOST_ASSERT( valid(nsid) );
-      return nsid < detail::max_std_ns_id() ? _map_std()[nsid] : _map_ns()[nsid];
+      return nsid < detail::min_ns_id() ? _map_std()[nsid] : _map_ns()[nsid];
    }
 
    std::string at(const Ns_id nsid) const {
-      return nsid < detail::max_std_ns_id() ?
+      return nsid < detail::min_ns_id() ?
                _map_std().at(nsid) : _map_ns().at(nsid);
    }
 
@@ -56,7 +56,7 @@ public:
    */
    std::string prefix(const Ns_id nsid) const {
       BOOST_ASSERT( valid(nsid) );
-      return nsid < detail::max_std_ns_id() ?
+      return nsid < detail::min_ns_id() ?
                _map_std().prefix(nsid) : _map_ns().prefix(nsid);
    }
 
@@ -90,7 +90,7 @@ public:
    */
    void insert_prefix(const Ns_id nsid, std::string const& pref) {
       typedef typename Super::Err Err;
-      if( nsid < detail::max_std_ns_id() ) {
+      if( nsid < detail::min_ns_id() ) {
          if( pref.empty() || pref == _map_std().prefix(nsid) ) return;
          BOOST_THROW_EXCEPTION(
                   Err()

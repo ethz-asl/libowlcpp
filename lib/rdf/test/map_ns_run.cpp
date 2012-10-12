@@ -15,7 +15,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   owlcpp::Map_ns map(Ns_id(0));
+   owlcpp::Map_ns map;
    BOOST_CHECK_EQUAL(map.size(), 0u);
    const Ns_id id1 = map.insert("i1");
    BOOST_CHECK(map.find_iri("i1"));

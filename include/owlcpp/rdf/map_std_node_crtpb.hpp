@@ -45,7 +45,7 @@ public:
    bool is_standard(const Node_id nid) const {return _map_std().valid(nid);}
 
    node_type const& operator[](const Node_id id) const {
-      return id < detail::max_std_node_id() ? _map_std()[id] : _map_node()[id];
+      return id < detail::min_node_id() ? _map_std()[id] : _map_node()[id];
    }
 
    /**
@@ -54,7 +54,7 @@ public:
     @throw Rdf_err if @b id does not exist
    */
    node_type const& at(const Node_id id) const {
-      return id < _map_std().node_id_next() ? _map_std().at(id) : _map_node().at(id);
+      return id < detail::min_node_id() ? _map_std().at(id) : _map_node().at(id);
    }
 
    /**@brief Insert IRI node
