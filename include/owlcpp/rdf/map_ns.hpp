@@ -45,11 +45,12 @@ public:
    : min_id_(min_id)
    {}
 
-   Map_ns(Map_ns const& nmb) {copy(nmb);}
+   Map_ns(Map_ns const& mns) : min_id_(mns.min_id_) {copy(mns);}
 
-   Map_ns& operator=(Map_ns const& nmb) {
+   Map_ns& operator=(Map_ns const& mns) {
       clear();
-      copy(nmb);
+      min_id_ = mns.min_id_;
+      copy(mns);
       return *this;
    }
 
@@ -198,7 +199,7 @@ private:
    map_t pref_;
    vec_t id_;
    std::vector<Ns_id> erased_;
-   const Ns_id min_id_;
+   Ns_id min_id_;
 
    Ns_id next_id() {
       if( erased_.empty() ) return Ns_id(id_.size() + min_id_());
@@ -223,16 +224,16 @@ private:
       }
    }
 
-   void copy(Map_ns const& nmb) {
-      id_.resize(nmb.id_.size());
-      erased_ = nmb.erased_;
+   void copy(Map_ns const& mns) {
+      id_.resize(mns.id_.size());
+      erased_ = mns.erased_;
       //insert elements in the same order as in source map
-      BOOST_FOREACH(pair_t const& p, nmb.iri_) {
+      BOOST_FOREACH(pair_t const& p, mns.iri_) {
          const Ns_id id = p.second;
          id_value_t& v0 = get(id);
          v0.first = iri_.insert(p).first;
-         id_value_t const& v1 = nmb.get(id);
-         if( v1.second != nmb.pref_.end() ) {
+         id_value_t const& v1 = mns.get(id);
+         if( v1.second != mns.pref_.end() ) {
             v0.second = pref_.insert(*v1.second).first;
          } else {
             v0.second = pref_.end();

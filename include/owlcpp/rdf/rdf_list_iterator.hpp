@@ -9,7 +9,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
-#include "owlcpp/rdf/query_node.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 
 namespace owlcpp{
 
@@ -50,13 +50,13 @@ private:
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("rdf:rest triple not found")
-               << Err::str1_t(to_string_short(nid_, *ts_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       Triple const& t = r.front();
       if( distance(r) != 1U ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("multiple rdf:rest triples")
-               << Err::str1_t(to_string_short(nid_, *ts_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       nid_ = t.object();
    }
@@ -71,13 +71,13 @@ private:
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("rdf:first triple not found")
-               << Err::str1_t(to_string_short(nid_, *ts_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       Triple const& t = r.front();
       if( distance(r) != 1U ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("multiple rdf:first triples")
-               << Err::str1_t(to_string_short(nid_, *ts_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       return t.obj_;
    }
