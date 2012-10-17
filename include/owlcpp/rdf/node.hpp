@@ -21,6 +21,7 @@ public:
    bool operator== (const Node& n) const {return equal_impl(n);}
    bool operator!= (const Node& n) const {return ! equal_impl(n);}
    void accept(Visitor_node& visitor) const {accept_impl(visitor);}
+   Node* clone() const {return clone_impl();}
    virtual ~Node() {}
 
 private:
@@ -28,7 +29,8 @@ private:
    virtual bool empty_impl() const =0;
    virtual std::size_t hash_impl() const =0;
    virtual bool equal_impl(const Node& n) const =0;
-   virtual void accept_impl(Visitor_node&) const = 0;
+   virtual void accept_impl(Visitor_node&) const =0;
+   virtual Node* clone_impl() const =0;
 };
 
 

@@ -89,6 +89,8 @@ private:
       return h;
    }
 
+   Node* clone_impl() const {return new self_type(*this);}
+
 };
 
 /**@brief
@@ -140,6 +142,8 @@ private:
    }
 
    std::size_t hash_impl() const {return hash_;}
+
+   Node* clone_impl() const {return new self_type(*this);}
 };
 
 }//namespace detail
