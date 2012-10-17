@@ -26,6 +26,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(to_string(niri), "Ns42:blah");
    Node const& riri = niri;
    BOOST_CHECK_EQUAL(to_string(riri), "Ns42:blah");
+   std::cout << niri << std::endl;
 
    const Node_blank nb(5, Doc_id(42));
    BOOST_CHECK_EQUAL(to_string(nb), "_:Doc42-5");

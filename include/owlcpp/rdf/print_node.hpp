@@ -5,18 +5,13 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef PRINT_NODE_HPP_
 #define PRINT_NODE_HPP_
-#include <iosfwd>
+#include <ostream>
 #include "owlcpp/rdf/config.hpp"
 #include "owlcpp/rdf/node_fwd.hpp"
 
 namespace owlcpp{
 class Node_id;
 class Triple_store;
-
-/**@brief 
-*******************************************************************************/
-template<class Ch, class Tr> inline std::basic_ostream<Ch,Tr>&
-   stream(std::basic_ostream<Ch,Tr>& os, Node const& node);
 
 /**@return node string
 *******************************************************************************/
@@ -85,6 +80,13 @@ OWLCPP_RDF_DECL std::string to_string_pref(const Node_id, Triple_store const&);
 /**@return IRI node string with namespace prefix, generated, if needed
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string_pref(Node_iri const&, Triple_store const&);
+
+/**
+*******************************************************************************/
+template<class Ch, class Tr> inline std::basic_ostream<Ch,Tr>&
+   operator<<(std::basic_ostream<Ch,Tr>& os, Node const& node) {
+   return os << to_string(node);
+}
 
 }//namespace owlcpp
 #endif /* PRINT_NODE_HPP_ */
