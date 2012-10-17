@@ -44,6 +44,8 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 
    BOOST_CHECK(  mns2.find_prefix("p2"));
    BOOST_CHECK(  mns2.valid(id2) );
+   BOOST_CHECK_EQUAL(mns2[id2], "i2");
+   BOOST_CHECK_EQUAL(mns2.prefix(id2), "p2");
 
    mns1.remove(id10);
    BOOST_CHECK( ! mns1.valid(id10) );

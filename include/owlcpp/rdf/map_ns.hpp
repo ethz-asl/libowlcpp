@@ -225,6 +225,7 @@ private:
    }
 
    void copy(Map_ns const& mns) {
+      BOOST_ASSERT(min_id_ == mns.min_id_ && "base ID should be same");
       id_.resize(mns.id_.size());
       erased_ = mns.erased_;
       //insert elements in the same order as in source map
