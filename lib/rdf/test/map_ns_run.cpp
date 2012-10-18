@@ -7,6 +7,7 @@ part of owlcpp project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/map_ns.hpp"
+#include "owlcpp/terms/detail/max_standard_id.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -15,38 +16,47 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   owlcpp::Map_ns map;
-   BOOST_CHECK_EQUAL(map.size(), 0u);
-   const Ns_id id1 = map.insert("i1");
-   BOOST_CHECK(map.find_iri("i1"));
-   BOOST_CHECK_EQUAL(*map.find_iri("i1"), id1);
-   const Ns_id id2 = map.insert("i2");
-   map.set_prefix(id2, "p2");
-   BOOST_CHECK_EQUAL(map.prefix(id2), "p2");
-   BOOST_CHECK(map.find_prefix("p2"));
+   Map_ns mns1(Ns_id(5));
+   BOOST_CHECK_EQUAL(mns1.size(), 0u);
+   const Ns_id id1 = mns1.insert("i1");
+   BOOST_CHECK(mns1.find_iri("i1"));
+   BOOST_CHECK_EQUAL(*mns1.find_iri("i1"), id1);
+   const Ns_id id2 = mns1.insert("i2");
+   mns1.set_prefix(id2, "p2");
+   BOOST_CHECK_EQUAL(mns1.prefix(id2), "p2");
+   BOOST_CHECK(mns1.find_prefix("p2"));
 
-   const Ns_id id10 = map.insert(Ns_id(10), "i10");
-   BOOST_CHECK_EQUAL(map.size(), 3U);
-   BOOST_CHECK(map.prefix(id10).empty());
-   map.set_prefix(id10, "p10");
-   BOOST_CHECK_EQUAL(map.prefix(id10), "p10");
-   map.set_prefix(id10);
-   BOOST_CHECK_EQUAL(map.prefix(id10), "");
-   BOOST_CHECK_EQUAL(map.insert("i10"), id10);
+   const Ns_id id10 = mns1.insert(Ns_id(10), "i10");
+   BOOST_CHECK_EQUAL(mns1.size(), 3U);
+   BOOST_CHECK(mns1.prefix(id10).empty());
+   mns1.set_prefix(id10, "p10");
+   BOOST_CHECK_EQUAL(mns1.prefix(id10), "p10");
+   mns1.set_prefix(id10);
+   BOOST_CHECK_EQUAL(mns1.prefix(id10), "");
+   BOOST_CHECK_EQUAL(mns1.insert("i10"), id10);
 
-   map.remove(id2);
-   BOOST_CHECK_EQUAL(map.size(), 2U);
-   BOOST_CHECK(! map.find_prefix("p2"));
-   BOOST_CHECK( ! map.valid(id2) );
+   Map_ns mns2(mns1);
 
-   map.remove(id10);
-   BOOST_CHECK( ! map.valid(id10) );
-   map.remove(id1);
-   BOOST_CHECK( ! map.valid(id1) );
+   mns1.remove(id2);
+   BOOST_CHECK_EQUAL(mns1.size(), 2U);
+   BOOST_CHECK( ! mns1.find_prefix("p2"));
+   BOOST_CHECK( ! mns1.valid(id2) );
 
-   const Ns_id id13 = map.insert("i13");
+   BOOST_CHECK(  mns2.find_prefix("p2"));
+   BOOST_CHECK(  mns2.valid(id2) );
+   BOOST_CHECK_EQUAL(mns2[id2], "i2");
+   BOOST_CHECK_EQUAL(mns2.prefix(id2), "p2");
+
+   mns1.remove(id10);
+   BOOST_CHECK( ! mns1.valid(id10) );
+   mns1.remove(id1);
+   BOOST_CHECK( ! mns1.valid(id1) );
+
+   const Ns_id id13 = mns1.insert("i13");
    //removed IDs are recycled
    BOOST_CHECK( id13 == id1 || id13 == id2 || id13 == id10 );
+
+
 }
 
 }//namespace test

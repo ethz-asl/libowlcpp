@@ -47,6 +47,8 @@ private:
       return h;
    }
 
+   Node* clone_impl() const {return new Node_blank(*this);}
+
 };
 
 }//namespace owlcpp

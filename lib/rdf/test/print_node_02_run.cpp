@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(ts.prefix(nsid1), ns1p);
 
    //prefix is defined for ns1, to_string() uses it
-   BOOST_CHECK_EQUAL(     to_string(nid1, ts), "ex1:node1");
+   BOOST_CHECK_EQUAL(to_string(nid1, ts), "ex1:node1");
 
    //prefix is defined for ns1, to_string() uses it
    BOOST_CHECK_EQUAL(to_string_pref(nid1, ts), "ex1:node1");
@@ -51,10 +51,12 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(to_string_full(nid1, ts), ni1);
 
    //prefix is not defined, full namespace IRI is used
-   BOOST_CHECK_EQUAL(     to_string(nid2, ts), ni3);
+   BOOST_CHECK_EQUAL(to_string(nid2, ts), ni3);
 
    //prefix is not defined, it is generated
-   BOOST_CHECK_EQUAL(to_string_pref(nid2, ts), "Ns7:node3");
+   const std::string str2 = to_string_pref(nid2, ts);
+   BOOST_CHECK_EQUAL(str2.find("Ns"), 0U);
+   BOOST_CHECK_NE(str2.find(":node3"), std::string::npos);
 
    //full namespace IRI is used
    BOOST_CHECK_EQUAL(to_string_full(nid2, ts), ni3);

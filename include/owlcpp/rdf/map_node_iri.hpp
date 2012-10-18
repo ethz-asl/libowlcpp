@@ -8,6 +8,7 @@ part of owlcpp project.
 #include <string>
 #include <vector>
 #include "boost/assert.hpp"
+#include "boost/foreach.hpp"
 #include "boost/unordered_map.hpp"
 
 #include "owlcpp/rdf/node_iri.hpp"
@@ -30,6 +31,7 @@ public:
    typedef Node_iri node_type;
 private:
    typedef boost::unordered_map<Node_iri, Node_id> map_t;
+   typedef std::pair<Node_iri, Node_id> map_element_t;
    typedef map_t::iterator map_iter_t;
    typedef map_t::const_iterator map_citer_t;
 
@@ -48,18 +50,33 @@ public:
    struct Err : public Rdf_err {};
 
    Map_node_iri(const Node_id min_id = detail::min_node_id())
-   : min_id_(min_id)
+   : vid_(), map_(), erased_(), min_id_(min_id)
    {}
 
-   std::size_t size() const { return m_.size(); }
-   const_iterator begin() const {return m_.begin();}
-   const_iterator end() const {return m_.end();}
-   bool empty() const {return m_.empty();}
+   Map_node_iri(Map_node_iri const& mni)
+   : vid_(mni.vid_.size()), map_(), erased_(mni.erased_), min_id_(mni.min_id_)
+   {
+      copy(mni);
+   }
+
+   Map_node_iri& operator=(Map_node_iri const& mni) {
+      clear();
+      min_id_ = mni.min_id_;
+      vid_.resize(mni.vid_.size());
+      copy(mni);
+      erased_ = mni.erased_;
+      return *this;
+   }
+
+   std::size_t size() const { return map_.size(); }
+   const_iterator begin() const {return map_.begin();}
+   const_iterator end() const {return map_.end();}
+   bool empty() const {return map_.empty();}
 
    bool valid(const Node_id id) const {
       if( id < min_id_ ) return false;
       const std::size_t n = sz(id);
-      return n < v_.size() && v_[n];
+      return n < vid_.size() && vid_[n];
    }
 
    Node_iri const& operator[](const Node_id id) const {
@@ -79,9 +96,9 @@ public:
    Node_iri const* find(const Node_id id) const {
       return
                id < min_id_ ||
-               id() >= v_.size() + min_id_() ?
+               id() >= vid_.size() + min_id_() ?
                         0 :
-                        v_[sz(id)]
+                        vid_[sz(id)]
                            ;
    }
 
@@ -90,12 +107,12 @@ public:
    }
 
    Node_id const* find(Node_iri const& node) const {
-      const map_citer_t i = m_.find(node);
-      return i == m_.end() ? 0 : &i->second;
+      const map_citer_t i = map_.find(node);
+      return i == map_.end() ? 0 : &i->second;
    }
 
    Node_id insert(Node_iri const& node) {
-      insert_t ip = m_.emplace(node, Node_id());
+      insert_t ip = map_.emplace(node, Node_id());
       if( ip.second ) {
          const Node_id id = make_id(ip.first);
          ip.first->second = id;
@@ -127,15 +144,15 @@ public:
                << Err::int1_t(id())
       );
 
-      insert_t ip = m_.emplace(node, id);
+      insert_t ip = map_.emplace(node, id);
       BOOST_ASSERT(ip.second);
       //ignore erased_
       const std::size_t n = sz(id);
-      if( n < v_.size() ) {
-         v_[n] = &ip.first->first;
+      if( n < vid_.size() ) {
+         vid_[n] = &ip.first->first;
       } else {
-         v_.resize(n,0);
-         v_.push_back(&ip.first->first);
+         vid_.resize(n,0);
+         vid_.push_back(&ip.first->first);
       }
    }
 
@@ -149,23 +166,23 @@ public:
 
    void remove(const Node_id id) {
       BOOST_ASSERT(valid(id));
-      const std::size_t n = m_.erase(get(id));
+      const std::size_t n = map_.erase(get(id));
       BOOST_ASSERT(n);
       erased_.push_back(id);
-      v_[sz(id)] = 0;
+      vid_[sz(id)] = 0;
    }
 
    void clear() {
       erased_.clear();
-      m_.clear();
-      v_.clear();
+      map_.clear();
+      vid_.clear();
    }
 
 private:
-   vector_t v_;
-   map_t m_;
+   vector_t vid_;
+   map_t map_;
    std::vector<Node_id> erased_;
-   const Node_id min_id_;
+   Node_id min_id_;
 
    std::size_t sz(const Node_id id) const {
       BOOST_ASSERT(id >= min_id_);
@@ -176,21 +193,30 @@ private:
       return Node_id(n + min_id_());
    }
 
-   Node_iri const& get(const Node_id id) const {return *v_[sz(id)];}
+   Node_iri const& get(const Node_id id) const {return *vid_[sz(id)];}
 
    Node_id make_id(const map_citer_t i) {
       Node_iri const*const p = &i->first;
       if( erased_.empty() ) {
-         const Node_id id = nid(v_.size());
-         v_.push_back(p);
+         const Node_id id = nid(vid_.size());
+         vid_.push_back(p);
          return id;
       }
       const Node_id id = erased_.back();
       erased_.pop_back();
       const std::size_t n = sz(id);
-      BOOST_ASSERT(v_.size() > n && ! v_[n]);
-      v_[n] = p;
+      BOOST_ASSERT(vid_.size() > n && ! vid_[n]);
+      vid_[n] = p;
       return id;
+   }
+
+   void copy(Map_node_iri const& mni) {
+      BOOST_ASSERT(min_id_ == mni.min_id_ && "base ID should be same");
+      BOOST_FOREACH(map_element_t const& p, mni.map_) {
+         insert_t ip = map_.insert(p);
+         BOOST_ASSERT(ip.second && "duplicate node");
+         vid_[sz(p.second)] = &(ip.first->first);
+      }
    }
 
 };

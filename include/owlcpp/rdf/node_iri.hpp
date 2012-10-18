@@ -51,6 +51,8 @@ private:
       return h;
    }
 
+   Node* clone_impl() const {return new Node_iri(*this);}
+
 };
 
 }//namespace owlcpp

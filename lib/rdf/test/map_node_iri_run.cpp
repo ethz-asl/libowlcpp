@@ -10,6 +10,7 @@ part of owlcpp project.
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/detail/max_standard_id.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -17,51 +18,68 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 namespace t = owlcpp::terms;
 
+const Ns_id nsid2(42);
+const Ns_id nsid3(43);
+const Node_id nid0(13);
+const Node_id nid1(42);
+const Node_iri n2(nsid2, "blah");
+
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Map_node_iri mnb;
-   BOOST_CHECK( ! mnb.valid(Node_id(42)) );
+   Map_node_iri mni1(nid0);
+   BOOST_CHECK( ! mni1.valid(nid1) );
 
-   const Node_id id1 = mnb.insert(Ns_id(42), "blah");
-   BOOST_REQUIRE( mnb.valid(id1) );
+   const Node_id nid2 = mni1.insert(n2);
+   BOOST_REQUIRE( mni1.valid(nid2) );
+   BOOST_CHECK_EQUAL(mni1[nid2], n2);
+   std::cout << n2 << std::endl;
 
-   const Node_id id2 = mnb.insert(Ns_id(42), "blah");
-   BOOST_CHECK( mnb.valid(id2) );
+   const Node_id nid2a = mni1.insert(nsid2, "blah");
+   BOOST_CHECK( mni1.valid(nid2a) );
 
-   BOOST_CHECK_EQUAL(id1, id2);
+   BOOST_CHECK_EQUAL(nid2, nid2a);
 
-   const Node_id id3 = mnb.insert(Ns_id(43), "blah");
-   BOOST_CHECK( mnb.valid(id3) );
+   const Node_id nid3 = mni1.insert(nsid3, "blah");
+   BOOST_CHECK( mni1.valid(nid3) );
 
-   BOOST_CHECK_NE(id1, id3);
+   BOOST_CHECK_NE(nid2, nid3);
 
-   const Node_iri node1 = mnb[id1];
-   mnb.remove(id1);
-   BOOST_CHECK( ! mnb.find(node1) );
-   BOOST_CHECK( ! mnb.find(id1) );
+   Map_node_iri mni2 = mni1;
+   BOOST_CHECK_EQUAL(mni1.size(), mni2.size());
 
-   const Node_id id4 = mnb.insert(Ns_id(13), "blahblah");
-   BOOST_CHECK( mnb.valid(id4) );
-   BOOST_CHECK_EQUAL(id1, id4); //ID got recycled
+   mni1.remove(nid2);
+   BOOST_CHECK( ! mni1.find(n2) );
+   BOOST_CHECK( ! mni1.valid(nid2) );
+   BOOST_CHECK( ! mni1.find(nid2) );
+
+   BOOST_CHECK(   mni2.find(n2) );
+   BOOST_CHECK(   mni2.valid(nid2) );
+   BOOST_CHECK(   mni2.find(nid2) );
+   BOOST_CHECK_EQUAL(mni2[nid2].ns_id(), nsid2);
+   BOOST_CHECK_EQUAL(mni2[nid2], n2);
+
+   const Node_id id4 = mni1.insert(Ns_id(13), "blahblah");
+   BOOST_CHECK( mni1.valid(id4) );
+   BOOST_CHECK_EQUAL(nid2, id4); //ID got recycled
 
    //insert existing node with new ID
    BOOST_CHECK_THROW(
-            mnb.insert(Node_id(42), Ns_id(43), "blah"),
+            mni1.insert(Node_id(42), Ns_id(43), "blah"),
             Rdf_err
    );
 
    //insert new node with existing ID
    BOOST_CHECK_THROW(
-            mnb.insert(id4, Ns_id(142), "new_node"),
+            mni1.insert(id4, Ns_id(142), "new_node"),
             Rdf_err
    );
 
    //insert existing node with its current ID (NOP)
-   mnb.insert(id4, Ns_id(13), "blahblah");
+   mni1.insert(id4, Ns_id(13), "blahblah");
 
-   BOOST_CHECK( ! mnb.valid(Node_id(42)) );
-   mnb.insert(Node_id(42), Ns_id(142), "new_node");
+   BOOST_CHECK( ! mni1.valid(Node_id(42)) );
+   mni1.insert(Node_id(42), Ns_id(142), "new_node");
 }
 
 /**

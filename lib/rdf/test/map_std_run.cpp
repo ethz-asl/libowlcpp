@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE map_std_run
 #include "boost/test/unit_test.hpp"
+#include "boost/concept_check.hpp"
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/map_std.hpp"
 #include "owlcpp/rdf/nodes_std.hpp"
@@ -27,7 +28,9 @@ namespace t = owlcpp::terms;
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Map_std const& nms0 = Map_std::get(Nodes_none());
+   boost::ignore_unused_variable_warning(nms0);
    Map_std const& nms1 = Map_std::get(Nodes_owl());
+   boost::ignore_unused_variable_warning(nms1);
 }
 
 /** Standard node maps are singletons
