@@ -35,12 +35,12 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(mni1[nid2], n2);
    std::cout << n2 << std::endl;
 
-   const Node_id nid2a = mni1.insert(nsid2, "blah");
+   const Node_id nid2a = mni1.insert_iri(nsid2, "blah");
    BOOST_CHECK( mni1.valid(nid2a) );
 
    BOOST_CHECK_EQUAL(nid2, nid2a);
 
-   const Node_id nid3 = mni1.insert(nsid3, "blah");
+   const Node_id nid3 = mni1.insert_iri(nsid3, "blah");
    BOOST_CHECK( mni1.valid(nid3) );
 
    BOOST_CHECK_NE(nid2, nid3);
@@ -59,27 +59,27 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(mni2[nid2].ns_id(), nsid2);
    BOOST_CHECK_EQUAL(mni2[nid2], n2);
 
-   const Node_id id4 = mni1.insert(Ns_id(13), "blahblah");
+   const Node_id id4 = mni1.insert_iri(Ns_id(13), "blahblah");
    BOOST_CHECK( mni1.valid(id4) );
    BOOST_CHECK_EQUAL(nid2, id4); //ID got recycled
 
    //insert existing node with new ID
    BOOST_CHECK_THROW(
-            mni1.insert(Node_id(42), Ns_id(43), "blah"),
+            mni1.insert_iri(Node_id(42), Ns_id(43), "blah"),
             Rdf_err
    );
 
    //insert new node with existing ID
    BOOST_CHECK_THROW(
-            mni1.insert(id4, Ns_id(142), "new_node"),
+            mni1.insert_iri(id4, Ns_id(142), "new_node"),
             Rdf_err
    );
 
    //insert existing node with its current ID (NOP)
-   mni1.insert(id4, Ns_id(13), "blahblah");
+   mni1.insert_iri(id4, Ns_id(13), "blahblah");
 
    BOOST_CHECK( ! mni1.valid(Node_id(42)) );
-   mni1.insert(Node_id(42), Ns_id(142), "new_node");
+   mni1.insert_iri(Node_id(42), Ns_id(142), "new_node");
 }
 
 /**
@@ -89,9 +89,9 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    Map_node_iri mnb;
 
    const Node_id id_1(( 10 ));
-   BOOST_CHECK_THROW( mnb.insert(id_1, Ns_id(43), "blah"), Rdf_err );
+   BOOST_CHECK_THROW( mnb.insert_iri(id_1, Ns_id(43), "blah"), Rdf_err );
 
-   mnb.insert(min_id, Ns_id(43), "blah");
+   mnb.insert_iri(min_id, Ns_id(43), "blah");
 
 }
 }//namespace test
