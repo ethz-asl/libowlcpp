@@ -38,7 +38,7 @@ Triple_store& sample_triples_01(Triple_store& ts) {
    const Node_id nid2 = ts.insert_node_iri(iri12);
    const Node_id nid3 = ts.insert_node_iri(iri13);
    const Node_id nid4 = ts.insert_node_iri(iri14);
-   const Doc_id did1 = ts.insert_doc(path1, doc1, "").first;
+   const Doc_id did1 = ts.insert_doc(doc1, path1, "").first;
    const Node_id nid5 = ts.insert_blank(1, did1);
    const Node_id nid6 = ts.insert_blank(2, did1);
    const Node_id nid7 = ts.insert_blank(3, did1);
@@ -64,7 +64,7 @@ Triple_store sample_triples_01() {
 /**@brief
 *******************************************************************************/
 Triple_store& sample_triples_02(Triple_store& ts) {
-   const Doc_id did1 = ts.insert_doc(path2, doc2, doc3).first;
+   const Doc_id did1 = ts.insert_doc(doc2, path2, doc3).first;
    const Node_id nid5 = ts.insert_blank(1, did1);
    const Node_id nid6 = ts.insert_blank(2, did1);
    const Node_id nid7 = ts.insert_blank(3, did1);

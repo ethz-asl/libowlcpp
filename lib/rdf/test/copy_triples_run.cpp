@@ -9,7 +9,6 @@ part of owlcpp project.
 #include "test/sample_triples.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/copy_triples.hpp"
-//#include "owlcpp/rdf/query_node.hpp"
 #include "test_utils.hpp"
 
 namespace owlcpp{ namespace test{
