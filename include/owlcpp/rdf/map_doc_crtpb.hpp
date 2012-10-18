@@ -95,6 +95,15 @@ public:
       ) return _map_doc().find_iri(*nid);
       return doc_iri_range();
    }
+
+   doc_version_range find_doc_version(std::string const& version) const {
+      BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
+      if(
+               Node_id const*const nid =
+                        static_cast<Super const&>(*this).find_node_iri(version)
+      ) return _map_doc().find_version(*nid);
+      return doc_version_range();
+   }
 };
 
 }//namespace owlcpp

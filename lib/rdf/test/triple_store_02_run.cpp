@@ -56,8 +56,10 @@ BOOST_AUTO_TEST_CASE( test_docs ) {
 
    Node const& node1 = ts.at(nid1);
    BOOST_CHECK_NE( to_string(node1).find("node1"), std::string::npos );
-   BOOST_CHECK( ts.find_doc_iri(ni1) );
-   BOOST_CHECK( ts.find_doc_iri(ni3) );
+   BOOST_CHECK(   ts.find_doc_iri(ni1) );
+   BOOST_CHECK(   ts.find_doc_iri(ni3) );
+   BOOST_CHECK( ! ts.find_doc_version(ni3) );
+   BOOST_CHECK(   ts.find_doc_version(ni4) );
 }
 
 /** Test blank nodes, OWL-aware triple store

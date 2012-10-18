@@ -7,6 +7,7 @@ part of owlcpp project.
 #define NODE_LITERAL_HPP_
 #include <string>
 #include "boost/functional/hash.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/exception.hpp"
