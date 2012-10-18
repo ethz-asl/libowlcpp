@@ -7,10 +7,12 @@ part of owlcpp project.
 #define MAP_NODE_BASE_HPP_
 #include <string>
 #include <vector>
+#include <memory>
 #include "boost/assert.hpp"
 #include "boost/ptr_container/ptr_vector.hpp"
 #include "boost/ptr_container/indirect_fun.hpp"
 #include "boost/unordered_map.hpp"
+#include "boost/foreach.hpp"
 
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/node_blank.hpp"
@@ -49,6 +51,7 @@ private:
    typedef map_t::iterator map_iter_t;
    typedef map_t::const_iterator map_citer_t;
    typedef std::pair<map_iter_t,bool> insert_t;
+   typedef std::pair<Node const*,Node_id> map_element_t;
 
 public:
    typedef Member_iterator<
@@ -60,15 +63,31 @@ public:
 
    struct Err : public Rdf_err {};
 
-   std::size_t size() const { return m_.size(); }
-   const_iterator begin() const {return m_.begin();}
-   const_iterator end() const {return m_.end();}
-   bool empty() const {return m_.empty();}
+   Map_node() {}
+
+   Map_node(Map_node const& mn)
+   : vid_(mn.vid_.size()), map_(), erased_(mn.erased_)
+   {
+      copy(mn);
+   }
+
+   Map_node& operator=(Map_node const& mn) {
+      clear();
+      vid_.reserve(mn.vid_.size());
+      copy(mn);
+      erased_ = mn.erased_;
+      return *this;
+   }
+
+   std::size_t size() const { return map_.size(); }
+   const_iterator begin() const {return map_.begin();}
+   const_iterator end() const {return map_.end();}
+   bool empty() const {return map_.empty();}
 
    bool valid(const Node_id id) const {
       if( id < detail::min_node_id() ) return false;
       const std::size_t n = sz(id);
-      return n < v_.size() && ! v_.is_null(n);
+      return n < vid_.size() && ! vid_.is_null(n);
    }
 
    Node const& operator[](const Node_id id) const {return get(id);}
@@ -85,14 +104,14 @@ public:
    Node const* find(const Node_id id) const {
       if(
                id < detail::min_node_id() ||
-               id() >= v_.size() + detail::min_node_id()()
+               id() >= vid_.size() + detail::min_node_id()()
       ) return 0;
-      return  &v_[sz(id)];
+      return  &vid_[sz(id)];
    }
 
    Node_id const* find(Node const& node) const {
-      const map_citer_t i = m_.find(&node);
-      return i == m_.end() ? 0 : &i->second;
+      const map_citer_t i = map_.find(&node);
+      return i == map_.end() ? 0 : &i->second;
    }
 
    Node_id const* find_iri(const Ns_id ns, std::string const& val) const {
@@ -123,10 +142,29 @@ public:
       return find(Node_blank(n, doc));
    }
 
+   /** insert a clone of the %node */
+   Node_id insert(Node const& node) {
+      if( Node_id const* id = find(node) ) return *id;
+      Node* np = node.clone();
+
+      //make new ID
+      if( erased_.empty() ) {
+         const Node_id id = nid(vid_.size());
+         vid_.push_back(np);
+         map_.emplace(np, id);
+         return id;
+      }
+      const Node_id id = erased_.back();
+      erased_.pop_back();
+      const std::size_t n = sz(id);
+      BOOST_ASSERT(vid_.is_null(n));
+      vid_.replace(n, np);
+      map_.emplace(np, id);
+      return id;
+   }
+
    Node_id insert_iri(const Ns_id ns, std::string const& val) {
-      //todo: do not new if node already stored
-      ptr_t np(new Node_iri(ns,val));
-      return insert(np);
+      return insert(Node_iri(ns,val));
    }
 
    Node_id insert_literal(
@@ -134,54 +172,44 @@ public:
             const Node_id dt = terms::T_empty_::id(),
             std::string const& lang = ""
    ) {
-      //todo: do not new if node already stored
-      ptr_t np;
       switch(internal_type_id(dt)) {
       case detail::Bool_tid:
-         np.reset( new Node_bool(val, dt) );
-         break;
+         return insert( Node_bool(val, dt) );
       case detail::Int_tid:
-         np.reset( new Node_int(val, dt) );
-         break;
+         return insert( Node_int(val, dt) );
       case detail::Unsigned_tid:
-         np.reset( new Node_unsigned(val, dt) );
-         break;
+         return insert( Node_unsigned(val, dt) );
       case detail::Double_tid:
-         np.reset( new Node_double(val, dt) );
-         break;
+         return insert( Node_double(val, dt) );
       case detail::Empty_tid:
       case detail::String_tid:
       case detail::Unknown_tid:
       default:
-         np.reset( new Node_string(val, dt, lang) );
-         break;
+         return insert( Node_string(val, dt, lang) );
       }
-      return insert(np);
    }
 
    Node_id insert_blank(const unsigned n, const Doc_id doc) {
-      //todo: do not new if node already stored
-      ptr_t np(new Node_blank(n, doc));
-      return insert(np);
+      return insert(Node_blank(n, doc));
    }
 
    std::auto_ptr<Node> remove(const Node_id id) {
       BOOST_ASSERT(valid(id));
-      const std::size_t n = m_.erase(&get(id));
+      const std::size_t n = map_.erase(&get(id));
       BOOST_ASSERT(n);
       erased_.push_back(id);
-      return ptr_t( v_.replace(sz(id), 0).release() );
+      return ptr_t( vid_.replace(sz(id), 0).release() );
    }
 
    void clear() {
       erased_.clear();
-      m_.clear();
-      v_.clear();
+      map_.clear();
+      vid_.clear();
    }
 
 private:
-   vector_t v_;
-   map_t m_;
+   vector_t vid_;
+   map_t map_;
    std::vector<Node_id> erased_;
 
    std::size_t sz(const Node_id id) const {
@@ -191,42 +219,17 @@ private:
 
    Node_id nid(const std::size_t n) const {return Node_id(n + detail::min_node_id()());}
 
-   Node const& get(const Node_id id) const {return v_[sz(id)];}
+   Node const& get(const Node_id id) const {return vid_[sz(id)];}
 
-   Node_id make_id(ptr_t np) {
-      if( erased_.empty() ) {
-         const Node_id id = nid(v_.size());
-         v_.push_back(np);
-         return id;
-      }
-      const Node_id id = erased_.back();
-      erased_.pop_back();
-      const std::size_t n = sz(id);
-      BOOST_ASSERT(v_.is_null(n));
-      v_.replace(n, np);
-      return id;
-   }
-
-   Node_id insert(ptr_t np) {
-      insert_t ip = m_.emplace(np.get(), Node_id());
-      if( ip.second ) {
-         const Node_id id = make_id(np);
-         ip.first->second = id;
-         return id;
-      }
-      return ip.first->second;
-   }
-
-   void insert(const Node_id id, ptr_t np) {
+   void check_insert(const Node_id id, ptr_t np) {
       Node_id const* id0 = find(*np);
       if( id0 ) {
          if( *id0 == id ) return;
-         Node const& node = *np;
          BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("node already exists")
                   << Err::node_id_t(*id0)
-                  << Err::str1_t(to_string(node))
+                  << Err::str1_t(to_string(*np))
          );
       }
       if( valid(id) ) BOOST_THROW_EXCEPTION(
@@ -234,18 +237,26 @@ private:
                << Err::msg_t("node ID is reserved")
                << Err::int1_t(id())
       );
+      insert(id, np.release());
+   }
 
-      Node* p = np.get();
-      //ignore erased_
+   void insert(const Node_id id, Node* np) {
       const std::size_t n = sz(id);
-      if( n < v_.size() ) {
-         v_.replace(n, np);
+      if( n < vid_.size() ) {
+         vid_.replace(n, np);
       } else {
-         //v_.resize(n,0) does not compile for some reason
-         for( ; n > v_.size(); v_.push_back(0));
-         v_.push_back(np);
+         vid_.reserve(n);
+         for( ; vid_.size() < n; vid_.push_back(0));
+         vid_.push_back(np);
       }
-      m_.emplace(p, id);
+      map_.emplace(np, id);
+   }
+
+   void copy(Map_node const& mn) {
+      BOOST_FOREACH(map_element_t const& p, mn.map_) {
+         Node* np = p.first->clone();
+         insert(p.second, np);
+      }
    }
 
 };
