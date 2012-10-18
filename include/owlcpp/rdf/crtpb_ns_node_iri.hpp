@@ -5,7 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef CRTPB_NS_NODE_IRI_HPP_
 #define CRTPB_NS_NODE_IRI_HPP_
-#include "owlcpp/rdf/detail/map_traits.hpp"
+#include "owlcpp/detail/map_traits.hpp"
 #include "owlcpp/rdf/store_concepts.hpp"
 
 namespace owlcpp{

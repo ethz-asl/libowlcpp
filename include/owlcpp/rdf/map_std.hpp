@@ -24,7 +24,7 @@ namespace owlcpp{
 class Map_std : boost::noncopyable {
 
    template<class Inserter> explicit Map_std(Inserter const& ins)
-   : ns_(Ns_id(0)), node_(Node_id(0))
+   : map_ns_(Ns_id(0)), map_node_(Node_id(0))
    {
       insert_ns_tag(terms::N_empty());
       insert_ns_tag(terms::N_blank());
@@ -56,18 +56,18 @@ public:
    /**Insert standard namespace;
    non-constant method, can be used only during construction */
    template<class NsTag> void insert_ns_tag(NsTag const&) {
-      BOOST_ASSERT(ns_.size() < detail::min_ns_id()());
-      ns_.insert(NsTag::id(), NsTag::iri());
-      ns_.set_prefix(NsTag::id(), NsTag::prefix());
+      BOOST_ASSERT(map_ns_.size() < detail::min_ns_id()());
+      map_ns_.insert(NsTag::id(), NsTag::iri());
+      map_ns_.set_prefix(NsTag::id(), NsTag::prefix());
    }
 
    /**Insert standard IRI node;
    non-constant method, can be used only during construction */
    template<class NTag> void insert_node_tag(NTag const&) {
-      BOOST_ASSERT(node_.size() < detail::min_node_id()());
+      BOOST_ASSERT(map_node_.size() < detail::min_node_id()());
       typedef typename NTag::ns_type ns_type;
       insert_ns_tag(ns_type());
-      node_.insert(NTag::id(), ns_type::id(), NTag::name());
+      map_node_.insert_iri(NTag::id(), ns_type::id(), NTag::name());
    }
 
    /**
@@ -84,26 +84,26 @@ public:
                ;
    }
 
-   bool valid(const Ns_id nsid) const {return ns_.valid(nsid);}
-   Ns_id const* find_iri(std::string const& iri) const {return ns_.find_iri(iri);}
-   Ns_id const* find_prefix(std::string const& pref) const {return ns_.find_prefix(pref);}
-   std::string operator[](const Ns_id nsid) const {return ns_[nsid];}
-   std::string at(const Ns_id nsid) const {return ns_.at(nsid);}
-   std::string prefix(const Ns_id nsid) const {return ns_.prefix(nsid);}
+   bool valid(const Ns_id nsid) const {return map_ns_.valid(nsid);}
+   Ns_id const* find_iri(std::string const& iri) const {return map_ns_.find_iri(iri);}
+   Ns_id const* find_prefix(std::string const& pref) const {return map_ns_.find_prefix(pref);}
+   std::string operator[](const Ns_id nsid) const {return map_ns_[nsid];}
+   std::string at(const Ns_id nsid) const {return map_ns_.at(nsid);}
+   std::string prefix(const Ns_id nsid) const {return map_ns_.prefix(nsid);}
 
-   bool valid(const Node_id nid) const {return node_.valid(nid);}
-   Node_iri const& operator[](const Node_id nid) const {return node_[nid];}
-   Node_iri const& at(const Node_id nid) const {return node_.at(nid);}
-   Node_id const* find(Node_iri const& node) const {return node_.find(node);}
+   bool valid(const Node_id nid) const {return map_node_.valid(nid);}
+   Node_iri const& operator[](const Node_id nid) const {return map_node_[nid];}
+   Node_iri const& at(const Node_id nid) const {return map_node_.at(nid);}
+   Node_id const* find(Node_iri const& node) const {return map_node_.find(node);}
 
    Node_id const* find(const Ns_id ns, std::string const& val) const {
       if( is_blank(ns) || ns >= detail::min_ns_id() ) return 0;
-      return node_.find(Node_iri(ns, val));
+      return map_node_.find(Node_iri(ns, val));
    }
 
 private:
-   Map_ns ns_;
-   Map_node_iri node_;
+   Map_ns map_ns_;
+   Map_node_iri map_node_;
 };
 
 }//namespace owlcpp

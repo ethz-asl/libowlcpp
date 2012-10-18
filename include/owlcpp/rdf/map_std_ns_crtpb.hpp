@@ -7,7 +7,7 @@ part of owlcpp project.
 #define MAP_STD_NS_CRTPB_HPP_
 #include "boost/assert.hpp"
 
-#include "owlcpp/rdf/detail/map_traits.hpp"
+#include "owlcpp/detail/map_traits.hpp"
 #include "owlcpp/rdf/store_concepts.hpp"
 #include "owlcpp/terms/detail/max_standard_id.hpp"
 

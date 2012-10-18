@@ -8,7 +8,7 @@ part of owlcpp project.
 #include "boost/assert.hpp"
 #include "boost/foreach.hpp"
 
-#include "owlcpp/rdf/detail/map_traits.hpp"
+#include "owlcpp/detail/map_traits.hpp"
 #include "owlcpp/rdf/store_concepts.hpp"
 
 namespace owlcpp{

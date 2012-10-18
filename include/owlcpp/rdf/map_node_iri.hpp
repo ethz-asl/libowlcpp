@@ -102,7 +102,7 @@ public:
                            ;
    }
 
-   Node_id const* find(const Ns_id ns, std::string const& val) const {
+   Node_id const* find_iri(const Ns_id ns, std::string const& val) const {
       return find(Node_iri(ns,val));
    }
 
@@ -156,11 +156,11 @@ public:
       }
    }
 
-   Node_id insert(const Ns_id ns, std::string const& val) {
+   Node_id insert_iri(const Ns_id ns, std::string const& val) {
       return insert(Node_iri(ns, val));
    }
 
-   void insert(const Node_id id, const Ns_id ns, std::string const& val) {
+   void insert_iri(const Node_id id, const Ns_id ns, std::string const& val) {
       insert(id, Node_iri(ns, val));
    }
 

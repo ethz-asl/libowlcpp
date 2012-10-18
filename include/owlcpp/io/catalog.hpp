@@ -10,6 +10,14 @@ part of owlcpp project.
 
 #include "owlcpp/io/config.hpp"
 #include "owlcpp/io/exception.hpp"
+#include "owlcpp/io/detail/map_traits.hpp"
+#include "owlcpp/rdf/map_doc.hpp"
+#include "owlcpp/rdf/map_ns.hpp"
+#include "owlcpp/rdf/map_ns_crtpb.hpp"
+#include "owlcpp/rdf/map_node_iri.hpp"
+#include "owlcpp/rdf/map_node_crtpb.hpp"
+#include "owlcpp/rdf/map_doc_crtpb.hpp"
+#include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
 
 namespace owlcpp{
 
@@ -17,53 +25,79 @@ namespace owlcpp{
 @details Locations should unique; ontology IRIs may be repeated;
 non-empty verions IRIs should be unique.
 *******************************************************************************/
-class OWLCPP_IO_DECL Catalog :
-public Store_doc_crtpb<Catalog>,
-private Store_node_iri_crtpb<Catalog>
+class Catalog :
+public Map_doc_crtpb<Catalog>,
+public Map_ns_crtpb<Catalog>,
+public Map_node_crtpb<Catalog>,
+public Crtpb_ns_node_iri<Catalog>
 {
-public:
-   typedef Iri_map iri_map;
-   typedef Node_map node_map;
-   typedef Doc_map doc_map;
-private:
-   Iri_map& iris() {return iri_;}
-   node_map& nodes() {return node_;}
-   Iri_map const& iris() const {return iri_;}
-   node_map const& nodes() const {return node_;}
-   friend struct Store_node_iri_crtpb<Catalog>;
-   friend class Store_doc_crtpb<Catalog>;
+   friend class Map_ns_crtpb<Catalog>;
+   friend class Map_node_crtpb<Catalog>;
+   friend class Map_doc_crtpb<Catalog>;
+
+   typedef detail::Map_traits<Catalog> traits;
+   typedef traits::map_ns_type map_ns_type;
+   typedef traits::map_node_type map_node_type;
+   typedef traits::map_doc_type map_doc_type;
 
 public:
-   typedef Doc_map::iterator iterator;
-   typedef Doc_map::const_iterator const_iterator;
+   typedef map_doc_type::iterator iterator;
+   typedef map_doc_type::const_iterator const_iterator;
    struct Err : public Input_err {};
-   std::size_t size() const {return documents().size();}
-   const_iterator begin() const {return documents().begin();}
-   const_iterator end() const {return documents().end();}
 
-   /**@brief determine OntologyIRI and VersionIRI of ontology document(s)
-    and add them to the catalog
-    @param path symbolic path pointing to local file or directory;
-    any type implicitly convertible to boost::path can be used, e.g., std::string, const char*
-    @param recurse if true add to catalog files located in sub-directories
-    @param search_depth once ontologyIRI declaration is found, stop searching for
-    versionIRI declaration after @b search_depth triples
-    @return number of added files
-    @details
-    If path is a directory, an attempt will be made to parse and determine
-    OntologyIRI and VersionIRI of every file located in it.
-    The files that fail to parse will be ignored.
-   */
-   std::size_t add(
-            boost::filesystem::path const& path,
-            const bool recurse = false,
-            const std::size_t search_depth = std::numeric_limits<std::size_t>::max()
-   );
+   //bring in overloaded methods
+   using Map_ns_crtpb<Catalog>::operator[];
+   using Map_node_crtpb<Catalog>::operator[];
+   using Map_doc_crtpb<Catalog>::operator[];
+   using Map_ns_crtpb<Catalog>::at;
+   using Map_node_crtpb<Catalog>::at;
+   using Map_doc_crtpb<Catalog>::at;
+
+   using Map_node_crtpb<Catalog>::insert_node_iri;
+   using Crtpb_ns_node_iri<Catalog>::insert_node_iri;
+
+   using Map_node_crtpb<Catalog>::find_node_iri;
+   using Crtpb_ns_node_iri<Catalog>::find_node_iri;
+
+   using Map_ns_crtpb<Catalog>::valid;
+   using Map_node_crtpb<Catalog>::valid;
+   using Map_doc_crtpb<Catalog>::valid;
+
+   std::size_t size() const {return map_doc_.size();}
+   const_iterator begin() const {return map_doc_.begin();}
+   const_iterator end() const {return map_doc_.end();}
+
+   map_ns_type const& map_ns() const {return map_ns_;}
+   map_node_type const& map_node() const {return map_node_;}
+   map_doc_type const& map_doc() const {return map_doc_;}
 
 private:
-   Iri_map iri_;
-   node_map node_;
+   map_ns_type map_ns_;
+   map_node_type map_node_;
+   map_doc_type map_doc_;
 };
+
+/**@brief determine OntologyIRI and VersionIRI of ontology document(s)
+ and add them to the catalog
+ @param path symbolic path pointing to local file or directory;
+ any type implicitly convertible to boost::path can be used, e.g., std::string, const char*
+ @param recurse if true add to catalog files located in sub-directories
+ @param search_depth once ontologyIRI declaration is found, stop searching for
+ versionIRI declaration after @b search_depth triples
+ @return number of added files
+ @details
+ If path is a directory, an attempt will be made to parse and determine
+ OntologyIRI and VersionIRI of every file located in it.
+ The files that fail to parse will be ignored.
+*******************************************************************************/
+OWLCPP_IO_DECL std::size_t add(
+         Catalog& cat,
+         boost::filesystem::path const& path,
+         const bool recurse = false,
+         const std::size_t search_depth = std::numeric_limits<std::size_t>::max()
+);
+
+
 
 }//namespace owlcpp
 #endif /* CATALOG_HPP_ */
