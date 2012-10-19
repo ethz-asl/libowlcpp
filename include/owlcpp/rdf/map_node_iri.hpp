@@ -167,6 +167,7 @@ public:
    void remove(const Node_id id) {
       BOOST_ASSERT(valid(id));
       const std::size_t n = map_.erase(get(id));
+      boost::ignore_unused_variable_warning(n);
       BOOST_ASSERT(n);
       erased_.push_back(id);
       vid_[sz(id)] = 0;

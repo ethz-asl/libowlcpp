@@ -13,6 +13,7 @@ part of owlcpp project.
 #include "boost/ptr_container/indirect_fun.hpp"
 #include "boost/unordered_map.hpp"
 #include "boost/foreach.hpp"
+#include "boost/concept_check.hpp"
 
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/node_blank.hpp"
@@ -196,7 +197,9 @@ public:
    std::auto_ptr<Node> remove(const Node_id id) {
       BOOST_ASSERT(valid(id));
       const std::size_t n = map_.erase(&get(id));
+      boost::ignore_unused_variable_warning(n);
       BOOST_ASSERT(n);
+
       erased_.push_back(id);
       return ptr_t( vid_.replace(sz(id), 0).release() );
    }
