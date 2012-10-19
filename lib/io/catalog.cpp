@@ -17,13 +17,13 @@ namespace owlcpp {
 /*
 *******************************************************************************/
 std::string Catalog::ontology_iri_str(const Doc_id did) const {
-   return to_string_full(map_node_[ontology_iri_id(did)], *this);
+   return to_string_full(operator[](ontology_iri_id(did)), *this);
 }
 
 /*
 *******************************************************************************/
 std::string Catalog::version_iri_str(const Doc_id did) const {
-   return to_string_full(map_node_[version_iri_id(did)], *this);
+   return to_string_full(operator[](version_iri_id(did)), *this);
 }
 
 namespace{
