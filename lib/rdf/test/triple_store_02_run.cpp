@@ -5,10 +5,12 @@ part of owlcpp project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE triple_store_02_run
 #include "boost/test/unit_test.hpp"
+#include <iostream>
 #include "test/exception_fixture.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/rdf/print_node.hpp"
+#include "test/sample_triples.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -16,24 +18,23 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 namespace t = owlcpp::terms;
 
-const std::string ns1 = "http://example.xyz/example1";
-const std::string ns1p = "ex1";
-const std::string ns2 = "http://example.xyz/example2";
-const std::string ns2p = "ex2";
-const std::string ni1 = ns1 + "#node1";
-const std::string ni2 = ns1 + "#node2";
-const std::string ni3 = ns2 + "#node3";
-const std::string ni4 = ns2 + "#node4";
-const std::string path1 = "path1";
-const std::string path2 = "path2";
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_docs_01 ) {
+   Triple_store ts;
+   BOOST_CHECK_EQUAL(ts.map_doc().size(), 0U);
+   BOOST_CHECK( ! ts.find_doc_iri("some_random_name") );
+   BOOST_CHECK( ! ts.find_doc_version("some_random_name") );
+   BOOST_CHECK_EQUAL(distance(ts.find_doc_iri("some_random_name")), 0);
+}
 
 /**
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( test_docs ) {
+BOOST_AUTO_TEST_CASE( test_docs_02 ) {
    Triple_store ts;
    BOOST_CHECK_EQUAL(ts.map_doc().size(), 0U);
-   const Node_id nid1 = ts.insert_node_iri(ni1);
-   const Node_id nid2 = ts.insert_node_iri(ni2);
+   const Node_id nid1 = ts.insert_node_iri(iri11);
+   const Node_id nid2 = ts.insert_node_iri(iri12);
    const Doc_id did1 = ts.insert_doc(nid1, path1, nid2).first;
    BOOST_REQUIRE_EQUAL( ts.map_doc().size(), 1u );
    BOOST_CHECK_EQUAL( *ts.map_doc().begin(), did1 );
@@ -42,7 +43,7 @@ BOOST_AUTO_TEST_CASE( test_docs ) {
    const Node_id nid1a = ts[did1].ontology_iri;
    BOOST_CHECK_EQUAL( nid1, nid1a );
 
-   const Doc_id did2 = ts.insert_doc(ni3, path2, ni4).first;
+   const Doc_id did2 = ts.insert_doc(iri23, path2, iri24).first;
    BOOST_CHECK_EQUAL( ts.map_doc().size(), 2u );
    const Node_id nid3 = ts[did2].ontology_iri;
    BOOST_CHECK_NE( to_string(ts[nid3]).find("node3"), std::string::npos ); //same value
@@ -56,10 +57,10 @@ BOOST_AUTO_TEST_CASE( test_docs ) {
 
    Node const& node1 = ts.at(nid1);
    BOOST_CHECK_NE( to_string(node1).find("node1"), std::string::npos );
-   BOOST_CHECK(   ts.find_doc_iri(ni1) );
-   BOOST_CHECK(   ts.find_doc_iri(ni3) );
-   BOOST_CHECK( ! ts.find_doc_version(ni3) );
-   BOOST_CHECK(   ts.find_doc_version(ni4) );
+   BOOST_CHECK(   ts.find_doc_iri(iri11) );
+   BOOST_CHECK(   ts.find_doc_iri(iri23) );
+   BOOST_CHECK( ! ts.find_doc_version(iri23) );
+   BOOST_CHECK(   ts.find_doc_version(iri24) );
 }
 
 /** Test blank nodes, OWL-aware triple store
@@ -67,12 +68,12 @@ BOOST_AUTO_TEST_CASE( test_docs ) {
 BOOST_AUTO_TEST_CASE( test_blank_nodes_owl ) {
    Triple_store ts;
    BOOST_CHECK_EQUAL(ts.map_doc().size(), 0U);
-   const Doc_id did1 = ts.insert_doc(ni1, path1, ni2).first;
+   const Doc_id did1 = ts.insert_doc(iri11, path1, iri12).first;
    BOOST_CHECK_EQUAL(ts.map_doc().size(), 1U);
 
-   Node_id const* nid1 = ts.find_node_iri(ni1);
+   Node_id const* nid1 = ts.find_node_iri(iri11);
    BOOST_REQUIRE(nid1);
-   Node_id const* nid2 = ts.find_node_iri(ni2);
+   Node_id const* nid2 = ts.find_node_iri(iri12);
    BOOST_REQUIRE(nid2);
 
    const Node_id nid3 = ts.insert_blank(0, did1);
@@ -85,7 +86,7 @@ BOOST_AUTO_TEST_CASE( test_blank_nodes_owl ) {
    const Node_id nid4 = ts.insert_blank(1, did1);
    BOOST_CHECK_NE(nid4, nid3);
 
-   const Doc_id did2 = ts.insert_doc(ni3, path2).first;
+   const Doc_id did2 = ts.insert_doc(iri23, path2).first;
    const Node_id nid5 = ts.insert_blank(0, did2);
    BOOST_CHECK_NE(nid5, nid3);
    BOOST_CHECK_NE(nid5, nid4);
@@ -95,9 +96,9 @@ BOOST_AUTO_TEST_CASE( test_blank_nodes_owl ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_nodes_owl ) {
    Triple_store ts;
-   const Node_id nid1 = ts.insert_node_iri(ni1);
+   const Node_id nid1 = ts.insert_node_iri(iri11);
    const Node_id nid2 = ts.insert_literal("blah", nid1);
-   const Node_id nid2a = ts.insert_literal("blah", ni1);
+   const Node_id nid2a = ts.insert_literal("blah", iri11);
    BOOST_CHECK_EQUAL(nid2, nid2a);
 
    const Node_id nid3 = ts.insert_literal("blah");
@@ -115,25 +116,23 @@ BOOST_AUTO_TEST_CASE( test_literal_nodes_owl ) {
    BOOST_CHECK_NE(nid4, nid5);
    BOOST_CHECK_NE(nid3, nid5);
 }
+
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_print_triples ) {
-/*
    Triple_store ts = sample_triples_01();
-   BOOST_FOREACH(Triple const& t, ts.triples()) {
+   BOOST_FOREACH(Triple const& t, ts.map_triple()) {
       std::cout
       << '\"'
-      << to_string_short(t.subject(), ts) << "\"\t\""
-      << to_string_short(t.predicate(), ts) << "\"\t\""
-      << to_string_short(t.object(), ts) << "\"\t\n"
+      << to_string(t.subject(), ts) << "\"\t\""
+      << to_string(t.predicate(), ts) << "\"\t\""
+      << to_string(t.object(), ts) << "\"\t\n"
       ;
       Node const& node = ts.at(t.subject());
       const Ns_id nsid1 = node.ns_id();
       const std::string iri = ts[nsid1];
-      const std::string pref = ts.iris().prefix(nsid1);
+      const std::string pref = ts.prefix(nsid1);
    }
-*/
-//   BOOST_ERROR("blah");
 }
 
 }//namespace test

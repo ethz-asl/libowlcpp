@@ -9,8 +9,10 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-const std::string ns1 = "http://ns1";
-const std::string ns2 = "http://ns2";
+const std::string ns1 = "http://example.xyz/example1";
+const std::string ns1p = "ex1";
+const std::string ns2 = "http://example.xyz/example2";
+const std::string ns2p = "ex2";
 const std::string ns3 = "http://ns3";
 
 const std::string doc1 = "http://doc1";

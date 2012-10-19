@@ -11,22 +11,12 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/rdf/print_node.hpp"
+#include "test/sample_triples.hpp"
 
 namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 namespace t = owlcpp::terms;
-
-const std::string ns1 = "http://example.xyz/example1";
-const std::string ns1p = "ex1";
-const std::string ns2 = "http://example.xyz/example2";
-const std::string ns2p = "ex2";
-const std::string ni1 = ns1 + "#node1";
-const std::string ni2 = ns1 + "#node2";
-const std::string ni3 = ns2 + "#node3";
-const std::string ni4 = ns2 + "#node4";
-const std::string path1 = "path1";
-const std::string path2 = "path2";
 
 /**Test namespaces, OWL-unaware triple store
 *******************************************************************************/
@@ -54,19 +44,27 @@ BOOST_AUTO_TEST_CASE( test_namespaces_owl ) {
    BOOST_CHECK( ! ts.find_prefix(ns2p) );
 }
 
+/** Test find IRI nodes, OWL-unaware triple store
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_find_iri_nodes ) {
+   Triple_store ts(( Nodes_none() ));
+   BOOST_CHECK( ! ts.find_node_iri("some_random_name") );
+   BOOST_CHECK( ! ts.find_node_iri(to_string_full(t::T_owl_Axiom())) );
+}
+
 /** Test IRI nodes, OWL-unaware triple store
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( test_nodes ) {
+BOOST_AUTO_TEST_CASE( test_iri_nodes ) {
    Triple_store ts(( Nodes_none() ));
 
    BOOST_CHECK_EQUAL(ts.map_node().size(), 0U);
-   const Node_id nid1 = ts.insert_node_iri(ni1);
+   const Node_id nid1 = ts.insert_node_iri(iri11);
    BOOST_CHECK_EQUAL(ts.map_node().size(), 1U);
-   const Node_id nid1a = ts.insert_node_iri(ni1);
+   const Node_id nid1a = ts.insert_node_iri(iri11);
    BOOST_CHECK_EQUAL(ts.map_node().size(), 1U);
    BOOST_CHECK_EQUAL(nid1, nid1a);
-   BOOST_CHECK_EQUAL(to_string(nid1, ts), ni1);
-   const Node_id nid2 = ts.insert_node_iri(ni2);
+   BOOST_CHECK_EQUAL(to_string(nid1, ts), iri11);
+   const Node_id nid2 = ts.insert_node_iri(iri12);
    BOOST_CHECK_NE(nid1, nid2);
    BOOST_CHECK_EQUAL(ts.map_node().size(), 2U);
 
@@ -82,15 +80,22 @@ BOOST_AUTO_TEST_CASE( test_nodes ) {
    BOOST_CHECK_EQUAL(ts.map_node().size(), 4U);
 }
 
+/** Test find IRI nodes, OWL-aware triple store
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_find_iri_nodes_owl ) {
+   Triple_store ts;
+   BOOST_CHECK( ! ts.find_node_iri("some_random_name") );
+   BOOST_CHECK(   ts.find_node_iri(to_string_full(t::T_owl_Axiom())) );
+}
+
 /** Test IRI nodes, OWL-aware triple store
 *******************************************************************************/
-/*
 BOOST_AUTO_TEST_CASE( test_nodes_owl ) {
    Triple_store ts;
 
    BOOST_CHECK_EQUAL(
-            to_string(ts.at(t::T_owl_Ontology::id())),
-            t::T_owl_Ontology::name()
+            to_string_full(ts.at(t::T_owl_Ontology::id()), ts),
+            to_string_full(t::T_owl_Ontology())
    );
 
    //correct term
@@ -114,11 +119,9 @@ BOOST_AUTO_TEST_CASE( test_nodes_owl ) {
             Triple_store::Err
    );
 }
-*/
 
 /** Empty IRI node maps to T_empty_::id() ID
 *******************************************************************************/
-/*
 BOOST_AUTO_TEST_CASE( test_empty_iri ) {
    Triple_store ts1(( Nodes_none() ));
    Node_id nid = ts1.insert_node_iri("");
@@ -128,7 +131,6 @@ BOOST_AUTO_TEST_CASE( test_empty_iri ) {
    nid = ts1.insert_node_iri("");
    BOOST_CHECK_EQUAL(nid, t::T_empty_::id());
 }
-*/
 
 }//namespace test
 }//namespace owlcpp
