@@ -11,11 +11,13 @@ part of owlcpp project.
 #include "owlcpp/io/config.hpp"
 #include "owlcpp/io/exception.hpp"
 #include "owlcpp/io/detail/map_traits.hpp"
+#include "owlcpp/rdf/map_std.hpp"
+#include "owlcpp/rdf/map_std_ns_crtpb.hpp"
+#include "owlcpp/rdf/map_std_node_crtpb.hpp"
+#include "owlcpp/rdf/nodes_std.hpp"
 #include "owlcpp/rdf/map_doc.hpp"
 #include "owlcpp/rdf/map_ns.hpp"
-#include "owlcpp/rdf/map_ns_crtpb.hpp"
 #include "owlcpp/rdf/map_node_iri.hpp"
-#include "owlcpp/rdf/map_node_crtpb.hpp"
 #include "owlcpp/rdf/map_doc_crtpb.hpp"
 #include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
 
@@ -25,43 +27,46 @@ namespace owlcpp{
 @details Locations should unique; ontology IRIs may be repeated;
 non-empty verions IRIs should be unique.
 *******************************************************************************/
-class Catalog :
+class OWLCPP_IO_DECL Catalog :
 public Map_doc_crtpb<Catalog>,
-public Map_ns_crtpb<Catalog>,
-public Map_node_crtpb<Catalog>,
+public Map_std_ns_crtpb<Catalog>,
+public Map_std_node_crtpb<Catalog>,
 public Crtpb_ns_node_iri<Catalog>
 {
-   friend class Map_ns_crtpb<Catalog>;
-   friend class Map_node_crtpb<Catalog>;
+   friend class Map_std_ns_crtpb<Catalog>;
+   friend class Map_std_node_crtpb<Catalog>;
    friend class Map_doc_crtpb<Catalog>;
 
    typedef detail::Map_traits<Catalog> traits;
+   typedef traits::map_std_type map_std_type;
    typedef traits::map_ns_type map_ns_type;
    typedef traits::map_node_type map_node_type;
-   typedef traits::map_doc_type map_doc_type;
 
 public:
+   typedef traits::map_doc_type map_doc_type;
    typedef map_doc_type::iterator iterator;
    typedef map_doc_type::const_iterator const_iterator;
    struct Err : public Input_err {};
 
    //bring in overloaded methods
-   using Map_ns_crtpb<Catalog>::operator[];
-   using Map_node_crtpb<Catalog>::operator[];
+   using Map_std_ns_crtpb<Catalog>::operator[];
+   using Map_std_node_crtpb<Catalog>::operator[];
    using Map_doc_crtpb<Catalog>::operator[];
-   using Map_ns_crtpb<Catalog>::at;
-   using Map_node_crtpb<Catalog>::at;
+   using Map_std_ns_crtpb<Catalog>::at;
+   using Map_std_node_crtpb<Catalog>::at;
    using Map_doc_crtpb<Catalog>::at;
 
-   using Map_node_crtpb<Catalog>::insert_node_iri;
+   using Map_std_node_crtpb<Catalog>::insert_node_iri;
    using Crtpb_ns_node_iri<Catalog>::insert_node_iri;
 
-   using Map_node_crtpb<Catalog>::find_node_iri;
+   using Map_std_node_crtpb<Catalog>::find_node_iri;
    using Crtpb_ns_node_iri<Catalog>::find_node_iri;
 
-   using Map_ns_crtpb<Catalog>::valid;
-   using Map_node_crtpb<Catalog>::valid;
+   using Map_std_ns_crtpb<Catalog>::valid;
+   using Map_std_node_crtpb<Catalog>::valid;
    using Map_doc_crtpb<Catalog>::valid;
+
+   Catalog() : map_std_(map_std_type::get(Nodes_none())) {}
 
    std::size_t size() const {return map_doc_.size();}
    const_iterator begin() const {return map_doc_.begin();}
@@ -71,7 +76,20 @@ public:
    map_node_type const& map_node() const {return map_node_;}
    map_doc_type const& map_doc() const {return map_doc_;}
 
+   Node_id ontology_iri_id(const Doc_id did) const {
+      return map_doc_[did].ontology_iri;
+   }
+
+   Node_id version_iri_id(const Doc_id did) const {
+      return map_doc_[did].version_iri;
+   }
+
+   std::string path(const Doc_id did) const {return map_doc_[did].path;}
+   std::string ontology_iri_str(const Doc_id) const;
+   std::string version_iri_str(const Doc_id) const;
+
 private:
+   map_std_type const& map_std_;
    map_ns_type map_ns_;
    map_node_type map_node_;
    map_doc_type map_doc_;

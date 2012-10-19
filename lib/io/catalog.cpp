@@ -11,8 +11,20 @@ part of owlcpp project.
 #include "boost/filesystem.hpp"
 
 #include "owlcpp/io/read_ontology_iri.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 
 namespace owlcpp {
+/*
+*******************************************************************************/
+std::string Catalog::ontology_iri_str(const Doc_id did) const {
+   return to_string_full(map_node_[ontology_iri_id(did)], *this);
+}
+
+/*
+*******************************************************************************/
+std::string Catalog::version_iri_str(const Doc_id did) const {
+   return to_string_full(map_node_[version_iri_id(did)], *this);
+}
 
 namespace{
 
@@ -36,7 +48,7 @@ inline std::size_t add_to_catalog(
             << Input_err::msg_t("ontologyIRI not found")
             << Input_err::str1_t(path.string())
    );
-   return cat.insert_doc(cp.string(), pair.first, pair.second).second ? 1 : 0;
+   return cat.insert_doc(pair.first, cp.string(), pair.second).second ? 1 : 0;
 }
 
 /*
