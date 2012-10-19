@@ -5,12 +5,11 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef RDF_NODE_HPP_
 #define RDF_NODE_HPP_
-#include "owlcpp/node_id.hpp"
 #include "owlcpp/ns_id.hpp"
-#include "owlcpp/terms/iri_tags.hpp"
-#include "owlcpp/rdf/visitor_node.hpp"
 
 namespace owlcpp{
+class Visitor_node;
+
 /**@brief Pure virtual interface for RDF nodes
 *******************************************************************************/
 class Node {

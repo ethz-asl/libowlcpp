@@ -9,6 +9,8 @@ part of owlcpp project.
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/doc_id.hpp"
+#include "owlcpp/rdf/visitor_node.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
 
 namespace owlcpp{
 

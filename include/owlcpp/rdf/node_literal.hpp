@@ -15,6 +15,7 @@ part of owlcpp project.
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/rdf/literal_datatypes.hpp"
 #include "owlcpp/rdf/node_fwd.hpp"
+#include "owlcpp/rdf/visitor_node.hpp"
 
 namespace owlcpp{ namespace detail{
 

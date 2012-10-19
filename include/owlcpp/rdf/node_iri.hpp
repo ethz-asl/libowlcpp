@@ -8,6 +8,8 @@ part of owlcpp project.
 #include "boost/functional/hash.hpp"
 #include "owlcpp/rdf/node.hpp"
 #include "owlcpp/rdf/exception.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
+#include "owlcpp/rdf/visitor_node.hpp"
 
 namespace owlcpp{
 
