@@ -47,7 +47,7 @@ struct Datatype_bool {
    }
 
    static std::string const& name_str(const Node_id) {
-      static const std::string name(to_string_short(def_type()));
+      static const std::string name(to_string_pref(def_type()));
       return name;
    }
 
@@ -71,7 +71,7 @@ struct Datatype_int{
    }
 
    static std::string const& name_str(const Node_id) {
-      static const std::string name(to_string_short(def_type()));
+      static const std::string name(to_string_pref(def_type()));
       return name;
    }
 
@@ -97,7 +97,7 @@ struct Datatype_unsigned{
    }
 
    static std::string const& name_str(const Node_id) {
-      static const std::string name(to_string_short(def_type()));
+      static const std::string name(to_string_pref(def_type()));
       return name;
    }
 
@@ -121,7 +121,7 @@ struct Datatype_real{
    }
 
    static std::string const& name_str(const Node_id) {
-      static const std::string name(to_string_short(def_type()));
+      static const std::string name(to_string_pref(def_type()));
       return name;
    }
 
@@ -143,7 +143,7 @@ struct Datatype_string{
    template<class T> static value_type convert(const T x) {return x;}
 
    static std::string const& name_str(const Node_id) {
-      static const std::string name(to_string_short(def_type()));
+      static const std::string name(to_string_pref(def_type()));
       return name;
    }
 };
