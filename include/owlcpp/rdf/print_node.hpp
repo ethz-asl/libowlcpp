@@ -8,9 +8,10 @@ part of owlcpp project.
 #include <ostream>
 #include "owlcpp/rdf/config.hpp"
 #include "owlcpp/rdf/node_fwd.hpp"
+#include "owlcpp/rdf/node_iri.hpp"
+#include "owlcpp/rdf/print_id.hpp"
 
 namespace owlcpp{
-class Node_id;
 class Triple_store;
 
 /**@return node string
@@ -19,7 +20,9 @@ OWLCPP_RDF_DECL std::string to_string(Node const&);
 
 /**@return IRI node string with generated namespace prefix
 *******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string(Node_iri const& node);
+inline std::string to_string(Node_iri const& node) {
+   return to_string(node.ns_id()) + ':' + node.name();
+}
 
 /**@return node string
 *******************************************************************************/
@@ -45,18 +48,6 @@ OWLCPP_RDF_DECL std::string to_string(Node_double const& node);
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string(Node_string const& node);
 
-/**@return IRI node string with complete namespace or prefix (if defined)
-*******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string(Node const&, Triple_store const&);
-
-/**@return IRI node string with complete namespace or prefix (if defined)
-*******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string(const Node_id, Triple_store const&);
-
-/**@return IRI node string with complete namespace or prefix (if defined)
-*******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string(Node_iri const&, Triple_store const&);
-
 /**@return node string with complete namespace
 *******************************************************************************/
 OWLCPP_RDF_DECL std::string to_string_full(Node const&, Triple_store const&);
@@ -67,7 +58,11 @@ OWLCPP_RDF_DECL std::string to_string_full(const Node_id, Triple_store const&);
 
 /**@return IRI node string with complete namespace
 *******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string_full(Node_iri const&, Triple_store const&);
+template<class Store> inline std::string
+to_string_full(Node_iri const& node, Store const& store) {
+   if( node.name().empty() ) return store[node.ns_id()];
+   return store[node.ns_id()] + '#' + node.name();
+}
 
 /**@return IRI node string with namespace prefix, generated, if needed
 *******************************************************************************/
@@ -79,7 +74,31 @@ OWLCPP_RDF_DECL std::string to_string_pref(const Node_id, Triple_store const&);
 
 /**@return IRI node string with namespace prefix, generated, if needed
 *******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string_pref(Node_iri const&, Triple_store const&);
+template<class Store> inline std::string
+to_string_pref(Node_iri const& node, Store const& store) {
+   const Ns_id nsid = node.ns_id();
+   const std::string pref = store.prefix(nsid);
+   if( pref.empty() ) return to_string(node);
+   return pref + ':' + node.name();
+}
+
+/**@return IRI node string with complete namespace or prefix (if defined)
+*******************************************************************************/
+OWLCPP_RDF_DECL std::string to_string(Node const&, Triple_store const&);
+
+/**@return IRI node string with complete namespace or prefix (if defined)
+*******************************************************************************/
+OWLCPP_RDF_DECL std::string to_string(const Node_id, Triple_store const&);
+
+/**@return IRI node string with complete namespace or prefix (if defined)
+*******************************************************************************/
+template<class Store> inline std::string
+to_string(Node_iri const& node, Store const& store) {
+   const Ns_id nsid = node.ns_id();
+   const std::string pref = store.prefix(nsid);
+   if( pref.empty() ) return to_string_full<Store>(node, store);
+   return pref + ':' + node.name();
+}
 
 /**
 *******************************************************************************/

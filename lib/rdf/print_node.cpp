@@ -12,45 +12,11 @@ part of owlcpp project.
 #include "boost/lexical_cast.hpp"
 #include "boost/functional.hpp"
 
-#include "owlcpp/node_id.hpp"
-#include "owlcpp/rdf/node_iri.hpp"
 #include "owlcpp/rdf/node_blank.hpp"
 #include "owlcpp/rdf/node_literal.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/print_id.hpp"
 
 namespace owlcpp {
-
-/*
-*******************************************************************************/
-std::string to_string_full(Node_iri const& node, Triple_store const& ts) {
-   if( node.name().empty() ) return ts[node.ns_id()];
-   return ts[node.ns_id()] + '#' + node.name();
-}
-
-/**@return IRI node string with complete namespace or prefix (if defined)
-*******************************************************************************/
-std::string to_string(Node_iri const& node, Triple_store const& ts) {
-   const Ns_id nsid = node.ns_id();
-   const std::string pref = ts.prefix(nsid);
-   if( pref.empty() ) return to_string_full(node, ts);
-   return pref + ':' + node.name();
-}
-
-/**@return IRI node string with namespace prefix, generated, if needed
-*******************************************************************************/
-std::string to_string_pref(Node_iri const& node, Triple_store const& ts) {
-   const Ns_id nsid = node.ns_id();
-   const std::string pref = ts.prefix(nsid);
-   if( pref.empty() ) return to_string(node);
-   return pref + ':' + node.name();
-}
-
-/*
-*******************************************************************************/
-std::string to_string(Node_iri const& node) {
-   return to_string(node.ns_id()) + ':' + node.name();
-}
 
 /*
 *******************************************************************************/
