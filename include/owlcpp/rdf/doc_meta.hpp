@@ -12,24 +12,18 @@ namespace owlcpp{
 
 /**@brief Document metadata
 *******************************************************************************/
-class Doc_meta {
-public:
+struct Doc_meta {
    Doc_meta(
-            const Node_id ontology_iri,
-            const Node_id version_iri,
-            std::string const& path
+            const Node_id ontology_iri_,
+            const Node_id version_iri_,
+            std::string const& path_
    )
-   : oiri_(ontology_iri), viri_(version_iri), path_(path)
+   : ontology_iri(ontology_iri_), version_iri(version_iri_), path(path_)
    {}
 
-   Node_id ontology_iri() const {return oiri_;}
-   Node_id version_iri() const {return viri_;}
-   std::string const& path() const {return path_;}
-
-private:
-   Node_id oiri_;
-   Node_id viri_;
-   std::string path_;
+   Node_id ontology_iri;
+   Node_id version_iri;
+   std::string path;
 };
 
 }//namespace owlcpp

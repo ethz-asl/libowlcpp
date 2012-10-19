@@ -53,12 +53,12 @@ public:
       const doc_iter_t i = dm_.find(did0);
       if( i != dm_.end() ) return i->second;
       doc_type const& doc = src_[did0];
-      const Node_id iri_id = cp(doc.ontology_iri());
-      const Node_id vers_id = cp(doc.version_iri());
+      const Node_id iri_id = cp(doc.ontology_iri);
+      const Node_id vers_id = cp(doc.version_iri);
       const std::pair<Doc_id, bool> p =
                dest_.insert_doc(
                         iri_id,
-                        doc.path(),
+                        doc.path,
                         vers_id
                );
 

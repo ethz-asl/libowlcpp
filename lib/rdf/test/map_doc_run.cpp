@@ -56,11 +56,11 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    Map_doc::iri_range ir1 = md.find_iri(nid2);
    BOOST_CHECK(ir1);
    const Doc_id id1 = ir1.front();
-   BOOST_CHECK_EQUAL(nid2, md[id1].ontology_iri());
+   BOOST_CHECK_EQUAL(nid2, md[id1].ontology_iri);
 
    //document versionIRI is returned by pointer
-   BOOST_REQUIRE_MESSAGE(md[id1].version_iri() != terms::T_empty_::id(), "versionIRI exists");
-   BOOST_CHECK_EQUAL(nid3, md[id1].version_iri());
+   BOOST_REQUIRE_MESSAGE(md[id1].version_iri != terms::T_empty_::id(), "versionIRI exists");
+   BOOST_CHECK_EQUAL(nid3, md[id1].version_iri);
 }
 
 /**

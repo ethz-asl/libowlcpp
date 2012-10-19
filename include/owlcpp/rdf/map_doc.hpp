@@ -37,9 +37,9 @@ class Map_doc {
       : dm_(ontology_iri, version_iri, path), id_(doc)
       {}
 
-      Node_id ontology_iri() const {return dm_.ontology_iri();}
-      Node_id version_iri() const {return dm_.version_iri();}
-      std::string const& path() const {return dm_.path();}
+      Node_id ontology_iri() const {return dm_.ontology_iri;}
+      Node_id version_iri() const {return dm_.version_iri;}
+      std::string const& path() const {return dm_.path;}
       Doc_meta dm_;
       Doc_id id_;
    };

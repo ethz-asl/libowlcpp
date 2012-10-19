@@ -9,11 +9,12 @@ part of owlcpp project.
 #include "owlcpp/detail/map_traits.hpp"
 
 namespace owlcpp{
+class Map_std;
 class Map_ns;
 class Map_node_iri;
 class Map_doc;
 class Node_iri;
-class Doc_meta;
+struct Doc_meta;
 class Ns_id;
 class Node_id;
 class Doc_id;
@@ -25,6 +26,7 @@ namespace detail{
 /**@brief
 *******************************************************************************/
 template<> struct Map_traits<Catalog> {
+   typedef Map_std map_std_type;
    typedef Map_ns map_ns_type;
    typedef Map_node_iri map_node_type;
    typedef Map_doc map_doc_type;

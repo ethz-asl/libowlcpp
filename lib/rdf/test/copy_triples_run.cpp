@@ -44,10 +44,10 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_REQUIRE( ts2.map_doc().find_path(path2) );
    const Doc_id did1 = ts2.map_doc().find_path(path1).front();
    const Doc_id did2 = ts2.map_doc().find_path(path2).front();
-   BOOST_CHECK_EQUAL( ts2.at(did1).path(), path1 );
-   BOOST_CHECK_EQUAL( ts2.at(did2).path(), path2 );
-   BOOST_CHECK_EQUAL( ts2.at(did1).ontology_iri(), *ts2.find_node_iri(doc1) );
-   BOOST_CHECK_EQUAL( ts2.at(did2).ontology_iri(), *ts2.find_node_iri(doc2) );
+   BOOST_CHECK_EQUAL( ts2.at(did1).path, path1 );
+   BOOST_CHECK_EQUAL( ts2.at(did2).path, path2 );
+   BOOST_CHECK_EQUAL( ts2.at(did1).ontology_iri, *ts2.find_node_iri(doc1) );
+   BOOST_CHECK_EQUAL( ts2.at(did2).ontology_iri, *ts2.find_node_iri(doc2) );
 }
 
 }//namespace test

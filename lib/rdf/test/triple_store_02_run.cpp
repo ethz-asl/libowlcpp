@@ -38,16 +38,16 @@ BOOST_AUTO_TEST_CASE( test_docs ) {
    BOOST_REQUIRE_EQUAL( ts.map_doc().size(), 1u );
    BOOST_CHECK_EQUAL( *ts.map_doc().begin(), did1 );
 
-   BOOST_CHECK_EQUAL( ts.at(did1).path(), path1 );
-   const Node_id nid1a = ts[did1].ontology_iri();
+   BOOST_CHECK_EQUAL( ts.at(did1).path, path1 );
+   const Node_id nid1a = ts[did1].ontology_iri;
    BOOST_CHECK_EQUAL( nid1, nid1a );
 
    const Doc_id did2 = ts.insert_doc(ni3, path2, ni4).first;
    BOOST_CHECK_EQUAL( ts.map_doc().size(), 2u );
-   const Node_id nid3 = ts[did2].ontology_iri();
+   const Node_id nid3 = ts[did2].ontology_iri;
    BOOST_CHECK_NE( to_string(ts[nid3]).find("node3"), std::string::npos ); //same value
    BOOST_CHECK_EQUAL( ts[ts[nid3].ns_id()], ns2 ); //same namespace IRI
-   const Node_id nid4 = ts[did2].version_iri();
+   const Node_id nid4 = ts[did2].version_iri;
    BOOST_CHECK_NE( to_string(ts[nid4]).find("node4"), std::string::npos );
    BOOST_CHECK_EQUAL( ts[ts[nid4].ns_id()], ns2 );
 
