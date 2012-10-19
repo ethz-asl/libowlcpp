@@ -103,14 +103,19 @@ void load_file(
 /*
 *******************************************************************************/
 void load_iri(std::string const& iri, Triple_store& store, Catalog const& cat) {
-   Doc_id const* did = cat.find_doc_iri(iri);
-   if( ! did ) BOOST_THROW_EXCEPTION(
+   if( Catalog::doc_version_range r = cat.find_doc_version(iri) ) {
+      const Doc_id did = *r.begin();
+      Check_both check(cat.ontology_iri_str(did), cat.version_iri_str(did));
+      load_file(cat.path(did), store, cat, check);
+   } else if(Catalog::doc_iri_range r = cat.find_doc_iri(iri)) {
+      const Doc_id did = *r.begin();
+      Check_both check(cat.ontology_iri_str(did), cat.version_iri_str(did));
+      load_file(cat.path(did), store, cat, check);
+   } else BOOST_THROW_EXCEPTION(
             Input_err()
             << Input_err::msg_t("ontology not found")
             << Input_err::str1_t(iri)
    );
-   Check_both check(cat.ontology_iri(*did), cat.version_iri(*did));
-   load_file(cat.path(*did), store, cat, check);
 }
 
 }//namespace owlcpp

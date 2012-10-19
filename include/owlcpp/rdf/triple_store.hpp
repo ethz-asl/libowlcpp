@@ -46,9 +46,9 @@ public Map_triple_crtpb<Triple_store>
    friend class Map_triple_crtpb<Triple_store>;
 
    typedef detail::Map_traits<Triple_store> traits;
-   typedef typename traits::map_std_type map_std_type;
 
 public:
+   typedef typename traits::map_std_type map_std_type;
    typedef typename traits::map_ns_type map_ns_type;
    typedef typename traits::map_node_type map_node_type;
    typedef typename traits::map_doc_type map_doc_type;
@@ -57,21 +57,22 @@ public:
    struct Err : public Rdf_err {};
 
    Triple_store()
-   : map_std_(Map_std::get(Nodes_owl()))
+   : map_std_(map_std_type::get(Nodes_owl()))
    {}
 
    template<class Nodes_std> explicit Triple_store(Nodes_std const& nodes_std)
-   : map_std_(Map_std::get(nodes_std)),
+   : map_std_(map_std_type::get(nodes_std)),
      map_doc_(),
      map_triple_()
    {}
 
+   map_std_type const& map_std() const {return map_std_;}
    map_ns_type const& map_ns() const {return map_ns_;}
    map_node_type const& map_node() const {return map_node_;}
    map_doc_type const& map_doc() const {return map_doc_;}
    map_triple_type const& map_triple() const {return map_triple_;}
 
-   //bring in overloaded methods
+   //disambiguate overloaded methods
    using Map_std_ns_crtpb<Triple_store>::operator[];
    using Map_std_node_crtpb<Triple_store>::operator[];
    using Map_doc_crtpb<Triple_store>::operator[];
