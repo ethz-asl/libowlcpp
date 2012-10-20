@@ -25,14 +25,15 @@ template<class Super> struct Crtpb_ns_node_iri {
       BOOST_CONCEPT_ASSERT((Ns_store<Super>));
       BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
       const std::size_t n = iri.find('#');
+      Super& super = static_cast<Super&>(*this);
       const Ns_id iid =
                std::string::npos == n ?
-                        static_cast<Super&>(*this).insert_ns(iri) :
-                        static_cast<Super&>(*this).insert_ns(iri.substr(0,n));
+                        super.insert_ns(iri) :
+                        super.insert_ns(iri.substr(0,n));
 
       const std::string name = std::string::npos == n ? "" : iri.substr(n+1);
       try{
-         return static_cast<Super&>(*this).insert_node_iri( iid, name );
+         return super.insert_node_iri( iid, name );
       } catch(...) {
          typedef typename Super::Err Err;
          BOOST_THROW_EXCEPTION(
@@ -48,13 +49,14 @@ template<class Super> struct Crtpb_ns_node_iri {
       BOOST_CONCEPT_ASSERT((Ns_store<Super>));
       BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
       const std::size_t n = iri.find('#');
+      Super const& super = static_cast<Super const&>(*this);
       Ns_id const*const ns_id =
                std::string::npos == n ?
-                        static_cast<Super const&>(*this).find_ns(iri) :
-                        static_cast<Super const&>(*this).find_ns(iri.substr(0,n));
+                        super.find_ns(iri) :
+                        super.find_ns(iri.substr(0,n));
       if( ! ns_id ) return 0;
       const std::string name = std::string::npos == n ? "" : iri.substr(n+1);
-      return static_cast<Super const&>(*this).find_node_iri( *ns_id, name );
+      return super.find_node_iri( *ns_id, name );
    }
 
 };
