@@ -15,17 +15,17 @@ namespace owlcpp{
 @tparam Value member type
 @tparam Member pointer to structure member
 @code
-typedef Member_iterator<std::map<int,double>, const int, @std::pair<int,double>::first> int_iterator_t;
+typedef Member_iterator<std::map<int,double>::iterator, const int, &std::pair<int,double>::first> int_iterator_t;
 @endcode
 *******************************************************************************/
-template<class Iter, typename Value, Value Iter::value_type::*Member>
+template<class Iter, class Value, Value Iter::value_type::*Member>
 class Member_iterator
 : public boost::iterator_adaptor<Member_iterator<Iter, Value, Member>, Iter, Value> {
 
    typedef boost::iterator_adaptor<Member_iterator<Iter, Value, Member>, Iter, Value> super_t;
    friend class boost::iterator_core_access;
 public:
-   Member_iterator() {}
+   Member_iterator() : super_t(Iter()) {}
    Member_iterator(Iter i) : super_t(i) {}
 
 private:
