@@ -46,7 +46,7 @@ namespace mpl = boost::mpl;
 namespace fusion = boost::fusion;
 namespace fusion_rof = boost::fusion::result_of;
 
-template<class> struct Index;
+template<class> class Index;
 typedef mpl::vector<Subj_tag, Pred_tag, Obj_tag, Doc_tag> triple_tags;
 
 /** Make a vector of tags for each index to be created, including the tag for

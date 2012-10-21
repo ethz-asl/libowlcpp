@@ -48,11 +48,11 @@ public Map_triple_crtpb<Triple_store>
    typedef detail::Map_traits<Triple_store> traits;
 
 public:
-   typedef typename traits::map_std_type map_std_type;
-   typedef typename traits::map_ns_type map_ns_type;
-   typedef typename traits::map_node_type map_node_type;
-   typedef typename traits::map_doc_type map_doc_type;
-   typedef typename traits::map_triple_type map_triple_type;
+   typedef traits::map_std_type map_std_type;
+   typedef traits::map_ns_type map_ns_type;
+   typedef traits::map_node_type map_node_type;
+   typedef traits::map_doc_type map_doc_type;
+   typedef traits::map_triple_type map_triple_type;
 
    struct Err : public Rdf_err {};
 

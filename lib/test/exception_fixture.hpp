@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef EXCEPTION_FIXTURE_HPP_
 #define EXCEPTION_FIXTURE_HPP_
+#include <iostream>
 #include "boost/test/unit_test_monitor.hpp"
 #include "owlcpp/exception.hpp"
 
