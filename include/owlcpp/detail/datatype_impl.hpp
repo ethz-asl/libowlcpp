@@ -18,7 +18,7 @@ enum Internal_type_id {
 
 /**@brief 
 *******************************************************************************/
-detail::Internal_type_id internal_type_id(const Node_id nid) {
+inline detail::Internal_type_id internal_type_id(const Node_id nid) {
    using namespace owlcpp::terms;
    using namespace detail;
    switch (nid()) {
