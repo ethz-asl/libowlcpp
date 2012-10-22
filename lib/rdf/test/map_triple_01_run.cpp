@@ -29,48 +29,50 @@ const unsigned t[][4] = {
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_iterator ) {
-   typedef Map_triple<1,0,0,0> triple_map;
-   triple_map tm;
-   BOOST_CHECK_EQUAL(tm.size(), 0U);
-   BOOST_CHECK(tm.begin() == tm.end());
-   insert_seq(tm, t);
-   BOOST_CHECK_EQUAL(tm.size(), 7U);
-   BOOST_CHECK(tm.begin() != tm.end());
+   typedef Map_triple<1,0,0,0> map_triple;
+   map_triple mt;
+   BOOST_CHECK_EQUAL(mt.size(), 0U);
+   BOOST_CHECK(mt.begin() == mt.end());
+   insert_seq(mt, t);
+   BOOST_CHECK_EQUAL(mt.size(), 7U);
+   BOOST_CHECK(mt.begin() != mt.end());
 
 }
 
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_index_subject_search ) {
-   typedef Map_triple<1,0,0,0> triple_map;
-   triple_map tm;
-   BOOST_CHECK_EQUAL(tm.size(), 0U);
-   insert_seq(tm, t);
-   BOOST_CHECK_EQUAL(tm.size(), 7U);
-   triple_map::result_b<1,1,0,0>::type r1 = tm.find(Node_id(2), Node_id(3), any(), any());
+   typedef Map_triple<1,0,0,0> map_triple;
+   map_triple mt;
+   BOOST_CHECK_EQUAL(mt.size(), 0U);
+   insert_seq(mt, t);
+   BOOST_CHECK_EQUAL(mt.size(), 7U);
+   map_triple::result_b<1,1,0,0>::type r1 = mt.find(Node_id(2), Node_id(3), any(), any());
    BOOST_CHECK(!r1);
-   triple_map::result_b<1,1,0,0>::type r2 = tm.find(Node_id(0), Node_id(1), any(), any());
+   map_triple::result_b<1,1,0,0>::type r2 = mt.find(Node_id(0), Node_id(1), any(), any());
    BOOST_CHECK(r2);
    BOOST_CHECK_EQUAL(boost::distance(r2), 1);
-   triple_map::result_b<0,1,0,0>::type r3 = tm.find(any(), Node_id(3), any(), any());
+   map_triple::result_b<0,1,0,0>::type r3 = mt.find(any(), Node_id(3), any(), any());
    BOOST_CHECK_EQUAL(boost::distance(r3), 4);
 
-   BOOST_CHECK_THROW( tm.erase(triple(0,13,0,1)), Rdf_err );
-   tm.erase(triple(0,3,0,1));
-   BOOST_CHECK_EQUAL(tm.size(), 6U);
+   BOOST_CHECK_THROW( mt.erase(triple(0,13,0,1)), Rdf_err );
+   mt.erase(triple(0,3,0,1));
+   BOOST_CHECK_EQUAL(mt.size(), 6U);
 
-   tm.clear();
-   BOOST_CHECK_EQUAL(tm.size(), 0U);
+   mt.clear();
+   BOOST_CHECK_EQUAL(mt.size(), 0U);
 }
 
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_index_predicate_search ) {
-   typedef Map_triple<0,1,0,0> triple_map;
-   triple_map tm;
-   insert_seq(tm, t);
-   typedef triple_map::result_b<0,1,0,0> search;
-   search::type r = tm.find(any(), Node_id(3), any(), any());
+   typedef Map_triple<0,1,0,0> map_triple;
+   map_triple mt;
+   insert_seq(mt, t);
+   typedef map_triple::result_b<0,1,0,0>::type range_t;
+   range_t r = mt.find(any(), Node_id(3), any(), any());
+   BOOST_CHECK(r);
+   BOOST_CHECK_EQUAL(distance(r), 4U);
 }
 
 }//namespace test

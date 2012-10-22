@@ -90,17 +90,25 @@ public:
    doc_iri_range find_doc_iri(std::string const& iri) const {
       BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
       Super const& super = static_cast<Super const&>(*this);
-      if( Node_id const*const nid = super.find_node_iri(iri) )
-         return _map_doc().find_iri(*nid);
-      return doc_iri_range();
+      Node_id const*const nid = super.find_node_iri(iri);
+      typedef typename doc_iri_range::iterator::base_iterator iter_t;
+      //construct hushed_index_iterator from two NULL pointers
+      return
+               nid ?
+                        _map_doc().find_iri(*nid) :
+                        doc_iri_range(iter_t(0,0), iter_t(0,0));
    }
 
    doc_version_range find_doc_version(std::string const& version) const {
       BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
       Super const& super = static_cast<Super const&>(*this);
-      if( Node_id const*const nid = super.find_node_iri(version) )
-         return _map_doc().find_version(*nid);
-      return doc_version_range();
+      Node_id const*const nid = super.find_node_iri(version);
+      typedef typename doc_version_range::iterator::base_iterator iter_t;
+      //construct hushed_index_iterator from two NULL pointers
+      return
+               nid ?
+                        _map_doc().find_version(*nid) :
+                        doc_version_range(iter_t(0,0), iter_t(0,0));
    }
 };
 

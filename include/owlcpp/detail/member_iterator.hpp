@@ -6,7 +6,7 @@ part of owlcpp project.
 #ifndef MEMBER_ITERATOR_HPP_
 #define MEMBER_ITERATOR_HPP_
 
-#include "boost/iterator/iterator_adaptor.hpp"
+#include "boost/iterator/iterator_facade.hpp"
 
 namespace owlcpp{
 
@@ -20,20 +20,27 @@ typedef Member_iterator<std::map<int,double>::iterator, const int, &std::pair<in
 *******************************************************************************/
 template<class Iter, class Value, Value Iter::value_type::*Member>
 class Member_iterator
-: public boost::iterator_adaptor<Member_iterator<Iter, Value, Member>, Iter, Value> {
+: public boost::iterator_facade<
+     Member_iterator<Iter,Value,Member>,
+     Value,
+     boost::forward_traversal_tag
+   > {
 
-   typedef boost::iterator_adaptor<Member_iterator<Iter, Value, Member>, Iter, Value> super_t;
-   friend class boost::iterator_core_access;
 public:
-   Member_iterator() : super_t(Iter()) {}
-   Member_iterator(Iter i) : super_t(i) {}
+   typedef Iter base_iterator;
+
+   Member_iterator(base_iterator iter) : iter_(iter) {}
 
 private:
-   typename super_t::reference dereference() const {
-      return (*this->base()).*Member;
-   }
-};
+   base_iterator iter_;
 
+   friend class boost::iterator_core_access;
+   void increment() { ++iter_; }
+
+   bool equal(Member_iterator const& i) const {return iter_ == i.iter_;}
+
+   Value& dereference() const { return (*iter_).*Member; }
+};
 
 }//namespace owlcpp
 #endif /* MEMBER_ITERATOR_HPP_ */

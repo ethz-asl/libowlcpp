@@ -22,13 +22,16 @@ namespace t = owlcpp::terms;
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_docs_01 ) {
    Triple_store ts;
+   const std::string str1 = "some_random_name";
    BOOST_CHECK_EQUAL(ts.map_doc().size(), 0U);
-   BOOST_CHECK( ! ts.find_doc_iri("some_random_name") );
-   BOOST_CHECK( ! ts.find_doc_version("some_random_name") );
-   BOOST_CHECK_EQUAL(distance(ts.find_doc_iri("some_random_name")), 0);
+   BOOST_CHECK( ! ts.find_node_iri(str1) );
+   BOOST_CHECK( ! ts.find_doc_version(str1) );
+   BOOST_CHECK( ! ts.find_doc_iri(str1) );
+   BOOST_CHECK_EQUAL(distance(ts.find_doc_iri(str1)), 0);
 }
 
 /**
+*******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_docs_02 ) {
    Triple_store ts;
    BOOST_CHECK_EQUAL(ts.map_doc().size(), 0U);
@@ -61,9 +64,9 @@ BOOST_AUTO_TEST_CASE( test_docs_02 ) {
    BOOST_CHECK( ! ts.find_doc_version(iri23) );
    BOOST_CHECK(   ts.find_doc_version(iri24) );
 }
-*******************************************************************************/
 
 /** Test blank nodes, OWL-aware triple store
+*******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_blank_nodes_owl ) {
    Triple_store ts;
    BOOST_CHECK_EQUAL(ts.map_doc().size(), 0U);
@@ -90,9 +93,9 @@ BOOST_AUTO_TEST_CASE( test_blank_nodes_owl ) {
    BOOST_CHECK_NE(nid5, nid3);
    BOOST_CHECK_NE(nid5, nid4);
 }
-*******************************************************************************/
 
 /** Test literal nodes, OWL-aware triple store
+*******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_nodes_owl ) {
    Triple_store ts;
    const Node_id nid1 = ts.insert_node_iri(iri11);
@@ -115,9 +118,9 @@ BOOST_AUTO_TEST_CASE( test_literal_nodes_owl ) {
    BOOST_CHECK_NE(nid4, nid5);
    BOOST_CHECK_NE(nid3, nid5);
 }
-*******************************************************************************/
 
 /**
+*******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_print_triples ) {
    Triple_store ts = sample_triples_01();
    BOOST_FOREACH(Triple const& t, ts.map_triple()) {
@@ -133,7 +136,6 @@ BOOST_AUTO_TEST_CASE( test_print_triples ) {
       const std::string pref = ts.prefix(nsid1);
    }
 }
-*******************************************************************************/
 
 }//namespace test
 }//namespace owlcpp
