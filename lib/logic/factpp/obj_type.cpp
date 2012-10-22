@@ -7,6 +7,7 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "boost/assert.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
+#include "owlcpp/rdf/query_node.hpp"
 #include "owlcpp/rdf/print_node.hpp"
 #include "logic/node_property_declaration.hpp"
 #include "logic/node_type_declaration.hpp"
@@ -92,13 +93,18 @@ void Ot_dp_restriction::init(
    switch(restr_type_()) {
 
    case T_owl_hasValue::index:
-      if( ! is_empty(ts[val].ns_id()) ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("non-literal object node in \"x owl:hasValue y\"")
-               << Err::str1_t(to_string(val, ts))
-      );
-      val_str_ = value<std::string>(val, ts);
-      dt_ = make_expression<Data_type>(ts.datatype(val), ts);
+      try{
+         Node_literal const& node = to_literal(ts[val]);
+         val_str_ = node.value_str();
+         dt_ = make_expression<Data_type>(node.datatype(), ts);
+      }catch(base_exception &) {
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("error in \"x owl:hasValue y\"")
+                  << Err::str1_t(to_string(val, ts))
+                  << Err::nested_t(boost::current_exception())
+         );
+      }
       break;
 
    case T_owl_hasSelf::index: BOOST_THROW_EXCEPTION(

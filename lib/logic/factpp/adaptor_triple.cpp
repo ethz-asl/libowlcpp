@@ -20,6 +20,7 @@ part of owlcpp project.
 #include "logic/node_type_declaration.hpp"
 #include "logic/find_node_declaration.hpp"
 #include "owlcpp/rdf/print_node.hpp"
+#include "owlcpp/rdf/query_node.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
@@ -367,21 +368,31 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
 
    case T_owl_AllDisjointClasses::index:
    case T_owl_AllDisjointProperties::index: {
-      Triple_store::result_b<1,1,0,0>::type r = ts_.find_triple(subj, T_owl_members::id(), any(), any());
+      Triple_store::result_b<1,1,0,0>::type r =
+               ts_.find_triple(subj, T_owl_members::id(), any(), any());
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
-               << Err::msg_t("_:x owl:members seq triple not found for _:x rdf:type owl:AllDisjoint*")
+               << Err::msg_t(
+                        "_:x owl:members seq triple not found "
+                        "for _:x rdf:type owl:AllDisjoint*"
+               )
                << Err::str1_t(to_string(subj, ts_))
       );
       return axiom_from_seq(obj, r.front().object(), 2);
    }
 
    case T_owl_AllDifferent::index: {
-      Triple_store::result_b<1,1,0,0>::type r = ts_.find_triple(subj, T_owl_members::id(), any(), any());
-      if( ! r ) r = ts_.find_triple(subj, T_owl_distinctMembers::id(), any(), any());
+      Triple_store::result_b<1,1,0,0>::type r =
+               ts_.find_triple(subj, T_owl_members::id(), any(), any());
+      if( ! r ) {
+         r = ts_.find_triple(subj, T_owl_distinctMembers::id(), any(), any());
+      }
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
-               << Err::msg_t("_:x owl:(distinct)Members seq not found for _:x rdf:type owl:AllDifferent")
+               << Err::msg_t(
+                        "_:x owl:(distinct)Members seq not found for "
+                        "_:x rdf:type owl:AllDifferent"
+               )
                << Err::str1_t(to_string(subj, ts_))
       );
       return axiom_from_seq(obj, r.front().object(), 2);
@@ -474,7 +485,9 @@ TDLAxiom* Adaptor_triple::axiom_from_seq(
       if( seq.empty() ) e_m().addArg(e_m().Bottom());
       else {
          e_m().newArgList();
-         BOOST_FOREACH(const Node_id nid, seq) e_m().addArg( e_m().Individual(to_string(nid, ts_)) );
+         BOOST_FOREACH(const Node_id nid, seq) {
+            e_m().addArg( e_m().Individual(to_string(nid, ts_)) );
+         }
          TDLConceptExpression* ce = e_m().OneOf();
          e_m().addArg(ce);
       }
@@ -594,13 +607,13 @@ TDLDataTypeExpression* Adaptor_triple::data_type(const Node_id nid) {
 /*
 *******************************************************************************/
 TDLDataValue const* Adaptor_triple::data_value(const Node_id nid) {
-   Node const& node = ts_[nid];
+   Node_literal const& node = to_literal(ts_[nid]);
    if( node.ns_id() != N_empty::id() ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("literal node is expected")
             << Err::str1_t(to_string(nid, ts_))
    );
-   const Node_id dt = ts_.datatype(nid);
+   const Node_id dt = node.datatype();
    return e_m().DataValue(node.value_str(), data_type(dt));
 }
 

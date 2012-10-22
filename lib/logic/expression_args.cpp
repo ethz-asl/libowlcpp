@@ -10,6 +10,7 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
+#include "owlcpp/rdf/query_node.hpp"
 
 namespace owlcpp { namespace logic{
 using namespace owlcpp::terms;
