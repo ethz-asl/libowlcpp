@@ -77,8 +77,6 @@ int main(int argc, char* argv[]) {
          std::cout
          << store.map_triple().size() << " triples" << '\n'
          << store.map_node().size() << " nodes" << '\n'
-//         << distance(store.nodes().find(owlcpp::terms::N_empty::id())) << " literal nodes" << '\n'
-//         << distance(store.nodes().find(owlcpp::terms::N_blank::id())) << " blank nodes" << '\n'
          << store.map_ns().size() << " namespace IRIs" << '\n'
          << distance(r) << " owl:Class definitions" << '\n'
          ;
