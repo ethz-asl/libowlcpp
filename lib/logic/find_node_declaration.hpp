@@ -8,7 +8,7 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "boost/range.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/query_node.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/logic/exception.hpp"
 
@@ -38,7 +38,7 @@ template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts)
          if( ts[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
                   Logic_err()
                   << Logic_err::msg_t("non-blank subject in _:x owl:annotatedSource y")
-                  << Logic_err::str1_t(to_string_short(nid, ts))
+                  << Logic_err::str1_t(to_string(nid, ts))
          );
          BOOST_FOREACH(
                   Triple const& t,
@@ -51,13 +51,13 @@ template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts)
                Node_id const* nidp =
                         boost::get_error_info<Logic_err::node_id_t>(e)
       ) {
-         e << Logic_err::str1_t(to_string_short(*nidp, ts));
+         e << Logic_err::str1_t(to_string(*nidp, ts));
       }
 
       Logic_err e2;
       e2
       << Logic_err::msg_t("node declaration error")
-      << Logic_err::str1_t(to_string_short(nid, ts))
+      << Logic_err::str1_t(to_string(nid, ts))
       << Logic_err::nested_t(boost::copy_exception(e))
       ;
       BOOST_THROW_EXCEPTION(e2);
@@ -76,7 +76,7 @@ void check_declaration(const Node_id nid, const Decl d, Triple_store const& ts) 
                         "node is " + nt.to_string() +
                         "; should be " + d.to_string()
                )
-               << Logic_err::str1_t(to_string_short(nid, ts))
+               << Logic_err::str1_t(to_string(nid, ts))
    );
 }
 
@@ -92,7 +92,7 @@ void check_seq_declaration(Range& r, const Decl d, Triple_store const& ts) {
                         "node is " + nt.to_string() +
                         "; should be " + d.to_string()
                )
-               << Logic_err::str1_t(to_string_short(nid, ts))
+               << Logic_err::str1_t(to_string(nid, ts))
       );
    }
 }
@@ -110,7 +110,7 @@ Decl check_seq_declaration(Range& r, Triple_store const& ts) {
    if( d.is_none() ) BOOST_THROW_EXCEPTION(
             Logic_err()
             << Logic_err::msg_t("node " + Decl::name() + " declaration not found")
-            << Logic_err::str1_t(to_string_short(bsr.front(), ts))
+            << Logic_err::str1_t(to_string(bsr.front(), ts))
    );
    bsr.advance_begin(1);
    check_seq_declaration(bsr, d, ts);
@@ -125,7 +125,7 @@ check_same_declaration(const Node_id n1, const Node_id n2, Triple_store const& t
    if( d1.is_none() ) BOOST_THROW_EXCEPTION(
             Logic_err()
             << Logic_err::msg_t("node " + Decl::name() + " declaration not found")
-            << Logic_err::str1_t(to_string_short(n1, ts))
+            << Logic_err::str1_t(to_string(n1, ts))
    );
    const Decl d2 = declaration<Decl>(n2, ts);
    if( d1 != d2 ) BOOST_THROW_EXCEPTION(

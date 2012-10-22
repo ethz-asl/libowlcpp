@@ -8,6 +8,7 @@ part of owlcpp project.
 #include "expression.hpp"
 #include "factpp/Kernel.hpp"
 #include "boost/assert.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
@@ -54,7 +55,7 @@ public:
       if( ! is_iri(ts[ea.handle].ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("non-IRI object in _:x owl:inverseOf *:y")
-               << Err::str1_t(to_string_short(ea.obj1, ts))
+               << Err::str1_t(to_string(ea.obj1, ts))
       );
    }
 
