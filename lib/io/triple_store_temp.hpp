@@ -36,13 +36,13 @@ public Map_triple_crtpb<Triple_store_temp>
    friend class Map_triple_crtpb<Triple_store_temp>;
 
    typedef Map_traits<Triple_store_temp> traits;
-   typedef typename traits::map_std_type map_std_type;
+   typedef traits::map_std_type map_std_type;
 
 public:
-   typedef typename traits::map_ns_type map_ns_type;
-   typedef typename traits::doc_type doc_type;
-   typedef typename traits::map_node_type map_node_type;
-   typedef typename traits::map_triple_type map_triple_type;
+   typedef traits::map_ns_type map_ns_type;
+   typedef traits::doc_type doc_type;
+   typedef traits::map_node_type map_node_type;
+   typedef traits::map_triple_type map_triple_type;
 
    struct Err : public base_exception {};
 

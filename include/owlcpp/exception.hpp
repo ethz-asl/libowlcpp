@@ -17,7 +17,7 @@ Example:
    BOOST_THROW_EXCEPTION(
          base_exception()
          << base_exception::msg_t("exception occurred")
-         << base_exception::nested_t(b::current_exception())
+         << base_exception::nested_t(boost::current_exception())
    );
 *******************************************************************************/
 struct base_exception : virtual public std::exception, virtual public boost::exception {

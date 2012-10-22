@@ -135,6 +135,8 @@ private:
             const Node_id val,
             Triple_store const& ts
    );
+
+
 };
 
 /**@brief  Object type expression generator for object property cardinality
