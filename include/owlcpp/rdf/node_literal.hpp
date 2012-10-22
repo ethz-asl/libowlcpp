@@ -17,12 +17,26 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_fwd.hpp"
 #include "owlcpp/rdf/visitor_node.hpp"
 
-namespace owlcpp{ namespace detail{
+namespace owlcpp{
+
+/**@brief Abstract literal node class
+*******************************************************************************/
+class Node_literal : public Node {
+public:
+   Node_id datatype() const {return datatype_impl();}
+   std::string value_str() const {return value_str_impl();}
+private:
+   virtual Node_id datatype_impl() const =0;
+   virtual std::string value_str_impl() const =0;
+   Ns_id ns_id_impl() const { return terms::N_empty::id(); }
+};
+
+namespace detail{
 
 /**@brief 
 *******************************************************************************/
-template<class Dt> class Node_literal : public Node {
-   typedef Node_literal self_type;
+template<class Dt> class Node_literal_impl : public Node_literal {
+   typedef Node_literal_impl self_type;
 
 public:
    typedef typename Dt::value_type value_type;
@@ -41,30 +55,28 @@ public:
       }
    }
 
-   template<class T> explicit Node_literal(
+   template<class T> explicit Node_literal_impl(
             T const& val,
             const Node_id dt = terms::T_empty_::id()
    )
    : val_(convert<T>(val, dt)), dt_(dt)
    {}
 
-   explicit Node_literal(
+   explicit Node_literal_impl(
             char const* val,
             const Node_id dt = terms::T_empty_::id()
    )
    : val_(convert(std::string(val), dt)), dt_(dt)
    {}
 
-   explicit Node_literal(
+   explicit Node_literal_impl(
             std::string const& val,
             const Node_id dt = terms::T_empty_::id()
    )
    : val_(convert(val, dt)), dt_(dt)
    {}
 
-   Node_id datatype() const {return dt_;}
    value_type value() const {return val_;}
-   std::string value_str() const {return Dt::to_string(val_, dt_);}
 
 private:
    value_type val_;
@@ -72,7 +84,9 @@ private:
 
    OWLCPP_VISITABLE
 
-   Ns_id ns_id_impl() const { return terms::N_empty::id(); }
+   std::string value_str_impl() const {return Dt::to_string(val_, dt_);}
+
+   Node_id datatype_impl() const {return dt_;}
 
    bool empty_impl() const { return false; }
 
@@ -97,8 +111,8 @@ private:
 
 /**@brief
 *******************************************************************************/
-template<> class Node_literal<Datatype_string> : public Node {
-   typedef Node_literal self_type;
+template<> class Node_literal_impl<Datatype_string> : public Node_literal {
+   typedef Node_literal_impl self_type;
 
    static std::size_t _hash(std::string const& val, const Node_id dt, std::string const& lang) {
       std::size_t h = 0;
@@ -111,7 +125,7 @@ template<> class Node_literal<Datatype_string> : public Node {
 public:
    typedef Datatype_string::value_type value_type;
 
-   explicit Node_literal(
+   explicit Node_literal_impl(
             std::string const& val,
             const Node_id dt = terms::T_empty_::id(),
             std::string const& lang = ""
@@ -120,7 +134,6 @@ public:
    {}
 
    std::string const& language() const {return lang_;}
-   Node_id datatype() const {return dt_;}
    std::string const& value() const {return val_;}
 
 private:
@@ -131,7 +144,9 @@ private:
 
    OWLCPP_VISITABLE
 
-   Ns_id ns_id_impl() const { return terms::N_empty::id(); }
+   Node_id datatype_impl() const {return dt_;}
+
+   std::string value_str_impl() const {return val_;}
 
    bool empty_impl() const { return val_.empty() && lang_.empty() && is_empty(dt_); }
 
