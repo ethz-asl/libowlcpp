@@ -90,11 +90,9 @@ std::string to_string(Node const& node) {
 /**@return IRI node string with complete namespace or prefix (if defined)
 *******************************************************************************/
 std::string to_string(Node const& node, Triple_store const& ts) {
+   typedef std::string(&fun_t)(Node_iri const&, Triple_store const&);
    return run_to_string(
-            boost::bind2nd(
-                     static_cast<std::string(&)(Node_iri const&, Triple_store const&)>(to_string),
-                     ts
-            ),
+            boost::bind2nd(static_cast<fun_t>(to_string), ts),
             node
    );
 }
@@ -108,11 +106,9 @@ std::string to_string(const Node_id nid, Triple_store const& ts) {
 /**@return IRI node string with namespace prefix, generated, if needed
 *******************************************************************************/
 std::string to_string_pref(Node const& node, Triple_store const& ts) {
+   typedef std::string(&fun_t)(Node_iri const&, Triple_store const&);
    return run_to_string(
-            boost::bind2nd(
-                     static_cast<std::string(&)(Node_iri const&, Triple_store const&)>(to_string_pref),
-                     ts
-            ),
+            boost::bind2nd(static_cast<fun_t>(to_string_pref), ts),
             node
    );
 }
@@ -126,11 +122,9 @@ std::string to_string_pref(const Node_id nid, Triple_store const& ts) {
 /**@return node string with complete namespace
 *******************************************************************************/
 std::string to_string_full(Node const& node, Triple_store const& ts) {
+   typedef std::string(&fun_t)(Node_iri const&, Triple_store const&);
    return run_to_string(
-            boost::bind2nd(
-                     static_cast<std::string(&)(Node_iri const&, Triple_store const&)>(to_string_full),
-                     ts
-            ),
+            boost::bind2nd(static_cast<fun_t>(to_string_full), ts),
             node
    );
 }

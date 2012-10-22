@@ -10,6 +10,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_fwd.hpp"
 #include "owlcpp/rdf/node_iri.hpp"
 #include "owlcpp/rdf/print_id.hpp"
+#include "owlcpp/terms/term_methods.hpp"
 
 namespace owlcpp{
 class Triple_store;
