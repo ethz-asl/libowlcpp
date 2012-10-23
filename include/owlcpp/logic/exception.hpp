@@ -12,9 +12,7 @@ namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
-struct Logic_err : public base_exception {
-   typedef boost::error_info<struct errinfo_node_id_, Node_id> node_id_t;
-};
+struct Logic_err : public base_exception {};
 
 }//namespace owlcpp
 #endif /* REASONER_EXCEPTION_HPP_ */

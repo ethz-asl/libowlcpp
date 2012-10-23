@@ -17,16 +17,16 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 /** Iterate over members of RDF list
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   Triple_store ts;
    sample_triples_01(ts);
    sample_triples_02(ts);
-   Triple_store::doc_map_t::path_range r = ts.documents().find_path(path1);
+   Triple_store::map_doc_type::path_range r = ts.map_doc().find_path(path1);
    BOOST_REQUIRE(r);
    const Doc_id did1 = r.front();
-   const Node_id nb1 = ts.insert_blank_node(did1, b1);
-   const Node_id nb2 = ts.insert_blank_node(did1, b2);
-   const Node_id ni1 = ts.insert_iri_node(iri11);
-   const Node_id ni2 = ts.insert_iri_node(iri12);
+   const Node_id nb1 = ts.insert_blank(1, did1);
+   const Node_id nb2 = ts.insert_blank(2, did1);
+   const Node_id ni1 = ts.insert_node_iri(iri11);
+   const Node_id ni2 = ts.insert_node_iri(iri12);
    ts.insert_triple(nb1, terms::T_rdf_first::id(), ni1, did1);
    ts.insert_triple(nb1, terms::T_rdf_rest::id(), nb2, did1);
    ts.insert_triple(nb2, terms::T_rdf_first::id(), ni2, did1);

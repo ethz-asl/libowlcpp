@@ -57,16 +57,16 @@ int main(int argc, char* argv[]) {
          owlcpp::Catalog cat;
          std::vector<std::string> const& vin = vm["include"].as<std::vector<std::string> >();
          if( vin.empty() ) {
-            cat.add(in.parent_path(), true, 100);
+            add(cat, in.parent_path(), true, 100);
          } else {
-            BOOST_FOREACH(std::string const& p, vin) cat.add(p, true, 100);
+            BOOST_FOREACH(std::string const& p, vin) add(cat, p, true, 100);
          }
          load_file(in, store, cat);
       } else { //load just input-file
          load_file(in, store);
       }
 
-      owlcpp::Triple_store::result_b<0,1,1,0>::type r = store.find(
+      owlcpp::Triple_store::result_b<0,1,1,0>::type r = store.find_triple(
                owlcpp::any(),
                owlcpp::terms::T_rdf_type::id(),
                owlcpp::terms::T_owl_Class::id(),
@@ -75,20 +75,18 @@ int main(int argc, char* argv[]) {
 
       if( vm.count("count") ) {
          std::cout
-         << store.triples().size() << " triples" << '\n'
-         << store.nodes().size() << " nodes" << '\n'
-         << distance(store.nodes().find(owlcpp::terms::N_empty::id())) << " literal nodes" << '\n'
-         << distance(store.nodes().find(owlcpp::terms::N_blank::id())) << " blank nodes" << '\n'
-         << store.iris().size() << " namespace IRIs" << '\n'
+         << store.map_triple().size() << " triples" << '\n'
+         << store.map_node().size() << " nodes" << '\n'
+         << store.map_ns().size() << " namespace IRIs" << '\n'
          << distance(r) << " owl:Class definitions" << '\n'
          ;
       } else {
          BOOST_FOREACH( owlcpp::Triple const& t, r ) {
             std::cout
             << '\"'
-            << store.string(t.subject()) << "\"\t\""
-            << store.string(t.predicate()) << "\"\t\""
-            << store.string(t.object()) << "\"\t\n"
+            << to_string(t.subject(), store) << "\"\t\""
+            << to_string(t.predicate(), store) << "\"\t\""
+            << to_string(t.object(), store) << "\"\t\n"
             ;
          }
       }

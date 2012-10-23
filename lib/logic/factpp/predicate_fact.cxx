@@ -30,7 +30,7 @@ Can_relate::Can_relate(const TDLObjectRoleExpression* property,
 Can_relate::Can_relate(
       const std::string& p,
       const std::string& c,
-      const Triple_store& store,
+      const Store_triple& store,
       ReasoningKernel& kernel
 )
 : kernel_(kernel)

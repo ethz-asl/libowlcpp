@@ -19,6 +19,8 @@ part of owlcpp project.
 #include "logic/node_property_declaration.hpp"
 #include "logic/node_type_declaration.hpp"
 #include "logic/find_node_declaration.hpp"
+#include "owlcpp/rdf/print_node.hpp"
+#include "owlcpp/rdf/query_node.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
@@ -62,7 +64,7 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
       if( ! is_iri(ts_[subj].ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("non-IRI subject in *:x owl:disjointUnionOf seq")
-               << Err::str1_t(to_string_short(subj, ts_))
+               << Err::str1_t(to_string(subj, ts_))
       );
       return axiom_from_seq(pred, obj, 2, subj);
 
@@ -193,7 +195,7 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
       if( ! is_blank(ts_[subj].ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("blank node subject is expected")
-               << Err::str1_t(to_string_short(subj, ts_))
+               << Err::str1_t(to_string(subj, ts_))
       );
       return 0;
 
@@ -223,7 +225,6 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
    const Node_id subj = t.subject();
-   const Node_id pred = t.predicate();
    const Node_id obj = t.object();
    Node const& subj_node = ts_[subj];
    switch (obj()) {
@@ -272,7 +273,7 @@ TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
       BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("IRI subject node is expected")
-               << Err::str1_t(to_string_short(subj, ts_))
+               << Err::str1_t(to_string(subj, ts_))
       );
 
    case T_owl_AllDisjointClasses::index:
@@ -284,7 +285,7 @@ TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
       BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("blank subject node is expected")
-               << Err::str1_t(to_string_short(subj, ts_))
+               << Err::str1_t(to_string(subj, ts_))
       );
 
    //ignored triples
@@ -303,7 +304,7 @@ TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
    BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("unsupported rdf:type object")
-                  << Err::str1_t(to_string_short(subj, ts_))
+                  << Err::str1_t(to_string(subj, ts_))
    );
 }
 
@@ -311,7 +312,6 @@ TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::axiom_iri_node_type(Triple const& t) {
    const Node_id subj = t.subject();
-   const Node_id pred = t.predicate();
    const Node_id obj = t.object();
    BOOST_ASSERT( is_iri(ts_[subj].ns_id()) );
 
@@ -322,27 +322,27 @@ TDLAxiom* Adaptor_triple::axiom_iri_node_type(Triple const& t) {
       if( ts_.is_standard(subj) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("re-definition of a standard term")
-               << Err::str1_t(to_string_short(subj, ts_))
+               << Err::str1_t(to_string(subj, ts_))
       );
-      return k_.declare( e_m().Concept(ts_.string(subj)) );
+      return k_.declare( e_m().Concept(to_string(subj, ts_)) );
 
    case T_rdfs_Datatype::index:
       if( subj == T_rdfs_Literal::id() || subj == T_owl_Nothing::id() ) return 0;
       if( ts_.is_standard(subj) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("re-definition of a standard term")
-               << Err::str1_t(to_string_short(subj, ts_))
+               << Err::str1_t(to_string(subj, ts_))
       );
-      return k_.declare( e_m().DataType(ts_.string(subj)) );
+      return k_.declare( e_m().DataType(to_string(subj, ts_)) );
 
    case T_owl_ObjectProperty::index:
-      return k_.declare( e_m().ObjectRole(ts_.string(subj)) );
+      return k_.declare( e_m().ObjectRole(to_string(subj, ts_)) );
 
    case T_owl_DatatypeProperty::index:
-      return k_.declare( e_m().DataRole(ts_.string(subj)) );
+      return k_.declare( e_m().DataRole(to_string(subj, ts_)) );
 
    case T_owl_NamedIndividual::index:
-      return k_.declare( e_m().Individual(ts_.string(subj)) );
+      return k_.declare( e_m().Individual(to_string(subj, ts_)) );
 
    //ignored triples
    case T_owl_DeprecatedClass::index:
@@ -352,7 +352,7 @@ TDLAxiom* Adaptor_triple::axiom_iri_node_type(Triple const& t) {
    default: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unsupported rdf:type object")
-            << Err::str1_t(to_string_short(subj, ts_))
+            << Err::str1_t(to_string(subj, ts_))
    );
    }
 }
@@ -361,7 +361,6 @@ TDLAxiom* Adaptor_triple::axiom_iri_node_type(Triple const& t) {
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
    const Node_id subj = t.subject();
-   const Node_id pred = t.predicate();
    const Node_id obj = t.object();
    BOOST_ASSERT( is_blank(ts_[subj].ns_id()) );
 
@@ -369,22 +368,32 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
 
    case T_owl_AllDisjointClasses::index:
    case T_owl_AllDisjointProperties::index: {
-      Triple_store::result_b<1,1,0,0>::type r = ts_.find(subj, T_owl_members::id(), any(), any());
+      Triple_store::result_b<1,1,0,0>::type r =
+               ts_.find_triple(subj, T_owl_members::id(), any(), any());
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
-               << Err::msg_t("_:x owl:members seq triple not found for _:x rdf:type owl:AllDisjoint*")
-               << Err::str1_t(to_string_short(subj, ts_))
+               << Err::msg_t(
+                        "_:x owl:members seq triple not found "
+                        "for _:x rdf:type owl:AllDisjoint*"
+               )
+               << Err::str1_t(to_string(subj, ts_))
       );
       return axiom_from_seq(obj, r.front().object(), 2);
    }
 
    case T_owl_AllDifferent::index: {
-      Triple_store::result_b<1,1,0,0>::type r = ts_.find(subj, T_owl_members::id(), any(), any());
-      if( ! r ) r = ts_.triples().find(subj, T_owl_distinctMembers::id(), any(), any());
+      Triple_store::result_b<1,1,0,0>::type r =
+               ts_.find_triple(subj, T_owl_members::id(), any(), any());
+      if( ! r ) {
+         r = ts_.find_triple(subj, T_owl_distinctMembers::id(), any(), any());
+      }
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
-               << Err::msg_t("_:x owl:(distinct)Members seq not found for _:x rdf:type owl:AllDifferent")
-               << Err::str1_t(to_string_short(subj, ts_))
+               << Err::msg_t(
+                        "_:x owl:(distinct)Members seq not found for "
+                        "_:x rdf:type owl:AllDifferent"
+               )
+               << Err::str1_t(to_string(subj, ts_))
       );
       return axiom_from_seq(obj, r.front().object(), 2);
    }
@@ -398,7 +407,7 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
    default: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unsupported rdf:type object")
-            << Err::str1_t(to_string_short(subj, ts_))
+            << Err::str1_t(to_string(subj, ts_))
    );
 
    }
@@ -418,8 +427,8 @@ TDLAxiom* Adaptor_triple::axiom_from_seq(
    if( seq.size() < min_len ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("not enough elements for operation")
-            << Err::str1_t(to_string_short(op, ts_))
-            << Err::str2_t(to_string_short(seq_nid, ts_))
+            << Err::str1_t(to_string(op, ts_))
+            << Err::str2_t(to_string(seq_nid, ts_))
    );
    switch (op()) {
    case T_owl_disjointUnionOf::index:
@@ -468,7 +477,7 @@ TDLAxiom* Adaptor_triple::axiom_from_seq(
          if( ! is_iri(ts_[nid].ns_id()) ) BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("non-IRI node in owl:oneOf sequence")
-                  << Err::str1_t(to_string_short(nid, ts_))
+                  << Err::str1_t(to_string(nid, ts_))
          );
       }
       e_m().newArgList();
@@ -476,7 +485,9 @@ TDLAxiom* Adaptor_triple::axiom_from_seq(
       if( seq.empty() ) e_m().addArg(e_m().Bottom());
       else {
          e_m().newArgList();
-         BOOST_FOREACH(const Node_id nid, seq) e_m().addArg( e_m().Individual(ts_.string(nid)) );
+         BOOST_FOREACH(const Node_id nid, seq) {
+            e_m().addArg( e_m().Individual(to_string(nid, ts_)) );
+         }
          TDLConceptExpression* ce = e_m().OneOf();
          e_m().addArg(ce);
       }
@@ -485,7 +496,7 @@ TDLAxiom* Adaptor_triple::axiom_from_seq(
    default: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unsupported operation")
-            << Err::str1_t(to_string_short(op, ts_))
+            << Err::str1_t(to_string(op, ts_))
    );
    }
 }
@@ -500,7 +511,7 @@ TDLAxiom* Adaptor_triple::axiom_custom_predicate(Triple const& t) {
    if( ! is_iri(ts_[pred].ns_id() ) ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("non-IRI predicate in x *:y z")
-            << Err::str1_t(to_string_short(pred, ts_))
+            << Err::str1_t(to_string(pred, ts_))
    );
 
    const Node_property np = declaration<Node_property>(pred, ts_);
@@ -518,7 +529,7 @@ TDLAxiom* Adaptor_triple::axiom_custom_predicate(Triple const& t) {
    BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unknown predicate type")
-            << Err::str1_t(to_string_short(pred, ts_))
+            << Err::str1_t(to_string(pred, ts_))
       );
 }
 
@@ -553,7 +564,7 @@ void Adaptor_triple::submit_custom_triple(Triple const& t) {
    BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unknown predicate type")
-            << Err::str1_t(to_string_short(pred, ts_))
+            << Err::str1_t(to_string(pred, ts_))
       );
 }
 
@@ -570,9 +581,9 @@ TDLIndividualExpression* Adaptor_triple::obj_value(const Node_id nid) {
    if( is_blank(node.ns_id()) || is_empty(node.ns_id()) ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("invalid node for object instance declaration")
-            << Err::str1_t(to_string_short(nid, ts_))
+            << Err::str1_t(to_string(nid, ts_))
    );
-   return e_m().Individual(ts_.string(nid));
+   return e_m().Individual(to_string(nid, ts_));
 }
 
 /*
@@ -596,13 +607,13 @@ TDLDataTypeExpression* Adaptor_triple::data_type(const Node_id nid) {
 /*
 *******************************************************************************/
 TDLDataValue const* Adaptor_triple::data_value(const Node_id nid) {
-   Node const& node = ts_[nid];
+   Node_literal const& node = to_literal(ts_[nid]);
    if( node.ns_id() != N_empty::id() ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("literal node is expected")
-            << Err::str1_t(to_string_short(nid, ts_))
+            << Err::str1_t(to_string(nid, ts_))
    );
-   const Node_id dt = ts_.datatype(nid);
+   const Node_id dt = node.datatype();
    return e_m().DataValue(node.value_str(), data_type(dt));
 }
 
@@ -616,40 +627,40 @@ TExpressionManager& Adaptor_triple::e_m() {
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
    Triple_store::result_b<1,1,0,0>::type r1 =
-            ts_.find(nid, T_owl_sourceIndividual::id(), any(), any());
+            ts_.find_triple(nid, T_owl_sourceIndividual::id(), any(), any());
    if( ! r1 ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("no owl:sourceIndividual in owl:NegativePropertyAssertion")
-            << Err::str1_t(to_string_short(nid, ts_))
+            << Err::str1_t(to_string(nid, ts_))
    );
    const Node_id src_ind = r1.front().object();
 
    Triple_store::result_b<1,1,0,0>::type r2 =
-            ts_.find(nid, T_owl_assertionProperty::id(), any(), any());
+            ts_.find_triple(nid, T_owl_assertionProperty::id(), any(), any());
    if( ! r2 ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("no owl:assertionProperty in owl:NegativePropertyAssertion")
-            << Err::str1_t(to_string_short(nid, ts_))
-            << Err::str2_t(to_string_short(src_ind, ts_))
+            << Err::str1_t(to_string(nid, ts_))
+            << Err::str2_t(to_string(src_ind, ts_))
    );
    const Node_id prop = r2.front().object();
    const Node_property nt = declaration<Node_property>(prop, ts_);
    if( ! nt.is_object() && ! nt.is_data() ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("undefined property in owl:NegativePropertyAssertion")
-            << Err::str1_t(to_string_short(prop, ts_))
+            << Err::str1_t(to_string(prop, ts_))
    );
    const Node_id tiv = nt.is_object() ?
             T_owl_targetIndividual::id() :
             T_owl_targetValue::id();
    Triple_store::result_b<1,1,0,0>::type r3 =
-            ts_.find(nid, tiv, any(), any());
+            ts_.find_triple(nid, tiv, any(), any());
    if( ! r3 ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("no owl:target* in owl:NegativePropertyAssertion")
-            << Err::str1_t(to_string_short(nid, ts_))
-            << Err::str2_t(to_string_short(src_ind, ts_))
-            << Err::str3_t(to_string_short(prop, ts_))
+            << Err::str1_t(to_string(nid, ts_))
+            << Err::str2_t(to_string(src_ind, ts_))
+            << Err::str3_t(to_string(prop, ts_))
    );
    const Node_id target = r3.front().object();
 

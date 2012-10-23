@@ -9,6 +9,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 
 namespace owlcpp{
 
@@ -40,7 +41,7 @@ private:
    friend class boost::iterator_core_access;
 
    void increment() {
-      const Triple_store::result_b<1,1,0,0>::type r = ts_->find(
+      const Triple_store::result_b<1,1,0,0>::type r = ts_->find_triple(
                nid_,
                terms::T_rdf_rest::id(),
                any(),
@@ -49,19 +50,19 @@ private:
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("rdf:rest triple not found")
-               << Err::str1_t(ts_->string(nid_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       Triple const& t = r.front();
       if( distance(r) != 1U ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("multiple rdf:rest triples")
-               << Err::str1_t(ts_->string(nid_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       nid_ = t.object();
    }
 
    Node_id const& dereference() const {
-      const Triple_store::result_b<1,1,0,0>::type r = ts_->triples().find(
+      const Triple_store::result_b<1,1,0,0>::type r = ts_->find_triple(
                nid_,
                terms::T_rdf_first::id(),
                any(),
@@ -70,13 +71,13 @@ private:
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("rdf:first triple not found")
-               << Err::str1_t(ts_->string(nid_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       Triple const& t = r.front();
       if( distance(r) != 1U ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("multiple rdf:first triples")
-               << Err::str1_t(ts_->string(nid_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       return t.obj_;
    }

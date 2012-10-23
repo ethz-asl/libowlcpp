@@ -13,10 +13,10 @@ part of owlcpp project.
 #include "boost/range.hpp"
 #include "boost/range/algorithm/find.hpp"
 
-#include "owlcpp/rdf/detail/triple_map_tags.hpp"
+#include "owlcpp/rdf/detail/map_triple_tags.hpp"
 #include "owlcpp/rdf/exception.hpp"
 
-namespace owlcpp{ namespace triple_map_detail{
+namespace owlcpp{ namespace map_triple_detail{
 namespace fusion = boost::fusion;
 namespace fusion_rof = boost::fusion::result_of;
 
@@ -27,6 +27,7 @@ Alternatives and RAM/time performance for adding many triples:
 - ptr_vector tracks ownership; ptr_vector<const Triple> does not work
 - boost::ptr_vector<Triple> 1.1GB/98s
 - std::vector<Triple> 0.921GB/91s
+- std::vector<Triple> + subj. index 1.2GB/97s
 
 @decision Indexing triples.
 Options and RAM/time performance:
@@ -166,6 +167,6 @@ private:
 };
 
 
-}//namespace triple_map_detail
+}//namespace map_triple_detail
 }//namespace owlcpp
 #endif /* TRIPLE_INDEX_HPP_ */

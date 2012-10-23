@@ -19,7 +19,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   Triple_store ts;
    load_file(sample_file_path("data_property_range.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
