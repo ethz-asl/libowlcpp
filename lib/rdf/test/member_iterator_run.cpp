@@ -11,7 +11,7 @@ part of owlcpp project.
 #include "boost/range.hpp"
 #include "boost/foreach.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
-//#include "owlcpp/rdf/map_doc.hpp"
+#include "owlcpp/detail/iterator_member_pair.hpp"
 #include "boost/multi_index/detail/hash_index_iterator.hpp"
 
 namespace owlcpp{ namespace test{
@@ -24,11 +24,7 @@ BOOST_AUTO_TEST_CASE( test_pair_iter ) {
    typedef std::map<int, double> map_t;
    typedef std::pair<int, double> pair_t;
 
-   typedef Member_iterator<
-            map_t::const_iterator,
-            const double,
-            &std::pair<const int, double>::second
-            > iter_t;
+   typedef Iterator_member_pair<map_t::const_iterator, const double, 2> iter_t;
    typedef boost::iterator_range<iter_t> range_t;
 
    map_t map;

@@ -14,7 +14,7 @@ part of owlcpp project.
 
 #include "owlcpp/ns_id.hpp"
 #include "owlcpp/rdf/exception.hpp"
-#include "owlcpp/detail/member_iterator.hpp"
+#include "owlcpp/detail/iterator_member_pair.hpp"
 #include "owlcpp/terms/detail/max_standard_id.hpp"
 
 namespace owlcpp{
@@ -31,11 +31,7 @@ class Map_ns {
 
 public:
    typedef Ns_id id_type;
-   typedef Member_iterator<
-            map_citer_t,
-            Ns_id const,
-            &std::pair<const std::string,Ns_id>::second
-   > iterator;
+   typedef Iterator_member_pair<map_citer_t, Ns_id const, 2> iterator;
 
    typedef iterator const_iterator;
 

@@ -24,7 +24,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/hash_node.hpp"
 #include "owlcpp/doc_id.hpp"
 #include "owlcpp/node_id.hpp"
-#include "owlcpp/detail/member_iterator.hpp"
+#include "owlcpp/detail/iterator_member_pair.hpp"
 #include "owlcpp/detail/datatype_impl.hpp"
 #include "owlcpp/terms/detail/max_standard_id.hpp"
 
@@ -55,11 +55,7 @@ private:
    typedef std::pair<Node const*,Node_id> map_element_t;
 
 public:
-   typedef Member_iterator<
-            map_citer_t,
-            Node_id const,
-            &std::pair<Node const*const,Node_id>::second
-   > iterator;
+   typedef Iterator_member_pair<map_citer_t, Node_id const, 2> iterator;
    typedef iterator const_iterator;
 
    struct Err : public Rdf_err {};
