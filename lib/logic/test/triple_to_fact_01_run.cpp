@@ -148,5 +148,15 @@ BOOST_AUTO_TEST_CASE( case11 ) {
    BOOST_CHECK( ! k.isKBConsistent() );
 }
 
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case12 ) {
+   Triple_store ts;
+   load_file(sample_file_path("version_test_b.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( k.isKBConsistent() );
+}
+
 }//namespace test
 }//namespace owlcpp

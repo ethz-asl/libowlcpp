@@ -38,7 +38,7 @@ template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts)
          if( ts[x].ns_id() != N_blank::id() ) BOOST_THROW_EXCEPTION(
                   Logic_err()
                   << Logic_err::msg_t("non-blank subject in _:x owl:annotatedSource y")
-                  << Logic_err::str1_t(to_string(nid, ts))
+                  << Logic_err::node_id_t(x)
          );
          BOOST_FOREACH(
                   Triple const& t,

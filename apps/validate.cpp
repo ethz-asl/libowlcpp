@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
       return 0;
    }
 
-   //create a triple store that is aware of standard OWL terms
+   //create a triple store
    owlcpp::Triple_store store;
 
    const bfs::path in = vm["input-file"].as<std::string>();

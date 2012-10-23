@@ -207,6 +207,7 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    case T_owl_imports::index:
    case T_owl_members::index:
    case T_owl_sourceIndividual::index:
+   case T_owl_priorVersion::index:
    case T_owl_targetIndividual::index:
    case T_owl_versionInfo::index:
    case T_owl_versionIRI::index:
