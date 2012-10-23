@@ -1,4 +1,4 @@
-/** @file "/owlcpp/include/owlcpp/rdf/map_std_crtpb.hpp" 
+/** @file "/owlcpp/include/owlcpp/rdf/map_std_ns_crtpb.hpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
@@ -51,7 +51,7 @@ public:
    }
 
    /**
-    @param iid namespace IRI ID
+    @param nsid namespace IRI ID
     @return IRI prefix string or "" if no prefix was defined
    */
    std::string prefix(const Ns_id nsid) const {
@@ -84,7 +84,7 @@ public:
    }
 
    /**
-    @param iid namespace IRI ID
+    @param nsid namespace IRI ID
     @param pref namespace IRI prefix
     @details Define or re-define the prefix for a user-defined namespace IRI.
    */

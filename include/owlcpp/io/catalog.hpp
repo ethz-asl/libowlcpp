@@ -97,6 +97,7 @@ private:
 
 /**@brief determine OntologyIRI and VersionIRI of ontology document(s)
  and add them to the catalog
+ @param cat catalog;
  @param path symbolic path pointing to local file or directory;
  any type implicitly convertible to boost::path can be used, e.g., std::string, const char*
  @param recurse if true add to catalog files located in sub-directories

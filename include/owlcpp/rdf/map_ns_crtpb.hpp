@@ -39,7 +39,7 @@ public:
    }
 
    /**
-    @param iid namespace IRI ID
+    @param nsid namespace IRI ID
     @return IRI prefix string or "" if no prefix was defined
    */
    std::string prefix(const Ns_id nsid) const {
@@ -67,7 +67,7 @@ public:
    }
 
    /**
-    @param iid namespace IRI ID
+    @param nsid namespace IRI ID
     @param pref namespace IRI prefix
     @details Define or re-define the prefix for a user-defined namespace IRI.
    */
