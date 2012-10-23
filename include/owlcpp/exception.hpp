@@ -10,13 +10,14 @@ part of owlcpp project.
 #include "boost/exception/all.hpp"
 
 namespace owlcpp{
+class Node_id;
 
 /**
 Example:
    BOOST_THROW_EXCEPTION(
          base_exception()
          << base_exception::msg_t("exception occurred")
-         << base_exception::nested_t(b::current_exception())
+         << base_exception::nested_t(boost::current_exception())
    );
 *******************************************************************************/
 struct base_exception : virtual public std::exception, virtual public boost::exception {
@@ -26,6 +27,7 @@ struct base_exception : virtual public std::exception, virtual public boost::exc
    typedef boost::error_info<struct errinfo_str3_, std::string> str3_t;
    typedef boost::error_info<struct errinfo_int1_, int> int1_t;
    typedef boost::error_info<struct errinfo_int2_, int> int2_t;
+   typedef boost::error_info<struct errinfo_node_id_, Node_id> node_id_t;
    typedef boost::errinfo_nested_exception nested_t;
 };
 

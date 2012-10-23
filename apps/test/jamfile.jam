@@ -6,8 +6,6 @@
 project apps/test
    :  build-dir $(OUT)/apps
    : requirements
-      <link>shared
-      <runtime-link>shared
 ;
 
 run ../find_ontologies.cpp
@@ -15,14 +13,15 @@ run ../find_ontologies.cpp
       sample_data
    : #input-files
    : #requirements
+      <link>shared
    : #target-name
-      find_owl
+      find_owl1
 ;
 
-#run      ..//find_owl      : sample_data                 : : : find_owl ;
-#run      ..//print_triples : sample_data/test_01.owl ;
-#run      ..//print_classes : sample_data/one_eq_two_01.owl -i : : : ;
-#run      ..//validate : -h                               : : : validate_01 ;
-#run      ..//validate : sample_data/test_01.owl -S       : : : validate_02 ;
-#run-fail ..//validate : sample_data/one_eq_two_01.owl -S : : : validate_03 ;
+run      ..//find_owl      : sample_data                 : : : find_owl2 ;
+run      ..//print_triples : sample_data/test_01.owl ;
+run      ..//print_classes : sample_data/one_eq_two_01.owl -i : : : ;
+run      ..//validate : -h                               : : : validate_01 ;
+run      ..//validate : sample_data/test_01.owl -S       : : : validate_02 ;
+run-fail ..//validate : sample_data/one_eq_two_01.owl -S : : : validate_03 ;
 

@@ -10,6 +10,7 @@ part of owlcpp project.
 #include <iosfwd>
 #include "boost/bind.hpp"
 #include "boost/function.hpp"
+#include "boost/lexical_cast.hpp"
 
 #include "owlcpp/io/exception.hpp"
 #include "raptor_to_iri.hpp"
@@ -37,7 +38,7 @@ public:
      checker_(checker),
      rti_(boost::bind(&Raptor_to_store::id_found, this)),
      id_found_(false),
-     tst_(path)
+     tst_(ts_.map_std(), path)
    {}
 
    void insert(void const* statement) {
@@ -160,7 +161,10 @@ private:
 
    Node_id insert_node(raptor_term_blank_value const& val) {
       char const* val_str = reinterpret_cast<char const*>(val.string);
-      return tst_.insert_blank_node(std::string(val_str, val.string_len));
+      const unsigned n = boost::lexical_cast<unsigned>(
+               val_str + Raptor_wrapper::blank_prefix().size()
+      );
+      return tst_.insert_blank(n);
    }
 
    Node_id insert_node(raptor_term_literal_value const& val) {
@@ -178,7 +182,7 @@ private:
                val.language ? std::string(lang_str, val.language_len) : "";
 
       char const* val_str = reinterpret_cast<char const*>(val.string);
-      return tst_.insert_lit_node( std::string(val_str, val.string_len), type, lang );
+      return tst_.insert_literal( std::string(val_str, val.string_len), type, lang );
    }
 
    Node_id insert_node(raptor_uri* val) {
@@ -186,7 +190,7 @@ private:
       char const* str = reinterpret_cast<char const*>(
                raptor_uri_as_counted_string(val, &len)
       );
-      return tst_.insert_iri_node(std::string(str, len));
+      return tst_.insert_node_iri(std::string(str, len));
    }
 
 };
