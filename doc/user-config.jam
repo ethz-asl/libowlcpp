@@ -49,7 +49,7 @@
 
 ################################################################################
 ## Libraries
-## Uncomment all "constant" statements and provide correct paths and versions. 
+## Uncomment "constant" statements and provide correct paths and versions. 
 
 local utils = "c:/utils" ;
 
@@ -69,7 +69,7 @@ local utils = "c:/utils" ;
 
 ## FaCT++ library source
 ## http://code.google.com/p/factplusplus/
-# constant FACTPP : "$(utils)/FaCT++-1.5.3" 1.5.3 ;
+# constant FACTPP : "$(utils)/FaCT++-1.6.0" 1.6.0 ;
 
 ## owlcpp library source
 ## http://sourceforge.net/projects/owl-cpp/
