@@ -27,7 +27,7 @@ inline bool is_literal(const Node_id nid, Triple_store const& ts) {
 inline Node_literal const& to_literal(Node const& node) {
    try{
       return dynamic_cast<Node_literal const&>(node);
-   }catch(std::bad_cast& e) {
+   }catch(std::bad_cast&) {
       BOOST_THROW_EXCEPTION(
                Rdf_err()
                << Rdf_err::msg_t("literal node is required")

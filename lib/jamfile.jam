@@ -22,4 +22,12 @@ local defs =
    "OWLCPP_VERSION_EXTRA=\"$(v[4])\""
 ; 
 
-obj lib_info : lib_info.cpp : <define>$(defs) ;
+obj lib_info 
+   : #sources
+      lib_info.cpp 
+   : #requirements
+      <define>$(defs) 
+   :  #default build options
+   :  #usage requirements
+      <link>shared:<define>OWLCPP_DYN_LINK
+;

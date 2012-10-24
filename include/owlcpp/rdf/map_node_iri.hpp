@@ -10,6 +10,7 @@ part of owlcpp project.
 #include "boost/assert.hpp"
 #include "boost/foreach.hpp"
 #include "boost/unordered_map.hpp"
+#include "boost/concept_check.hpp"
 
 #include "owlcpp/rdf/node_iri.hpp"
 #include "owlcpp/rdf/exception.hpp"
