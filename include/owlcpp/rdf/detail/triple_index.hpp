@@ -46,6 +46,11 @@ public:
    typedef boost::iterator_range<iterator> range;
    typedef boost::iterator_range<const_iterator> const_range;
    struct Err : public Rdf_err {};
+protected:
+   static const_iterator null_iter() {
+      static e_index v;
+	  return v.end();
+   }
 };
 
 /**
@@ -56,7 +61,7 @@ template<class Id> class Vector_index : public Element_index {
 public:
    const_range find(const Id id) const {
       if( stor_.size() > id() ) return stor_[id()];
-      return const_range();
+      return const_range(null_iter(),null_iter());
    }
 
    void clear() {stor_.clear();}
@@ -84,8 +89,8 @@ template<class Id> class Map_index : public Element_index {
 public:
    const_range find(const Id id) const {
       const typename stor_t::const_iterator i = stor_.find(id);
-      if( i == stor_.end() ) return const_range();
-      return i->second;
+      if( i != stor_.end() ) return i->second;
+	  return const_range(null_iter(),null_iter());
    }
 
    void clear() {stor_.clear();}
