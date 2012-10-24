@@ -80,15 +80,16 @@ public:
    *******************************************************************************/
    template<bool Subj, bool Pred, bool Obj, bool Doc>
    class result_b {
-      typedef typename map_triple_detail::Deduce_args<Subj,Pred,Obj,Doc>::type q_args;
-      typedef result<
+      typedef typename map_triple_detail::Deduce_args<Subj,Pred,Obj,Doc>::type
+               q_args;
+
+   public:
+      typedef typename result<
                typename boost::mpl::at_c<q_args,0>::type,
                typename boost::mpl::at_c<q_args,1>::type,
                typename boost::mpl::at_c<q_args,2>::type,
                typename boost::mpl::at_c<q_args,3>::type
-      > search;
-   public:
-      typedef typename search::type type;
+      >::type type;
    };
 
 
