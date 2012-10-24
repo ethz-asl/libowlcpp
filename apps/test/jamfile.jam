@@ -6,6 +6,9 @@
 project apps/test
    :  build-dir $(OUT)/apps
    : requirements
+      <library>/owlcpp//rdf
+      <library>/owlcpp//io
+      <library>/boost//filesystem
 ;
 
 run ../find_ontologies.cpp
@@ -13,7 +16,7 @@ run ../find_ontologies.cpp
       sample_data
    : #input-files
    : #requirements
-      <link>shared
+#      <link>shared
    : #target-name
       find_owl1
 ;

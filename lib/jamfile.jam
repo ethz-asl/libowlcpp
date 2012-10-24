@@ -27,6 +27,7 @@ obj lib_info
       lib_info.cpp 
    : #requirements
       <define>$(defs) 
+      <link>shared:<define>OWLCPP_DYN_LINK
    :  #default build options
    :  #usage requirements
       <link>shared:<define>OWLCPP_DYN_LINK
