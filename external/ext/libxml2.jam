@@ -1,0 +1,41 @@
+# @file "owlcpp/external/ext/libxml2.jam"
+# part of owlcpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2012
+
+# Boost.build script for building libxml2 library <http://www.xmlsoft.org/>
+
+import extension ;
+import property ;
+import project ;
+import feature ;
+import common ;
+import regex ;
+import path ;
+
+extension.declare libxml2 ;
+
+# <define>LIBXML_STATIC
+
+## 
+################################################################################
+rule init ( version : location : options * ) {
+
+   local include = [ path.join $(location) include ] ;
+
+   make libxml/xmlversion.h
+      : $(include)/libxml/xmlversion.h.in
+      : @xmlversion_h
+      : <libxml2-version>$(version)
+   ;
+   
+   lib libxml2
+      : #sources
+         [ glob *.cpp ] ..//lib_info
+      : #requirements
+         $(LIB_REQUIREMENTS)
+         <link>shared:<define>OWLCPP_RDF_DYN_LINK
+      : #default build options
+      : #usage requirements
+   ;
+}
