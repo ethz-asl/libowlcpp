@@ -11,7 +11,7 @@ part of owlcpp project.
 #include "owlcpp/logic/detail/triple_to_fact_adaptor.hpp"
 #include "test/sample_data.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/query_node.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 #include "owlcpp/io/input.hpp"
 #include "factpp/Kernel.hpp"
 
@@ -22,15 +22,15 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 /**
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+   Triple_store ts;
    load_file(sample_file_path("data_value_clash.owl"), ts);
    ReasoningKernel k;
    owlcpp::logic::factpp::Adaptor_triple at(ts, k, false);
-   BOOST_FOREACH(Triple const& t, ts.triples()) {
+   BOOST_FOREACH(Triple const& t, ts.map_triple()) {
       std::cout
-      << to_string_short(t.subject(), ts) << ' '
-      << to_string_short(t.predicate(), ts) << ' '
-      << to_string_short(t.object(), ts)
+      << to_string(t.subject(), ts) << ' '
+      << to_string(t.predicate(), ts) << ' '
+      << to_string(t.object(), ts)
       << std::endl;
       at.submit(t);
    }

@@ -3,7 +3,7 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2012
 
-# Boost.build script for building libxml2 library <http://xmlsoft.org/>
+# Boost.build script for building libxml2 library <http://www.xmlsoft.org/>
 
 import extension ;
 import property ;
@@ -284,10 +284,12 @@ rule init ( version ? : location ? : options * ) {
    ;
    
    lib libxml2
-      : 
+      : #sources
       : $(requirements)
-      : 
-      : <include>$(LIBXML2_H) <include>$(ICONV_H) <define>LIBXML_STATIC
+      : #default build options
+      : #usage requirements
+         <include>$(LIBXML2_H) 
+         <include>$(ICONV_H) 
+         <define>LIBXML_STATIC
    ;
-   
 }

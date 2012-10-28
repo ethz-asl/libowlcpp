@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+<!ENTITY base "http://owl.semanticweb.org/page/data_property_range">
+<!ENTITY test "&base;#">
+<!ENTITY w3 "http://www.w3.org">
+<!ENTITY owl "&w3;/2002/07/owl#">
+<!ENTITY rdf "&w3;/1999/02/22-rdf-syntax-ns#">
+<!ENTITY rdfs "&w3;/2000/01/rdf-schema#">
+<!ENTITY xsd "&w3;/2001/XMLSchema#">
+]>
+<rdf:RDF xmlns="&test;" xmlns:test="&test;" xml:base="&base;"
+   xmlns:rdfs="&rdfs;" xmlns:rdf="&rdf;" xmlns:owl="&owl;"
+>
+   <owl:Ontology rdf:about="" />
+   <owl:DatatypeProperty rdf:about="&test;hasAge">
+      <rdf:type rdf:resource="&owl;FunctionalProperty" />
+      <rdfs:range rdf:resource="&xsd;nonNegativeInteger" />
+   </owl:DatatypeProperty>
+
+   <owl:NamedIndividual rdf:about="&test;a">
+      <rdf:type>
+         <owl:Restriction>
+            <owl:onProperty rdf:resource="&test;hasAge" />
+            <owl:hasValue rdf:datatype="&xsd;nonNegativeInteger">19</owl:hasValue>
+         </owl:Restriction>
+      </rdf:type>
+   </owl:NamedIndividual>
+</rdf:RDF>

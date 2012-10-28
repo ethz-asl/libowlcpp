@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
       return 0;
    }
 
-   //create a triple store that is aware of standard OWL terms
+   //create a triple store
    owlcpp::Triple_store store;
 
    const bfs::path in = vm["input-file"].as<std::string>();
@@ -60,9 +60,9 @@ int main(int argc, char* argv[]) {
          owlcpp::Catalog cat;
          std::vector<std::string> const& vin = vm["include"].as<std::vector<std::string> >();
          if( vin.empty() ) {
-            cat.add(in.parent_path(), true, 100);
+            add(cat, in.parent_path(), true, 100);
          } else {
-            BOOST_FOREACH(std::string const& p, vin) cat.add(p, true, 100);
+            BOOST_FOREACH(std::string const& p, vin) add(cat, p, true, 100);
          }
          load_file(in, store, cat);
       } else { //load just input-file

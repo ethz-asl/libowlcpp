@@ -10,7 +10,6 @@ part of owlcpp project.
 #include "boost/ptr_container/ptr_vector.hpp"
 #include "factpp/Kernel.hpp"
 #include "expression.hpp"
-#include "owlcpp/rdf/query_node.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 
@@ -136,6 +135,8 @@ private:
             const Node_id val,
             Triple_store const& ts
    );
+
+
 };
 
 /**@brief  Object type expression generator for object property cardinality

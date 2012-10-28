@@ -8,9 +8,8 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "boost/range.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/query_node.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 #include "owlcpp/logic/exception.hpp"
-#include "owlcpp/logic/detail/node_declaration.hpp"
 #include "owlcpp/logic/config.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
@@ -38,7 +37,7 @@ public:
 
    void submit(Triple const& t) {axiom(t);}
 
-   template<class Range> void submit(Range r) {
+   template<class Range> void submit(Range const& r) {
       BOOST_FOREACH(Triple const& t, r) {
          try{
             submit(t);
@@ -47,9 +46,9 @@ public:
                      Err()
                      << Err::msg_t("error submitting triple")
                      << Err::str1_t(
-                              to_string_short(t.subject(), ts_) + ' ' +
-                              to_string_short(t.predicate(), ts_) + ' ' +
-                              to_string_short(t.object(), ts_)
+                              to_string(t.subject(), ts_) + ' ' +
+                              to_string(t.predicate(), ts_) + ' ' +
+                              to_string(t.object(), ts_)
                      )
                      << Err::nested_t(boost::current_exception())
             );

@@ -9,6 +9,7 @@ part of owlcpp project.
 #include "test/exception_fixture.hpp"
 #include "test/sample_data.hpp"
 #include "owlcpp/io/catalog.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -23,11 +24,18 @@ const std::string dir1 = sample_file_path();
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    Catalog cat;
+   const Node_id nid1 = cat.insert_node_iri("http://some.node.com");
+   const Node_id nid2 = cat.insert_node_iri("http://other.node.com");
    BOOST_CHECK_EQUAL(cat.size(), 0U);
-   cat.insert_doc("some/path", Node_id(13), terms::T_empty_::id());
-   BOOST_CHECK_EQUAL(cat.size(), 1U);
-   cat.insert_doc(path1, ver1, version1);
+   const Doc_id did1 = cat.insert_doc(nid1, "some/path", terms::T_empty_::id()).first;
+   const Doc_id did2 = cat.insert_doc(nid2, "other/path").first;
+   const Doc_id did2a = cat.insert_doc(nid2, "other/path", terms::T_empty_::id()).first;
    BOOST_CHECK_EQUAL(cat.size(), 2U);
+   BOOST_CHECK_EQUAL(did2, did2a);
+   BOOST_CHECK_EQUAL(cat[did1].ontology_iri, nid1);
+
+   cat.insert_doc(path1, ver1, version1);
+   BOOST_CHECK_EQUAL(cat.size(), 3U);
 }
 
 /**
@@ -35,13 +43,13 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 BOOST_AUTO_TEST_CASE( case02 ) {
    Catalog cat;
    BOOST_CHECK_EQUAL(cat.size(), 0U);
-   cat.add(path1);
+   add(cat, path1);
    BOOST_CHECK_EQUAL(cat.size(), 1U);
-   Doc_id const* did1 = cat.find_doc_iri(ver1);
-   BOOST_REQUIRE(did1);
-   BOOST_CHECK_EQUAL(cat.ontology_iri(*did1), ver1);
-   BOOST_CHECK_EQUAL(cat.version_iri(*did1), version1);
-   BOOST_CHECK_EQUAL(cat.path(*did1), boost::filesystem::canonical(path1).string());
+   Catalog::doc_iri_range r = cat.find_doc_iri(ver1);
+   BOOST_REQUIRE(r);
+   BOOST_CHECK_EQUAL(cat.ontology_iri_str(*r.begin()), ver1);
+   BOOST_CHECK_EQUAL(cat.version_iri_str(*r.begin()), version1);
+   BOOST_CHECK_EQUAL(boost::filesystem::canonical(path1).string(), cat[*r.begin()].path);
 }
 
 /** Test inserting new nodes into OWL namespace
@@ -58,31 +66,29 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    BOOST_CHECK_NO_THROW(
             cat.insert_doc("path2", terms::N_owl::iri() + "#Blah")
    );
-
-   //blank node as ontologyIRI
-   BOOST_CHECK_THROW(
-            cat.insert_doc("path3", "_#Blah"),
-            Catalog::Err
-   );
-
-   //empty namespace node as ontologyIRI
-   BOOST_CHECK_THROW(
-            cat.insert_doc("path3", "#Blah"),
-            Catalog::Err
-   );
 }
 
 /** Check sample data catalog
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case04 ) {
+BOOST_AUTO_TEST_CASE( test_catalog_sample_data ) {
    Catalog cat;
-   BOOST_CHECK_GE(cat.add(dir1), sample_files().size());
+   BOOST_CHECK_EQUAL(cat.size(), 0U);
+   const std::size_t n = add(cat, dir1);
+   BOOST_CHECK_EQUAL(n, cat.size());
+   BOOST_CHECK_GE(cat.size(), sample_files().size());
+
    BOOST_FOREACH(Sample_info const si, sample_files()) {
-      Catalog::doc_map_t::path_range r = cat.documents().find_path(si.path);
+      Catalog::map_doc_type::path_range r = cat.map_doc().find_path(si.path);
       BOOST_REQUIRE(r);
       const Doc_id did = r.front();
-      BOOST_CHECK_EQUAL(cat.ontology_iri(did), si.iri);
-      BOOST_CHECK_EQUAL(cat.version_iri(did), si.version);
+      BOOST_REQUIRE(cat.valid(did));
+      BOOST_CHECK_EQUAL(cat.path(did), si.path);
+      const Node_id iri_id = cat.ontology_iri_id(did);
+      BOOST_REQUIRE(cat.valid(iri_id));
+      const Node_id vers_id = cat.version_iri_id(did);
+      BOOST_REQUIRE(cat.valid(vers_id));
+      BOOST_CHECK_EQUAL(cat.ontology_iri_str(did), si.iri);
+      BOOST_CHECK_EQUAL(cat.version_iri_str(did), si.version);
    }
 }
 

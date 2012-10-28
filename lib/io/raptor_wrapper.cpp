@@ -46,8 +46,7 @@ Raptor_wrapper::Raptor_wrapper()
    );
 
    raptor_world_set_log_handler(world_.get(), 0, &handle_error);
-   char pref[] = "b";
-   raptor_world_set_generate_bnodeid_parameters(world_.get(), pref, 1);
+   raptor_world_set_generate_bnodeid_parameters(world_.get(), blank_prefix_char(), 1);
 
    if( ! parser_ ) BOOST_THROW_EXCEPTION(
             Err()

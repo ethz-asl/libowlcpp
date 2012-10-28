@@ -233,6 +233,9 @@ rule raptor-source ( version : location ) {
       src += raptor_nfc_data raptor_nfc
       ;
    }
+   if $(version) >= "2.0.8" {
+      src_rdfa += context lists namespace strtok_r ;
+   }
    local location_src = [ path.join $(location) src ] ;
    local location_rdfa = [ path.join $(location) librdfa ] ;
    

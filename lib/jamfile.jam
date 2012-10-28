@@ -1,7 +1,7 @@
 # owlcpp/lib/jamfile.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2010-1
+# Copyright Mikhail K Levin 2010-2
 
 project lib
    : build-dir $(OUT)/bin
@@ -9,26 +9,26 @@ project lib
       <include>.
 ;
 
-# Generate version header
-make-singleton version.hpp 
-   : 
-   : @version_header 
-   : <location>$(INCLUDE)/owlcpp
-;
+local v = [ process_version_string $(OWLCPP_VERSION) : 0 0 0 unknown ] ;
+local bv = [ build_version 3 ] ;
+local defs = 
+   "OWLCPP_BUILD=$(bv)"
+   "OWLCPP_NAME=$(OWLCPP_NAME)"
+   "OWLCPP_DESCRIPTION=\"$(OWLCPP_DESCRIPTION)\""
+   "OWLCPP_VERSION_STR=\"$(OWLCPP_VERSION)\""
+   "OWLCPP_VERSION_1=$(v[1])"
+   "OWLCPP_VERSION_2=$(v[2])"
+   "OWLCPP_VERSION_3=$(v[3])"
+   "OWLCPP_VERSION_EXTRA=\"$(v[4])\""
+; 
 
-rule version_header ( targets * : sources * : properties * ) {
-   local tag = [ git_describe $(GIT_PATH) ] ;
-   local v = [ process_version_string $(tag) : 0 0 0 unknown ] ;
-   local build = [ build_version 3 ] ; #YYYYMMDD
-   STR on $(<) =
-      "// Generated header.  Do not edit."
-      "#define OWLCPP_VERSION_1 $(v[1])"
-      "#define OWLCPP_VERSION_2 $(v[2])"
-      "#define OWLCPP_VERSION_3 $(v[3])"
-      "#define OWLCPP_VERSION_EXTRA \"$(v[4])\""
-      "#define OWLCPP_BUILD $(build)"
-   ;
-   NL on $(<) = "
-" ;
-}
-actions version_header { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
+obj lib_info 
+   : #sources
+      lib_info.cpp 
+   : #requirements
+      <define>$(defs) 
+      <link>shared:<define>OWLCPP_DYN_LINK
+   :  #default build options
+   :  #usage requirements
+      <link>shared:<define>OWLCPP_DYN_LINK
+;

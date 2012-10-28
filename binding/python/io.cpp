@@ -50,6 +50,7 @@ void translator(owlcpp::base_exception const& e) {
 
 BOOST_PYTHON_MODULE(io) {
    bp::register_exception_translator<owlcpp::base_exception>(&translator);
+
    bp::class_<owl::Catalog>("Catalog")
       .def("insert", &owl::Catalog::insert)
       .def(
@@ -58,8 +59,11 @@ BOOST_PYTHON_MODULE(io) {
             bp::return_value_policy<bp::return_by_value>()
             )
       ;
+
    Tuple2tuple_converter<std::string, std::string>();
+
    bp::def("ontology_id", &owl::ontology_id);
+
    bp::def("find_ontologies", &owl::find_ontologies);
 
    bp::def(

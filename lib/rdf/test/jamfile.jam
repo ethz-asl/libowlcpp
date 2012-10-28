@@ -28,8 +28,8 @@ local auto_run_src = [ glob *_run.cpp ] ;
 
 test-suite simple_tests : [ run-all $(auto_run_src) ] ;
 
-test-suite all_tests
+test-suite other_tests
    :
-#     [ run test_01.cpp ]
+     [ compile-fail object_id_01_cfail.cpp ]
 ;
 
