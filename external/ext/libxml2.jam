@@ -20,175 +20,96 @@ extension.declare libxml2 ;
 ################################################################################
 rule transform_h ( location : version ) {
    local incl_dir = [ path.join $(location) include libxml ] ;
-   local files = [ glob $(incl_dir)/*.h : xmlversion.h ] ;
+   local files = [ path.glob $(incl_dir) : *.h : *xmlversion.h ] ;
    local files_out = ;
+
    for local file in $(files) {
       local file_out = [ path.join $(GENERATED_INCLUDE) libxml $(file:D="") ] ;
       files_out += $(file_out) ;
       make-singleton $(file_out)
          : $(file)
          : @common.copy
-#         : <location>$(GENERATED_INCLUDE)/libxml
-#           <version>$(version)
       ;
    }
-   local config_in = $(location)/config.h.in ;
-   make config.h : $(config_in) : @common.copy ;
-   return $(files_out) config.h ;
-}
-
-## extract version string
-################################################################################
-rule version_libxml2 ( properties * ) {
-   local v = [ property.select <libxml2-version> : $(properties) ] ;
-   return $(v:G=) ;
-}
-
-## 
-################################################################################
-rule version_split ( v ) {
-   return [ regex.split $(v) "\\." ] ;
-}
-
-## 
-################################################################################
-rule version_calc ( v ) {
-   local vs = [ version_split $(v) ] ;
-   local vdmin = $(vs[1])0000 ;
-   local vd = [ CALC [ CALC $(vdmin) + $(vs[2])00 ] + $(vs[3]) ] ;
-   return $(vdmin) $(vd) ;
+   
+   local config = $(GENERATED_INCLUDE)/libxml_include/config.h ;
+   make-singleton $(config) :  : @config_h ;
+   
+   local xmlversion = $(GENERATED_INCLUDE)/libxml/xmlversion.h ;
+   make-singleton $(xmlversion) : $(incl_dir)/xmlversion.h : @xmlversion_h ;
+   
+   return $(files_out) $(config) $(xmlversion) ;
 }
 
 ## 
 ################################################################################
 rule config_h ( targets * : sources * : properties * ) {
-   local define =
-         HAVE_DLFCN_H
-         HAVE_ERRNO_H
-         HAVE_EXPAT_H
-         HAVE_FCNTL_H
-         HAVE_GETOPT
-         HAVE_GETOPT_LONG
-         HAVE_GETTIMEOFDAY
-         HAVE_INTTYPES_H
-         HAVE_ISASCII
-         HAVE_LIBXML_HASH_H
-         HAVE_LIBXML_HTMLPARSER_H
-         HAVE_LIBXML_PARSER_H
-         HAVE_LIBXML_SAX2_H
-         HAVE_LIMITS_H
-         HAVE_MATH_H
-         HAVE_MEMORY_H
-         HAVE_SETJMP
-         HAVE_SETJMP_H
-         HAVE_STAT
-         HAVE_STDDEF_H
-         HAVE_STDINT_H
-         HAVE_STDLIB_H
-         HAVE_STRINGS_H
-         HAVE_STRING_H
-         HAVE_SYS_PARAM_H
-         HAVE_SYS_STAT_H
-         HAVE_SYS_TYPES_H
-         HAVE_VSNPRINTF
-         HAVE_XMLCTXTUSEOPTIONS
-         HAVE_XMLSAX2INTERNALSUBSET
-         RAPTOR_LIBXML_ENTITY_ETYPE
-         RAPTOR_LIBXML_HTML_PARSE_NONET
-         RAPTOR_LIBXML_XMLSAXHANDLER_EXTERNALSUBSET
-         RAPTOR_LIBXML_XMLSAXHANDLER_INITIALIZED
-         RAPTOR_LIBXML_XML_PARSE_NONET
-         RAPTOR_NFC_CHECK
-         RAPTOR_PARSER_GUESS
-         RAPTOR_PARSER_NTRIPLES
-         RAPTOR_PARSER_RDFXML
-         RAPTOR_PARSER_TURTLE
-         RAPTOR_SERIALIZER_NTRIPLES
-         RAPTOR_WWW_NONE
-         RAPTOR_XML_LIBXML
-         STDC_HEADERS
-   ;
-   
-   local undef ;
-   
-   local v = [ version_libxml2 $(properties) ] ;
-   local vs = [ version_split $(v) ] ;
-   local vc = [ version_calc $(v) ] ;
-   
-   local other =
-      "#define PACKAGE \"raptor2\""
-      "#define PACKAGE_NAME \"Raptor RDF Parser and Serializer library\""
-      "#define PACKAGE_VERSION \"$(v)\""
-      "#define VERSION \"$(v)\""
-      "#define PACKAGE_STRING \"Raptor RDF Parser and Serializer library $(v)\""
-      "#define PACKAGE_BUGREPORT \"http://bugs.librdf.org/\""
-      "#define PACKAGE_TARNAME \"raptor2\""
-      "#define PACKAGE_URL \"\""
-      "#define RAPTOR_MIN_VERSION_DECIMAL $(vc[1])"
-      "#define RAPTOR_VERSION_DECIMAL $(vc[2])"
-      "#define RAPTOR_VERSION_MAJOR $(vs[1])"
-      "#define RAPTOR_VERSION_MINOR $(vs[2])"
-      "#define RAPTOR_VERSION_RELEASE $(vs[3])"
-      "#define SIZEOF_UNSIGNED_CHAR 1"
-      "#define SIZEOF_UNSIGNED_INT 4"
-      "#define SIZEOF_UNSIGNED_LONG 4"
-      "#define SIZEOF_UNSIGNED_SHORT 2"
-      "#if defined AC_APPLE_UNIVERSAL_BUILD"
-      "# if defined __BIG_ENDIAN__"
-      "#  define WORDS_BIGENDIAN 1"
-      "# endif"
-      "#else"
-      "# ifndef WORDS_BIGENDIAN"
-      "/* #  undef WORDS_BIGENDIAN */"
-      "# endif"
-      "#endif"
-   ;
-   
-   switch [ property.select <target-os> : $(properties) ] {
-      case *linux* :
-      define +=
-         HAVE_GETOPT_H
-         HAVE_STRCASECMP
-         HAVE_SYS_TIME_H
-         HAVE_VASPRINTF
-         TIME_WITH_SYS_TIME
-         HAVE_UNISTD_H
-      ;
-      undef +=
-      ;
-
-      case *windows* :
-      define +=
-         HAVE_STRICMP
-         WIN32_LEAN_AND_MEAN
-         YY_USE_CONST
-         WIN32_CONFIG_H
-      ;
-      undef +=
-      ;
-      other +=
-#         "#define vsnprintf _vsnprintf"
-         "#define snprintf _snprintf"
-         "#define strtok_r strtok_s"
-         "#define strcasecmp stricmp"
-         "#define access _access"
-#         "#define sscanf sscanf_s"
-         "#define stricmp _stricmp"
-         "#define strnicmp _strnicmp"
-         "#define __func__ \"\""
-         "#undef RAPTOR_INLINE"
-         "#define RAPTOR_INLINE __inline"
-         "#include \"boost/config.hpp\""
-         "#if defined BOOST_MSVC"
-         "#define lround(x) (((x) < 0) ? (long)((x)-0.5) : (long)((x)+0.5))"
-         "#endif"
-         "#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)"
-      ;
-   }
    CONFIG on $(<) =
-      $(other)
-      "#define $(define) 1"
-      "#undef $(undef)"
+      "#ifndef __CONFIG_H__"
+      "#define __CONFIG_H__"
+      
+      "#define HAVE_CTYPE_H"
+      "#define HAVE_STDARG_H"
+      "#define HAVE_MALLOC_H"
+      "#define HAVE_ERRNO_H"
+      
+      "#if defined(_WIN32_WCE)"
+      "#undef HAVE_ERRNO_H"
+      "#include <windows.h>"
+      "#include "wincecompat.h""
+      "#else"
+      "#define HAVE_SYS_STAT_H"
+      "#define HAVE__STAT"
+      "#define HAVE_STAT"
+      "#define HAVE_STDLIB_H"
+      "#define HAVE_TIME_H"
+      "#define HAVE_FCNTL_H"
+      "#include <io.h>"
+      "#include <direct.h>"
+      "#endif"
+      
+      "#include <libxml/xmlversion.h>"
+      
+      "#ifndef ICONV_CONST"
+      "#define ICONV_CONST const"
+      "#endif"
+      
+      "#ifdef NEED_SOCKETS"
+      "#include <wsockcompat.h>"
+      "#endif"
+      
+      "#undef except"
+      
+      "#define HAVE_ISINF"
+      "#define HAVE_ISNAN"
+      "#include <math.h>"
+      "#if defined(_MSC_VER) || defined(__BORLANDC__)"
+      "#include <float.h>"
+      "#endif /* _MSC_VER */"
+      
+      "#if defined(_MSC_VER)"
+      "#define mkdir(p,m) _mkdir(p)"
+      "#define snprintf _snprintf"
+      "#if _MSC_VER < 1500"
+      "#define vsnprintf(b,c,f,a) _vsnprintf(b,c,f,a)"
+      "#endif"
+      "#elif defined(__MINGW32__)"
+      "#define mkdir(p,m) _mkdir(p)"
+      "#endif"
+      
+      "#if defined(LIBXML_THREAD_ENABLED)"
+      "#if !defined(HAVE_PTHREAD_H) && !defined(HAVE_WIN32_THREADS) && !defined(_WIN32_WCE)"
+      "#define HAVE_WIN32_THREADS"
+      "#endif"
+      "#endif"
+      
+      "#if !defined(FALSE)"
+      "#define FALSE 0"
+      "#endif"
+      "#if !defined(TRUE)"
+      "#define TRUE (!(FALSE))"
+      "#endif"
+      "#endif /* __CONFIG_H__ */"
    ;
    NL on $(<) = "
 " ;
@@ -197,95 +118,78 @@ actions config_h { @($(STDOUT):E=$(CONFIG:J=$(NL))$(NL)) > "$(<)" }
 
 ## 
 ################################################################################
-rule raptor2_h ( targets * : sources * : properties * ) {
-   local v = [ version_libxml2 $(properties) ] ;
-   local vs = [ version_split $(v) ] ;
-   local vc = [ version_calc $(v) ] ;
-   local src = [ read_file $(sources:G=) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_DECIMAL@ $(vc[2]) ] ;
-   src = [ regex.replace $(src) @VERSION@ $(v) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_MAJOR@ $(vs[1]) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_MINOR@ $(vs[2]) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_RELEASE@ $(vs[3]) ] ;
-   src = [ regex.replace $(src) WIN32 RAPTOR_WIN32 ] ;
-   
-   local str =
-      "#define RAPTOR_H"
-      "" 
-      "#include \"boost/config.hpp\""
-      "#ifndef BOOST_SYMBOL_EXPORT"
-      "  #define BOOST_SYMBOL_EXPORT"
-      "  #define BOOST_SYMBOL_IMPORT"
-      "#endif"
-      "#if defined(RAPTOR_DYN_LINK)"
-      "#  if defined(RAPTOR_INTERNAL)"
-      "#     define RAPTOR_API BOOST_SYMBOL_EXPORT"
-      "#  else"
-      "#     define RAPTOR_API BOOST_SYMBOL_IMPORT"
-      "#  endif"
-      "#else"
-      "#  define RAPTOR_API"
-      "#endif"
-   ;
-   src = [ regex.replace $(src) "#define RAPTOR_H" $(str:J="
-") ] ;
-   
-   STR on $(<) = $(src) ;
+local rule undef ( src : expr ) {
+   local re = "#if +[01][\n]#define +$(expr)[\n]#endif" ;
+   return [ regex.replace $(src) $(re) "#undef $(expr)" ] ;
 }
-actions raptor2_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 
 ## 
 ################################################################################
-rule raptor-source ( version : location ) {
-   local src = 
-      raptor_parse raptor_serialize raptor_rfc2396 raptor_uri raptor_log 
-      raptor_locator raptor_namespace raptor_qname raptor_option raptor_general 
-      raptor_unicode raptor_www raptor_statement raptor_term raptor_sequence 
-      raptor_stringbuffer raptor_iostream raptor_xml raptor_xml_writer 
-      raptor_set turtle_common raptor_turtle_writer raptor_avltree snprintf 
-      raptor_json_writer raptor_memstr raptor_concepts raptor_syntax_description 
-      raptor_libxml raptor_rdfxml raptor_sax2 turtle_lexer turtle_parser 
-      ntriples_parse raptor_guess raptor_librdfa raptor_serialize_ntriples 
-      strcasecmp parsedate
-   ;
-   local src_rdfa = 
-      curie iri language rdfa rdfa_utils subject triple
-   ;
-   if $(version) <= "2.0.6" {
-      src += raptor_nfc_data raptor_nfc
-      ;
-   }
-   local location_src = [ path.join $(location) src ] ;
-   local location_rdfa = [ path.join $(location) librdfa ] ;
+rule xmlversion_h ( targets * : sources * : properties * ) {
+   local src = [ read_file $(sources:G=) ] ;
+   src = [ undef $(src) : LIBXML_FTP_ENABLED ] ;
+   src = [ undef $(src) : LIBXML_HTTP_ENABLED ] ;
+   src = [ undef $(src) : LIBXML_ZLIB_ENABLED ] ;
    
-   return $(location_src)/$(src).c $(location_rdfa)/$(src_rdfa).c ;
+   STR on $(<) = $(src) ;
 }
+actions xmlversion_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 
 ## 
 ################################################################################
 rule init ( version ? : location ? : options * ) {
+   
    local headers = [ transform_h $(location) : $(version) ] ;
-#   exit $(headers) ;
+   
+   local src =
+      buf c14n catalog chvalid debugXML dict DOCBparser encoding entities error 
+      globals hash HTMLparser HTMLtree legacy list parser 
+      parserInternals pattern relaxng SAX2 SAX schematron threads tree uri valid 
+      xinclude xlink xmlIO xmlmemory xmlreader xmlregexp xmlmodule xmlsave 
+      xmlschemas xmlschemastypes xmlunicode xmlwriter xpath xpointer xmlstring
+#      nanoftp nanohttp
+   ;
+
    ICONV_LIB ?= $(ICONV)/lib/iconv_a.lib ;
    ICONV_DLL ?= $(ICONV)/bin/iconv.dll $(ICONV)/lib/iconv.lib ;
    ICONV_H ?= $(ICONV)/include ;
    
+   lib iconv
+      : #sources
+      : #requirements
+         <include>$(ICONV_H)
+         <link>shared:<file>$(ICONV_DLL)
+         <link>static:<file>$(ICONV_LIB)
+      : #default options
+      : #usage requirements
+         <include>$(ICONV_H)
+   ;
+   
    local requirements =
       [ extension.define libxml2 $(version) : $(location) : $(options) ]
       <include>$(GENERATED_INCLUDE)
+      <include>$(GENERATED_INCLUDE)/libxml_include
       <libxml2-version>$(version)
       <libxml2-location>$(location)
       <implicit-dependency>$(headers)
+      <dependency>$(headers)
+      <define>WIN32
+      <define>NOLIBTOOL
+      <define>_REENTRANT
+      <define>HAVE_COMPILER_TLS
+      <define>HAVE_WIN32_THREADS
+      <define>_CRT_SECURE_NO_DEPRECATE
+      <define>_CRT_NONSTDC_NO_DEPRECATE
    ;
    
    lib libxml2
       : #sources
-         $(location)/DOCBparser.c
+         $(location)/$(src).c
+         iconv
       : $(requirements)
       : #default build options
       : #usage requirements
-         <include>$(LIBXML2_H) 
-         <include>$(ICONV_H) 
-         <define>LIBXML_STATIC
+         <include>$(GENERATED_INCLUDE) 
+         <link>static:<define>LIBXML_STATIC
    ;
 }
