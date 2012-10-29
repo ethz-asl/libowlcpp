@@ -18,18 +18,23 @@ extension.declare libxml2 ;
 
 ## 
 ################################################################################
-rule transform_hpp ( src_dir : version ) {
-   local files = [ glob $(src_dir)/*.h : xmlversion.h ] ;
-   local out_dir = libxml2 ;
+rule transform_h ( location : version ) {
+   local incl_dir = [ path.join $(location) include libxml ] ;
+   local files = [ glob $(incl_dir)/*.h : xmlversion.h ] ;
+   local files_out = ;
    for local file in $(files) {
-      make-singleton $(file:B).hpp
-         : $(file) $(files)
-         : @transform_hpp_action
-         : <location>$(GENERATED_INCLUDE)/$(out_dir)
-           <version>$(version)
+      local file_out = [ path.join $(GENERATED_INCLUDE) libxml $(file:D="") ] ;
+      files_out += $(file_out) ;
+      make-singleton $(file_out)
+         : $(file)
+         : @common.copy
+#         : <location>$(GENERATED_INCLUDE)/libxml
+#           <version>$(version)
       ;
    }
-   return $(files) ;
+   local config_in = $(location)/config.h.in ;
+   make config.h : $(config_in) : @common.copy ;
+   return $(files_out) config.h ;
 }
 
 ## extract version string
@@ -259,32 +264,23 @@ rule raptor-source ( version : location ) {
 ## 
 ################################################################################
 rule init ( version ? : location ? : options * ) {
-   
-   LIBXML2_LIB ?= 
-#      $(LIBXML2)/lib/libxml2.lib 
-      $(LIBXML2)/lib/libxml2_a.lib 
-   ;
-   
-   LIBXML2_DLL ?= 
-      $(LIBXML2)/lib/libxml2.lib 
-      $(LIBXML2)/bin/libxml2.dll 
-   ;
-   LIBXML2_H ?= $(LIBXML2)/include ;
-   
+   local headers = [ transform_h $(location) : $(version) ] ;
+#   exit $(headers) ;
    ICONV_LIB ?= $(ICONV)/lib/iconv_a.lib ;
    ICONV_DLL ?= $(ICONV)/bin/iconv.dll $(ICONV)/lib/iconv.lib ;
    ICONV_H ?= $(ICONV)/include ;
    
    local requirements =
       [ extension.define libxml2 $(version) : $(location) : $(options) ]
+      <include>$(GENERATED_INCLUDE)
       <libxml2-version>$(version)
       <libxml2-location>$(location)
-      <implicit-dependency>raptor_config.h
-      <implicit-dependency>raptor2.h
+      <implicit-dependency>$(headers)
    ;
    
    lib libxml2
       : #sources
+         $(location)/DOCBparser.c
       : $(requirements)
       : #default build options
       : #usage requirements
