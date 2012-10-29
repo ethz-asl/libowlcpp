@@ -276,6 +276,8 @@ rule init ( version : location : options * ) {
          <implicit-dependency>raptor2.h
          <link>shared:<define>RAPTOR_DYN_LINK
          <toolset>msvc:<define>RAPTOR_WIN32
+         <toolset>msvc:<define>_CRT_SECURE_NO_DEPRECATE
+         <toolset>msvc:<define>_CRT_NONSTDC_NO_DEPRECATE
          <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden"
    ;
    
