@@ -15,206 +15,9 @@ import path ;
 
 extension.declare raptor ;
 
-## extract version string
+## make a list of source files and copy them to new location to isolate from headers
 ################################################################################
-rule version_raptor ( properties * ) {
-   local v = [ property.select <raptor-version> : $(properties) ] ;
-   return $(v:G=) ;
-}
-
-## 
-################################################################################
-rule version_split ( v ) {
-   return [ regex.split $(v) "\\." ] ;
-}
-
-## 
-################################################################################
-rule version_calc ( v ) {
-   local vs = [ version_split $(v) ] ;
-   local vdmin = $(vs[1])0000 ;
-   local vd = [ CALC [ CALC $(vdmin) + $(vs[2])00 ] + $(vs[3]) ] ;
-   return $(vdmin) $(vd) ;
-}
-
-## 
-################################################################################
-rule config_h ( targets * : sources * : properties * ) {
-   local define =
-         HAVE_DLFCN_H
-         HAVE_ERRNO_H
-         HAVE_EXPAT_H
-         HAVE_FCNTL_H
-         HAVE_GETOPT
-         HAVE_GETOPT_LONG
-         HAVE_GETTIMEOFDAY
-         HAVE_INTTYPES_H
-         HAVE_ISASCII
-         HAVE_LIBXML_HASH_H
-         HAVE_LIBXML_HTMLPARSER_H
-         HAVE_LIBXML_PARSER_H
-         HAVE_LIBXML_SAX2_H
-         HAVE_LIMITS_H
-         HAVE_MATH_H
-         HAVE_MEMORY_H
-         HAVE_SETJMP
-         HAVE_SETJMP_H
-         HAVE_STAT
-         HAVE_STDDEF_H
-         HAVE_STDINT_H
-         HAVE_STDLIB_H
-         HAVE_STRINGS_H
-         HAVE_STRING_H
-         HAVE_SYS_PARAM_H
-         HAVE_SYS_STAT_H
-         HAVE_SYS_TYPES_H
-         HAVE_VSNPRINTF
-         HAVE_XMLCTXTUSEOPTIONS
-         HAVE_XMLSAX2INTERNALSUBSET
-         RAPTOR_LIBXML_ENTITY_ETYPE
-         RAPTOR_LIBXML_HTML_PARSE_NONET
-         RAPTOR_LIBXML_XMLSAXHANDLER_EXTERNALSUBSET
-         RAPTOR_LIBXML_XMLSAXHANDLER_INITIALIZED
-         RAPTOR_LIBXML_XML_PARSE_NONET
-         RAPTOR_NFC_CHECK
-         RAPTOR_PARSER_GUESS
-         RAPTOR_PARSER_NTRIPLES
-         RAPTOR_PARSER_RDFXML
-         RAPTOR_PARSER_TURTLE
-         RAPTOR_SERIALIZER_NTRIPLES
-         RAPTOR_WWW_NONE
-         RAPTOR_XML_LIBXML
-         STDC_HEADERS
-   ;
-   
-   local undef ;
-   
-   local v = [ version_raptor $(properties) ] ;
-   local vs = [ version_split $(v) ] ;
-   local vc = [ version_calc $(v) ] ;
-   
-   local other =
-      "#define PACKAGE \"raptor2\""
-      "#define PACKAGE_NAME \"Raptor RDF Parser and Serializer library\""
-      "#define PACKAGE_VERSION \"$(v)\""
-      "#define VERSION \"$(v)\""
-      "#define PACKAGE_STRING \"Raptor RDF Parser and Serializer library $(v)\""
-      "#define PACKAGE_BUGREPORT \"http://bugs.librdf.org/\""
-      "#define PACKAGE_TARNAME \"raptor2\""
-      "#define PACKAGE_URL \"\""
-      "#define RAPTOR_MIN_VERSION_DECIMAL $(vc[1])"
-      "#define RAPTOR_VERSION_DECIMAL $(vc[2])"
-      "#define RAPTOR_VERSION_MAJOR $(vs[1])"
-      "#define RAPTOR_VERSION_MINOR $(vs[2])"
-      "#define RAPTOR_VERSION_RELEASE $(vs[3])"
-      "#define SIZEOF_UNSIGNED_CHAR 1"
-      "#define SIZEOF_UNSIGNED_INT 4"
-      "#define SIZEOF_UNSIGNED_LONG 4"
-      "#define SIZEOF_UNSIGNED_SHORT 2"
-      "#if defined AC_APPLE_UNIVERSAL_BUILD"
-      "# if defined __BIG_ENDIAN__"
-      "#  define WORDS_BIGENDIAN 1"
-      "# endif"
-      "#else"
-      "# ifndef WORDS_BIGENDIAN"
-      "/* #  undef WORDS_BIGENDIAN */"
-      "# endif"
-      "#endif"
-   ;
-   
-   switch [ property.select <target-os> : $(properties) ] {
-      case *linux* :
-      define +=
-         HAVE_GETOPT_H
-         HAVE_STRCASECMP
-         HAVE_SYS_TIME_H
-         HAVE_VASPRINTF
-         TIME_WITH_SYS_TIME
-         HAVE_UNISTD_H
-      ;
-      undef +=
-      ;
-
-      case *windows* :
-      define +=
-         HAVE_STRICMP
-         WIN32_LEAN_AND_MEAN
-         YY_USE_CONST
-         WIN32_CONFIG_H
-      ;
-      undef +=
-      ;
-      other +=
-#         "#define vsnprintf _vsnprintf"
-         "#define snprintf _snprintf"
-         "#define strtok_r strtok_s"
-         "#define strcasecmp stricmp"
-         "#define access _access"
-#         "#define sscanf sscanf_s"
-         "#define stricmp _stricmp"
-         "#define strnicmp _strnicmp"
-         "#define __func__ \"\""
-         "#undef RAPTOR_INLINE"
-         "#define RAPTOR_INLINE __inline"
-         "#include \"boost/config.hpp\""
-         "#if defined BOOST_MSVC"
-         "#define lround(x) (((x) < 0) ? (long)((x)-0.5) : (long)((x)+0.5))"
-         "#endif"
-         "#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)"
-      ;
-   }
-   CONFIG on $(<) =
-      $(other)
-      "#define $(define) 1"
-      "#undef $(undef)"
-   ;
-   NL on $(<) = "
-" ;
-}
-actions config_h { @($(STDOUT):E=$(CONFIG:J=$(NL))$(NL)) > "$(<)" }
-
-## 
-################################################################################
-rule raptor2_h ( targets * : sources * : properties * ) {
-   local v = [ version_raptor $(properties) ] ;
-   local vs = [ version_split $(v) ] ;
-   local vc = [ version_calc $(v) ] ;
-   local src = [ read_file $(sources:G=) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_DECIMAL@ $(vc[2]) ] ;
-   src = [ regex.replace $(src) @VERSION@ $(v) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_MAJOR@ $(vs[1]) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_MINOR@ $(vs[2]) ] ;
-   src = [ regex.replace $(src) @RAPTOR_VERSION_RELEASE@ $(vs[3]) ] ;
-   src = [ regex.replace $(src) WIN32 RAPTOR_WIN32 ] ;
-   
-   local str =
-      "#define RAPTOR_H"
-      "" 
-      "#include \"boost/config.hpp\""
-      "#ifndef BOOST_SYMBOL_EXPORT"
-      "  #define BOOST_SYMBOL_EXPORT"
-      "  #define BOOST_SYMBOL_IMPORT"
-      "#endif"
-      "#if defined(RAPTOR_DYN_LINK)"
-      "#  if defined(RAPTOR_INTERNAL)"
-      "#     define RAPTOR_API BOOST_SYMBOL_EXPORT"
-      "#  else"
-      "#     define RAPTOR_API BOOST_SYMBOL_IMPORT"
-      "#  endif"
-      "#else"
-      "#  define RAPTOR_API"
-      "#endif"
-   ;
-   src = [ regex.replace $(src) "#define RAPTOR_H" $(str:J="
-") ] ;
-   
-   STR on $(<) = $(src) ;
-}
-actions raptor2_h { @($(STDOUT):E=$(STR)) > "$(<)" }
-
-## 
-################################################################################
-rule raptor-source ( version : location ) {
+rule copy-source ( version : location ) {
    local src = 
       raptor_parse raptor_serialize raptor_rfc2396 raptor_uri raptor_log 
       raptor_locator raptor_namespace raptor_qname raptor_option raptor_general 
@@ -239,43 +42,292 @@ rule raptor-source ( version : location ) {
    local location_src = [ path.join $(location) src ] ;
    local location_rdfa = [ path.join $(location) librdfa ] ;
    
-   return $(location_src)/$(src).c $(location_rdfa)/$(src_rdfa).c ;
+   local files_out = ;
+   for local file in $(location_src)/$(src).c $(location_rdfa)/$(src_rdfa).c {
+      local file_out = [ path.join $(GENERATED_LIB) raptor $(file:D="") ] ;
+      files_out += $(file_out) ;
+      make-singleton $(file_out) : $(file) : @common.copy ;
+   }
+   
+   return $(files_out) ;
+}
+
+## Copy all headers except win32_raptor_config.h to new location.
+# Generate new raptor_config.h and win32_raptor_config.h
+################################################################################
+rule copy-headers ( version : location : properties * ) {
+   local src = [ path.join $(location) src ] ;
+   local rdfa = [ path.join $(location) librdfa ] ;
+   local files_in = [ path.glob $(src) $(rdfa) : *.h : *win32_raptor_config.h ] ;
+   local files_out = ;
+   local files_dest = [ path.join $(GENERATED_LIB) raptor ] ;
+
+   for local file in $(files_in) {
+      local file_out = [ path.join $(files_dest) $(file:D="") ] ;
+      files_out += $(file_out) ;
+      make-singleton $(file_out) : $(file) : @common.copy ;
+   }
+   
+   return $(files_out) ;
+}
+
+## extract version string
+################################################################################
+rule version_raptor ( properties * ) {
+   local v = [ property.select <raptor-version> : $(properties) ] ;
+   return $(v:G=) ;
 }
 
 ## 
 ################################################################################
+rule version_split ( v ) {
+   return [ regex.split $(v) "\\." ] ;
+}
+
+## 
+################################################################################
+rule version_calc ( v ) {
+   local vs = [ version_split $(v) ] ;
+   local vdmin = $(vs[1])0000 ;
+   local vd = [ CALC [ CALC $(vdmin) + $(vs[2])00 ] + $(vs[3]) ] ;
+   return $(vdmin) $(vd) ;
+}
+
+## 
+################################################################################
+rule replace-version ( src : v ) {
+   local vs = [ version_split $(v) ] ;
+   local vc = [ version_calc $(v) ] ;
+
+   src = [ regex.replace $(src) @RAPTOR_VERSION_DECIMAL@ $(vc[2]) ] ;
+   src = [ regex.replace $(src) @VERSION@ $(v) ] ;
+   src = [ regex.replace $(src) @RAPTOR_VERSION_MAJOR@ $(vs[1]) ] ;
+   src = [ regex.replace $(src) @RAPTOR_VERSION_MINOR@ $(vs[2]) ] ;
+   src = [ regex.replace $(src) @RAPTOR_VERSION_RELEASE@ $(vs[3]) ] ;
+   
+   return $(src) ;
+}
+
+## 
+################################################################################
+rule define-as ( src : from : as ? ) {
+   local re = " *#undef +$(from) *[\n]" ;
+   if ! [ MATCH "($(re))" : $(src) ] {
+      exit "could not find " $(re) ;
+   }
+   
+   as ?= 1 ;
+   local to = "#define $(from) $(as)
+" ;
+   src = [ regex.replace $(src) $(re) $(to) ] ;
+   return $(src) ;
+}
+
+## 
+################################################################################
+rule define-version ( src : v ) {
+   local vs = [ version_split $(v) ] ;
+   local vc = [ version_calc $(v) ] ;
+   
+   src = [ define-as $(src) : VERSION : "\"$(v)\"" ] ;
+   src = [ define-as $(src) : RAPTOR_VERSION_DECIMAL : $(vc[2]) ] ;
+   src = [ define-as $(src) : RAPTOR_VERSION_MAJOR : $(vs[1]) ] ;
+   src = [ define-as $(src) : RAPTOR_VERSION_MINOR : $(vs[2]) ] ;
+   src = [ define-as $(src) : RAPTOR_VERSION_RELEASE : $(vs[3]) ] ;
+   
+   return $(src) ;
+}
+
+## 
+################################################################################
+rule raptor_config_gen ( targets * : sources * : properties * ) {
+
+   local src = [ read_file $(sources:G=) ] ;
+   local v = [ version_raptor $(properties) ] ;
+   src = [ define-version $(src) : $(v) ] ;   
+   
+   local defs =
+      HAVE_DLFCN_H HAVE_ERRNO_H HAVE_FCNTL_H HAVE_GETOPT
+      HAVE_GETOPT_LONG HAVE_GETTIMEOFDAY HAVE_INTTYPES_H HAVE_ISASCII 
+      HAVE_LIBXML_HASH_H
+      HAVE_LIBXML_HTMLPARSER_H HAVE_LIBXML_PARSER_H HAVE_LIBXML_SAX2_H 
+      HAVE_LIMITS_H
+      HAVE_MATH_H HAVE_MEMORY_H HAVE_SETJMP HAVE_SETJMP_H HAVE_STAT
+      HAVE_STDDEF_H HAVE_STDINT_H HAVE_STDLIB_H HAVE_STRING_H HAVE_SYS_PARAM_H
+      HAVE_SYS_STAT_H HAVE_SYS_TYPES_H HAVE_VSNPRINTF HAVE_XMLCTXTUSEOPTIONS 
+      HAVE_XMLSAX2INTERNALSUBSET
+      RAPTOR_LIBXML_ENTITY_ETYPE RAPTOR_LIBXML_HTML_PARSE_NONET 
+      RAPTOR_LIBXML_XMLSAXHANDLER_EXTERNALSUBSET
+      RAPTOR_LIBXML_XMLSAXHANDLER_INITIALIZED RAPTOR_LIBXML_XML_PARSE_NONET
+      RAPTOR_PARSER_GUESS RAPTOR_PARSER_NTRIPLES
+      RAPTOR_PARSER_RDFXML RAPTOR_PARSER_TURTLE RAPTOR_SERIALIZER_NTRIPLES
+      RAPTOR_WWW_NONE RAPTOR_XML_LIBXML STDC_HEADERS
+      # HAVE_EXPAT_H RAPTOR_NFC_CHECK 
+   ;
+   
+   for local def in $(defs) {
+      src = [ define-as $(src) : $(def) ] ;
+   }
+   
+   src = [ define-as $(src) : PACKAGE : "\"raptor2\"" ] ;
+   src = [ define-as $(src) : PACKAGE_NAME : "\"Raptor RDF Parser and Serializer library\"" ] ;
+   src = [ define-as $(src) : PACKAGE_VERSION : "\"$(v)\"" ] ;
+   src = [ define-as $(src) : PACKAGE_STRING : "\"Raptor RDF Parser and Serializer library $(v)\"" ] ;
+   src = [ define-as $(src) : PACKAGE_BUGREPORT : "\"http://bugs.librdf.org/\"" ] ;
+   src = [ define-as $(src) : PACKAGE_TARNAME : "\"raptor2\"" ] ;
+   src = [ define-as $(src) : PACKAGE_URL : "\"http://librdf.org/raptor/\"" ] ;
+   src = [ define-as $(src) : RAPTOR_MIN_VERSION_DECIMAL : 20000 ] ;
+   
+   STR on $(<) = $(src) ;
+   
+   switch [ property.select <target-os> : $(properties) ] {
+      case *linux* :
+         src = [ define-as $(src) : HAVE_GETOPT_H ] ;
+         src = [ define-as $(src) : HAVE_STRCASECMP ] ;
+         src = [ define-as $(src) : HAVE_SYS_TIME_H ] ;
+         src = [ define-as $(src) : HAVE_VASPRINTF ] ;
+         src = [ define-as $(src) : TIME_WITH_SYS_TIME ] ;
+         src = [ define-as $(src) : HAVE_UNISTD_H ] ;
+         src = [ define-as $(src) : HAVE_STRINGS_H ] ;
+
+      case *windows* :
+      defs +=
+         HAVE_STRICMP
+         WIN32_LEAN_AND_MEAN
+         YY_USE_CONST
+         WIN32_CONFIG_H
+      ;
+      undef +=
+      ;
+      other +=
+#         "#define vsnprintf _vsnprintf"
+         "#define snprintf _snprintf"
+#         "#define strtok_r strtok_s"
+         "#define strcasecmp stricmp"
+         "#define access _access"
+#         "#define sscanf sscanf_s"
+         "#define stricmp _stricmp"
+         "#define strnicmp _strnicmp"
+         "#define __func__ \"\""
+         "#undef RAPTOR_INLINE"
+         "#define RAPTOR_INLINE __inline"
+         "#include \"boost/config.hpp\""
+         "#if defined BOOST_MSVC"
+         "#define lround(x) (((x) < 0) ? (long)((x)-0.5) : (long)((x)+0.5))"
+         "#endif"
+         "#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)"
+      ;
+   }
+#   CONFIG on $(<) =
+#      $(other)
+#      "#define $(defs) 1"
+#      "#undef $(undef)"
+#   ;
+#   NL on $(<) = "
+#" ;
+}
+actions raptor_config_gen { @($(STDOUT):E=$(STR)) > "$(<)" }
+
+## 
+################################################################################
+rule win32_raptor_config_gen ( targets * : sources * : properties * ) {
+
+   local src = [ read_file $(sources:G=) ] ;
+   local v = [ version_raptor $(properties) ] ;
+   src = [ replace-version $(src) : $(v) ] ;
+   
+   local re = "#define vsnprintf _vsnprintf" ;
+   local to = "/*#define vsnprintf _vsnprintf*/" ;
+   src = [ regex.replace $(src) $(re) $(to) ] ;
+   
+   re = "#define RAPTOR_XML_LIBXML" ;
+   to = "#ifndef RAPTOR_XML_LIBXML
+#define RAPTOR_XML_LIBXML
+#endif" ;
+   src = [ regex.replace $(src) $(re) $(to) ] ;
+   
+   re = "#define RAPTOR_WWW_LIBCURL 1" ;
+   to = "/*#define RAPTOR_WWW_LIBCURL 1*/" ;
+   src = [ regex.replace $(src) $(re) $(to) ] ;
+
+   STR on $(<) = $(src) ;
+}
+actions win32_raptor_config_gen { @($(STDOUT):E=$(STR)) > "$(<)" }
+
+
+## 
+################################################################################
+rule raptor2_gen ( targets * : sources * : properties * ) {
+   local v = [ version_raptor $(properties) ] ;
+   local src = [ read_file $(sources:G=) ] ;
+   src = [ replace-version $(src) : $(v) ] ;   
+   
+   local str =
+      "#define RAPTOR_H"
+      "" 
+      "#include \"boost/config.hpp\""
+      "#ifndef BOOST_SYMBOL_EXPORT"
+      "  #define BOOST_SYMBOL_EXPORT"
+      "  #define BOOST_SYMBOL_IMPORT"
+      "#endif"
+      "#if defined(RAPTOR_DYN_LINK)"
+      "#  if defined(RAPTOR_INTERNAL)"
+      "#     define RAPTOR_API BOOST_SYMBOL_EXPORT"
+      "#  else"
+      "#     define RAPTOR_API BOOST_SYMBOL_IMPORT"
+      "#  endif"
+      "#else"
+      "#  define RAPTOR_API"
+      "#endif"
+   ;
+   src = [ regex.replace $(src) "#define RAPTOR_H" $(str:J="
+") ] ;
+   
+   STR on $(<) = $(src) ;
+}
+actions raptor2_gen { @($(STDOUT):E=$(STR)) > "$(<)" }
+
+## 
+################################################################################
 rule init ( version : location : options * ) {
-   
-   make #-singleton 
-      raptor_config.h 
-      : 
-      : @config_h
-      : <raptor-version>$(version) #<location>$(GENERATED_INCLUDE)/raptor
+
+   make-singleton raptor2.h 
+      : $(location)/src/raptor2.h.in 
+      : @raptor2_gen
+      : <raptor-version>$(version) <location>$(GENERATED_INCLUDE)/raptor
    ;
    
-   local location_src = [ path.join $(location) src ] ;
-   local location_rdfa = [ path.join $(location) librdfa ] ;
-   
-   make #-singleton 
-      raptor2.h 
-      : $(location_src)/raptor2.h.in
-      : @raptor2_h 
-      : <raptor-version>$(version) #<location>$(GENERATED_INCLUDE)/raptor
+   make raptor_config.h 
+      : $(location)/src/raptor_config.h.in 
+      : @raptor_config_gen
+      : <raptor-version>$(version)
    ;
+   
+   make win32_raptor_config.h 
+      : $(location)/src/win32_raptor_config.h.in 
+      : @win32_raptor_config_gen 
+      : <raptor-version>$(version)
+   ;
+   
+   local headers = [ copy-headers  $(version) : $(location) ] ;
    
    local requirements = 
          [ extension.define raptor $(version) : $(location) : $(options) ]
          <raptor-version>$(version)
          <raptor-location>$(location)
-         <include>$(location_src)
-         <include>$(location_rdfa)
+         <include>$(GENERATED_LIB)/raptor
+         <implicit-dependency>$(headers)
+         <dependency>raptor2.h
+         <implicit-dependency>raptor2.h
+         <dependency>raptor_config.h
+         <implicit-dependency>raptor_config.h
          <define>HAVE_CONFIG_H
          <define>LIBRDFA_IN_RAPTOR
          <define>RAPTOR_INTERNAL
-         <implicit-dependency>raptor_config.h
-         <implicit-dependency>raptor2.h
          <link>shared:<define>RAPTOR_DYN_LINK
-         <toolset>msvc:<define>RAPTOR_WIN32
+         <toolset>msvc:<dependency>win32_raptor_config.h
+         <toolset>msvc:<implicit-dependency>win32_raptor_config.h
+         <toolset>msvc:<define>WIN32
          <toolset>msvc:<define>_CRT_SECURE_NO_DEPRECATE
          <toolset>msvc:<define>_CRT_NONSTDC_NO_DEPRECATE
          <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden"
@@ -283,7 +335,7 @@ rule init ( version : location : options * ) {
    
    lib raptor
       :  
-         [ raptor-source $(version) : $(location) ]
+         [ copy-source $(version) : $(location) ]
       :  $(requirements)
          <library>../../external//libxml2 #:<link>shared
       :  #default build options
