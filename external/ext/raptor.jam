@@ -125,6 +125,18 @@ rule define-as ( src : from : as ? ) {
 
 ## 
 ################################################################################
+rule comment-out ( src : expr ) {
+   if ! [ MATCH "($(expr))" : $(src) ] {
+      exit "could not find " $(expr) ;
+   }
+   
+   local to = "/*$(expr)*/" ;
+   src = [ regex.replace $(src) $(expr) $(to) ] ;
+   return $(src) ;
+}
+
+## 
+################################################################################
 rule define-version ( src : v ) {
    local vs = [ version_split $(v) ] ;
    local vc = [ version_calc $(v) ] ;
@@ -162,7 +174,6 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
       RAPTOR_PARSER_GUESS RAPTOR_PARSER_NTRIPLES
       RAPTOR_PARSER_RDFXML RAPTOR_PARSER_TURTLE RAPTOR_SERIALIZER_NTRIPLES
       RAPTOR_WWW_NONE RAPTOR_XML_LIBXML STDC_HEADERS
-      # HAVE_EXPAT_H RAPTOR_NFC_CHECK 
    ;
    
    for local def in $(defs) {
@@ -178,8 +189,6 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
    src = [ define-as $(src) : PACKAGE_URL : "\"http://librdf.org/raptor/\"" ] ;
    src = [ define-as $(src) : RAPTOR_MIN_VERSION_DECIMAL : 20000 ] ;
    
-   STR on $(<) = $(src) ;
-   
    switch [ property.select <target-os> : $(properties) ] {
       case *linux* :
          src = [ define-as $(src) : HAVE_GETOPT_H ] ;
@@ -191,40 +200,9 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
          src = [ define-as $(src) : HAVE_STRINGS_H ] ;
 
       case *windows* :
-      defs +=
-         HAVE_STRICMP
-         WIN32_LEAN_AND_MEAN
-         YY_USE_CONST
-         WIN32_CONFIG_H
-      ;
-      undef +=
-      ;
-      other +=
-#         "#define vsnprintf _vsnprintf"
-         "#define snprintf _snprintf"
-#         "#define strtok_r strtok_s"
-         "#define strcasecmp stricmp"
-         "#define access _access"
-#         "#define sscanf sscanf_s"
-         "#define stricmp _stricmp"
-         "#define strnicmp _strnicmp"
-         "#define __func__ \"\""
-         "#undef RAPTOR_INLINE"
-         "#define RAPTOR_INLINE __inline"
-         "#include \"boost/config.hpp\""
-         "#if defined BOOST_MSVC"
-         "#define lround(x) (((x) < 0) ? (long)((x)-0.5) : (long)((x)+0.5))"
-         "#endif"
-         "#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)"
-      ;
    }
-#   CONFIG on $(<) =
-#      $(other)
-#      "#define $(defs) 1"
-#      "#undef $(undef)"
-#   ;
-#   NL on $(<) = "
-#" ;
+   
+   STR on $(<) = $(src) ;
 }
 actions raptor_config_gen { @($(STDOUT):E=$(STR)) > "$(<)" }
 
@@ -236,8 +214,17 @@ rule win32_raptor_config_gen ( targets * : sources * : properties * ) {
    local v = [ version_raptor $(properties) ] ;
    src = [ replace-version $(src) : $(v) ] ;
    
-   local re = "#define vsnprintf _vsnprintf" ;
-   local to = "/*#define vsnprintf _vsnprintf*/" ;
+   src = [ comment-out $(src) : "#define vsnprintf _vsnprintf" ] ;
+   
+   local re = "#define snprintf _snprintf[\n]" ;
+   local to = 
+      "#define snprintf _snprintf" 
+      "#define strcasecmp _stricmp"
+      "#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)"
+      "" 
+      ;
+   to = $(to:J="
+") ;
    src = [ regex.replace $(src) $(re) $(to) ] ;
    
    re = "#define RAPTOR_XML_LIBXML" ;
@@ -246,9 +233,16 @@ rule win32_raptor_config_gen ( targets * : sources * : properties * ) {
 #endif" ;
    src = [ regex.replace $(src) $(re) $(to) ] ;
    
-   re = "#define RAPTOR_WWW_LIBCURL 1" ;
-   to = "/*#define RAPTOR_WWW_LIBCURL 1*/" ;
-   src = [ regex.replace $(src) $(re) $(to) ] ;
+   src = [ comment-out $(src) : "#define RAPTOR_PARSER_RSS 1" ] ;
+   src = [ comment-out $(src) : "#define RAPTOR_PARSER_GRDDL 1" ] ;
+   src = [ comment-out $(src) : "#define RAPTOR_PARSER_N3 1" ] ;
+   
+   src = [ comment-out $(src) : "#define RAPTOR_SERIALIZER_ATOM 1" ] ;
+   src = [ comment-out $(src) : "#define RAPTOR_SERIALIZER_RSS_1_0 1" ] ;
+   src = [ comment-out $(src) : "#define RAPTOR_SERIALIZER_RDFXML 1" ] ;
+   src = [ comment-out $(src) : "#define RAPTOR_SERIALIZER_RDFXML_ABBREV 1" ] ;
+
+   src = [ comment-out $(src) : "#define RAPTOR_WWW_LIBCURL 1" ] ;
 
    STR on $(<) = $(src) ;
 }
