@@ -6,7 +6,9 @@ part of owlcpp project.
 #ifndef QUERY_TRIPLES_HPP_
 #define QUERY_TRIPLES_HPP_
 #include "boost/range.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/rdf_list_iterator.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
 
 namespace owlcpp{
 
@@ -27,6 +29,14 @@ boost::iterator_range<Rdf_list_iter_s> inline rdf_list(
    return boost::make_iterator_range(Rdf_list_iter_s(nid, ts), Rdf_list_iter_s());
 }
 
+/**
+*******************************************************************************/
+inline std::string find_label(const Node_id nid, Triple_store const& store) {
+   Triple_store::result_b<1,1,0,0>::type r =
+            store.find_triple(nid, owlcpp::terms::T_rdfs_label::id(), any(), any());
+   if( ! r ) return "";
+   return to_string(r.front().object(), store);
+}
 
 }//namespace owlcpp
 #endif /* QUERY_TRIPLES_HPP_ */
