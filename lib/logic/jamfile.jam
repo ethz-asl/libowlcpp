@@ -11,11 +11,13 @@ lib owlcpp_logic
       [ glob *.cpp factpp/*.cpp ]
    :  #requirements
       $(LIB_REQUIREMENTS)
-      <library>/owlcpp//factpp_kernel
       <library>/owlcpp//rdf
+      <library>/owlcpp//factpp_kernel
       <link>shared:<define>OWLCPP_LOGIC_DYN_LINK
    :  #default build options
    :  #usage requirements
       <link>shared:<define>OWLCPP_LOGIC_DYN_LINK
+      <library>/owlcpp//rdf
+      <library>/owlcpp//factpp_kernel
 ;
 

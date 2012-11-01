@@ -4,56 +4,82 @@ part of owlcpp project.
 @n Copyright Mikhail K Levin 2010
 *******************************************************************************/
 #include <iostream>
-#include <vector>
 #include <string>
+#include "boost/filesystem.hpp"
 #include "boost/exception/diagnostic_information.hpp"
 #include "boost/filesystem.hpp"
 #include "boost/foreach.hpp"
+#include "boost/program_options.hpp"
 #include "factpp/Kernel.hpp"
 
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
-#include "owlcpp/io/parse_to_triple_store.hpp"
+#include "owlcpp/io/input.hpp"
+#include "owlcpp/io/catalog.hpp"
 #include "owlcpp/logic/triple_to_fact.hpp"
 #include "owlcpp/logic/query_fact.hpp"
-#include "owlcpp/print.hpp"
-#include "owlcpp/terms/term_tags.hpp"
+#include "owlcpp/terms/node_tags_owl.hpp"
+
+namespace bpo = boost::program_options;
+namespace bfs = boost::filesystem;
+namespace owl = owlcpp;
+namespace ot = owlcpp::terms;
 
 /**
-Parse OWL ontology file and its imports located in the same folder
-Load ontology to FaCT++ reasoner
-check if all classes are satisfiable
+Parse OWL ontology file and its imports located in the same folder.
+Load ontology to FaCT++ reasoner and check if all classes are satisfiable
 *******************************************************************************/
 int main(int argc, char* argv[]) {
-   namespace owl = owlcpp;
-   namespace ot = owlcpp::terms;
-   if( argc < 2 ) {
+   bpo::options_description od;
+   od.add_options()
+                        ("help,h", "help message")
+                        ("input-file", bpo::value<std::string>(), "input OWL file")
+                        ("include,i",
+                                 bpo::value<std::vector<std::string> >()->zero_tokens()->composing(),
+                                 "search paths")
+                                 ("lax", bpo::bool_switch(), "non-strict parsing")
+                                 ("return-success,S", bpo::bool_switch(),
+                                          "return 1 if ontology is not consistent")
+                                          ;
+   bpo::positional_options_description pod;
+   pod.add("input-file", -1);
+   bpo::variables_map vm;
+   store(bpo::command_line_parser(argc, argv).options(od).positional(pod).run(), vm);
+   notify(vm);
+
+   if( ! vm.count("input-file") || vm.count("help") ) {
       std::cout
       <<
       "Load OWL ontology file including imports found in the same folder "
       "or in optional additional locations. "
       "Check every class for satisfiability." "\n"
-      "Usage: satisfiable file.owl [location ...]"
-      << std::endl;
-      return 0;
+      << "Usage:" << '\n'
+      << "satisfiable [-i[path]] [-c] <OWL_ontology_file.owl>" << '\n'
+      << od << '\n';
+      return ! vm.count("help");
    }
+
+   //create a triple store
+   owlcpp::Triple_store store;
+
+   const bfs::path in = vm["input-file"].as<std::string>();
+
    try {
-      owl::Catalog cat;
-      if( argc == 2 ) {
-         //catalog ontologies in the same directory
-         boost::filesystem::path file(argv[1]);
-         owl::find_ontologies(cat, file.parent_path().string());
-      } else {
-         //catalog ontologies in specified locations
-         for(int i = 1; i != argc; ++i) owl::find_ontologies(cat, argv[i]);
+      if( vm.count("include") ) { //load input-file and its includes
+         owlcpp::Catalog cat;
+         std::vector<std::string> const& vin = vm["include"].as<std::vector<std::string> >();
+         if( vin.empty() ) {
+            add(cat, in.parent_path(), true);
+         } else {
+            BOOST_FOREACH(std::string const& p, vin) add(cat, p, true);
+         }
+         load_file(in, store, cat);
+      } else { //load just input-file
+         load_file(in, store);
       }
 
-      //parse including imports
-      owl::Triple_store store;
-      load(argv[1], store, cat);
-
       ReasoningKernel kernel;
-      add(store, kernel);
+      submit_triples(store, kernel, vm["lax"].as<bool>());
 
       if( ! kernel.isKBConsistent() ) {
          std::cout << "inconsistent ontology";
@@ -62,22 +88,23 @@ int main(int argc, char* argv[]) {
 
       bool all_satisfiable = true;
       //iterate over nodes
-      BOOST_FOREACH( const owl::Node_id nid, store.node_ids() ) {
+      BOOST_FOREACH( const owl::Node_id nid, store.map_node() ) {
          //find nodes declared as classes
          if(
-               owl::find_triples(
-                     nid,
-                     ot::T_rdf_type::id(),
-                     ot::T_owl_Class::id(),
-                     store
-               )
+                  store.find_triple(
+                           nid,
+                           ot::T_rdf_type::id(),
+                           ot::T_owl_Class::id(),
+                           owlcpp::any()
+                  )
          ) {
             const TDLConceptExpression* ce = owl::concept(nid, store, kernel);
             if( ! kernel.isSatisfiable(ce) ) {
                std::cout
-               << short_name(nid, store) << '\t'
+               << to_string(nid, store) << '\t'
                << '"' << find_label(nid, store) << '"' << '\t'
-               << "not satisfiable" << '\n';
+               << "not satisfiable" << '\n'
+               ;
                all_satisfiable = false;
             }
          }

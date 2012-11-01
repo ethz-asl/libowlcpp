@@ -5,22 +5,22 @@ part of owlcpp project.
 *******************************************************************************/
 #include <iostream>
 #include <string>
+#include "boost/filesystem.hpp"
+#include "boost/foreach.hpp"
 #include "boost/program_options.hpp"
 #include "boost/range.hpp"
-#include "boost/foreach.hpp"
-#include "boost/filesystem.hpp"
 #include "factpp/Kernel.hpp"
+
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/io/catalog.hpp"
-#include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/logic/triple_to_fact.hpp"
 
 namespace bpo = boost::program_options;
 namespace bfs = boost::filesystem;
 
 /**
-Parse OWL ontology file and its imports located in the same folder
+Parse OWL ontology file and its imports located in the same folder.
 Load ontology to FaCT++ reasoner and check if it is consistent
 *******************************************************************************/
 int main(int argc, char* argv[]) {
@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
       << "Usage:" << '\n'
       << "validate [-i[path]] [-c] <OWL_ontology_file.owl>" << '\n'
       << od << '\n';
-      return 0;
+      return ! vm.count("help");
    }
 
    //create a triple store
@@ -60,9 +60,9 @@ int main(int argc, char* argv[]) {
          owlcpp::Catalog cat;
          std::vector<std::string> const& vin = vm["include"].as<std::vector<std::string> >();
          if( vin.empty() ) {
-            add(cat, in.parent_path(), true, 100);
+            add(cat, in.parent_path(), true);
          } else {
-            BOOST_FOREACH(std::string const& p, vin) add(cat, p, true, 100);
+            BOOST_FOREACH(std::string const& p, vin) add(cat, p, true);
          }
          load_file(in, store, cat);
       } else { //load just input-file

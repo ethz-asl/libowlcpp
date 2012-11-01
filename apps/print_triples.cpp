@@ -6,9 +6,10 @@ part of owlcpp project.
 #include <iostream>
 #include <string>
 #include <vector>
-#include "boost/program_options.hpp"
 #include "boost/filesystem.hpp"
 #include "boost/foreach.hpp"
+#include "boost/program_options.hpp"
+
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/io/input.hpp"
@@ -16,7 +17,7 @@ part of owlcpp project.
 namespace bpo = boost::program_options;
 namespace bfs = boost::filesystem;
 
-/** Parse single OWL ontology file into triple store and print triples
+/** Parse OWL ontology file and print triples
 *******************************************************************************/
 int main(int argc, char* argv[]) {
    bpo::options_description od;
@@ -36,10 +37,11 @@ int main(int argc, char* argv[]) {
 
    if( ! vm.count("input-file") || vm.count("help") ) {
       std::cout
+      << "Parse OWL ontology and print triples" << '\n'
       << "Usage:" << '\n'
       << "print_triples [-i[path]] [-c] <OWL_ontology_file.owl>" << '\n'
       << od << '\n';
-      return 0;
+      return ! vm.count("help");
    }
 
    owlcpp::Triple_store store;
