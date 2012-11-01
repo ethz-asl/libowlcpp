@@ -28,7 +28,7 @@ alias factpp_kernel
 ;
 
 # libxml2 (not Expat) is used with Raptor because it better handles encodings.
-# Building libxml2 requires iconv and libzip.
+# Building libxml2 requires iconv.
 # On Linux libxml2 is integrated into the system and is expected to be available.
 # On Windows, libxml2 is built from source
 # On Mac, pre-built libxml2 is currently required.
@@ -61,7 +61,7 @@ if $(os) = LINUX {
 
    if ! $(LIBXML2) && ! ( $(LIBXML2_DLL) && $(LIBXML2_LIB) && $(LIBXML2_H) ) { 
       EXIT "
-      Please set variable LIBXML2 to location of pre-compiled libxml2 library.
+      Please set variable LIBXML2 to location of libxml2 library source.
       See doc/user-config.jam
       " ;
    }

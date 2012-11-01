@@ -150,9 +150,9 @@ rule init ( version ? : location ? : options * ) {
 #      nanoftp nanohttp
    ;
 
-   ICONV_LIB ?= $(ICONV)/lib/iconv_a.lib ;
-   ICONV_DLL ?= $(ICONV)/bin/iconv.dll $(ICONV)/lib/iconv.lib ;
-   ICONV_H ?= $(ICONV)/include ;
+   ICONV_LIB ?= $(ICONV[1])/lib/iconv_a.lib ;
+   ICONV_DLL ?= $(ICONV[1])/bin/iconv.dll $(ICONV[1])/lib/iconv.lib ;
+   ICONV_H ?= $(ICONV[1])/include ;
    
    lib iconv
       : #sources
