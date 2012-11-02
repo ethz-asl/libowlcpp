@@ -12,7 +12,7 @@ part of owlcpp project.
 Make a catalog of OWL ontologies in input locations
 *******************************************************************************/
 int main(int argc, char* argv[]) {
-   owlcpp::Lib_info::print(std::cout << "find_owl, ") << std::endl;
+   owlcpp::Lib_info::print(std::cout << "find_owl\n" "built with ") << std::endl;
    if( argc < 2 ) {
       std::cout << "Usage: find_owl path1 [path2 ...]" << std::endl;
       return 0;

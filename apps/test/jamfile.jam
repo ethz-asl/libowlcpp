@@ -6,27 +6,85 @@
 project apps/test
    :  build-dir $(OUT)/apps
    : requirements
-      <library>/owlcpp//rdf
-      <library>/owlcpp//io
-      <library>/boost//filesystem
 ;
 
-alias find_owl : ..//find_owl ;
-
-run find_owl
+run
+      ../find_ontologies.cpp
    : #args
-      sample_data
+      $(SMPL_DATA)
    : #input-files
    : #requirements
-#      <link>shared
+      <link>static
+      <library>/owlcpp//io
    : #target-name
-      find_owl1
+      find_owl_1
 ;
 
-# run      ..//find_owl      : sample_data                 : : : find_owl2 ;
-# run      ..//print_triples : sample_data/test_01.owl ;
-# run      ..//print_classes : sample_data/one_eq_two_01.owl -i : : : ;
-# run      ..//validate : -h                               : : : validate_01 ;
-# run      ..//validate : sample_data/test_01.owl -S       : : : validate_02 ;
-# run-fail ..//validate : sample_data/one_eq_two_01.owl -S : : : validate_03 ;
+run
+      ../find_ontologies.cpp
+   : #args
+      $(SMPL_DATA)
+   : #input-files
+   : #requirements
+      <link>shared
+      <library>/owlcpp//io
+   : #target-name
+      find_owl_2
+;
 
+run
+      ../print_triples.cpp
+   : #args
+      $(SMPL_DATA)/test_01.owl
+   : #input-files
+   : #requirements
+      <link>static
+      <library>/owlcpp//io
+      <library>/boost/program_options
+   : #target-name
+      print_triples_1
+;
+
+run
+      ../print_classes.cpp
+   : #args
+      -i
+      $(SMPL_DATA)/one_eq_two_01.owl
+   : #input-files
+   : #requirements
+      <link>static
+      <library>/owlcpp//io
+      <library>/boost/program_options
+   : #target-name
+      print_classes_1
+;
+
+run
+      ../validate.cpp
+   : #args
+      -S
+      $(SMPL_DATA)/test_01.owl 
+   : #input-files
+   : #requirements
+      <link>static
+      <library>/owlcpp//io
+      <library>/owlcpp//logic
+      <library>/boost/program_options
+   : #target-name
+      validate_1
+;
+
+run-fail
+      ../validate.cpp
+   : #args
+      -S
+      $(SMPL_DATA)/one_eq_two_01.owl 
+   : #input-files
+   : #requirements
+      <link>static
+      <library>/owlcpp//io
+      <library>/owlcpp//logic
+      <library>/boost/program_options
+   : #target-name
+      validate_2
+;

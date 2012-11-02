@@ -21,7 +21,6 @@ exe print_triples
       print_triples.cpp
    : #requirements
       <link>static
-      <threading>multi
       <library>/owlcpp//io
       <library>/boost/program_options
 ;
@@ -54,3 +53,5 @@ exe satisfiable
       <library>/owlcpp//logic
       <library>/boost/program_options
 ;
+explicit satisfiable ;
+

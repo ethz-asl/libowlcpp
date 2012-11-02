@@ -72,20 +72,14 @@ int main(int argc, char* argv[]) {
       ReasoningKernel kernel;
       submit_triples(store, kernel, vm["lax"].as<bool>());
       const bool consistent = kernel.isKBConsistent();
-      const bool rs = vm["return-success"].as<bool>();
-      if( consistent && ! rs ) {
-         std::cout << "ontology is consistent" << std::endl;
-         return 0;
-      }
-      if( ! consistent && ! rs ){
-         std::cout << "ontology is inconsistent" << std::endl;
-         return 0;
-      }
-      if( consistent && rs ) return 0;
-      if( ! consistent && ! rs ) return 1;
-
+      std::cout
+      << '\n' << "ontology is "
+      << (consistent ? "consistent" : "inconsistent")
+      << std::endl
+      ;
+      return vm["return-success"].as<bool>() && ! consistent;
    } catch(...) {
       std::cerr << boost::current_exception_diagnostic_information() << std::endl;
+      return 1;
    }
-   return 1;
 }
