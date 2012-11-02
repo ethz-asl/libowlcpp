@@ -6,7 +6,7 @@
 <!ENTITY owl "&w3;/2002/07/owl#">
 <!ENTITY rdf "&w3;/1999/02/22-rdf-syntax-ns#">
 <!ENTITY rdfs "&w3;/2000/01/rdf-schema#">
-<!ENTITY xsd "&w3;/2001/XMLSchema#">
+<!-- <!ENTITY xsd "&w3;/2001/XMLSchema#"> -->
 <!ENTITY oboInOwl "http://www.geneontology.org/formats/oboInOwl#">
 ]>
 <rdf:RDF 
@@ -52,7 +52,7 @@ http://www.geneontology.org/formats/oboInOwl#-->
   <owl:Class rdf:about="&oboInOwl;SynonymType"/>
   <owl:Class rdf:about="&oboInOwl;ObsoleteClass"/>
   <owl:ObjectProperty rdf:about="&oboInOwl;ObsoleteProperty"/>
-  <owl:Ontology rdf:about="transitive_property">
+  <owl:Ontology rdf:about="invalid_02.xml">
     <oboInOwl:savedBy>cjm</oboInOwl:savedBy>
     <oboInOwl:hasDefaultNamespace>relationship</oboInOwl:hasDefaultNamespace>
     <rdfs:comment>&lt;p&gt;This ontology contains logical relations to be shared across the different OBO ontologies. Each OBO ontology is free to extend this set with relations specific to the biology within that ontology&lt;/p&gt;&lt;div class="notes"&gt;&lt;p&gt;In the definitions, variables c, d, ..., p, q, ... range over instances of continuants and processes respectively. C, D, ..., P, Q, ... range over the corresponding classes&lt;/p&gt;&lt;p&gt; For a discussion of instance-level relations and also of additional axioms needed to infer transitivity and other properties of the relations listed above see &lt;a href="http://genomebiology.com/2005/6/5/R46"&gt;http://genomebiology.com/2005/6/5/R46&lt;/a&gt; or the OBO relations page hosted at &lt;a href="http://obo.sourceforge.net/relationship"&gt;http://obo.sourceforge.net/relationship&lt;/a&gt;&lt;/div&gt;</rdfs:comment>

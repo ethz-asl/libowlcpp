@@ -77,7 +77,7 @@ public:
       if( _map_std().is_standard(nsid) ) {
          BOOST_THROW_EXCEPTION(
                   Err()
-                  << typename Err::msg_t("new term cannot be inserted into standard namespace")
+                  << typename Err::msg_t("unknown term in standard namespace")
                   << typename Err::str1_t( name )
                   << typename Err::str2_t( _map_std().at(nsid) )
          );

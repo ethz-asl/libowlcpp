@@ -32,25 +32,69 @@ run
       find_owl_2
 ;
 
+alias test_01 : $(SMPL_DATA)/test_01.owl ;
 run
       ../print_triples.cpp
    : #args
-      $(SMPL_DATA)/test_01.owl
    : #input-files
+      test_01
    : #requirements
       <link>static
       <library>/owlcpp//io
       <library>/boost/program_options
    : #target-name
-      print_triples_1
+      print_triples_test_01
 ;
 
+alias invalid_01 : $(SMPL_DATA)/invalid_01.xml ;
+run-fail
+      ../print_triples.cpp
+   : #args
+   : #input-files
+      invalid_01
+   : #requirements
+      <link>static
+      <library>/owlcpp//io
+      <library>/boost/program_options
+   : #target-name
+      print_triples_invalid_01
+;
+
+alias invalid_02 : $(SMPL_DATA)/invalid_02.xml ;
+run-fail
+      ../print_triples.cpp
+   : #args
+   : #input-files
+      invalid_02
+   : #requirements
+      <link>static
+      <library>/owlcpp//io
+      <library>/boost/program_options
+   : #target-name
+      print_triples_invalid_02
+;
+
+alias invalid_03 : $(SMPL_DATA)/invalid_03.owl ;
+run-fail
+      ../print_triples.cpp
+   : #args
+   : #input-files
+      invalid_03
+   : #requirements
+      <link>static
+      <library>/owlcpp//io
+      <library>/boost/program_options
+   : #target-name
+      print_triples_invalid_03
+;
+
+alias one_eq_two_01 : $(SMPL_DATA)/one_eq_two_01.owl ;
 run
       ../print_classes.cpp
    : #args
       -i
-      $(SMPL_DATA)/one_eq_two_01.owl
    : #input-files
+      one_eq_two_01
    : #requirements
       <link>static
       <library>/owlcpp//io
@@ -63,8 +107,8 @@ run
       ../validate.cpp
    : #args
       -S
-      $(SMPL_DATA)/test_01.owl 
    : #input-files
+      test_01
    : #requirements
       <link>static
       <library>/owlcpp//io
@@ -78,8 +122,8 @@ run-fail
       ../validate.cpp
    : #args
       -S
-      $(SMPL_DATA)/one_eq_two_01.owl 
    : #input-files
+      one_eq_two_01
    : #requirements
       <link>static
       <library>/owlcpp//io
