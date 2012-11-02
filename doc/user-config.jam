@@ -26,6 +26,9 @@
 ## GCC (under Linux of MS Windows MinGW)
 # using gcc ;
 
+## http://llvm.org/
+# using clang ;
+
 ## Mac OS X
 # using darwin ;
 
