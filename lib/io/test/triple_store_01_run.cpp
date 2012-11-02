@@ -12,6 +12,7 @@ part of owlcpp project.
 #include "test/sample_data.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/io/input.hpp"
+#include "owlcpp/io/exception.hpp"
 #include "owlcpp/io/raptor_wrapper.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "raptor_to_store.hpp"
@@ -101,6 +102,29 @@ BOOST_AUTO_TEST_CASE( case04 ) {
 
    BOOST_CHECK( ts.find_doc_iri(iri3) );
    BOOST_CHECK_GT( ts.map_triple().size(), 18u );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( parse_invalid_docs ) {
+   Triple_store ts;
+   Catalog cat;
+   add(cat, sample_file_path());
+
+   BOOST_CHECK_THROW(
+            load_file(sample_file_path("invalid_01.xml"), ts, cat),
+            Input_err
+   );
+
+   BOOST_CHECK_THROW(
+            load_file(sample_file_path("invalid_02.xml"), ts, cat),
+            Input_err
+   );
+
+   BOOST_CHECK_THROW(
+            load_file(sample_file_path("invalid_03.owl"), ts, cat),
+            Input_err
+   );
 }
 
 }//namespace test

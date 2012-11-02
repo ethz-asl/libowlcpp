@@ -7,6 +7,7 @@ part of owlcpp project.
 #define TRIPLE_STORE_TEMP_HPP_
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "io/map_traits.hpp"
+#include "owlcpp/io/exception.hpp"
 #include "owlcpp/rdf/map_ns.hpp"
 #include "owlcpp/rdf/map_node.hpp"
 #include "owlcpp/rdf/map_std.hpp"
@@ -44,7 +45,7 @@ public:
    typedef traits::map_node_type map_node_type;
    typedef traits::map_triple_type map_triple_type;
 
-   struct Err : public base_exception {};
+   struct Err : public Input_err {};
 
    Triple_store_temp(map_std_type const& map_std, std::string const& path)
    : map_std_(map_std),
