@@ -18,7 +18,7 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 namespace t = owlcpp::terms;
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_docs_01 ) {
    Triple_store ts;
@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE( test_docs_01 ) {
    BOOST_CHECK_EQUAL(distance(ts.find_doc_iri(str1)), 0);
 }
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_docs_02 ) {
    Triple_store ts;
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE( test_docs_02 ) {
    BOOST_CHECK(   ts.find_doc_version(iri24) );
 }
 
-/** Test blank nodes, OWL-aware triple store
+/**@test Test blank nodes, OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_blank_nodes_owl ) {
    Triple_store ts;
@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE( test_blank_nodes_owl ) {
    BOOST_CHECK_NE(nid5, nid4);
 }
 
-/** Test literal nodes, OWL-aware triple store
+/**@test Test literal nodes, OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_nodes_owl ) {
    Triple_store ts;
@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE( test_literal_nodes_owl ) {
    BOOST_CHECK_NE(nid3, nid5);
 }
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_print_triples ) {
    Triple_store ts = sample_triples_01();

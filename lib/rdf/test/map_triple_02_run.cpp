@@ -26,9 +26,9 @@ const unsigned t[][4] = {
          {0,4,0,0},
 };
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_map_triple_01 ) {
    typedef Map_triple<1,0,0,0> triple_map;
    triple_map tm;
    BOOST_REQUIRE_EQUAL(tm.size(), 0U);
@@ -62,9 +62,9 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK( ! qi.predicate()(*i++) );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02 ) {
+BOOST_AUTO_TEST_CASE( test_map_triple_02 ) {
    typedef Map_triple<1,1,1,1> triple_map;
    triple_map tm;
    insert_seq(tm, t);

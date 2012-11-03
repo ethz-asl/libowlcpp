@@ -24,9 +24,9 @@ const Node_id nid0(13);
 const Node_id nid1(42);
 const Node_iri n2(nsid2, "blah");
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_map_node_iri_01 ) {
    Map_node_iri mni1(nid0);
    BOOST_CHECK( ! mni1.valid(nid1) );
 
@@ -82,9 +82,9 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    mni1.insert_iri(Node_id(42), Ns_id(142), "new_node");
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02 ) {
+BOOST_AUTO_TEST_CASE( test_map_node_iri_02 ) {
    const Node_id min_id = ::owlcpp::detail::min_node_id();
    Map_node_iri mnb;
 

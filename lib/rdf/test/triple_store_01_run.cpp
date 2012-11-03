@@ -18,7 +18,7 @@ namespace owlcpp{ namespace test{
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 namespace t = owlcpp::terms;
 
-/**Test namespaces, OWL-unaware triple store
+/**@test Test namespaces, OWL-unaware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_namespaces ) {
    Triple_store ts(( Nodes_none() ));
@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE( test_namespaces ) {
    BOOST_CHECK( ! ts.valid(t::N_owl::id()));
 }
 
-/**Test namespaces, OWL-aware triple store
+/**@test Test namespaces, OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_namespaces_owl ) {
    Triple_store ts;
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE( test_namespaces_owl ) {
    BOOST_CHECK( ! ts.find_prefix(ns2p) );
 }
 
-/** Test find IRI nodes, OWL-unaware triple store
+/**@test Test find IRI nodes, OWL-unaware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_find_iri_nodes ) {
    Triple_store ts(( Nodes_none() ));
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE( test_find_iri_nodes ) {
    BOOST_CHECK( ! ts.find_node_iri(to_string_full(t::T_owl_Axiom())) );
 }
 
-/** Test IRI nodes, OWL-unaware triple store
+/**@test Test IRI nodes, OWL-unaware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_iri_nodes ) {
    Triple_store ts(( Nodes_none() ));
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE( test_iri_nodes ) {
    BOOST_CHECK_EQUAL(ts.map_node().size(), 4U);
 }
 
-/** Test find IRI nodes, OWL-aware triple store
+/**@test Test find IRI nodes, OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_find_iri_nodes_owl ) {
    Triple_store ts;
@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE( test_find_iri_nodes_owl ) {
    BOOST_CHECK(   ts.find_node_iri(to_string_full(t::T_owl_Axiom())) );
 }
 
-/** Test IRI nodes, OWL-aware triple store
+/**@test Test IRI nodes, OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_nodes_owl ) {
    Triple_store ts;
@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE( test_nodes_owl ) {
    );
 }
 
-/** Empty IRI node maps to T_empty_::id() ID
+/**@test Empty IRI node maps to T_empty_::id() ID
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_empty_iri ) {
    Triple_store ts1(( Nodes_none() ));

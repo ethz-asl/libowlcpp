@@ -19,9 +19,9 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_triple_store_print ) {
    BOOST_FOREACH(Sample_info const& si, sample_files()) {
       std::cout << si.path << '\n';
       Triple_store ts;

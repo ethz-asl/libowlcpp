@@ -18,9 +18,9 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 
 
-/** Select optimal triple index
+/**@test Select optimal triple index, Store_config<0,0,0,0>
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_indices_0_0_0_0 ) {
    typedef d::Store_config<0,0,0,0> sconfig;
    BOOST_MPL_ASSERT_RELATION(mpl::size<sconfig::tags>::value, ==, 1);
 
@@ -41,9 +41,9 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_MPL_ASSERT((boost::is_same<si2, d::Main_store_tag>));
 }
 
-/** Select optimal triple index
+/**@test Select optimal triple index, Store_config<0,0,1,1>
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02 ) {
+BOOST_AUTO_TEST_CASE( test_indices_0_0_1_1 ) {
    typedef d::Store_config<0,0,1,1> sconfig;
    BOOST_MPL_ASSERT_RELATION(mpl::size<sconfig::tags>::value, ==, 3);
 
@@ -88,9 +88,9 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    BOOST_MPL_ASSERT((boost::is_same<sc5::iterator, d::Element_index::const_iterator>));
 }
 
-/** Select optimal triple index
+/**@test Select optimal triple index, Store_config<1,1,1,1>
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case03 ) {
+BOOST_AUTO_TEST_CASE( test_indices_1_1_1_1 ) {
    typedef d::Store_config<1,1,1,1> sconfig;
    BOOST_MPL_ASSERT_RELATION(mpl::size<sconfig::tags>::value, ==, 5);
 
@@ -135,9 +135,9 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    BOOST_MPL_ASSERT_RELATION(d::Count_defined<sc7::q2_args>::value, ==, 0);
 }
 
-/** Select optimal triple index
+/**@test Select optimal triple index, Store_config<0,1,0,0>
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case04 ) {
+BOOST_AUTO_TEST_CASE( test_indices_0_1_0_0 ) {
    typedef d::Store_config<0,1,0,0> sconfig;
    BOOST_MPL_ASSERT_RELATION(mpl::size<sconfig::tags>::value, ==, 2);
 

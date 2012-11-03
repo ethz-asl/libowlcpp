@@ -18,9 +18,9 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 namespace t = owlcpp::terms;
 
-/** Print nodes with triple store
+/**@test Print nodes with triple store
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_print_node_02 ) {
    Triple_store ts;
    const Ns_id nsid1 = ts.insert_ns(ns1);
    /*const Ns_id nsid2 =*/ ts.insert_ns(ns2);

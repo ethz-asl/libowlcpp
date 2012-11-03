@@ -20,9 +20,9 @@ const std::string ver1 = "http://purl.obolibrary.org/obo/ido/dev/version_test.ow
 const std::string version1 = "http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl";
 const std::string dir1 = sample_file_path();
 
-/** Insert doc info manually
+/**@test Insert doc info manually
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_catalog_manual ) {
    Catalog cat;
    const Node_id nid1 = cat.insert_node_iri("http://some.node.com");
    const Node_id nid2 = cat.insert_node_iri("http://other.node.com");
@@ -38,9 +38,9 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(cat.size(), 3U);
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02 ) {
+BOOST_AUTO_TEST_CASE( test_catalog_02 ) {
    Catalog cat;
    BOOST_CHECK_EQUAL(cat.size(), 0U);
    add(cat, path1);
@@ -52,9 +52,9 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    BOOST_CHECK_EQUAL(boost::filesystem::canonical(path1).string(), cat[*r.begin()].path);
 }
 
-/** Test inserting new nodes into OWL namespace
+/**@test Test inserting new nodes into OWL namespace
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case03 ) {
+BOOST_AUTO_TEST_CASE( est_catalog_03 ) {
    Catalog cat;
 
    //standard term as document IRI
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    );
 }
 
-/** Check sample data catalog
+/**@test Check sample data catalog
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_catalog_sample_data ) {
    Catalog cat;

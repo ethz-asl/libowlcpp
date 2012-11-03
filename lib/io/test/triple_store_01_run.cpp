@@ -30,9 +30,9 @@ const std::string ver2 = sample_files()[0].version;
 const std::string path3 = sample_files()[3].path;
 const std::string iri3 = sample_files()[3].iri;
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case00 ) {
+BOOST_AUTO_TEST_CASE( test_triple_store_01 ) {
    Triple_store ts;
    BOOST_CHECK_EQUAL( ts.map_doc().size(), 0u );
    owlcpp::detail::Raptor_to_store rts(ts, path1, Check_both(iri1, ver1));
@@ -51,18 +51,18 @@ BOOST_AUTO_TEST_CASE( case00 ) {
    BOOST_CHECK( ts.find_doc_iri(iri1) );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_triple_store_02 ) {
    Triple_store ts;
    boost::filesystem::ifstream ifs(path1);
    load(ifs, ts);
    BOOST_CHECK_EQUAL( ts.map_triple().size(), 16u );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02 ) {
+BOOST_AUTO_TEST_CASE( test_triple_store_03 ) {
    Triple_store ts;
    std::cout << iri1 << ' ' << iri2 << std::endl;
    BOOST_CHECK( ! ts.find_doc_iri("blah") );
@@ -81,9 +81,9 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    BOOST_CHECK_EQUAL( ts.map_triple().size(), 3u );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case03 ) {
+BOOST_AUTO_TEST_CASE( test_triple_store_04 ) {
    Triple_store ts;
    Catalog cat;
    add(cat, sample_file_path());
@@ -92,9 +92,9 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    BOOST_CHECK_EQUAL( ts.map_triple().size(), 19u );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case04 ) {
+BOOST_AUTO_TEST_CASE( test_triple_store_05 ) {
    Triple_store ts;
    Catalog cat;
    add(cat, sample_file_path());
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE( case04 ) {
    BOOST_CHECK_GT( ts.map_triple().size(), 18u );
 }
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( parse_invalid_docs ) {
    Triple_store ts;

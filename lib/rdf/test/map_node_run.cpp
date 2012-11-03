@@ -16,9 +16,9 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 namespace t = owlcpp::terms;
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_map_node_01 ) {
    Map_node mn1;
    BOOST_CHECK( ! mn1.valid(Node_id(42)) );
 

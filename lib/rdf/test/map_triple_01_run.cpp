@@ -26,7 +26,7 @@ const unsigned t[][4] = {
          {0,4,0,0},
 };
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_iterator ) {
    typedef Map_triple<1,0,0,0> map_triple;
@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE( test_iterator ) {
 
 }
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_index_subject_search ) {
    typedef Map_triple<1,0,0,0> map_triple;
@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE( test_index_subject_search ) {
    BOOST_CHECK_EQUAL(mt.size(), 0U);
 }
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_index_predicate_search ) {
    typedef Map_triple<0,1,0,0> map_triple;

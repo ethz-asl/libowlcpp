@@ -13,9 +13,9 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_map_ns_01 ) {
    Map_ns mns1(Ns_id(5));
    BOOST_CHECK_EQUAL(mns1.size(), 0u);
    const Ns_id id1 = mns1.insert("i1");

@@ -24,18 +24,18 @@ template<class Tag> Node_iri make_iri(Tag const&) {
 
 namespace t = owlcpp::terms;
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_map_std_01 ) {
    Map_std const& nms0 = Map_std::get(Nodes_none());
    boost::ignore_unused_variable_warning(nms0);
    Map_std const& nms1 = Map_std::get(Nodes_owl());
    boost::ignore_unused_variable_warning(nms1);
 }
 
-/** Standard node maps are singletons
+/**@test Standard node maps are singletons
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02 ) {
+BOOST_AUTO_TEST_CASE( test_map_std_02 ) {
    Map_std const& nms0 = Map_std::get(Nodes_none());
    Map_std const& nms1 = Map_std::get(Nodes_owl());
    Map_std const& nms2 = Map_std::get(Nodes_owl());
@@ -43,9 +43,9 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    BOOST_CHECK_EQUAL(&nms1, &nms2); //same instance
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case03 ) {
+BOOST_AUTO_TEST_CASE( test_map_std_03 ) {
    Map_std const& nms = Map_std::get(Nodes_owl());
 
    BOOST_CHECK_THROW(nms.at(Node_id(3000)), Rdf_err);

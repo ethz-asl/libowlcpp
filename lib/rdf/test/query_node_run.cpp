@@ -16,9 +16,9 @@ using namespace owlcpp::terms;
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_query_node ) {
    Triple_store ts;
    const Node_id nid1 = ts.insert_literal("1", to_string_full(T_xsd_boolean()));
    BOOST_CHECK( value<bool>(nid1, ts) );

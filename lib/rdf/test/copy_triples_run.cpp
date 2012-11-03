@@ -15,9 +15,9 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_copy_triples_01 ) {
    Triple_store ts1(( Nodes_none() ));
 //   Triple_store ts1;
    sample_triples_01(ts1);

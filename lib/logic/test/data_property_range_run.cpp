@@ -16,9 +16,9 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_data_property_range ) {
    Triple_store ts;
    load_file(sample_file_path("data_property_range.owl"), ts);
    ReasoningKernel k;

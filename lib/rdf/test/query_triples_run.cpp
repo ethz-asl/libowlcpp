@@ -14,9 +14,9 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/** Iterate over members of RDF list
+/**@test Iterate over members of RDF list
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_query_triple ) {
    Triple_store ts;
    sample_triples_01(ts);
    sample_triples_02(ts);

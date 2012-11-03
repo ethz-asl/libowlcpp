@@ -18,7 +18,7 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_pair_iter ) {
    typedef std::map<int, double> map_t;
@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE( test_pair_iter ) {
 
 struct A {int a; double b;};
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_struct_iter ) {
    typedef std::vector<A> vector_t;
@@ -58,12 +58,6 @@ BOOST_AUTO_TEST_CASE( test_struct_iter ) {
 
    range_t r2(v.end(), v.end());
    BOOST_CHECK_EQUAL(distance(r2), 0);
-}
-
-/**
-*******************************************************************************/
-BOOST_AUTO_TEST_CASE( test_map_doc_iter ) {
-
 }
 
 }//namespace test

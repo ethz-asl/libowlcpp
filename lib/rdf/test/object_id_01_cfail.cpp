@@ -10,9 +10,9 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( fail_obj_id ) {
    const Node_id id1(42);
    const Doc_id id2(42);
    BOOST_CHECK(id1 == id2); //compilation error

@@ -19,9 +19,9 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 namespace t = owlcpp::terms;
 
-/** Print nodes without triple store
+/**@test Print nodes without triple store
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_print_node_01 ) {
    const Node_iri niri(Ns_id(42), "blah");
    BOOST_CHECK_EQUAL(to_string(niri), "Ns42:blah");
    Node const& riri = niri;

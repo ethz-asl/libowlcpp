@@ -24,7 +24,7 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/** IRI nodes
+/**@test IRI nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_iri_node ) {
    const Node_iri n1(Ns_id(42), "blah");
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE( test_iri_node ) {
    BOOST_CHECK_NE(n5,  n7);
 }
 
-/** clone IRI nodes
+/**@test clone IRI nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_clone_iri_node ) {
    const Node_iri n1(Ns_id(42), "blah");
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE( test_clone_iri_node ) {
    BOOST_CHECK_EQUAL(n5, *pn5);
 }
 
-/** Literal string nodes
+/**@test Literal string nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_string_node ) {
    const Node_string n1("blah", Node_id(42), "en");
@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE( test_literal_string_node ) {
    BOOST_CHECK_NE(n1.hash(), n5.hash());
 }
 
-/** Literal bool nodes
+/**@test Literal bool nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_bool_node ) {
    BOOST_CHECK_THROW(Node_bool("falsee"), Rdf_err);
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE( test_literal_bool_node ) {
    BOOST_CHECK( ! Node_bool(0).value() );
 }
 
-/** Literal int nodes
+/**@test Literal int nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_int_node ) {
    BOOST_CHECK_THROW(Node_int("blah"), Rdf_err);
@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE( test_literal_int_node ) {
    BOOST_CHECK_THROW(Node_int("1e10"), Rdf_err);
 }
 
-/** Literal unsigned nodes
+/**@test Literal unsigned nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_unsigned_node ) {
    BOOST_CHECK_THROW(Node_unsigned(-1), Rdf_err);
@@ -122,7 +122,7 @@ BOOST_AUTO_TEST_CASE( test_literal_unsigned_node ) {
    BOOST_CHECK_EQUAL(Node_unsigned(1e10).value(), 1e10);
 }
 
-/** Literal real nodes
+/**@test Literal real nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_real_node ) {
    BOOST_CHECK_THROW(Node_double("blah"), Rdf_err);
@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_CASE( test_literal_real_node ) {
    BOOST_CHECK_EQUAL(Node_double("1e10").value(), 1e10);
 }
 
-/** Blank nodes
+/**@test Blank nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_blank_node ) {
    const Node_blank n1(0, Doc_id(42));
@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE( test_blank_node ) {
    BOOST_CHECK_NE(n1,  n4);
 }
 
-/** Compare nodes
+/**@test Compare nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_compare ) {
    const Node_iri n1(Ns_id(42), "blah");
@@ -166,7 +166,7 @@ BOOST_AUTO_TEST_CASE( test_compare ) {
    BOOST_CHECK_NE(n5,  n4);
 }
 
-/** node hash
+/**@test node hash
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_hash ) {
    const Node_string n1("blah", Node_id(42), "en");

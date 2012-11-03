@@ -13,9 +13,9 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**@brief
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_obj_id ) {
    Node_id id1(42);
    Node_id id2(42);
    Node_id id3(0);

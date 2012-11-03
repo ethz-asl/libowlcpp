@@ -24,9 +24,9 @@ const Node_id nid2(13);
 const Node_id nid3(42);
 const Node_id nid4(41);
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_map_doc ) {
    Map_doc md;
    BOOST_CHECK_EQUAL(md.size(), 0U);
 
@@ -79,9 +79,9 @@ BOOST_AUTO_TEST_CASE( case01 ) {
       std::cout << *i << '\n';
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( test_search ) {
+BOOST_AUTO_TEST_CASE( test_map_doc_search ) {
    Map_doc md;
    BOOST_CHECK( md.begin() == md.end());
    const Doc_id did1 = md.insert(nid1, path1, nid2).first;

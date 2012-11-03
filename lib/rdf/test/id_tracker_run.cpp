@@ -11,9 +11,9 @@ part of %owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( id_tracker_run_case01 ) {
+BOOST_AUTO_TEST_CASE( test_id_tracker_01 ) {
    detail::Id_tracker<Ns_id> tracker( Ns_id(12) );
    BOOST_CHECK_EQUAL(tracker.get(), Ns_id(13));
    BOOST_CHECK_EQUAL(tracker.get(), Ns_id(14));
