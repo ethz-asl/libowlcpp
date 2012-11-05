@@ -36,6 +36,9 @@ inline void submit_triples(
    submit_triples(ts.map_triple(), ts, kernel, lax);
 }
 
+/**Example of submitting triples to reasoner
+@example validate.cpp
+*/
 
 }//namespace owlcpp
 

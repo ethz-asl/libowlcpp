@@ -24,6 +24,11 @@ struct fact_query_err : public base_exception {};
 class Triple_store;
 
 /**
+@param nid
+@param store
+@param kernel
+@return pointer to concept expression corresponding to node @b nid
+@throw Logic_err if the node does not represent a concept
 *******************************************************************************/
 OWLCPP_LOGIC_DECL TDLConceptExpression* concept(
       const Node_id nid,
@@ -150,6 +155,10 @@ OWLCPP_LOGIC_DECL void get_sub_super(
       ReasoningKernel& kernel,
       const bool direct = false
 );
+
+/**Example of querying the reasoner
+@example satisfiable.cpp
+*/
 
 /**@brief set top/bottom property names as short OWL names
 *******************************************************************************/

@@ -99,5 +99,9 @@ private:
 
 };
 
+/**Example of searching triple store
+@example print_classes.cpp
+*/
+
 }//namespace owlcpp
 #endif /* TRIPLE_STORE_HPP_ */

@@ -24,7 +24,7 @@ part of owlcpp project.
 namespace owlcpp{
 
 /**@brief Store locations, ontology IRIs, and version IRIs of OWL ontologies.
-@details Locations should unique; ontology IRIs may be repeated;
+@details Locations should be unique; ontology IRIs may be repeated;
 non-empty verions IRIs should be unique.
 *******************************************************************************/
 class OWLCPP_IO_DECL Catalog :
@@ -94,6 +94,10 @@ private:
    map_node_type map_node_;
    map_doc_type map_doc_;
 };
+
+/**Example of using Catalog
+@example find_ontologies.cpp
+*/
 
 /**@brief determine OntologyIRI and VersionIRI of ontology document(s)
  and add them to the catalog
