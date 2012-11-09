@@ -16,33 +16,60 @@ import modules ;
 
 extension.declare libxml2 ;
 
-## 
+## make a list of source files and copy them to new location to isolate from headers
 ################################################################################
-rule transform_h ( location : version ) {
-   local incl_dir = [ path.join $(location) include libxml ] ;
-   local files = [ path.glob $(incl_dir) : *.h : *xmlversion.h ] ;
-   local files_out = ;
-
-   for local file in $(files) {
-      local file_out = [ path.join $(GENERATED_INCLUDE) libxml $(file:D="") ] ;
-      files_out += $(file_out) ;
-      make-singleton $(file_out)
-         : $(file)
-         : @common.copy
-      ;
-   }
-   
-   local config = $(GENERATED_INCLUDE)/libxml_include/config.h ;
-   make-singleton $(config) 
-      : $(PROJ_ROOT)/external/ext/libxml2_config.h 
-      : @config_h
-      : <version>$(version)
+rule copy-source ( version : location ) {
+      local src =
+      buf c14n catalog chvalid debugXML dict DOCBparser encoding entities error 
+      globals hash HTMLparser HTMLtree legacy list parser 
+      parserInternals pattern relaxng SAX2 SAX schematron threads tree uri valid 
+      xinclude xlink xmlIO xmlmemory xmlreader xmlregexp xmlmodule xmlsave 
+      xmlschemas xmlschemastypes xmlunicode xmlwriter xpath xpointer xmlstring
+#      nanoftp nanohttp
    ;
    
-   local xmlversion = $(GENERATED_INCLUDE)/libxml/xmlversion.h ;
-   make-singleton $(xmlversion) : $(incl_dir)/xmlversion.h : @xmlversion_h ;
+   local files-dest = [ path.join $(GENERATED_LIB) libxml ] ;
+   local files-out = ;
+   for local file in $(src) {
+      local file-out = [ path.join $(files-dest) $(file).c ] ;
+      files-out += $(file-out) ;
+      make-singleton $(file-out) : [ path.join $(location) $(file).c ] : @common.copy ;
+   }
    
-   return $(files_out) $(config) $(xmlversion) ;
+   return $(files-out) ;
+}
+
+## 
+################################################################################
+rule copy-headers ( version : location ) {
+   local files-out = ;
+   local lib-dir = [ path.join $(GENERATED_LIB) libxml ] ;
+   for local file in [ path.glob $(location) : *.h *trionan.c : *config.h ] {
+      local file-out = [ path.join $(lib-dir) $(file:D=) ] ;
+      files-out += $(file-out) ;
+      make-singleton $(file-out) : $(file) : @common.copy ;
+   }
+
+   local incl = [ path.join $(location) include libxml ] ;
+   for local file in [ path.glob $(incl) : *.h : *xmlversion.h ] {
+      local file-out = [ path.join $(GENERATED_INCLUDE) libxml $(file:D=) ] ;
+      files-out += $(file-out) ;
+      make-singleton $(file-out) : $(file) : @common.copy ;
+   }
+   
+   make-singleton config.h 
+      : $(PROJ_ROOT)/external/ext/libxml2_config.h 
+      : @config_h
+      : <version>$(version) <location>$(lib-dir)
+   ;
+   
+   make-singleton xmlversion.h 
+      : $(incl)/xmlversion.h 
+      : @xmlversion_h
+      : <version>$(version) <location>$(GENERATED_INCLUDE)/libxml
+   ;
+   
+   return $(files-out) config.h xmlversion.h ;
 }
 
 ## 
@@ -62,7 +89,7 @@ actions config_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 ## 
 ################################################################################
 local rule undef ( src : expr ) {
-   local re = "#if +[01][\n]#define +$(expr)[\n]#endif" ;
+   local re = "#define +$(expr)" ;
    return [ regex.replace $(src) $(re) "#undef $(expr)" ] ;
 }
 
@@ -82,17 +109,13 @@ actions xmlversion_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 ################################################################################
 rule init ( version ? : location ? : options * ) {
    
-   local headers = [ transform_h $(location) : $(version) ] ;
-   
-   local src =
-      buf c14n catalog chvalid debugXML dict DOCBparser encoding entities error 
-      globals hash HTMLparser HTMLtree legacy list parser 
-      parserInternals pattern relaxng SAX2 SAX schematron threads tree uri valid 
-      xinclude xlink xmlIO xmlmemory xmlreader xmlregexp xmlmodule xmlsave 
-      xmlschemas xmlschemastypes xmlunicode xmlwriter xpath xpointer xmlstring
-#      nanoftp nanohttp
-   ;
+   local src = [ copy-source $(version) : $(location) ] ;
 
+   local headers = [ copy-headers $(version) : $(location) ] ;
+   
+#   exit "
+#"$(headers) ;
+   
    ICONV_LIB ?= $(ICONV[1])/lib/iconv_a.lib ;
    ICONV_DLL ?= $(ICONV[1])/bin/iconv.dll $(ICONV[1])/lib/iconv.lib ;
    ICONV_H ?= $(ICONV[1])/include ;
@@ -112,7 +135,7 @@ rule init ( version ? : location ? : options * ) {
    local requirements =
       [ extension.define libxml2 $(version) : $(location) : $(options) ]
       <include>$(GENERATED_INCLUDE)
-      <include>$(GENERATED_INCLUDE)/libxml_include
+      <include>$(GENERATED_LIB)/libxml
       <libxml2-version>$(version)
       <libxml2-location>$(location)
       <implicit-dependency>$(headers)
@@ -126,7 +149,7 @@ rule init ( version ? : location ? : options * ) {
    
    lib libxml2
       : #sources
-         $(location)/$(src).c
+         $(src)
       : $(requirements)
       : #default build options
       : #usage requirements
