@@ -259,19 +259,6 @@
 /* Define to 1 if you have the `vsprintf' function. */
 #define HAVE_VSPRINTF 1
 
-/* Define to 1 if you have the <zlib.h> header file. */
-/* #undef HAVE_ZLIB_H */
-
-/* Define to 1 if you have the `_stat' function. */
-/* #undef HAVE__STAT */
-
-/* Whether __va_copy() is available */
-/* #undef HAVE___VA_COPY */
-
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-#define LT_OBJDIR ".libs/"
-*/
-
 /* Name of package */
 #define PACKAGE "libxml2"
 
@@ -299,40 +286,52 @@
 /* Support for IPv6 */
 #define SUPPORT_IP6 /**/
 
+/* Define as const if the declaration of iconv() needs const. */
+#define ICONV_CONST const
+
 /* Version number of package */
 #define VERSION "@VERSION@"
 
 /* Determine what socket length (socklen_t) data type is */
 #define XML_SOCKLEN_T socklen_t
 
-#ifdef _MSC_VER
+/* compiler selection */
+#ifdef __GNUC__
+/* GNU GCC */
 
-#  if defined(_WIN32_WCE)
-#     undef HAVE_ERRNO_H
-#     include <windows.h>
-#     include wincecompat.h
-#  else
-#     define HAVE_SYS_STAT_H
-#     define HAVE__STAT
-#     define HAVE_STAT
-#     define HAVE_STDLIB_H
-#     define HAVE_TIME_H
-#     define HAVE_FCNTL_H
-#     include <io.h>
-#     include <direct.h>
-#  endif /* defined(_WIN32_WCE) */
-#  include "libxml/xmlversion.h"
-#  ifndef ICONV_CONST
-#     define ICONV_CONST const
-#  endif
+#elif defined _MSC_VER
+/* Microsoft Visual C++ */
 
+#  undef except
+#  undef HAVE_UNISTD_H
+#  undef HAVE_STDINT_H
+#  undef HAVE_INTTYPES_H
+#  undef HAVE_PTHREAD_H
+#  undef HAVE_VA_COPY
+#  undef HAVE_RAND
+#  undef HAVE_RAND_R
 #  define WIN32
 #  define HAVE_COMPILER_TLS
 
-#  undef except
+#  if defined(_WIN32_WCE)
+#     undef HAVE_ERRNO_H
+#     undef HAVE_SYS_STAT_H
+#     undef HAVE_STAT
+#     undef HAVE_STDLIB_H
+#     undef HAVE_TIME_H
+#     undef HAVE_FCNTL_H
+#     include <windows.h>
+#     include wincecompat.h
+#  else
+#     define HAVE__STAT
+#     include <io.h>
+#     include <direct.h>
+#  endif /* defined(_WIN32_WCE) */
+
+#  include "libxml/xmlversion.h"
+
 #  include <math.h>
 #  include <float.h>
-
 #  define mkdir(p,m) _mkdir(p)
 #  define snprintf _snprintf
 #  if _MSC_VER < 1500
@@ -352,15 +351,14 @@
 #  endif
 
 #elif defined(__BORLANDC__)
+/* Borland */
 #  include <float.h>
 
-#elif defined(__MINGW32__)
+#endif /* compiler selection */
+
+
+#if defined(__MINGW32__)
 #  define mkdir(p,m) _mkdir(p)
+#endif
 
-#else /* #ifdef _MSC_VER */
-
-/* Define as const if the declaration of iconv() needs const. */
-#  define ICONV_CONST
-
-#endif /* #ifdef _MSC_VER */
 #endif /* defined LIBXML2_CONFIG_H__ */
