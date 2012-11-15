@@ -65,11 +65,29 @@ rule copy-headers ( version : location : properties * ) {
    for local file in $(files_in) {
       local file_out = [ path.join $(files_dest) $(file:D="") ] ;
       files_out += $(file_out) ;
-      make-singleton $(file_out) : $(file) : @common.copy ;
+      make-singleton $(file_out) 
+         : $(file) 
+         : @copy-modify 
+         : <raptor-version>$(version) 
+      ;
    }
    
    return $(files_out) ;
 }
+
+## 
+################################################################################
+rule copy-modify ( targets * : sources * : properties * ) {
+   local src = [ read_file $(sources:G=) ] ;
+   local v = [ version_raptor $(properties) ] ;
+   
+   #if $(v) = "2.0.8" && $(sources:G="":D="") = "strtok_r.h" {
+   #   src = [ regex.replace $(src) rdfa_strtok_s rdfa_strtok_r ] ;
+   #}
+   
+   STR on $(<) = $(src) ;
+}
+actions copy-modify { @($(STDOUT):E=$(STR)) > "$(<)" }
 
 ## extract version string
 ################################################################################
@@ -198,6 +216,7 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
          src = [ define-as $(src) : TIME_WITH_SYS_TIME ] ;
          src = [ define-as $(src) : HAVE_UNISTD_H ] ;
          src = [ define-as $(src) : HAVE_STRINGS_H ] ;
+         src = [ define-as $(src) : HAVE_STRTOK_R ] ;
 
       case *windows* :
    }
