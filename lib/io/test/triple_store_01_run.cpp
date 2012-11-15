@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE( case00 ) {
    const Node_id nid1 = ts[did].ontology_iri;
    const Node_id nid2 = ts[did].version_iri;
    BOOST_CHECK_EQUAL( to_string(nid2, ts), ver1 );
-   BOOST_CHECK_EQUAL( to_string_full(ts[did].ontology_iri, ts), iri1 );
+   BOOST_CHECK_EQUAL( to_string_full(nid1, ts), iri1 );
    BOOST_CHECK_EQUAL( ts.map_triple().size(), 16u );
    BOOST_CHECK( ts.find_doc_iri(iri1) );
 }
