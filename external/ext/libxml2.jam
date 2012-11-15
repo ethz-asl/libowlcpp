@@ -130,7 +130,15 @@ rule init ( version ? : location ? : options * ) {
       : #usage requirements
          <include>$(ICONV_H)
    ;
-   explicit iconv ;
+   
+   lib dl
+      : #sources
+      : #requirements
+         <name>dl
+      : #default options
+      : #usage requirements
+   ;
+   explicit iconv dl ;
    
    local requirements =
       [ extension.define libxml2 $(version) : $(location) : $(options) ]
@@ -145,6 +153,7 @@ rule init ( version ? : location ? : options * ) {
       <toolset>msvc:<define>_CRT_NONSTDC_NO_DEPRECATE
       <toolset>msvc:<library>iconv
       <link>shared:<define>NOLIBTOOL
+      <target-os>linux,<link>shared:<library>dl
    ;
    
    lib libxml2
