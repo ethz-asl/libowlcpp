@@ -16,110 +16,80 @@ import modules ;
 
 extension.declare libxml2 ;
 
-## 
+## make a list of source files and copy them to new location to isolate from headers
 ################################################################################
-rule transform_h ( location : version ) {
-   local incl_dir = [ path.join $(location) include libxml ] ;
-   local files = [ path.glob $(incl_dir) : *.h : *xmlversion.h ] ;
-   local files_out = ;
-
-   for local file in $(files) {
-      local file_out = [ path.join $(GENERATED_INCLUDE) libxml $(file:D="") ] ;
-      files_out += $(file_out) ;
-      make-singleton $(file_out)
-         : $(file)
-         : @common.copy
-      ;
+rule copy-source ( version : location ) {
+      local src =
+      buf c14n catalog chvalid debugXML dict DOCBparser encoding entities error 
+      globals hash HTMLparser HTMLtree legacy list parser 
+      parserInternals pattern relaxng SAX2 SAX schematron threads tree uri valid 
+      xinclude xlink xmlIO xmlmemory xmlreader xmlregexp xmlmodule xmlsave 
+      xmlschemas xmlschemastypes xmlunicode xmlwriter xpath xpointer xmlstring
+#      nanoftp nanohttp
+   ;
+   
+   local files-dest = [ path.join $(GENERATED_LIB) libxml ] ;
+   local files-out = ;
+   for local file in $(src) {
+      local file-out = [ path.join $(files-dest) $(file).c ] ;
+      files-out += $(file-out) ;
+      make-singleton $(file-out) : [ path.join $(location) $(file).c ] : @common.copy ;
    }
    
-   local config = $(GENERATED_INCLUDE)/libxml_include/config.h ;
-   make-singleton $(config) :  : @config_h ;
+   return $(files-out) ;
+}
+
+## 
+################################################################################
+rule copy-headers ( version : location ) {
+   local files-out = ;
+   local lib-dir = [ path.join $(GENERATED_LIB) libxml ] ;
+   for local file in [ path.glob $(location) : *.h *trionan.c : *config.h ] {
+      local file-out = [ path.join $(lib-dir) $(file:D=) ] ;
+      files-out += $(file-out) ;
+      make-singleton $(file-out) : $(file) : @common.copy ;
+   }
+
+   local incl = [ path.join $(location) include libxml ] ;
+   for local file in [ path.glob $(incl) : *.h : *xmlversion.h ] {
+      local file-out = [ path.join $(GENERATED_INCLUDE) libxml $(file:D=) ] ;
+      files-out += $(file-out) ;
+      make-singleton $(file-out) : $(file) : @common.copy ;
+   }
    
-   local xmlversion = $(GENERATED_INCLUDE)/libxml/xmlversion.h ;
-   make-singleton $(xmlversion) : $(incl_dir)/xmlversion.h : @xmlversion_h ;
+   make-singleton config.h 
+      : $(PROJ_ROOT)/external/ext/libxml2_config.h 
+      : @config_h
+      : <version>$(version) <location>$(lib-dir)
+   ;
    
-   return $(files_out) $(config) $(xmlversion) ;
+   make-singleton xmlversion.h 
+      : $(incl)/xmlversion.h 
+      : @xmlversion_h
+      : <version>$(version) <location>$(GENERATED_INCLUDE)/libxml
+   ;
+   
+   return $(files-out) config.h xmlversion.h ;
 }
 
 ## 
 ################################################################################
 rule config_h ( targets * : sources * : properties * ) {
-   CONFIG on $(<) =
-      "#ifndef __CONFIG_H__"
-      "#define __CONFIG_H__"
-      
-      "#define HAVE_CTYPE_H"
-      "#define HAVE_STDARG_H"
-      "#define HAVE_MALLOC_H"
-      "#define HAVE_ERRNO_H"
-      
-      "#if defined(_WIN32_WCE)"
-      "#undef HAVE_ERRNO_H"
-      "#include <windows.h>"
-      "#include "wincecompat.h""
-      "#else"
-      "#define HAVE_SYS_STAT_H"
-      "#define HAVE__STAT"
-      "#define HAVE_STAT"
-      "#define HAVE_STDLIB_H"
-      "#define HAVE_TIME_H"
-      "#define HAVE_FCNTL_H"
-      "#include <io.h>"
-      "#include <direct.h>"
-      "#endif"
-      
-      "#include <libxml/xmlversion.h>"
-      
-      "#ifndef ICONV_CONST"
-      "#define ICONV_CONST const"
-      "#endif"
-      
-      "#ifdef NEED_SOCKETS"
-      "#include <wsockcompat.h>"
-      "#endif"
-      
-      "#undef except"
-      
-      "#define HAVE_ISINF"
-      "#define HAVE_ISNAN"
-      "#include <math.h>"
-      "#if defined(_MSC_VER) || defined(__BORLANDC__)"
-      "#include <float.h>"
-      "#endif /* _MSC_VER */"
-      
-      "#if defined(_MSC_VER)"
-      "#define mkdir(p,m) _mkdir(p)"
-      "#define snprintf _snprintf"
-      "#if _MSC_VER < 1500"
-      "#define vsnprintf(b,c,f,a) _vsnprintf(b,c,f,a)"
-      "#endif"
-      "#elif defined(__MINGW32__)"
-      "#define mkdir(p,m) _mkdir(p)"
-      "#endif"
-      
-      "#if defined(LIBXML_THREAD_ENABLED)"
-      "#if !defined(HAVE_PTHREAD_H) && !defined(HAVE_WIN32_THREADS) && !defined(_WIN32_WCE)"
-      "#define HAVE_WIN32_THREADS"
-      "#endif"
-      "#endif"
-      
-      "#if !defined(FALSE)"
-      "#define FALSE 0"
-      "#endif"
-      "#if !defined(TRUE)"
-      "#define TRUE (!(FALSE))"
-      "#endif"
-      "#endif /* __CONFIG_H__ */"
-   ;
-   NL on $(<) = "
-" ;
+   local src = [ read_file $(sources:G=) ] ;
+   
+   local v = [ property.select <version> : $(properties) ] ;
+   v = $(v:G=) ;
+#   exit "version " $(v) ;
+   src = [ regex.replace $(src) "@VERSION@" $(v) ] ;
+
+   STR on $(<) = $(src) ;
 }
-actions config_h { @($(STDOUT):E=$(CONFIG:J=$(NL))$(NL)) > "$(<)" }
+actions config_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 
 ## 
 ################################################################################
 local rule undef ( src : expr ) {
-   local re = "#if +[01][\n]#define +$(expr)[\n]#endif" ;
+   local re = "#define +$(expr)" ;
    return [ regex.replace $(src) $(re) "#undef $(expr)" ] ;
 }
 
@@ -139,17 +109,13 @@ actions xmlversion_h { @($(STDOUT):E=$(STR)) > "$(<)" }
 ################################################################################
 rule init ( version ? : location ? : options * ) {
    
-   local headers = [ transform_h $(location) : $(version) ] ;
-   
-   local src =
-      buf c14n catalog chvalid debugXML dict DOCBparser encoding entities error 
-      globals hash HTMLparser HTMLtree legacy list parser 
-      parserInternals pattern relaxng SAX2 SAX schematron threads tree uri valid 
-      xinclude xlink xmlIO xmlmemory xmlreader xmlregexp xmlmodule xmlsave 
-      xmlschemas xmlschemastypes xmlunicode xmlwriter xpath xpointer xmlstring
-#      nanoftp nanohttp
-   ;
+   local src = [ copy-source $(version) : $(location) ] ;
 
+   local headers = [ copy-headers $(version) : $(location) ] ;
+   
+#   exit "
+#"$(headers) ;
+   
    ICONV_LIB ?= $(ICONV[1])/lib/iconv_a.lib ;
    ICONV_DLL ?= $(ICONV[1])/bin/iconv.dll $(ICONV[1])/lib/iconv.lib ;
    ICONV_H ?= $(ICONV[1])/include ;
@@ -165,31 +131,38 @@ rule init ( version ? : location ? : options * ) {
          <include>$(ICONV_H)
    ;
    
+   lib dl
+      : #sources
+      : #requirements
+         <name>dl
+      : #default options
+      : #usage requirements
+   ;
+   explicit iconv dl ;
+   
    local requirements =
       [ extension.define libxml2 $(version) : $(location) : $(options) ]
       <include>$(GENERATED_INCLUDE)
-      <include>$(GENERATED_INCLUDE)/libxml_include
+      <include>$(GENERATED_LIB)/libxml
       <libxml2-version>$(version)
       <libxml2-location>$(location)
       <implicit-dependency>$(headers)
       <dependency>$(headers)
-      <define>WIN32
-      <define>NOLIBTOOL
       <define>_REENTRANT
-      <define>HAVE_COMPILER_TLS
-      <define>HAVE_WIN32_THREADS
-      <define>_CRT_SECURE_NO_DEPRECATE
-      <define>_CRT_NONSTDC_NO_DEPRECATE
+      <toolset>msvc:<define>_CRT_SECURE_NO_DEPRECATE
+      <toolset>msvc:<define>_CRT_NONSTDC_NO_DEPRECATE
+      <toolset>msvc:<library>iconv
+      <link>shared:<define>NOLIBTOOL
+      <target-os>linux,<link>shared:<library>dl
    ;
    
    lib libxml2
       : #sources
-         $(location)/$(src).c
-         iconv
+         $(src)
       : $(requirements)
       : #default build options
       : #usage requirements
          <include>$(GENERATED_INCLUDE) 
-         <link>static:<define>LIBXML_STATIC
+         <link>shared:<define>NOLIBTOOL
    ;
 }

@@ -322,14 +322,16 @@ TDLConceptExpression* Ot_type_list::get(ReasoningKernel& k ) const {
       if( otl_.empty() ) return k.getExpressionManager()->Top();
       if( otl_.size() == 1U ) return otl_[0].get(k);
       em.newArgList();
-      BOOST_FOREACH(Expression<Obj_type> const& ote, otl_) em.addArg( ote.get(k) );
+      //BOOST_FOREACH(Expression<Obj_type> const& ote, otl_) em.addArg( ote.get(k) );
+      for(std::size_t n = 0; n != otl_.size(); ++n) em.addArg(otl_[n].get(k));
       return em.And();
 
    case T_owl_unionOf::index:
       if( otl_.empty() ) return k.getExpressionManager()->Bottom();
       if( otl_.size() == 1U ) return otl_[0].get(k);
       em.newArgList();
-      BOOST_FOREACH(Expression<Obj_type> const& ote, otl_) em.addArg( ote.get(k) );
+      //BOOST_FOREACH(Expression<Obj_type> const& ote, otl_) em.addArg( ote.get(k) );
+      for(std::size_t n = 0; n != otl_.size(); ++n) em.addArg(otl_[n].get(k));
       return em.Or();
 
    default: BOOST_THROW_EXCEPTION(
