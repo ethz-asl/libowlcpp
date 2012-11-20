@@ -53,11 +53,14 @@ public:
     @return iterator range of triples matching the query.
     @details
     The type of the range can be obtained from
-    @code template<class Subj, class Pred, class Obj, class Doc> class result; @endcode
+    @code template<class Subj, class Pred, class Obj, class Doc> class result;
+    @endcode
     or from
-    @code template<bool Subj, bool Pred, bool Obj, bool Doc> class result_b; @endcode
+    @code template<bool Subj, bool Pred, bool Obj, bool Doc> class result_b;
+    @endcode
     For example,
-    @code Triple_map<>::result_b<1,0,0,1>::type range = triple_map.find(subj, any(), any(), doc);
+    @code Triple_map<>::result_b<1,0,0,1>::type range =
+    	triple_map.find(subj, any(), any(), doc);
     @endcode
    */
    template<class Subj, class Pred, class Obj, class Doc>
@@ -75,10 +78,21 @@ public:
             const Doc_id doc
    ) {
       BOOST_CONCEPT_ASSERT((Node_store<Super>));
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(subj) && "invalid subject ID" );
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(pred) && "invalid predicate ID" );
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(obj) && "invalid object ID" );
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(doc) && "invalid document ID" );
+      BOOST_ASSERT(
+    		  static_cast<Super const&>(*this).valid(subj) &&
+    		  "invalid subject ID"
+      );
+      BOOST_ASSERT(
+    		  static_cast<Super const&>(*this).valid(pred) &&
+    		  "invalid predicate ID"
+      );
+      BOOST_ASSERT(
+    		  static_cast<Super const&>(*this).valid(obj) &&
+    		  "invalid object ID"
+      );
+      BOOST_ASSERT( static_cast<Super const&>(*this).valid(doc) &&
+    		  "invalid document ID"
+      );
       _map_triple().insert(subj, pred, obj, doc);
    }
 
