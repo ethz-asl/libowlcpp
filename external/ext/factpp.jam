@@ -162,7 +162,9 @@ rule transform_hpp_action ( targets * : sources * : properties * ) {
    orig = [ add_class_export $(orig) : $(export_classes) ] ;
    local export_funs = 
       isSNF equalTrees isSubTree createInverse createSNFNot createSNFAnd
-      createSNFReducedAnd createSNFForall createSNFGE TokenName #"operator <<"
+      createSNFReducedAnd createSNFForall createSNFGE TokenName
+      createRole
+      #"operator <<"
    ;
    orig = [ add_fun_export $(orig) : $(export_funs) ] ;
    
