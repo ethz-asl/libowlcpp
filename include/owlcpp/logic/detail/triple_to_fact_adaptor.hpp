@@ -31,37 +31,22 @@ class OWLCPP_LOGIC_DECL Adaptor_triple {
 public:
    struct Err : public Logic_err {};
 
-   Adaptor_triple(Triple_store const& ts, ReasoningKernel& k, bool lax)
-   : lax_(lax), ts_(ts), k_(k)
+   Adaptor_triple(Triple_store const& ts, ReasoningKernel& k, bool strict)
+   : strict_(strict), ts_(ts), k_(k)
    {}
 
-   void submit(Triple const& t) {axiom(t);}
+   void submit(Triple const&);
 
    template<class Range> void submit(Range const& r) {
-      BOOST_FOREACH(Triple const& t, r) {
-         try{
-            submit(t);
-         } catch(...) {
-            BOOST_THROW_EXCEPTION(
-                     Err()
-                     << Err::msg_t("error submitting triple")
-                     << Err::str1_t(
-                              to_string(t.subject(), ts_) + ' ' +
-                              to_string(t.predicate(), ts_) + ' ' +
-                              to_string(t.object(), ts_)
-                     )
-                     << Err::nested_t(boost::current_exception())
-            );
-         }
-      }
+      BOOST_FOREACH(Triple const& t, r) submit(t);
    }
 
-   TDLAxiom* axiom(Triple const& t);
-
 private:
-   bool lax_;
+   bool strict_;
    Triple_store const& ts_;
    ReasoningKernel& k_;
+
+   TDLAxiom* axiom(Triple const& t);
 
    /**@param t triple x y z */
    void submit_custom_triple(Triple const& t);

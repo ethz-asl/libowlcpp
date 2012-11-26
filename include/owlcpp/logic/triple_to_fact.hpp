@@ -14,26 +14,37 @@ class /*FACTPP_KERNEL_DECL*/ ReasoningKernel;
 
 namespace owlcpp{
 
-/** Copy triples from store to reasoning kernel
+/** Convert a range of RDF triples to axioms and submit them to reasoning kernel
+@param r iterator range of triples
+@param ts triple store
+@param kernel FaCT++ reasoning kernel
+@param strict if true (default), all requirements specified in
+http://www.w3.org/TR/2009/REC-owl2-mapping-to-rdf-20091027/
+are enforced
 *******************************************************************************/
 template<class Range> inline void submit_triples(
          Range r,
          Triple_store const& ts,
          ReasoningKernel& kernel,
-         const bool lax
+         const bool strict = true
 ) {
-   logic::factpp::Adaptor_triple ttfa(ts, kernel, lax);
+   logic::factpp::Adaptor_triple ttfa(ts, kernel, strict);
    ttfa.submit(r);
 }
 
-/** Copy all triples from triple store to reasoning kernel
+/** Convert all stored RDF triples to axioms and submit them to reasoning kernel
+@param ts triple store
+@param kernel FaCT++ reasoning kernel
+@param strict if true (default), all requirements specified in
+http://www.w3.org/TR/2009/REC-owl2-mapping-to-rdf-20091027/
+are enforced
 *******************************************************************************/
 inline void submit_triples(
          Triple_store const& ts,
          ReasoningKernel& kernel,
-         const bool lax
+         const bool strict = true
 ) {
-   submit_triples(ts.map_triple(), ts, kernel, lax);
+   submit_triples(ts.map_triple(), ts, kernel, strict);
 }
 
 /**Example of submitting triples to reasoner
