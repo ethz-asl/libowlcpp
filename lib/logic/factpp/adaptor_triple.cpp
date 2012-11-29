@@ -28,21 +28,21 @@ using namespace owlcpp::terms;
 /*
 *******************************************************************************/
 void Adaptor_triple::submit(Triple const& t) {
-	try{
-		axiom(t);
-		//k_.isKBConsistent(); //check if triple crashes reasoner
-	} catch(...) {
-		BOOST_THROW_EXCEPTION(
-				Err()
-				<< Err::msg_t("error submitting triple")
-		<< Err::str1_t(
-				to_string(t.subject(), ts_) + ' ' +
-				to_string(t.predicate(), ts_) + ' ' +
-				to_string(t.object(), ts_)
-		)
-		<< Err::nested_t(boost::current_exception())
-		);
-	}
+   try{
+      axiom(t);
+      //k_.isKBConsistent(); //check if triple crashes reasoner
+   } catch(...) {
+      BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("error submitting triple")
+      << Err::str1_t(
+            to_string(t.subject(), ts_) + ' ' +
+            to_string(t.predicate(), ts_) + ' ' +
+            to_string(t.object(), ts_)
+      )
+      << Err::nested_t(boost::current_exception())
+      );
+   }
 }
 
 
@@ -96,12 +96,12 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
 
    case T_rdfs_subPropertyOf::index: {
       const Node_property np =
-    		  check_same_declaration<Node_property>(subj, obj, ts_);
+            check_same_declaration<Node_property>(subj, obj, ts_);
       if( np.is_object() ) {
-    	  return k_.impliesORoles(obj_property(subj), obj_property(obj));
+         return k_.impliesORoles(obj_property(subj), obj_property(obj));
       }
       if( np.is_data() ) {
-    	  return k_.impliesDRoles(data_property(subj), data_property(obj));
+         return k_.impliesDRoles(data_property(subj), data_property(obj));
       }
       return 0;
    }

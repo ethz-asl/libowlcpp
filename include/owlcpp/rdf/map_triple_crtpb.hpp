@@ -60,7 +60,7 @@ public:
     @endcode
     For example,
     @code Triple_map<>::result_b<1,0,0,1>::type range =
-    	triple_map.find(subj, any(), any(), doc);
+       triple_map.find(subj, any(), any(), doc);
     @endcode
    */
    template<class Subj, class Pred, class Obj, class Doc>
@@ -79,19 +79,19 @@ public:
    ) {
       BOOST_CONCEPT_ASSERT((Node_store<Super>));
       BOOST_ASSERT(
-    		  static_cast<Super const&>(*this).valid(subj) &&
-    		  "invalid subject ID"
+            static_cast<Super const&>(*this).valid(subj) &&
+            "invalid subject ID"
       );
       BOOST_ASSERT(
-    		  static_cast<Super const&>(*this).valid(pred) &&
-    		  "invalid predicate ID"
+            static_cast<Super const&>(*this).valid(pred) &&
+            "invalid predicate ID"
       );
       BOOST_ASSERT(
-    		  static_cast<Super const&>(*this).valid(obj) &&
-    		  "invalid object ID"
+            static_cast<Super const&>(*this).valid(obj) &&
+            "invalid object ID"
       );
       BOOST_ASSERT( static_cast<Super const&>(*this).valid(doc) &&
-    		  "invalid document ID"
+            "invalid document ID"
       );
       _map_triple().insert(subj, pred, obj, doc);
    }

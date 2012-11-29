@@ -90,7 +90,7 @@ public:
    const_range find(const Id id) const {
       const typename stor_t::const_iterator i = stor_.find(id);
       if( i != stor_.end() ) return i->second;
-	  return const_range(null_iter(),null_iter());
+     return const_range(null_iter(),null_iter());
    }
 
    void clear() {stor_.clear();}

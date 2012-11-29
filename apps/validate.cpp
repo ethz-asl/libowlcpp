@@ -26,15 +26,15 @@ Load ontology to FaCT++ reasoner and check if it is consistent
 int main(int argc, char* argv[]) {
    bpo::options_description od;
    od.add_options()
-            ("help,h", "help message")
-            ("input-file", bpo::value<std::string>(), "input OWL file")
-            ("include,i",
-                     bpo::value<std::vector<std::string> >()->zero_tokens()->composing(),
-                     "search paths")
-            ("lax", bpo::bool_switch(), "non-strict parsing")
-            ("return-success,S", bpo::bool_switch(),
-                     "return 1 if ontology is not consistent")
-            ;
+   ("help,h", "help message")
+   ("input-file", bpo::value<std::string>(), "input OWL file")
+   ("include,i",
+            bpo::value<std::vector<std::string> >()->zero_tokens()->composing(),
+            "search paths")
+   ("lax", bpo::bool_switch(), "non-strict parsing")
+   ("return-success,S", bpo::bool_switch(),
+            "return 1 if ontology is not consistent")
+   ;
    bpo::positional_options_description pod;
    pod.add("input-file", -1);
    bpo::variables_map vm;
