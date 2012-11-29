@@ -1,0 +1,31 @@
+# owlcpp/lib/test/jamfile.jam
+# part of owlcpp project.
+# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+# Copyright Mikhail K Levin 2012
+
+project
+   : 
+   : requirements
+      <include>../
+      <library>/boost//unit_test_framework
+      <library>/boost//filesystem
+      <library>/boost//chrono
+      <library>/owlcpp//io
+      <library>/owlcpp//rdf
+      <library>/owlcpp//logic
+      <library>/owlcpp//factpp_kernel
+;
+
+import testing ;
+
+
+run 
+      triple_to_axiom_speed.cpp
+   : #args
+      $(TEST_ONTOLOGY)
+   : #input-files
+   : #requirements
+   : #target-name
+;
+
+explicit triple_to_axiom_speed ;
