@@ -90,6 +90,10 @@ void load_file(
          Check_id const& check = Check_id()
 );
 
+/**Example of loading ontologies into triple store
+@example print_triples.cpp
+*/
+
 /**@brief Load ontology identified by versionIRI or ontologyIRI and its imports
 @param iri ontology versionIRI or ontologyIRI
 @param store triple store

@@ -1,7 +1,7 @@
 # owlcpp/jamroot.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2010-1
+# Copyright Mikhail K Levin 2010-2
 
 import build/singleton-target ;
 import build/version ;
@@ -15,6 +15,10 @@ make $(TEMP_DIR) : : @common.mkdir ;
 path-constant GENERATED_INCLUDE : $(OUT)/include ;
 path-constant GENERATED_LIB : $(OUT)/lib ;
 path-constant PYTHON_OUT : $(OUT)/binding/python ;
+
+constant OWLCPP_NAME : "owlcpp" ;
+constant OWLCPP_VERSION : [ git_describe $(GIT_PATH) : "v0.1.0" ] ;
+constant OWLCPP_DESCRIPTION : "C++ library for working with OWL ontologies" ;
 
 constant LIB_REQUIREMENTS :
    <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
@@ -67,35 +71,55 @@ alias api-py : rdf-py io-py ;
 explicit rdf-py io-py api-py ;
 
 if [ modules.peek doxygen : .initialized ] {
-   import path ;
-   local doc_public = [ path.glob-tree include apps : *.hpp *.cpp ] ;
-   local doc_all = [ path.glob-tree lib : *.cpp *.hpp ] $(doc_public) ;
    
+   local params = 
+      "PROJECT_NAME=$(OWLCPP_NAME)"
+      "PROJECT_NUMBER=$(OWLCPP_VERSION)"
+      "PROJECT_BRIEF=\"$(OWLCPP_DESCRIPTION)\""
+      "WARN_IF_UNDOCUMENTED=NO"
+      "QUIET=YES"
+      "SHOW_DIRECTORIES=YES"
+      "EXAMPLE_PATH=. apps"
+      "BUILTIN_STL_SUPPORT=YES"
+      "EXTRACT_STATIC=YES"
+      "ALIASES=\"decision=\\xrefitem decision \\\"Decision\\\" \\\"Decisions\\\" \""
+   ;
+    
+   local params_complete = 
+      "EXTRACT_ALL=YES"
+      "EXTRACT_PRIVATE=YES"
+      "EXTRACT_ANON_NSPACES=YES"
+      "ENABLED_SECTIONS=DEV"
+   ;
+
+   import path ;
    doxygen complete.html
       :
-         $(doc_all)
+         [ path.glob-tree include apps lib : *.?pp ]
       :
-         <doxygen:param>EXTRACT_ALL=YES
-         <doxygen:param>EXTRACT_STATIC=YES
-         <doxygen:param>EXTRACT_PRIVATE=YES
-         <doxygen:param>EXTRACT_ANON_NSPACES=YES
-         <doxygen:param>QUIET=YES
-         <doxygen:param>SHOW_DIRECTORIES=YES
-         <doxygen:param>EXAMPLE_PATH=.
+         <doxygen:param>$(params)
+         <doxygen:param>$(params_complete)
+   ;
+   
+   local params_api = 
+      "EXTRACT_ALL=NO"
+      "EXTRACT_PRIVATE=NO"
+      "EXTRACT_ANON_NSPACES=NO"
    ;
    
    doxygen api.html
       :
-         $(doc_public)
+         [ glob 
+               include/owlcpp/*.hpp
+               include/owlcpp/*/*.hpp
+               lib/*/test/*.?pp
+               apps/*.cpp
+               : include/owlcpp/detail/* 
+         ]
+         $(doc_api) $(doc_apps)
       :
-         <doxygen:param>EXTRACT_ALL=NO
-         <doxygen:param>WARN_IF_UNDOCUMENTED=NO
-         <doxygen:param>EXTRACT_STATIC=YES
-         <doxygen:param>EXTRACT_PRIVATE=NO
-         <doxygen:param>EXTRACT_ANON_NSPACES=NO
-         <doxygen:param>QUIET=YES
-         <doxygen:param>SHOW_DIRECTORIES=YES
-         <doxygen:param>EXAMPLE_PATH=.
+         <doxygen:param>$(params)
+         <doxygen:param>$(params_api)
    ;
    
    alias autodoc : complete.html api.html ;

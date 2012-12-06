@@ -26,12 +26,15 @@
 ## GCC (under Linux of MS Windows MinGW)
 # using gcc ;
 
+## http://llvm.org/
+# using clang ;
+
 ## Mac OS X
 # using darwin ;
 
 ## Python (for generating python bindings)
 ## For more details see 
-## http://www.boost.org/doc/libs/1_48_0/libs/python/doc/building.html
+## http://www.boost.org/doc/libs/1_51_0/libs/python/doc/building.html
 ## Alternatives:
 # using python ;
 # using python : 2.7 : /usr/bin/python ;
@@ -49,27 +52,29 @@
 
 ################################################################################
 ## Libraries
-## Uncomment all "constant" statements and provide correct paths and versions. 
+## Uncomment "constant" statements and provide correct paths and versions. 
 
 local utils = "c:/utils" ;
 
 ## Boost library source
 ## http://www.boost.org/
-# constant BOOST : "$(utils)/boost_1_49_0/" 1.49.0 ;
+# constant BOOST : "$(utils)/boost_1_51_0/" 1.51.0 ;
 
-## pre-built libxml2 and iconv libraries (required under MS Windows)
+## libxml2 library source (required under MS Windows)
 ## http://xmlsoft.org/
+# constant LIBXML2 : "$(utils)/libxml2-2.9.0" 2.9.0 ;
+
+## pre-built iconv library (required under MS Windows)
 ## http://www.zlatkovic.com/libxml.en.html
-# constant LIBXML2 : "$(utils)/libxml2-2.7.8.win32" ;
-# constant ICONV : "$(utils)/cpp/iconv-1.9.2.win32" ;
+# constant ICONV : "$(utils)/cpp/iconv-1.9.2.win32" 1.9.2 ;
 
 ## Raptor library source
 ## http://librdf.org/raptor/
-# constant RAPTOR : "$(utils)/raptor2-2.0.4" 2.0.4 ;
+# constant RAPTOR : "$(utils)/raptor2-2.0.8" 2.0.8 ;
 
 ## FaCT++ library source
 ## http://code.google.com/p/factplusplus/
-# constant FACTPP : "$(utils)/FaCT++-1.5.3" 1.5.3 ;
+# constant FACTPP : "$(utils)/FaCT++-1.6.0" 1.6.0 ;
 
 ## owlcpp library source
 ## http://sourceforge.net/projects/owl-cpp/

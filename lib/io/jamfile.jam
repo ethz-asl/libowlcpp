@@ -13,12 +13,15 @@ lib owlcpp_io
    :  #requirements
       $(LIB_REQUIREMENTS)
       <include>.
+      <library>/owlcpp//rdf
       <library>/boost//filesystem
       <library>/owlcpp//raptor
-      <library>/owlcpp//rdf
       <link>shared:<define>OWLCPP_IO_DYN_LINK
    :  #default build options
    :  #usage requirements
       <link>shared:<define>OWLCPP_IO_DYN_LINK
+      <library>/owlcpp//rdf
+      <library>/boost//filesystem
+      <library>/owlcpp//raptor
 ;
 

@@ -6,6 +6,7 @@ part of owlcpp project.
 #ifndef REASONER_EXCEPTION_HPP_
 #define REASONER_EXCEPTION_HPP_
 #include "owlcpp/exception.hpp"
+
 namespace owlcpp{
 
 /**@brief 

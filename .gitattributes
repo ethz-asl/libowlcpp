@@ -1,0 +1,7 @@
+*     text=auto
+*.cpp text
+*.hpp text
+*.jam text
+*.txt text
+*.owl text
+*.py  text

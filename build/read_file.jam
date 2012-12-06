@@ -14,10 +14,19 @@ rule read_file ( file ) {
    return $(e) ;
 }
 
+# trim whitespace from ends
+rule trim_whitespace ( str ) {
+   import string ;
+   local re = "^[ \n\t]*([^\n\t]*[^ \n\t])[ \n\t]*$" ;
+   local match = [ MATCH "$(re)" : $(str) ] ;
+   if $(match) { return $(match[1]) ; }
+   else { return $(str) ; }
+} 
+
 IMPORT $(__name__) #source module
    :  #source rules
-      read_file 
+      read_file trim_whitespace
    :  #target module
    :  #target rules
-      read_file 
+      read_file trim_whitespace
 ;

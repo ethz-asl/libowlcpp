@@ -11,7 +11,7 @@ part of owlcpp project.
 #include "boost/lexical_cast.hpp"
 #include "test/sample_data.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/query_node.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
@@ -19,18 +19,18 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_triple_store_print ) {
    BOOST_FOREACH(Sample_info const& si, sample_files()) {
       std::cout << si.path << '\n';
-      Triple_store ts(Node_map_std::get(Nodes_owl()));
+      Triple_store ts;
       load_file(si.path, ts);
-      BOOST_FOREACH(Triple const& t, ts.triples()) {
+      BOOST_FOREACH(Triple const& t, ts.map_triple()) {
          std::cout
-         << to_string_shortest(t.subject(), ts) << ' '
-         << to_string_shortest(t.predicate(), ts) << ' '
-         << to_string_shortest(t.object(), ts) << '\n'
+         << to_string_pref(t.subject(), ts) << ' '
+         << to_string_pref(t.predicate(), ts) << ' '
+         << to_string_pref(t.object(), ts) << '\n'
          ;
       }
       std::cout << '\n';

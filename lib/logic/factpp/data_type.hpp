@@ -65,7 +65,7 @@ public:
       default: BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unsupported standard data type")
-               << Err::str1_t(to_string_short(nid_, ts))
+               << Err::str1_t(to_string(nid_, ts))
       );
       }
    }

@@ -9,7 +9,7 @@ part of owlcpp project.
 #include <cstring>
 #include "predicate_fact_abstract.hpp"
 #include "factpp/Kernel.hpp"
-#include "owlcpp/rdf/query_nodes.hpp"
+#include "owlcpp/rdf/query_node.hpp"
 
 namespace owlcpp{
 class Triple_store;

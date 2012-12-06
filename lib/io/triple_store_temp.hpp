@@ -5,43 +5,61 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_STORE_TEMP_HPP_
 #define TRIPLE_STORE_TEMP_HPP_
-#include "owlcpp/rdf/store_node_iri_crtpb.hpp"
-#include "owlcpp/rdf/store_node_blank_crtpb.hpp"
-#include "owlcpp/rdf/store_node_literal_crtpb.hpp"
-#include "owlcpp/rdf/store_doc_crtpb.hpp"
-#include "owlcpp/rdf/triple_map.hpp"
-#include "owlcpp/rdf/node_map.hpp"
-#include "owlcpp/rdf/iri_map.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
+#include "io/map_traits.hpp"
+#include "owlcpp/io/exception.hpp"
+#include "owlcpp/rdf/map_ns.hpp"
+#include "owlcpp/rdf/map_node.hpp"
+#include "owlcpp/rdf/map_std.hpp"
+#include "owlcpp/rdf/map_std_ns_crtpb.hpp"
+#include "owlcpp/rdf/map_std_node_crtpb.hpp"
+#include "owlcpp/rdf/doc_meta.hpp"
+#include "owlcpp/rdf/nodes_std.hpp"
+#include "owlcpp/rdf/map_node_literal_crtpb.hpp"
+#include "owlcpp/rdf/map_triple.hpp"
+#include "owlcpp/rdf/map_triple_crtpb.hpp"
+#include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
 
 namespace owlcpp{ namespace detail{
 
 /**@brief Storage for RDF triples coming from a single document
 *******************************************************************************/
 class Triple_store_temp :
-public Store_node_iri_crtpb<Triple_store_temp>,
-public Store_node_literal_crtpb<Triple_store_temp>
+public Map_std_ns_crtpb<Triple_store_temp>,
+public Map_std_node_crtpb<Triple_store_temp>,
+public Crtpb_ns_node_iri<Triple_store_temp>,
+public Map_node_literal_crtpb<Triple_store_temp>,
+public Map_triple_crtpb<Triple_store_temp>
 {
+   friend class Map_std_ns_crtpb<Triple_store_temp>;
+   friend class Map_std_node_crtpb<Triple_store_temp>;
+   friend class Map_node_literal_crtpb<Triple_store_temp>;
+   friend class Map_triple_crtpb<Triple_store_temp>;
+
+   typedef Map_traits<Triple_store_temp> traits;
+   typedef traits::map_std_type map_std_type;
+
 public:
+   typedef traits::map_ns_type map_ns_type;
+   typedef traits::doc_type doc_type;
+   typedef traits::map_node_type map_node_type;
+   typedef traits::map_triple_type map_triple_type;
 
-   typedef Node_map node_map_t;
-   struct Err : public base_exception {};
+   struct Err : public Input_err {};
 
-   Triple_store_temp(std::string const& path)
-   : did_(0),
-     ontology_iri_(terms::T_empty_::id()),
-     version_iri_(terms::T_empty_::id()),
-     path_(path)
+   Triple_store_temp(map_std_type const& map_std, std::string const& path)
+   : map_std_(map_std),
+     doc_(terms::T_empty_::id(), terms::T_empty_::id(), path),
+     did_(0)
    {}
 
-   Iri_map& iris() {return iri_;}
-   Iri_map const& iris() const {return iri_;}
-   node_map_t& nodes() {return node_;}
-   node_map_t const& nodes() const {return node_;}
-   Triple_map const& triples() const {return triple_;}
+   map_std_type const& map_std() const {return map_std_;}
+   map_ns_type const& map_ns() const {return map_ns_;}
+   map_node_type const& map_node() const {return map_node_;}
+   map_triple_type const& map_triple() const {return map_triple_;}
 
-   Node_id insert_blank_node(std::string const& name) {
-      return node_.insert_blank(did_, name);
+   Node_id insert_blank(const unsigned n) {
+      return map_node_.insert_blank(n, did_);
    }
 
    void insert_triple(
@@ -49,33 +67,45 @@ public:
             const Node_id pred,
             const Node_id obj
    ) {
-      triple_.insert(Triple(subj, pred, obj, did_));
+      map_triple_.insert(subj, pred, obj, did_);
    }
 
-   Node_id ontology_iri_id(const Doc_id = Doc_id(0)) const {return ontology_iri_;}
-   Node_id version_iri_id(const Doc_id = Doc_id()) const {return version_iri_;}
-   std::string path(const Doc_id = Doc_id()) const {return path_;}
+   doc_type const& operator[](const Doc_id) const {return doc_;}
+   std::string const& path() const {return doc_.path;}
 
    void set_ids(std::string const& ontologyIRI, std::string const& versionIRI) {
-      ontology_iri_ = insert_iri_node(ontologyIRI);
-      version_iri_ = insert_iri_node(versionIRI);
+      doc_.ontology_iri = insert_node_iri(ontologyIRI);
+      doc_.version_iri = insert_node_iri(versionIRI);
    }
 
    void clear() {
-      triple_.clear();
-      node_.clear();
-      iri_.clear();
-      path_.clear();
+      map_triple_.clear();
+      map_node_.clear();
+      map_ns_.clear();
    }
 
+   //disambiguate overloaded methods
+   using Map_std_ns_crtpb<Triple_store_temp>::operator[];
+   using Map_std_node_crtpb<Triple_store_temp>::operator[];
+   using Map_std_ns_crtpb<Triple_store_temp>::at;
+   using Map_std_node_crtpb<Triple_store_temp>::at;
+
+   using Map_std_node_crtpb<Triple_store_temp>::insert_node_iri;
+   using Crtpb_ns_node_iri<Triple_store_temp>::insert_node_iri;
+
+   using Map_std_node_crtpb<Triple_store_temp>::find_node_iri;
+   using Crtpb_ns_node_iri<Triple_store_temp>::find_node_iri;
+
+   using Map_std_ns_crtpb<Triple_store_temp>::valid;
+   using Map_std_node_crtpb<Triple_store_temp>::valid;
+
 private:
+   map_std_type const& map_std_;
+   map_ns_type map_ns_;
+   map_node_type map_node_;
+   map_triple_type map_triple_;
+   doc_type doc_;
    const Doc_id did_;
-   Node_id ontology_iri_;
-   Node_id version_iri_;
-   std::string path_;
-   Iri_map iri_;
-   node_map_t node_;
-   Triple_map triple_;
 };
 
 }//namespace detail

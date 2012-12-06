@@ -6,9 +6,10 @@ part of owlcpp project.
 #include <iostream>
 #include <string>
 #include <vector>
-#include "boost/program_options.hpp"
 #include "boost/filesystem.hpp"
 #include "boost/foreach.hpp"
+#include "boost/program_options.hpp"
+
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/io/input.hpp"
@@ -16,7 +17,7 @@ part of owlcpp project.
 namespace bpo = boost::program_options;
 namespace bfs = boost::filesystem;
 
-/** Parse single OWL ontology file into triple store and print triples
+/** Parse OWL ontology file and print triples
 *******************************************************************************/
 int main(int argc, char* argv[]) {
    bpo::options_description od;
@@ -36,10 +37,11 @@ int main(int argc, char* argv[]) {
 
    if( ! vm.count("input-file") || vm.count("help") ) {
       std::cout
+      << "Parse OWL ontology and print triples" << '\n'
       << "Usage:" << '\n'
       << "print_triples [-i[path]] [-c] <OWL_ontology_file.owl>" << '\n'
       << od << '\n';
-      return 0;
+      return ! vm.count("help");
    }
 
    owlcpp::Triple_store store;
@@ -51,9 +53,9 @@ int main(int argc, char* argv[]) {
          const std::size_t search_depth = 100;
          std::vector<std::string> const& vin = vm["include"].as<std::vector<std::string> >();
          if( vin.empty() ) {
-            cat.add(in.parent_path(), true, search_depth);
+            add(cat, in.parent_path(), true, search_depth);
          } else {
-            BOOST_FOREACH(std::string const& p, vin) cat.add(p, true, search_depth);
+            BOOST_FOREACH(std::string const& p, vin) add(cat, p, true, search_depth);
          }
          load_file(in, store, cat);
       } else { //load just input-file
@@ -61,19 +63,17 @@ int main(int argc, char* argv[]) {
       }
       if( vm.count("count") ) {
          std::cout
-         << store.triples().size() << " triples" << '\n'
-         << store.nodes().size() << " nodes" << '\n'
-         << distance(store.nodes().find(owlcpp::terms::N_empty::id())) << " literal nodes" << '\n'
-         << distance(store.nodes().find(owlcpp::terms::N_blank::id())) << " blank nodes" << '\n'
-         << store.iris().size() << " namespace IRIs" << '\n'
+         << store.map_triple().size() << " triples" << '\n'
+         << store.map_node().size() << " nodes" << '\n'
+         << store.map_ns().size() << " namespace IRIs" << '\n'
          ;
       } else {
-         BOOST_FOREACH( owlcpp::Triple const& t, store.triples() ) {
+         BOOST_FOREACH( owlcpp::Triple const& t, store.map_triple() ) {
             std::cout
             << '\"'
-            << store.string(t.subject()) << "\"\t\""
-            << store.string(t.predicate()) << "\"\t\""
-            << store.string(t.object()) << "\"\t\n"
+            << to_string(t.subject(), store) << "\"\t\""
+            << to_string(t.predicate(), store) << "\"\t\""
+            << to_string(t.object(), store) << "\"\t\n"
             ;
          }
       }

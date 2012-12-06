@@ -33,9 +33,12 @@ inline void submit_triples(
          ReasoningKernel& kernel,
          const bool lax
 ) {
-   submit_triples(ts.triples(), ts, kernel, lax);
+   submit_triples(ts.map_triple(), ts, kernel, lax);
 }
 
+/**Example of submitting triples to reasoner
+@example validate.cpp
+*/
 
 }//namespace owlcpp
 

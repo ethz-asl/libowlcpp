@@ -8,7 +8,10 @@ part of owlcpp project.
 #include "boost/assert.hpp"
 #include "owlcpp/rdf/query_triples.hpp"
 #include "owlcpp/rdf/query_node.hpp"
-#include "owlcpp/logic/detail/node_declaration.hpp"
+#include "owlcpp/rdf/print_node.hpp"
+#include "logic/node_property_declaration.hpp"
+#include "logic/node_type_declaration.hpp"
+#include "logic/find_node_declaration.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
@@ -26,7 +29,7 @@ void Ot_op_restriction::init(
       if( ! is_iri(ts[val].ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("non-IRI object node in \"x owl:hasValue y\"")
-               << Err::str1_t(to_string_short(val, ts))
+               << Err::str1_t(to_string(val, ts))
       );
       inst_ = to_string(val, ts);
       break;
@@ -36,7 +39,7 @@ void Ot_op_restriction::init(
       BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unexpected object in \"x owl:hasSelf \"true\"^^xsd:boolean\"")
-               << Err::str1_t(to_string_short(val, ts))
+               << Err::str1_t(to_string(val, ts))
       );
 
    case T_owl_allValuesFrom::index:
@@ -48,7 +51,7 @@ void Ot_op_restriction::init(
    default: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unsupported restriction type")
-            << Err::str1_t(to_string_short(restr_type_, ts))
+            << Err::str1_t(to_string(restr_type_, ts))
    );
    }
 
@@ -90,13 +93,18 @@ void Ot_dp_restriction::init(
    switch(restr_type_()) {
 
    case T_owl_hasValue::index:
-      if( ! is_empty(ts[val].ns_id()) ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("non-literal object node in \"x owl:hasValue y\"")
-               << Err::str1_t(to_string_short(val, ts))
-      );
-      val_str_ = value<std::string>(val, ts);
-      dt_ = make_expression<Data_type>(ts.datatype(val), ts);
+      try{
+         Node_literal const& node = to_literal(ts[val]);
+         val_str_ = node.value_str();
+         dt_ = make_expression<Data_type>(node.datatype(), ts);
+      }catch(base_exception &) {
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t("error in \"x owl:hasValue y\"")
+                  << Err::str1_t(to_string(val, ts))
+                  << Err::nested_t(boost::current_exception())
+         );
+      }
       break;
 
    case T_owl_hasSelf::index: BOOST_THROW_EXCEPTION(
@@ -113,7 +121,7 @@ void Ot_dp_restriction::init(
    default: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unsupported restriction type")
-            << Err::str1_t(to_string_short(restr_type_, ts))
+            << Err::str1_t(to_string(restr_type_, ts))
    );
    }
    check_declaration(prop, Node_property::data(), ts);
@@ -176,7 +184,7 @@ Ot_opc_restriction::Ot_opc_restriction(Expression_args const& ea, Triple_store c
    default: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unsupported cardinality restriction type")
-            << Err::str1_t(to_string_short(card_type_, ts))
+            << Err::str1_t(to_string(card_type_, ts))
    );
    }
 }
@@ -240,7 +248,7 @@ Ot_dpc_restriction::Ot_dpc_restriction(Expression_args const& ea, Triple_store c
       BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("unsupported cardinality restriction type")
-                  << Err::str1_t(to_string_short(card_type_, ts))
+                  << Err::str1_t(to_string(card_type_, ts))
          );
    }
 }
@@ -291,7 +299,7 @@ void Ot_type_list::make_sequence(const Node_id nid, Triple_store const& ts) {
       BOOST_THROW_EXCEPTION(
                   Err()
                   << Err::msg_t("unsupported predicate")
-                  << Err::str1_t(to_string_short(type_, ts))
+                  << Err::str1_t(to_string(type_, ts))
          );
    }
 
@@ -314,14 +322,16 @@ TDLConceptExpression* Ot_type_list::get(ReasoningKernel& k ) const {
       if( otl_.empty() ) return k.getExpressionManager()->Top();
       if( otl_.size() == 1U ) return otl_[0].get(k);
       em.newArgList();
-      BOOST_FOREACH(Expression<Obj_type> const& ote, otl_) em.addArg( ote.get(k) );
+      //BOOST_FOREACH(Expression<Obj_type> const& ote, otl_) em.addArg( ote.get(k) );
+      for(std::size_t n = 0; n != otl_.size(); ++n) em.addArg(otl_[n].get(k));
       return em.And();
 
    case T_owl_unionOf::index:
       if( otl_.empty() ) return k.getExpressionManager()->Bottom();
       if( otl_.size() == 1U ) return otl_[0].get(k);
       em.newArgList();
-      BOOST_FOREACH(Expression<Obj_type> const& ote, otl_) em.addArg( ote.get(k) );
+      //BOOST_FOREACH(Expression<Obj_type> const& ote, otl_) em.addArg( ote.get(k) );
+      for(std::size_t n = 0; n != otl_.size(); ++n) em.addArg(otl_[n].get(k));
       return em.Or();
 
    default: BOOST_THROW_EXCEPTION(
@@ -349,7 +359,7 @@ void Ot_instance_list::make_sequence(const Node_id seq, Triple_store const& ts) 
       if( ! is_iri(ts[nid].ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("non-IRI node for instance declaration")
-               << Err::str1_t(to_string_short(nid, ts))
+               << Err::str1_t(to_string(nid, ts))
       );
       il_.push_back(to_string(nid, ts));
    }
