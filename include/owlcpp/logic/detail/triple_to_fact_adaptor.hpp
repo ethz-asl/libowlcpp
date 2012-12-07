@@ -48,9 +48,6 @@ private:
 
    TDLAxiom* axiom(Triple const& t);
 
-   /**@param t triple x y z */
-   void submit_custom_triple(Triple const& t);
-
    TDLConceptExpression* obj_type(const Node_id nid);
 
    TDLIndividualExpression* obj_value(const Node_id nid);

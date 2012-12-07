@@ -562,41 +562,6 @@ TDLAxiom* Adaptor_triple::axiom_custom_predicate(Triple const& t) {
 
 /*
 *******************************************************************************/
-void Adaptor_triple::submit_custom_triple(Triple const& t) {
-   const Node_id subj = t.subject();
-   const Node_id pred = t.predicate();
-   const Node_id obj = t.object();
-   const Node_property np = declaration<Node_property>(pred, ts_);
-   if( np.is_object() ) {
-      k_.relatedTo(
-               obj_value(subj),
-               obj_property(pred),
-               obj_value(obj)
-      );
-      return;
-   }
-
-   if(np.is_data() ) {
-      k_.valueOf(
-               obj_value(subj),
-               data_property(pred),
-               data_value(obj)
-      );
-      return;
-   }
-
-   if( np.is_annotation() ) return;
-   if( ts_[subj].ns_id() == N_blank::id() ) return;
-
-   BOOST_THROW_EXCEPTION(
-            Err()
-            << Err::msg_t("unknown predicate type")
-            << Err::str1_t(to_string(pred, ts_))
-      );
-}
-
-/*
-*******************************************************************************/
 TDLConceptExpression* Adaptor_triple::obj_type(const Node_id nid) {
    return make_expression<Obj_type>( nid, ts_ )->get(k_);
 }
