@@ -51,7 +51,10 @@ public:
     @return node ID
    */
    Node_id insert_node_iri(const Ns_id nsid, std::string const& name) {
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(nsid) && "invalid namespace ID" );
+      BOOST_ASSERT(
+               static_cast<Super const&>(*this).valid(nsid) &&
+               "invalid namespace ID"
+      );
       typedef typename Super::Err Err;
       if( is_blank(nsid) ) {
          BOOST_THROW_EXCEPTION(
@@ -64,7 +67,10 @@ public:
    }
 
    Node_id const* find_node_iri(const Ns_id nsid, std::string const& name) const {
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(nsid) && "invalid namespace ID" );
+      BOOST_ASSERT(
+               static_cast<Super const&>(*this).valid(nsid) &&
+               "invalid namespace ID"
+      );
       return _map_node().find_iri(nsid, name);
    }
 
