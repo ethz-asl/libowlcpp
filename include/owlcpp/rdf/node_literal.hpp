@@ -37,6 +37,7 @@ namespace detail{
 *******************************************************************************/
 template<class Dt> class Node_literal_impl : public Node_literal {
    typedef Node_literal_impl self_type;
+   typedef typename Dt::default_datatype default_datatype;
 
 public:
    typedef typename Dt::value_type value_type;
@@ -57,21 +58,21 @@ public:
 
    template<class T> explicit Node_literal_impl(
             T const& val,
-            const Node_id dt = terms::T_empty_::id()
+            const Node_id dt = default_datatype::id()
    )
    : val_(convert<T>(val, dt)), dt_(dt)
    {}
 
    explicit Node_literal_impl(
             char const* val,
-            const Node_id dt = terms::T_empty_::id()
+            const Node_id dt = default_datatype::id()
    )
    : val_(convert(std::string(val), dt)), dt_(dt)
    {}
 
    explicit Node_literal_impl(
             std::string const& val,
-            const Node_id dt = terms::T_empty_::id()
+            const Node_id dt = default_datatype::id()
    )
    : val_(convert(val, dt)), dt_(dt)
    {}
@@ -113,6 +114,7 @@ private:
 *******************************************************************************/
 template<> class Node_literal_impl<Datatype_string> : public Node_literal {
    typedef Node_literal_impl self_type;
+   typedef Datatype_string::default_datatype default_datatype;
 
    static std::size_t _hash(std::string const& val, const Node_id dt, std::string const& lang) {
       std::size_t h = 0;
@@ -127,10 +129,20 @@ public:
 
    explicit Node_literal_impl(
             std::string const& val,
-            const Node_id dt = terms::T_empty_::id(),
+            const Node_id dt,
             std::string const& lang = ""
    )
    : val_(val), lang_(lang), hash_(_hash(val, dt, lang)), dt_(dt)
+   {}
+
+   explicit Node_literal_impl(
+            std::string const& val,
+            std::string const& lang = ""
+   )
+   : val_(val),
+     lang_(lang),
+     hash_(_hash(val, default_datatype::id(), lang)),
+     dt_(default_datatype::id())
    {}
 
    std::string const& language() const {return lang_;}

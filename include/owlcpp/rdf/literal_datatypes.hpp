@@ -2,6 +2,9 @@
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2012
+
+Implementation details for literal node values:
+internal representations, default datatypes, conversions
 *******************************************************************************/
 #ifndef LITERAL_DATATYPES_HPP_
 #define LITERAL_DATATYPES_HPP_
@@ -17,24 +20,11 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace detail{
 
-/**Literal node datatypes, representations, and conversions
-*******************************************************************************/
-
-/* Specialize converters and type names
-template<> struct Convert<Node_unsigned::value_type> {
-   Node_unsigned::value_type operator()(std::string const& in) {
-      return boost::numeric_cast<Node_unsigned::value_type>(
-               boost::lexical_cast<Node_int::value_type>(in)
-      );
-   }
-};
-*******************************************************************************/
-
 /*
 *******************************************************************************/
 struct Datatype_bool {
    typedef bool value_type;
-   typedef owlcpp::terms::T_xsd_boolean def_type;
+   typedef owlcpp::terms::T_xsd_boolean default_datatype;
 
    static value_type convert(std::string const& str, const Node_id dt) {
       if( str == "true" ) return true;
@@ -47,7 +37,7 @@ struct Datatype_bool {
    }
 
    static std::string const& name_str(const Node_id) {
-      static const std::string name(to_string_pref(def_type()));
+      static const std::string name(to_string_pref(default_datatype()));
       return name;
    }
 
@@ -60,7 +50,7 @@ struct Datatype_bool {
 *******************************************************************************/
 struct Datatype_int{
    typedef boost::intmax_t value_type;
-   typedef owlcpp::terms::T_xsd_int def_type;
+   typedef owlcpp::terms::T_xsd_int default_datatype;
 
    static value_type convert(std::string const& str, const Node_id dt) {
       return boost::lexical_cast<value_type>(str);
@@ -71,7 +61,7 @@ struct Datatype_int{
    }
 
    static std::string const& name_str(const Node_id) {
-      static const std::string name(to_string_pref(def_type()));
+      static const std::string name(to_string_pref(default_datatype()));
       return name;
    }
 
@@ -84,7 +74,7 @@ struct Datatype_int{
 *******************************************************************************/
 struct Datatype_unsigned{
    typedef boost::uintmax_t value_type;
-   typedef owlcpp::terms::T_xsd_unsignedInt def_type;
+   typedef owlcpp::terms::T_xsd_unsignedInt default_datatype;
 
    static value_type convert(std::string const& str, const Node_id dt) {
       return boost::numeric_cast<value_type>(
@@ -97,7 +87,7 @@ struct Datatype_unsigned{
    }
 
    static std::string const& name_str(const Node_id) {
-      static const std::string name(to_string_pref(def_type()));
+      static const std::string name(to_string_pref(default_datatype()));
       return name;
    }
 
@@ -110,7 +100,7 @@ struct Datatype_unsigned{
 *******************************************************************************/
 struct Datatype_real{
    typedef double value_type;
-   typedef owlcpp::terms::T_xsd_double def_type;
+   typedef owlcpp::terms::T_xsd_double default_datatype;
 
    static value_type convert(std::string const& str, const Node_id dt) {
       return boost::lexical_cast<value_type>(str);
@@ -121,7 +111,7 @@ struct Datatype_real{
    }
 
    static std::string const& name_str(const Node_id) {
-      static const std::string name(to_string_pref(def_type()));
+      static const std::string name(to_string_pref(default_datatype()));
       return name;
    }
 
@@ -134,7 +124,7 @@ struct Datatype_real{
 *******************************************************************************/
 struct Datatype_string{
    typedef std::string value_type;
-   typedef owlcpp::terms::T_xsd_string def_type;
+   typedef owlcpp::terms::T_xsd_string default_datatype;
 
    static value_type const& convert(std::string const& str, const Node_id dt) {
       return str;
@@ -143,7 +133,7 @@ struct Datatype_string{
    template<class T> static value_type convert(const T x) {return x;}
 
    static std::string const& name_str(const Node_id) {
-      static const std::string name(to_string_pref(def_type()));
+      static const std::string name(to_string_pref(default_datatype()));
       return name;
    }
 };

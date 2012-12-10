@@ -80,6 +80,11 @@ make_expression<Data_type>(Expression_args const& ea, Triple_store const& ts) {
    typedef Expression<Data_type>::ptr_t ptr_t;
    typedef Expression<Data_type>::Err Err;
 
+   if( is_empty(ea.handle) ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("data type not declared")
+   );
+
    if( ea.handle == T_rdfs_Literal::id() || ts[ea.handle].ns_id() == N_xsd::id() )
       return ptr_t(new Dt_standard(ea, ts));
 
@@ -121,13 +126,19 @@ make_restriction_ote(Expression_args const& ea, Triple_store const& ts) {
 
    if( ea.pred1 != T_owl_onProperty::id() ) BOOST_THROW_EXCEPTION(
             Err()
-            << Err::msg_t("\"_:x rdf:type owl:Restriction\" without \"_:x owl:onProperty y\"")
+            << Err::msg_t(
+                     "\"_:x rdf:type owl:Restriction\" without \"_:x "
+                     "owl:onProperty y\""
+            )
             << Err::str1_t(to_string(ea.handle, ts))
    );
    const Node_property np = declaration<Node_property>(ea.obj1, ts);
    if( ! np.is_object() && ! np.is_data() ) BOOST_THROW_EXCEPTION(
             Err()
-            << Err::msg_t("object in \"_:x owl:onProperty y\" should be defined as object or data property")
+            << Err::msg_t(
+                     "object in \"_:x owl:onProperty y\" should be defined as "
+                     "object or data property"
+            )
             << Err::str1_t(to_string(ea.obj1, ts))
    );
 

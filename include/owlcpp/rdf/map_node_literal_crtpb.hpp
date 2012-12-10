@@ -37,11 +37,14 @@ public:
     */
    Node_id const* find_literal(
             std::string const& value,
-            const Node_id dtype = terms::T_empty_::id(),
+            std::string const& dt_iri,
             std::string const& lang = ""
    ) const {
-      return _map_node().find_literal(value, dtype, lang);
+      Node_id const* dt = static_cast<Super const&>(*this).find_node_iri(dt_iri);
+      if( ! dt ) return 0;
+      return _map_node().find_literal(value, *dt, lang);
    }
+
 
    /**@brief Insert literal node
     @param value
@@ -55,7 +58,7 @@ public:
    */
    Node_id insert_literal(
             std::string const& value,
-            const Node_id dt_id = terms::T_empty_::id(),
+            const Node_id dt_id,
             std::string const& lang = ""
    ) {
       BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
@@ -82,11 +85,8 @@ public:
             std::string const& lang = ""
    ) {
       BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
-      const Node_id dt_id = dt_iri.empty() ?
-               terms::T_empty_::id() :
-               static_cast<Super&>(*this).insert_node_iri(dt_iri)
-               ;
-      return _map_node().insert_literal(value, dt_id, lang);
+      const Node_id dt_id = static_cast<Super&>(*this).insert_node_iri(dt_iri);
+      return insert_literal(value, dt_id, lang);
    }
 };
 

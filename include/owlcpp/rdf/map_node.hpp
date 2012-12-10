@@ -127,11 +127,12 @@ public:
          return find(Node_unsigned(val, dt));
       case detail::Double_tid:
          return find(Node_double(val, dt));
-      case detail::Empty_tid:
       case detail::String_tid:
       case detail::Unknown_tid:
+         return find( Node_string(val, dt, lang) );
+      case detail::Empty_tid:
       default:
-         return find(Node_string(val, dt, lang));
+         return find( Node_string(val, lang) );
       }
    }
 
@@ -166,7 +167,7 @@ public:
 
    Node_id insert_literal(
             std::string const& val,
-            const Node_id dt = terms::T_empty_::id(),
+            const Node_id dt,
             std::string const& lang = ""
    ) {
       switch(internal_type_id(dt)) {
@@ -178,11 +179,12 @@ public:
          return insert( Node_unsigned(val, dt) );
       case detail::Double_tid:
          return insert( Node_double(val, dt) );
-      case detail::Empty_tid:
       case detail::String_tid:
       case detail::Unknown_tid:
-      default:
          return insert( Node_string(val, dt, lang) );
+      case detail::Empty_tid:
+      default:
+         return insert( Node_string(val, lang) );
       }
    }
 
