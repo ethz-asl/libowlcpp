@@ -116,19 +116,29 @@ public:
    typedef typename traits::map_node_type map_node_type;
    typedef typename traits::node_id_type node_id_type;
    typedef typename traits::ns_id_type ns_id_type;
+   typedef typename traits::doc_id_type doc_id_type;
 
    BOOST_CONCEPT_USAGE(Node_store) {
-      node_id_type const* nid = t_.find_literal(str_, nid_, str_);
-      nid = t_.find_literal(str_, nid_);
-      nid = t_.find_literal(str_);
-      boost::ignore_unused_variable_warning(nid);
+      const std::string str;
+      node_id_type nid = t_.insert_literal(str, str, str);
+      nid = t_.insert_literal(str, str);
+
+      const Node_id nid_dt;
+      nid = t_.insert_literal(str, nid_dt, str);
+      nid = t_.insert_literal(str, nid_dt);
+
+      node_id_type const* nidp = t_.find_literal(str, str, str);
+      nidp = t_.find_literal(str, str);
+      boost::ignore_unused_variable_warning(nidp);
+
+      const unsigned n = 0;
+      doc_id_type did;
+      nid = t_.insert_blank(n, did);
+      nidp = t_.find_blank(n, did);
    }
 
 private:
    T t_;
-   std::string str_;
-   node_id_type nid_;
-   ns_id_type nsid_;
 };
 
 /**
