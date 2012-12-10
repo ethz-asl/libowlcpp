@@ -33,7 +33,8 @@ namespace{
 inline std::size_t add_to_catalog(
          boost::filesystem::path const& path,
          Catalog& cat,
-         const std::size_t search_depth
+         const std::size_t search_depth,
+         const bool ignore_errors
 ) {
    const boost::filesystem::path cp = canonical(path);
    std::pair<std::string,std::string> pair;
@@ -43,21 +44,27 @@ inline std::size_t add_to_catalog(
       //ignore
       return 0;
    }
-   if( pair.first.empty() ) BOOST_THROW_EXCEPTION(
-            Input_err()
-            << Input_err::msg_t("ontologyIRI not found")
-            << Input_err::str1_t(path.string())
-   );
+   if( pair.first.empty() ) {
+      if(ignore_errors) return 0;
+      BOOST_THROW_EXCEPTION(
+               Input_err()
+               << Input_err::msg_t("ontologyIRI not found")
+               << Input_err::str1_t(path.string())
+      );
+   }
    return cat.insert_doc(pair.first, cp.string(), pair.second).second ? 1 : 0;
 }
 
 /*
 *******************************************************************************/
 template<class Iter> inline
-std::size_t add_to_catalog(Iter i1, Iter i2, Catalog& cat, const std::size_t search_depth) {
+std::size_t add_to_catalog(
+         Iter i1, Iter i2, Catalog& cat, const std::size_t search_depth
+) {
    std::size_t n = 0;
    for( ; i1 != i2; ++i1 ) {
-      if( is_regular_file(*i1) ) n += add_to_catalog(i1->path(), cat, search_depth);
+      if( is_regular_file(*i1) )
+         n += add_to_catalog(i1->path(), cat, search_depth, true);
    }
    return n;
 }
@@ -86,7 +93,7 @@ std::size_t add(
          return add_to_catalog(i1, i2, cat, search_depth);
       }
    } else if( is_regular_file(path) ) {
-      return add_to_catalog(path, cat, search_depth);
+      return add_to_catalog(path, cat, search_depth, false);
    }
    return 0;
 }
