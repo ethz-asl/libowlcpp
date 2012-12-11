@@ -69,8 +69,11 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
          e_m().addArg(obj_type(obj));
          return k_.equalConcepts();
       }
-//      if( ! is_iri(ts_[subj].ns_id()) ) return 0;
-      BOOST_THROW_EXCEPTION( Err() << Err::msg_t("owl:equivalentClass on datatypes is not supported") );
+      BOOST_THROW_EXCEPTION(
+               Err() << Err::msg_t(
+                        "owl:equivalentClass on datatypes is not supported"
+               )
+      );
    }
 
    case T_owl_disjointWith::index:
@@ -229,6 +232,7 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    case T_owl_annotatedSource::index:
    case T_owl_annotatedTarget::index:
    case T_owl_assertionProperty::index:
+   case T_owl_deprecated::index:
    case T_owl_distinctMembers::index:
    case T_owl_imports::index:
    case T_owl_members::index:
