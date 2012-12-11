@@ -21,17 +21,26 @@ public:
    bool is_object() const {return ref_ == Object;}
    bool is_data() const {return ref_ == Data;}
    bool is_annotation() const {return ref_ == Annotation;}
+   std::string to_string() const {return to_string_impl(ref_);}
 
 protected:
    Node_declaration(const Refers_to ref) : ref_(ref) {}
 
    void set(const Refers_to ref) {
       if( ref_ == None ) ref_ = ref;
-      else if( ref_ != ref ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("conflicting node declaration")
+      else if( ref_ != ref ) {
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << Err::msg_t(
+                           "conflicting node declaration: defined as " +
+                           to_string() + " and as " +
+                           to_string_impl(ref)
+                  )
       );
+      }
    }
+
+   virtual std::string to_string_impl(const Refers_to ref) const =0;
 
    Refers_to ref_;
 };

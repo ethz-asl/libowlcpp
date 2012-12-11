@@ -93,8 +93,9 @@ public:
    bool operator==(Node_type const& nt) const { return ref_ == nt.ref_; }
    bool operator!=(Node_type const& nt) const { return ref_ != nt.ref_; }
 
-   std::string to_string() const {
-      switch (ref_) {
+private:
+   std::string to_string_impl(const Refers_to ref) const {
+      switch (ref) {
       case None:     return "undefined";
       case Object:   return "object type";
       case Data:     return "data type";
