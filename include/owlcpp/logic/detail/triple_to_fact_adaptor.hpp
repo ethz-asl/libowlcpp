@@ -81,7 +81,7 @@ private:
             const Node_id op,
             const Node_id seq_nid,
             const std::size_t min_len,
-            const Node_id subj = owlcpp::terms::T_empty_::id()
+            const Node_id subj = owlcpp::terms::empty_::id()
    );
 
    TExpressionManager& e_m();

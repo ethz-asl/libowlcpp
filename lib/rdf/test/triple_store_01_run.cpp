@@ -22,16 +22,16 @@ namespace t = owlcpp::terms;
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_namespaces ) {
    Triple_store ts(( Nodes_none() ));
-   BOOST_CHECK(   ts.valid(t::N_empty::id()));
-   BOOST_CHECK( ! ts.valid(t::N_owl::id()));
+   BOOST_CHECK(   ts.valid(t::empty::id()));
+   BOOST_CHECK( ! ts.valid(t::owl::id()));
 }
 
 /**@test Test namespaces, OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_namespaces_owl ) {
    Triple_store ts;
-   BOOST_CHECK(ts.valid(t::N_empty::id()));
-   BOOST_CHECK(ts.valid(t::N_owl::id()));
+   BOOST_CHECK(ts.valid(t::empty::id()));
+   BOOST_CHECK(ts.valid(t::owl::id()));
 
    BOOST_CHECK_EQUAL(ts.map_ns().size(), 0U);
    const Ns_id nsid1 = ts.insert_ns(ns1);
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE( test_namespaces_owl ) {
 BOOST_AUTO_TEST_CASE( test_find_iri_nodes ) {
    Triple_store ts(( Nodes_none() ));
    BOOST_CHECK( ! ts.find_node_iri("some_random_name") );
-   BOOST_CHECK( ! ts.find_node_iri(to_string_full(t::T_owl_Axiom())) );
+   BOOST_CHECK( ! ts.find_node_iri(to_string_full(t::owl_Axiom())) );
 }
 
 /**@test Test IRI nodes, OWL-unaware triple store
@@ -73,10 +73,10 @@ BOOST_AUTO_TEST_CASE( test_iri_nodes ) {
    //different fragment names
    BOOST_CHECK_NE(to_string(nid1, ts), to_string(nid2, ts));
 
-   const Node_id nid3 = ts.insert_node_iri(t::N_owl::iri() + "#Ontology");
+   const Node_id nid3 = ts.insert_node_iri(t::owl::iri() + "#Ontology");
    BOOST_CHECK_EQUAL(ts.map_node().size(), 3U);
-   BOOST_CHECK_NE(nid3, t::T_owl_Ontology::id()); //non-standard ID
-   ts.insert_node_iri(t::N_owl::iri() + "#blah"); //inserting new node into standard namespace
+   BOOST_CHECK_NE(nid3, t::owl_Ontology::id()); //non-standard ID
+   ts.insert_node_iri(t::owl::iri() + "#blah"); //inserting new node into standard namespace
    BOOST_CHECK_EQUAL(ts.map_node().size(), 4U);
 }
 
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE( test_iri_nodes ) {
 BOOST_AUTO_TEST_CASE( test_find_iri_nodes_owl ) {
    Triple_store ts;
    BOOST_CHECK( ! ts.find_node_iri("some_random_name") );
-   BOOST_CHECK(   ts.find_node_iri(to_string_full(t::T_owl_Axiom())) );
+   BOOST_CHECK(   ts.find_node_iri(to_string_full(t::owl_Axiom())) );
 }
 
 /**@test Test IRI nodes, OWL-aware triple store
@@ -94,42 +94,42 @@ BOOST_AUTO_TEST_CASE( test_nodes_owl ) {
    Triple_store ts;
 
    BOOST_CHECK_EQUAL(
-            to_string_full(ts.at(t::T_owl_Ontology::id()), ts),
-            to_string_full(t::T_owl_Ontology())
+            to_string_full(ts.at(t::owl_Ontology::id()), ts),
+            to_string_full(t::owl_Ontology())
    );
 
    //correct term
-   const Node_id nid1 = ts.insert_node_iri(t::N_owl::id(), t::T_owl_Ontology::name());
-   BOOST_CHECK_EQUAL(nid1, t::T_owl_Ontology::id());
+   const Node_id nid1 = ts.insert_node_iri(t::owl::id(), t::owl_Ontology::name());
+   BOOST_CHECK_EQUAL(nid1, t::owl_Ontology::id());
 
-   const Node_id nid2 = ts.insert_node_iri(t::N_owl::iri() + "#Ontology");
+   const Node_id nid2 = ts.insert_node_iri(t::owl::iri() + "#Ontology");
    const Ns_id nsid2 = ts.at(nid2).ns_id();
-   BOOST_CHECK_EQUAL(nsid2, t::N_owl::id());
-   BOOST_CHECK_EQUAL(nid2, t::T_owl_Ontology::id());
+   BOOST_CHECK_EQUAL(nsid2, t::owl::id());
+   BOOST_CHECK_EQUAL(nid2, t::owl_Ontology::id());
 
    //misspelled term
    BOOST_CHECK_THROW(
-            ts.insert_node_iri(t::N_owl::iri() + "#Ontolog"),
+            ts.insert_node_iri(t::owl::iri() + "#Ontolog"),
             Triple_store::Err
    );
 
    //empty fragment
    BOOST_CHECK_THROW(
-            ts.insert_node_iri(t::N_owl::iri()),
+            ts.insert_node_iri(t::owl::iri()),
             Triple_store::Err
    );
 }
 
-/**@test Empty IRI node maps to T_empty_::id() ID
+/**@test Empty IRI node maps to empty_::id() ID
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_empty_iri ) {
    Triple_store ts1(( Nodes_none() ));
    Node_id nid = ts1.insert_node_iri("");
-   BOOST_CHECK_EQUAL(nid, t::T_empty_::id());
+   BOOST_CHECK_EQUAL(nid, t::empty_::id());
 
    Triple_store ts2;
    nid = ts1.insert_node_iri("");
-   BOOST_CHECK_EQUAL(nid, t::T_empty_::id());
+   BOOST_CHECK_EQUAL(nid, t::empty_::id());
 }
 
 }//namespace test

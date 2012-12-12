@@ -24,7 +24,7 @@ namespace owlcpp{ namespace detail{
 *******************************************************************************/
 struct Datatype_bool {
    typedef bool value_type;
-   typedef owlcpp::terms::T_xsd_boolean default_datatype;
+   typedef owlcpp::terms::xsd_boolean default_datatype;
 
    static value_type convert(std::string const& str, const Node_id dt) {
       if( str == "true" ) return true;
@@ -50,7 +50,7 @@ struct Datatype_bool {
 *******************************************************************************/
 struct Datatype_int{
    typedef boost::intmax_t value_type;
-   typedef owlcpp::terms::T_xsd_int default_datatype;
+   typedef owlcpp::terms::xsd_int default_datatype;
 
    static value_type convert(std::string const& str, const Node_id dt) {
       return boost::lexical_cast<value_type>(str);
@@ -74,7 +74,7 @@ struct Datatype_int{
 *******************************************************************************/
 struct Datatype_unsigned{
    typedef boost::uintmax_t value_type;
-   typedef owlcpp::terms::T_xsd_unsignedInt default_datatype;
+   typedef owlcpp::terms::xsd_unsignedInt default_datatype;
 
    static value_type convert(std::string const& str, const Node_id dt) {
       return boost::numeric_cast<value_type>(
@@ -100,7 +100,7 @@ struct Datatype_unsigned{
 *******************************************************************************/
 struct Datatype_real{
    typedef double value_type;
-   typedef owlcpp::terms::T_xsd_double default_datatype;
+   typedef owlcpp::terms::xsd_double default_datatype;
 
    static value_type convert(std::string const& str, const Node_id dt) {
       return boost::lexical_cast<value_type>(str);
@@ -124,7 +124,7 @@ struct Datatype_real{
 *******************************************************************************/
 struct Datatype_string{
    typedef std::string value_type;
-   typedef owlcpp::terms::T_xsd_string default_datatype;
+   typedef owlcpp::terms::xsd_string default_datatype;
 
    static value_type const& convert(std::string const& str, const Node_id dt) {
       return str;

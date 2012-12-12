@@ -18,12 +18,12 @@ using namespace owlcpp::terms;
 *******************************************************************************/
 Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
 : handle(h),
-  e_type    (T_empty_::id()),
-  pred1     (T_empty_::id()),
-  obj1      (T_empty_::id()),
-  pred2     (T_empty_::id()),
-  obj2      (T_empty_::id()),
-  cardinality (T_empty_::id()),
+  e_type    (empty_::id()),
+  pred1     (empty_::id()),
+  obj1      (empty_::id()),
+  pred2     (empty_::id()),
+  obj2      (empty_::id()),
+  cardinality (empty_::id()),
   num(0)
 {
    if( ! is_blank(ts[handle].ns_id()) ) return;
@@ -32,32 +32,32 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
       const Node_id pred = t.predicate();
       const Node_id obj = t.object();
       switch (pred()) {
-         case T_rdf_type::index:
+         case rdf_type::index:
             e_type = obj;
             break;
-         case T_owl_inverseOf::index:
-         case T_owl_intersectionOf::index:
-         case T_owl_unionOf::index:
-         case T_owl_complementOf::index:
-         case T_owl_oneOf::index:
-         case T_owl_onProperty::index:
+         case owl_inverseOf::index:
+         case owl_intersectionOf::index:
+         case owl_unionOf::index:
+         case owl_complementOf::index:
+         case owl_oneOf::index:
+         case owl_onProperty::index:
             pred1 = pred;
             obj1 = obj;
             break;
-         case T_owl_allValuesFrom::index:
-         case T_owl_hasValue::index:
-         case T_owl_hasSelf::index:
-         case T_owl_someValuesFrom::index:
-         case T_owl_onClass::index:
+         case owl_allValuesFrom::index:
+         case owl_hasValue::index:
+         case owl_hasSelf::index:
+         case owl_someValuesFrom::index:
+         case owl_onClass::index:
             pred2 = pred;
             obj2 = obj;
             break;
-         case T_owl_cardinality::index:
-         case T_owl_maxCardinality::index:
-         case T_owl_minCardinality::index:
-         case T_owl_maxQualifiedCardinality::index:
-         case T_owl_minQualifiedCardinality::index:
-         case T_owl_qualifiedCardinality::index:
+         case owl_cardinality::index:
+         case owl_maxCardinality::index:
+         case owl_minCardinality::index:
+         case owl_maxQualifiedCardinality::index:
+         case owl_minQualifiedCardinality::index:
+         case owl_qualifiedCardinality::index:
             cardinality = pred;
             num = value<unsigned>(obj, ts);
             break;
@@ -75,7 +75,7 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
             << Err::msg_t("class expression rdf:type not found")
             << Err::str1_t(to_string(h, ts))
    );
-   if( e_type != T_owl_Class::id() && e_type != T_owl_Restriction::id() )
+   if( e_type != owl_Class::id() && e_type != owl_Restriction::id() )
       BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unsupported rdf:type")

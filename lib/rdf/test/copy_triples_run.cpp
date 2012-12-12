@@ -29,14 +29,14 @@ BOOST_AUTO_TEST_CASE( test_copy_triples_01 ) {
    BOOST_CHECK( ! ts2.map_doc().find_path(path1) );
    const std::size_t nt1 = ts1.map_triple().size();
    const std::size_t nt2 = ts2.map_triple().size();
-//   const int nb1 = boost::distance(ts1.map_node().find(terms::N_blank::id()));
-//   const int nb2 = boost::distance(ts2.map_node().find(terms::N_blank::id()));
+//   const int nb1 = boost::distance(ts1.map_node().find(terms::blank::id()));
+//   const int nb2 = boost::distance(ts2.map_node().find(terms::blank::id()));
 
    copy_triples(ts1, ts2);
 
    BOOST_CHECK_EQUAL(ts2.map_triple().size(), nt1 + nt2);
 //   BOOST_CHECK_EQUAL(
-//            boost::distance(ts2.map_node().find(terms::N_blank::id())),
+//            boost::distance(ts2.map_node().find(terms::blank::id())),
 //            nb1 + nb2
 //   );
 

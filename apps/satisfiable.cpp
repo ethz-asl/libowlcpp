@@ -92,8 +92,8 @@ int main(int argc, char* argv[]) {
          if(
                   store.find_triple(
                            nid,
-                           ot::T_rdf_type::id(),
-                           ot::T_owl_Class::id(),
+                           ot::rdf_type::id(),
+                           ot::owl_Class::id(),
                            owlcpp::any()
                   )
          ) {

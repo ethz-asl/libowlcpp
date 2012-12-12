@@ -49,7 +49,7 @@ public:
 
    Triple_store_temp(map_std_type const& map_std, std::string const& path)
    : map_std_(map_std),
-     doc_(terms::T_empty_::id(), terms::T_empty_::id(), path),
+     doc_(terms::empty_::id(), terms::empty_::id(), path),
      did_(0)
    {}
 

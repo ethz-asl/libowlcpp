@@ -28,7 +28,7 @@ public:
 private:
    virtual Node_id datatype_impl() const =0;
    virtual std::string value_str_impl() const =0;
-   Ns_id ns_id_impl() const { return terms::N_empty::id(); }
+   Ns_id ns_id_impl() const { return terms::empty::id(); }
 };
 
 namespace detail{

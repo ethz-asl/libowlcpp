@@ -39,8 +39,8 @@ namespace owlcpp{ namespace terms{
 
 /**@brief
 @code
-struct T_empty_ {
-   typedef N_empty ns_type;
+struct empty_ {
+   typedef empty ns_type;
    typedef ::owlcpp::Node_id id_type;
    static const unsigned index = 0;
    static std::string const & name() {

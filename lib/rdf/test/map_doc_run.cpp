@@ -32,12 +32,12 @@ BOOST_AUTO_TEST_CASE( test_map_doc ) {
 
    //empty ontology IRI
    BOOST_CHECK_THROW(
-            md.insert(t::T_empty_::id(), path1, nid1),
+            md.insert(t::empty_::id(), path1, nid1),
             Map_doc::Err
    );
    BOOST_CHECK_EQUAL(md.size(), 0U);
 
-   const Doc_id did1 = md.insert(nid3, path1, t::T_empty_::id()).first;
+   const Doc_id did1 = md.insert(nid3, path1, t::empty_::id()).first;
    BOOST_CHECK_EQUAL(md.size(), 1U);
    BOOST_CHECK_EQUAL(*md.begin(), did1);
    const std::pair<Doc_id,bool> p = md.insert(nid3, path1);
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE( test_map_doc ) {
 
    //same path, different IRI
    BOOST_CHECK_THROW(
-            md.insert(nid1, path1, t::T_empty_::id()),
+            md.insert(nid1, path1, t::empty_::id()),
             Map_doc::Err
    );
 
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE( test_map_doc ) {
    BOOST_CHECK_EQUAL(nid2, md[did2a].ontology_iri);
 
    //document versionIRI is returned by pointer
-   BOOST_REQUIRE_MESSAGE(md[did2a].version_iri != terms::T_empty_::id(), "versionIRI exists");
+   BOOST_REQUIRE_MESSAGE(md[did2a].version_iri != terms::empty_::id(), "versionIRI exists");
    BOOST_CHECK_EQUAL(nid3, md[did2a].version_iri);
 
    BOOST_FOREACH(const Doc_id did, md) {

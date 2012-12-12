@@ -28,33 +28,33 @@ public:
    void set(const Node_id nid) {
       using namespace owlcpp::terms;
       switch (nid()) {
-      case T_owl_AsymmetricProperty::index:
-      case T_owl_bottomObjectProperty::index:
-      case T_owl_InverseFunctionalProperty::index:
-      case T_owl_inverseOf::index:
-      case T_owl_IrreflexiveProperty::index:
-      case T_owl_ObjectProperty::index:
-      case T_owl_ReflexiveProperty::index:
-      case T_owl_SymmetricProperty::index:
-      case T_owl_TransitiveProperty::index:
-      case T_owl_topObjectProperty::index:
+      case owl_AsymmetricProperty::index:
+      case owl_bottomObjectProperty::index:
+      case owl_InverseFunctionalProperty::index:
+      case owl_inverseOf::index:
+      case owl_IrreflexiveProperty::index:
+      case owl_ObjectProperty::index:
+      case owl_ReflexiveProperty::index:
+      case owl_SymmetricProperty::index:
+      case owl_TransitiveProperty::index:
+      case owl_topObjectProperty::index:
          Node_declaration::set(Object);
          break;
 
-      case T_owl_bottomDataProperty::index:
-      case T_owl_DatatypeProperty::index:
-      case T_owl_topDataProperty::index:
+      case owl_bottomDataProperty::index:
+      case owl_DatatypeProperty::index:
+      case owl_topDataProperty::index:
          Node_declaration::set(Data);
          break;
 
-      case T_owl_AnnotationProperty::index:
-      case T_owl_OntologyProperty::index:
+      case owl_AnnotationProperty::index:
+      case owl_OntologyProperty::index:
          Node_declaration::set(Annotation);
          break;
 
       //can be either object or data
-      case T_rdfs_range::index:
-      case T_owl_FunctionalProperty::index:
+      case rdfs_range::index:
+      case owl_FunctionalProperty::index:
          break;
       }
    }

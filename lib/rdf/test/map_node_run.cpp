@@ -53,8 +53,8 @@ BOOST_AUTO_TEST_CASE( test_map_node_01 ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_nodes ) {
    Map_node mn1;
-   const Node_id id1 = mn1.insert_literal("blah", t::T_empty_::id());
-   const Node_id id1a = mn1.insert_literal("blah", t::T_xsd_string::id());
+   const Node_id id1 = mn1.insert_literal("blah", t::empty_::id());
+   const Node_id id1a = mn1.insert_literal("blah", t::xsd_string::id());
    BOOST_CHECK_EQUAL(id1, id1a);
 }
 

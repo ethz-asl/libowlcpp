@@ -21,7 +21,7 @@ namespace t = owlcpp::terms;
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_string_node ) {
    const Node_string n1("blah", Node_id(42), "en");
-   BOOST_CHECK_EQUAL(n1.ns_id(), owlcpp::terms::N_empty::id());
+   BOOST_CHECK_EQUAL(n1.ns_id(), owlcpp::terms::empty::id());
    const Node_string n2("blah", Node_id(42), "en");
    BOOST_CHECK_EQUAL(n1,  n2);
    BOOST_CHECK_EQUAL(n1.hash(), n2.hash());
@@ -43,11 +43,11 @@ BOOST_AUTO_TEST_CASE( test_literal_string_node ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_compare_nodes ) {
    const Node_string n1a("blah", "en");
-   const Node_string n1b("blah", t::T_xsd_string::id(), "en");
+   const Node_string n1b("blah", t::xsd_string::id(), "en");
    BOOST_CHECK_EQUAL(n1a, n1b);
 
    const Node_string n2a("blah");
-   const Node_string n2b("blah", t::T_xsd_string::id());
+   const Node_string n2b("blah", t::xsd_string::id());
    BOOST_CHECK_EQUAL(n2a, n2b);
 }
 

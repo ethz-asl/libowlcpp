@@ -30,7 +30,7 @@ private:
 
    OWLCPP_VISITABLE
 
-   Ns_id ns_id_impl() const { return terms::N_blank::id(); }
+   Ns_id ns_id_impl() const { return terms::blank::id(); }
 
    bool empty_impl() const { return false; }
 

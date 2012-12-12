@@ -108,7 +108,7 @@ private:
       unsigned char const* term_uc =
                raptor_uri_as_counted_string(rs.predicate->value.uri, &len);
       char const* term = reinterpret_cast<char const*>(term_uc);
-      if( ! comparison(term, len, terms::T_owl_imports()) ) return;
+      if( ! comparison(term, len, terms::owl_imports()) ) return;
 
       term_uc = raptor_uri_as_string(rs.subject->value.uri);
       term = reinterpret_cast<char const*>(term_uc);

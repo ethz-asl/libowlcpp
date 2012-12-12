@@ -20,26 +20,26 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_query_node ) {
    Triple_store ts;
-   const Node_id nid1 = ts.insert_literal("1", to_string_full(T_xsd_boolean()));
+   const Node_id nid1 = ts.insert_literal("1", to_string_full(xsd_boolean()));
    BOOST_CHECK( value<bool>(nid1, ts) );
 
-   const Node_id nid2 = ts.insert_literal("true", to_string_full(T_xsd_boolean()));
+   const Node_id nid2 = ts.insert_literal("true", to_string_full(xsd_boolean()));
    BOOST_CHECK( value<bool>(nid2, ts) );
 
-   BOOST_CHECK_THROW( ts.insert_literal("TrUe", to_string_full(T_xsd_boolean())), Rdf_err );
+   BOOST_CHECK_THROW( ts.insert_literal("TrUe", to_string_full(xsd_boolean())), Rdf_err );
 
-   const Node_id nid4 = ts.insert_literal("10e300", to_string_full(T_xsd_double()));
+   const Node_id nid4 = ts.insert_literal("10e300", to_string_full(xsd_double()));
    BOOST_CHECK_THROW( value<bool>(nid4, ts), Rdf_err );
    BOOST_CHECK_THROW( value<float>(nid4, ts), Rdf_err );
    BOOST_CHECK( value<double>(nid4, ts) == 10e300 );
 
-   const Node_id nid5 = ts.insert_literal("255", to_string_full(T_xsd_double()));
+   const Node_id nid5 = ts.insert_literal("255", to_string_full(xsd_double()));
    BOOST_CHECK_THROW( value<bool>(nid5, ts), Rdf_err );
    BOOST_CHECK_THROW( value<char>(nid5, ts), Rdf_err );
    BOOST_CHECK( value<double>(nid5, ts) == 255 );
    BOOST_CHECK( value<unsigned char>(nid5, ts) == 255 );
 
-   const Node_id nid6 = ts.insert_literal("-10", to_string_full(T_xsd_double()));
+   const Node_id nid6 = ts.insert_literal("-10", to_string_full(xsd_double()));
    BOOST_CHECK_THROW( value<unsigned>(nid6, ts), Rdf_err );
    BOOST_CHECK( value<int>(nid6, ts) == -10 );
 }

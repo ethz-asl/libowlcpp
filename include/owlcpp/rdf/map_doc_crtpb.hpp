@@ -68,7 +68,7 @@ public:
    std::pair<Doc_id,bool> insert_doc(
             const Node_id iri_id,
             std::string const& path = "",
-            const Node_id vers_id = terms::T_empty_::id()
+            const Node_id vers_id = terms::empty_::id()
    ) {
       BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
       BOOST_ASSERT( static_cast<Super const&>(*this).valid(iri_id) && "invalid ontology IRI ID" );

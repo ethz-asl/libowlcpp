@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE( test_print_node_01 ) {
    Node const& rb = nb;
    BOOST_CHECK_EQUAL(to_string(rb), "_:Doc42-5");
 
-   const Node_bool nbo1(1, t::T_xsd_boolean::id());
+   const Node_bool nbo1(1, t::xsd_boolean::id());
    BOOST_CHECK( nbo1.value() );
    BOOST_CHECK_EQUAL(to_string(nbo1), "true");
    Node const& rbo1 = nbo1;

@@ -42,8 +42,8 @@ BOOST_PP_EMPTY() \
 /**@brief Generate light-weight type definition for standard OWL term
 @details OWLCPP_STD_TERM_TYPE( , , 2, (rdfs)(subClassOf))
 @code
-struct T_ro_has_participant {
-   typedef N_ro ns_type;
+struct ro_has_participant {
+   typedef ro ns_type;
    static std::string const & name() {
       static const std::string str("has_participant");
       return str;

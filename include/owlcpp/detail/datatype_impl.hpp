@@ -22,53 +22,53 @@ inline detail::Internal_type_id internal_type_id(const Node_id nid) {
    using namespace owlcpp::terms;
    using namespace detail;
    switch (nid()) {
-   case T_empty_::index:
+   case empty_::index:
       return Empty_tid;
 
-   case T_xsd_string::index:
-   case T_xsd_anyURI::index:
-   case T_xsd_normalizedString::index:
-   case T_xsd_token::index:
-   case T_xsd_language::index:
-   case T_xsd_NMTOKEN::index:
-   case T_xsd_Name::index:
-   case T_xsd_NCName::index:
+   case xsd_string::index:
+   case xsd_anyURI::index:
+   case xsd_normalizedString::index:
+   case xsd_token::index:
+   case xsd_language::index:
+   case xsd_NMTOKEN::index:
+   case xsd_Name::index:
+   case xsd_NCName::index:
 
-   case T_xsd_dateTime::index:
-   case T_xsd_time::index:
-   case T_xsd_date::index:
-   case T_xsd_gYearMonth::index:
-   case T_xsd_gYear::index:
-   case T_xsd_gMonthDay::index:
-   case T_xsd_gDay::index:
-   case T_xsd_gMonth::index:
+   case xsd_dateTime::index:
+   case xsd_time::index:
+   case xsd_date::index:
+   case xsd_gYearMonth::index:
+   case xsd_gYear::index:
+   case xsd_gMonthDay::index:
+   case xsd_gDay::index:
+   case xsd_gMonth::index:
       return String_tid;
 
-   case T_xsd_boolean::index:
+   case xsd_boolean::index:
       return Bool_tid;
 
-   case T_xsd_decimal::index:
-   case T_xsd_float::index:
-   case T_xsd_double::index:
+   case xsd_decimal::index:
+   case xsd_float::index:
+   case xsd_double::index:
       return Double_tid;
 
-   case T_xsd_hexBinary::index:
-   case T_xsd_base64Binary::index:
-   case T_xsd_integer::index:
-   case T_xsd_nonPositiveInteger::index:
-   case T_xsd_negativeInteger::index:
-   case T_xsd_long::index:
-   case T_xsd_int::index:
-   case T_xsd_short::index:
+   case xsd_hexBinary::index:
+   case xsd_base64Binary::index:
+   case xsd_integer::index:
+   case xsd_nonPositiveInteger::index:
+   case xsd_negativeInteger::index:
+   case xsd_long::index:
+   case xsd_int::index:
+   case xsd_short::index:
       return Int_tid;
 
-   case T_xsd_byte::index:
-   case T_xsd_nonNegativeInteger::index:
-   case T_xsd_unsignedLong::index:
-   case T_xsd_unsignedInt::index:
-   case T_xsd_unsignedShort::index:
-   case T_xsd_unsignedByte::index:
-   case T_xsd_positiveInteger::index:
+   case xsd_byte::index:
+   case xsd_nonNegativeInteger::index:
+   case xsd_unsignedLong::index:
+   case xsd_unsignedInt::index:
+   case xsd_unsignedShort::index:
+   case xsd_unsignedByte::index:
+   case xsd_positiveInteger::index:
       return Unsigned_tid;
 
    default:

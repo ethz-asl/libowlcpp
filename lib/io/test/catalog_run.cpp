@@ -27,9 +27,9 @@ BOOST_AUTO_TEST_CASE( test_catalog_manual ) {
    const Node_id nid1 = cat.insert_node_iri("http://some.node.com");
    const Node_id nid2 = cat.insert_node_iri("http://other.node.com");
    BOOST_CHECK_EQUAL(cat.size(), 0U);
-   const Doc_id did1 = cat.insert_doc(nid1, "some/path", terms::T_empty_::id()).first;
+   const Doc_id did1 = cat.insert_doc(nid1, "some/path", terms::empty_::id()).first;
    const Doc_id did2 = cat.insert_doc(nid2, "other/path").first;
-   const Doc_id did2a = cat.insert_doc(nid2, "other/path", terms::T_empty_::id()).first;
+   const Doc_id did2a = cat.insert_doc(nid2, "other/path", terms::empty_::id()).first;
    BOOST_CHECK_EQUAL(cat.size(), 2U);
    BOOST_CHECK_EQUAL(did2, did2a);
    BOOST_CHECK_EQUAL(cat[did1].ontology_iri, nid1);
@@ -59,12 +59,12 @@ BOOST_AUTO_TEST_CASE( est_catalog_03 ) {
 
    //standard term as document IRI
    BOOST_CHECK_NO_THROW(
-            cat.insert_doc("path1", terms::N_owl::iri() + "#Ontology")
+            cat.insert_doc("path1", terms::owl::iri() + "#Ontology")
    );
 
    //wrong term in standard namespace as ontologyIRI
    BOOST_CHECK_NO_THROW(
-            cat.insert_doc("path2", terms::N_owl::iri() + "#Blah")
+            cat.insert_doc("path2", terms::owl::iri() + "#Blah")
    );
 }
 

@@ -27,7 +27,7 @@ public:
    struct Err : public Rdf_err {};
 
    Rdf_list_iter_s()
-   : ts_(0), nid_(terms::T_rdf_nil::id())
+   : ts_(0), nid_(terms::rdf_nil::id())
    {}
 
    Rdf_list_iter_s(const Node_id nid, Triple_store const& ts)
@@ -43,7 +43,7 @@ private:
    void increment() {
       const Triple_store::result_b<1,1,0,0>::type r = ts_->find_triple(
                nid_,
-               terms::T_rdf_rest::id(),
+               terms::rdf_rest::id(),
                any(),
                any()
       );
@@ -64,7 +64,7 @@ private:
    Node_id const& dereference() const {
       const Triple_store::result_b<1,1,0,0>::type r = ts_->find_triple(
                nid_,
-               terms::T_rdf_first::id(),
+               terms::rdf_first::id(),
                any(),
                any()
       );

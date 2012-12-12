@@ -24,24 +24,24 @@ make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
    typedef Expression<Obj_type>::ptr_t ptr_t;
    typedef Expression<Obj_type>::Err Err;
 
-   if( ea.handle == T_owl_Thing::id() ) return ptr_t(new Ot_thing());
+   if( ea.handle == owl_Thing::id() ) return ptr_t(new Ot_thing());
 
-   if( ea.handle == T_owl_Nothing::id() ) return ptr_t(new Ot_nothing());
+   if( ea.handle == owl_Nothing::id() ) return ptr_t(new Ot_nothing());
 
    if( is_iri(ts[ea.handle].ns_id()) ) return ptr_t(new Ot_declared(ea, ts));
 
-   if( ea.e_type == T_owl_Restriction::id() ) return make_restriction_ote(ea, ts);
+   if( ea.e_type == owl_Restriction::id() ) return make_restriction_ote(ea, ts);
 
-   if( ea.e_type == T_owl_Class::id() ) return make_class_ote(ea, ts);
+   if( ea.e_type == owl_Class::id() ) return make_class_ote(ea, ts);
 
    switch (ea.pred1()) {
 
-   case T_owl_intersectionOf::index:
-   case T_owl_unionOf::index: return ptr_t(new Ot_type_list(ea, ts));
+   case owl_intersectionOf::index:
+   case owl_unionOf::index: return ptr_t(new Ot_type_list(ea, ts));
 
-   case T_owl_complementOf::index: return ptr_t(new Ot_complement(ea, ts));
+   case owl_complementOf::index: return ptr_t(new Ot_complement(ea, ts));
 
-   case T_owl_oneOf::index: return ptr_t(new Ot_instance_list(ea, ts));
+   case owl_oneOf::index: return ptr_t(new Ot_instance_list(ea, ts));
 
    default: BOOST_THROW_EXCEPTION(
             Err()
@@ -58,13 +58,13 @@ make_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts) {
    typedef Expression<Obj_prop>::ptr_t ptr_t;
    typedef Expression<Obj_prop>::Err Err;
 
-   if( ea.handle == T_owl_topObjectProperty::id() ) return ptr_t(new Op_top());
+   if( ea.handle == owl_topObjectProperty::id() ) return ptr_t(new Op_top());
 
-   if( ea.handle == T_owl_bottomObjectProperty::id() ) return ptr_t(new Op_bottom());
+   if( ea.handle == owl_bottomObjectProperty::id() ) return ptr_t(new Op_bottom());
 
    if( is_iri(ts[ea.handle].ns_id()) ) return ptr_t(new Op_declared(ea, ts));
 
-   if( ea.pred1 == T_owl_inverseOf::id() ) return ptr_t(new Op_inverse(ea, ts));
+   if( ea.pred1 == owl_inverseOf::id() ) return ptr_t(new Op_inverse(ea, ts));
 
    BOOST_THROW_EXCEPTION(
                Err()
@@ -85,7 +85,7 @@ make_expression<Data_type>(Expression_args const& ea, Triple_store const& ts) {
             << Err::msg_t("data type not declared")
    );
 
-   if( ea.handle == T_rdfs_Literal::id() || ts[ea.handle].ns_id() == N_xsd::id() )
+   if( ea.handle == rdfs_Literal::id() || ts[ea.handle].ns_id() == xsd::id() )
       return ptr_t(new Dt_standard(ea, ts));
 
    if( is_iri(ts[ea.handle].ns_id()) ) return ptr_t(new Dt_declared(ea, ts));
@@ -104,9 +104,9 @@ make_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts) {
    typedef Expression<Data_prop>::ptr_t ptr_t;
    typedef Expression<Data_prop>::Err Err;
 
-   if( ea.handle == T_owl_topDataProperty::id() ) return ptr_t(new Dp_top());
+   if( ea.handle == owl_topDataProperty::id() ) return ptr_t(new Dp_top());
 
-   if( ea.handle == T_owl_bottomDataProperty::id() ) return ptr_t(new Dp_bottom());
+   if( ea.handle == owl_bottomDataProperty::id() ) return ptr_t(new Dp_bottom());
 
    if( is_iri(ts[ea.handle].ns_id()) ) return ptr_t(new Dp_declared(ea, ts));
 
@@ -124,7 +124,7 @@ make_restriction_ote(Expression_args const& ea, Triple_store const& ts) {
    typedef Expression<Obj_type>::ptr_t ptr_t;
    typedef Expression<Obj_type>::Err Err;
 
-   if( ea.pred1 != T_owl_onProperty::id() ) BOOST_THROW_EXCEPTION(
+   if( ea.pred1 != owl_onProperty::id() ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t(
                      "\"_:x rdf:type owl:Restriction\" without \"_:x "
@@ -143,14 +143,14 @@ make_restriction_ote(Expression_args const& ea, Triple_store const& ts) {
    );
 
    switch (ea.cardinality()) {
-   case T_empty_::index: break;
+   case empty_::index: break;
 
-   case T_owl_cardinality::index:
-   case T_owl_maxCardinality::index:
-   case T_owl_minCardinality::index:
-   case T_owl_maxQualifiedCardinality::index:
-   case T_owl_minQualifiedCardinality::index:
-   case T_owl_qualifiedCardinality::index:
+   case owl_cardinality::index:
+   case owl_maxCardinality::index:
+   case owl_minCardinality::index:
+   case owl_maxQualifiedCardinality::index:
+   case owl_minQualifiedCardinality::index:
+   case owl_qualifiedCardinality::index:
       if( np.is_object() ) return ptr_t(new Ot_opc_restriction(ea, ts));
       if( np.is_data() )   return ptr_t(new Ot_dpc_restriction(ea, ts));
 
@@ -162,10 +162,10 @@ make_restriction_ote(Expression_args const& ea, Triple_store const& ts) {
    }
 
    switch (ea.pred2()) {
-   case T_owl_allValuesFrom::index:
-   case T_owl_hasValue::index:
-   case T_owl_hasSelf::index:
-   case T_owl_someValuesFrom::index:
+   case owl_allValuesFrom::index:
+   case owl_hasValue::index:
+   case owl_hasSelf::index:
+   case owl_someValuesFrom::index:
       if( np.is_object() ) return ptr_t(new Ot_op_restriction(ea, ts));
       if( np.is_data() )   return ptr_t(new Ot_dp_restriction(ea, ts));
 
@@ -186,12 +186,12 @@ make_class_ote(Expression_args const& ea, Triple_store const& ts) {
 
    switch (ea.pred1()) {
 
-   case T_owl_intersectionOf::index:
-   case T_owl_unionOf::index: return ptr_t(new Ot_type_list(ea, ts));
+   case owl_intersectionOf::index:
+   case owl_unionOf::index: return ptr_t(new Ot_type_list(ea, ts));
 
-   case T_owl_complementOf::index: return ptr_t(new Ot_complement(ea, ts));
+   case owl_complementOf::index: return ptr_t(new Ot_complement(ea, ts));
 
-   case T_owl_oneOf::index: return ptr_t(new Ot_instance_list(ea, ts));
+   case owl_oneOf::index: return ptr_t(new Ot_instance_list(ea, ts));
 
    default: BOOST_THROW_EXCEPTION(
             Err()

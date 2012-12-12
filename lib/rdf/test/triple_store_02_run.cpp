@@ -107,9 +107,9 @@ BOOST_AUTO_TEST_CASE( test_literal_nodes_owl ) {
    BOOST_CHECK_NE(nid2, nid3);
    Node_string const& n3 = dynamic_cast<Node_string const&>(ts[nid3]);
    BOOST_CHECK_EQUAL(n3.value(), "blah");
-   BOOST_CHECK_EQUAL(n3.datatype(), t::T_xsd_string::id());
+   BOOST_CHECK_EQUAL(n3.datatype(), t::xsd_string::id());
 
-   const Node_id nid3a = ts.insert_literal("blah", t::T_xsd_string::id());
+   const Node_id nid3a = ts.insert_literal("blah", t::xsd_string::id());
    BOOST_CHECK_EQUAL(nid3, nid3a);
 
    const Node_id nid3b = ts.insert_literal("blah", "", "");

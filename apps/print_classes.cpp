@@ -68,8 +68,8 @@ int main(int argc, char* argv[]) {
 
       owlcpp::Triple_store::result_b<0,1,1,0>::type r = store.find_triple(
                owlcpp::any(),
-               owlcpp::terms::T_rdf_type::id(),
-               owlcpp::terms::T_owl_Class::id(),
+               owlcpp::terms::rdf_type::id(),
+               owlcpp::terms::owl_Class::id(),
                owlcpp::any()
       );
 

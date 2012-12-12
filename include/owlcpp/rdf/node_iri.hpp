@@ -18,7 +18,7 @@ namespace owlcpp{
 class Node_iri : public Node {
 public:
 
-   explicit Node_iri(const Ns_id ns = terms::N_empty::id(), std::string const& val = "")
+   explicit Node_iri(const Ns_id ns = terms::empty::id(), std::string const& val = "")
    : val_(val), ns_(ns)
    {
       if( is_blank(ns_) ) BOOST_THROW_EXCEPTION(

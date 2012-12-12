@@ -17,8 +17,6 @@ project
 ;
 
 import testing ;
-
-
 run 
       triple_to_axiom_speed.cpp
    : #args

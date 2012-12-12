@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE( test_iri_node ) {
    const Node_iri n2(Ns_id(41), "blah");
    BOOST_CHECK_NE(n1, n2);
 
-   BOOST_CHECK_THROW(Node_iri(owlcpp::terms::N_blank::id(), "blah"), Rdf_err);
+   BOOST_CHECK_THROW(Node_iri(owlcpp::terms::blank::id(), "blah"), Rdf_err);
 
    const Node_iri n3(Ns_id(42), "blahblah");
    BOOST_CHECK_NE(n1,  n3);
@@ -40,13 +40,13 @@ BOOST_AUTO_TEST_CASE( test_iri_node ) {
    const Node_iri n4(Ns_id(42), "blah");
    BOOST_CHECK_EQUAL(n1,  n4);
 
-   const Node_iri n5(owlcpp::terms::N_empty::id(), "");
+   const Node_iri n5(owlcpp::terms::empty::id(), "");
    BOOST_CHECK(n5.empty());
    const Node_iri n6;
    BOOST_CHECK(n6.empty());
    BOOST_CHECK_EQUAL(n5,  n6);
 
-   const Node_iri n7(owlcpp::terms::N_empty::id(), "blah");
+   const Node_iri n7(owlcpp::terms::empty::id(), "blah");
    BOOST_CHECK_NE(n5,  n7);
 }
 
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE( test_clone_iri_node ) {
    std::auto_ptr<Node> pn1(n1.clone());
    BOOST_CHECK_EQUAL(n1, *pn1);
 
-   const Node_iri n5(owlcpp::terms::N_empty::id(), "");
+   const Node_iri n5(owlcpp::terms::empty::id(), "");
    std::auto_ptr<Node> pn5(n5.clone());
    BOOST_CHECK_EQUAL(n5, *pn5);
 }
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE( test_clone_iri_node ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_blank_node ) {
    const Node_blank n1(0, Doc_id(42));
-   BOOST_CHECK_EQUAL(n1.ns_id(), owlcpp::terms::N_blank::id());
+   BOOST_CHECK_EQUAL(n1.ns_id(), owlcpp::terms::blank::id());
    const Node_blank n2(0, Doc_id(42));
    BOOST_CHECK_EQUAL(n1,  n2);
 

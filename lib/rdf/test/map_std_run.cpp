@@ -50,50 +50,50 @@ BOOST_AUTO_TEST_CASE( test_map_std_03 ) {
 
    BOOST_CHECK_THROW(nms.at(Node_id(3000)), Rdf_err);
    BOOST_CHECK_THROW(nms.at(Node_id(3)), Rdf_err);
-   BOOST_CHECK_NO_THROW(nms.at(t::T_empty_::id()));
-   BOOST_CHECK_NO_THROW(nms.at(t::T_xsd_ENTITY::id()));
-   BOOST_CHECK_NO_THROW(nms.at(t::T_xsd_positiveInteger::id()));
+   BOOST_CHECK_NO_THROW(nms.at(t::empty_::id()));
+   BOOST_CHECK_NO_THROW(nms.at(t::xsd_ENTITY::id()));
+   BOOST_CHECK_NO_THROW(nms.at(t::xsd_positiveInteger::id()));
 
-   BOOST_REQUIRE( nms.find(make_iri(t::T_empty_())) );
-   BOOST_REQUIRE( nms.find(make_iri(t::T_owl_Class())) );
-   BOOST_REQUIRE( nms.find(make_iri(t::T_owl_targetValue())) );
-   BOOST_REQUIRE( nms.find(make_iri(t::T_rdfs_Datatype())) );
-   BOOST_REQUIRE( nms.find(make_iri(t::T_rdf_type())) );
-   BOOST_REQUIRE( nms.find(make_iri(t::T_xsd_dateTime())) );
+   BOOST_REQUIRE( nms.find(make_iri(t::empty_())) );
+   BOOST_REQUIRE( nms.find(make_iri(t::owl_Class())) );
+   BOOST_REQUIRE( nms.find(make_iri(t::owl_targetValue())) );
+   BOOST_REQUIRE( nms.find(make_iri(t::rdfs_Datatype())) );
+   BOOST_REQUIRE( nms.find(make_iri(t::rdf_type())) );
+   BOOST_REQUIRE( nms.find(make_iri(t::xsd_dateTime())) );
 
    BOOST_CHECK_EQUAL(
-            *nms.find(make_iri(t::T_empty_())),
-            t::T_empty_::id()
+            *nms.find(make_iri(t::empty_())),
+            t::empty_::id()
    );
 
    BOOST_CHECK_EQUAL(
-            *nms.find(make_iri(t::T_owl_Class())),
-            t::T_owl_Class::id()
+            *nms.find(make_iri(t::owl_Class())),
+            t::owl_Class::id()
    );
 
    BOOST_CHECK_EQUAL(
-            *nms.find(make_iri(t::T_owl_targetValue())),
-            t::T_owl_targetValue::id()
+            *nms.find(make_iri(t::owl_targetValue())),
+            t::owl_targetValue::id()
    );
 
    BOOST_CHECK_EQUAL(
-            *nms.find(make_iri(t::T_rdfs_Datatype())),
-            t::T_rdfs_Datatype::id()
+            *nms.find(make_iri(t::rdfs_Datatype())),
+            t::rdfs_Datatype::id()
    );
 
    BOOST_CHECK_EQUAL(
-            *nms.find(make_iri(t::T_rdf_type())),
-            t::T_rdf_type::id()
+            *nms.find(make_iri(t::rdf_type())),
+            t::rdf_type::id()
    );
 
    BOOST_CHECK_EQUAL(
-            *nms.find(make_iri(t::T_xsd_dateTime())),
-            t::T_xsd_dateTime::id()
+            *nms.find(make_iri(t::xsd_dateTime())),
+            t::xsd_dateTime::id()
    );
 
    BOOST_CHECK_EQUAL(
-            *nms.find(make_iri(t::T_xsd_positiveInteger())),
-            t::T_xsd_positiveInteger::id()
+            *nms.find(make_iri(t::xsd_positiveInteger())),
+            t::xsd_positiveInteger::id()
    );
 }
 

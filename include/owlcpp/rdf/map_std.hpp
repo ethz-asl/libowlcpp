@@ -26,9 +26,9 @@ class Map_std : boost::noncopyable {
    template<class Inserter> explicit Map_std(Inserter const& ins)
    : map_ns_(Ns_id(0)), map_node_(Node_id(0))
    {
-      insert_ns_tag(terms::N_empty());
-      insert_ns_tag(terms::N_blank());
-      insert_node_tag(terms::T_empty_());
+      insert_ns_tag(terms::empty());
+      insert_ns_tag(terms::blank());
+      insert_node_tag(terms::empty_());
 
       ins(*this);
    }

@@ -182,9 +182,9 @@ public:
    std::pair<Doc_id,bool> insert(
             const Node_id iri,
             std::string const& path = "",
-            const Node_id vers = terms::T_empty_::id()
+            const Node_id vers = terms::empty_::id()
    ) {
-      if( iri == terms::T_empty_::id() ) BOOST_THROW_EXCEPTION(
+      if( iri == terms::empty_::id() ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("empty ontologyIRI is not allowed")
       );

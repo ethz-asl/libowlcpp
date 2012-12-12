@@ -25,7 +25,7 @@ void Ot_op_restriction::init(
 ) {
    switch(restr_type_()) {
 
-   case T_owl_hasValue::index:
+   case owl_hasValue::index:
       if( ! is_iri(ts[val].ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("non-IRI object node in \"x owl:hasValue y\"")
@@ -34,7 +34,7 @@ void Ot_op_restriction::init(
       inst_ = to_string(val, ts);
       break;
 
-   case T_owl_hasSelf::index:
+   case owl_hasSelf::index:
       try{ if( value<bool>(val, ts) ) break; } catch( Rdf_err const&) {}
       BOOST_THROW_EXCEPTION(
                Err()
@@ -42,8 +42,8 @@ void Ot_op_restriction::init(
                << Err::str1_t(to_string(val, ts))
       );
 
-   case T_owl_allValuesFrom::index:
-   case T_owl_someValuesFrom::index:
+   case owl_allValuesFrom::index:
+   case owl_someValuesFrom::index:
       check_declaration(val, Node_type::object(), ts);
       ot_ = make_expression<Obj_type>(val, ts);
       break;
@@ -66,13 +66,13 @@ TDLConceptExpression* Ot_op_restriction::get(ReasoningKernel& k ) const {
 
    switch(restr_type_()) {
 
-   case T_owl_allValuesFrom::index: return em.Forall(op_->get(k), ot_->get(k));
+   case owl_allValuesFrom::index: return em.Forall(op_->get(k), ot_->get(k));
 
-   case T_owl_hasValue::index: return em.Value(op_->get(k), em.Individual(inst_));
+   case owl_hasValue::index: return em.Value(op_->get(k), em.Individual(inst_));
 
-   case T_owl_hasSelf::index: return em.SelfReference(op_->get(k));
+   case owl_hasSelf::index: return em.SelfReference(op_->get(k));
 
-   case T_owl_someValuesFrom::index: return em.Exists(op_->get(k), ot_->get(k));
+   case owl_someValuesFrom::index: return em.Exists(op_->get(k), ot_->get(k));
 
    default: BOOST_THROW_EXCEPTION(
             Err()
@@ -92,7 +92,7 @@ void Ot_dp_restriction::init(
 
    switch(restr_type_()) {
 
-   case T_owl_hasValue::index:
+   case owl_hasValue::index:
       try{
          Node_literal const& node = to_literal(ts[val]);
          val_str_ = node.value_str();
@@ -107,13 +107,13 @@ void Ot_dp_restriction::init(
       }
       break;
 
-   case T_owl_hasSelf::index: BOOST_THROW_EXCEPTION(
+   case owl_hasSelf::index: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("invalid data property restriction, owl:hasSelf")
    );
 
-   case T_owl_allValuesFrom::index:
-   case T_owl_someValuesFrom::index:
+   case owl_allValuesFrom::index:
+   case owl_someValuesFrom::index:
       BOOST_ASSERT( declaration<Node_type>(val, ts).is_data() );
       dt_ = make_expression<Data_type>(val, ts);
       break;
@@ -137,9 +137,9 @@ TDLConceptExpression* Ot_dp_restriction::get(ReasoningKernel& k ) const {
 
    switch(restr_type_()) {
 
-   case T_owl_allValuesFrom::index: return em.Forall(dp_->get(k), dt_->get(k));
+   case owl_allValuesFrom::index: return em.Forall(dp_->get(k), dt_->get(k));
 
-   case T_owl_hasValue::index: {
+   case owl_hasValue::index: {
       TDLDataTypeExpression* dt = dt_->get(k);
       const TDLDataValue* val = em.DataValue(val_str_, dt);
       if( ! val ) BOOST_THROW_EXCEPTION(
@@ -151,7 +151,7 @@ TDLConceptExpression* Ot_dp_restriction::get(ReasoningKernel& k ) const {
       return em.Value(dp_->get(k), val);
    }
 
-   case T_owl_someValuesFrom::index: return em.Exists(dp_->get(k), dt_->get(k));
+   case owl_someValuesFrom::index: return em.Exists(dp_->get(k), dt_->get(k));
 
    default: BOOST_THROW_EXCEPTION(
             Err()
@@ -174,12 +174,12 @@ Ot_opc_restriction::Ot_opc_restriction(Expression_args const& ea, Triple_store c
   n_(ea.num)
 {
    switch(card_type_()) {
-   case T_owl_cardinality::index:
-   case T_owl_maxCardinality::index:
-   case T_owl_minCardinality::index:
-   case T_owl_maxQualifiedCardinality::index:
-   case T_owl_minQualifiedCardinality::index:
-   case T_owl_qualifiedCardinality::index:
+   case owl_cardinality::index:
+   case owl_maxCardinality::index:
+   case owl_minCardinality::index:
+   case owl_maxQualifiedCardinality::index:
+   case owl_minQualifiedCardinality::index:
+   case owl_qualifiedCardinality::index:
       break;
    default: BOOST_THROW_EXCEPTION(
             Err()
@@ -195,24 +195,24 @@ TDLConceptExpression* Ot_opc_restriction::get(ReasoningKernel& k ) const {
    BOOST_ASSERT( op_.get() );
    TExpressionManager& em = *k.getExpressionManager();
    switch(card_type_()) {
-   case T_owl_cardinality::index:
+   case owl_cardinality::index:
       return em.Cardinality(n_, op_->get(k), em.Top());
 
-   case T_owl_maxCardinality::index:
+   case owl_maxCardinality::index:
       return em.MaxCardinality(n_, op_->get(k), em.Top());
 
-   case T_owl_minCardinality::index:
+   case owl_minCardinality::index:
       return em.MinCardinality(n_, op_->get(k), em.Top());
 
-   case T_owl_maxQualifiedCardinality::index:
+   case owl_maxQualifiedCardinality::index:
       BOOST_ASSERT( ot_.get() );
       return em.MaxCardinality(n_, op_->get(k), ot_->get(k));
 
-   case T_owl_minQualifiedCardinality::index:
+   case owl_minQualifiedCardinality::index:
       BOOST_ASSERT( ot_.get() );
       return em.MinCardinality(n_, op_->get(k), ot_->get(k));
 
-   case T_owl_qualifiedCardinality::index:
+   case owl_qualifiedCardinality::index:
       BOOST_ASSERT( ot_.get() );
       return em.Cardinality(n_, op_->get(k), ot_->get(k));
 
@@ -237,12 +237,12 @@ Ot_dpc_restriction::Ot_dpc_restriction(Expression_args const& ea, Triple_store c
   n_(ea.num)
 {
    switch(card_type_()) {
-   case T_owl_cardinality::index:
-   case T_owl_maxCardinality::index:
-   case T_owl_minCardinality::index:
-   case T_owl_maxQualifiedCardinality::index:
-   case T_owl_minQualifiedCardinality::index:
-   case T_owl_qualifiedCardinality::index:
+   case owl_cardinality::index:
+   case owl_maxCardinality::index:
+   case owl_minCardinality::index:
+   case owl_maxQualifiedCardinality::index:
+   case owl_minQualifiedCardinality::index:
+   case owl_qualifiedCardinality::index:
       break;
    default:
       BOOST_THROW_EXCEPTION(
@@ -259,24 +259,24 @@ TDLConceptExpression* Ot_dpc_restriction::get(ReasoningKernel& k ) const {
    BOOST_ASSERT( dp_.get() );
    TExpressionManager& em = *k.getExpressionManager();
    switch(card_type_()) {
-   case T_owl_cardinality::index:
+   case owl_cardinality::index:
       return em.Cardinality(n_, dp_->get(k), em.DataTop());
 
-   case T_owl_maxCardinality::index:
+   case owl_maxCardinality::index:
       return em.MaxCardinality(n_, dp_->get(k), em.DataTop());
 
-   case T_owl_minCardinality::index:
+   case owl_minCardinality::index:
       return em.MinCardinality(n_, dp_->get(k), em.DataTop());
 
-   case T_owl_maxQualifiedCardinality::index:
+   case owl_maxQualifiedCardinality::index:
       BOOST_ASSERT( dt_.get() );
       return em.MaxCardinality(n_, dp_->get(k), dt_->get(k));
 
-   case T_owl_minQualifiedCardinality::index:
+   case owl_minQualifiedCardinality::index:
       BOOST_ASSERT( dt_.get() );
       return em.MinCardinality(n_, dp_->get(k), dt_->get(k));
 
-   case T_owl_qualifiedCardinality::index:
+   case owl_qualifiedCardinality::index:
       BOOST_ASSERT( dt_.get() );
       return em.Cardinality(n_, dp_->get(k), dt_->get(k));
 
@@ -292,8 +292,8 @@ TDLConceptExpression* Ot_dpc_restriction::get(ReasoningKernel& k ) const {
 *******************************************************************************/
 void Ot_type_list::make_sequence(const Node_id nid, Triple_store const& ts) {
    switch(type_()) {
-   case T_owl_intersectionOf::index:
-   case T_owl_unionOf::index:
+   case owl_intersectionOf::index:
+   case owl_unionOf::index:
       break;
    default:
       BOOST_THROW_EXCEPTION(
@@ -318,7 +318,7 @@ TDLConceptExpression* Ot_type_list::get(ReasoningKernel& k ) const {
 
    switch(type_()) {
 
-   case T_owl_intersectionOf::index:
+   case owl_intersectionOf::index:
       if( otl_.empty() ) return k.getExpressionManager()->Top();
       if( otl_.size() == 1U ) return otl_[0].get(k);
       em.newArgList();
@@ -326,7 +326,7 @@ TDLConceptExpression* Ot_type_list::get(ReasoningKernel& k ) const {
       for(std::size_t n = 0; n != otl_.size(); ++n) em.addArg(otl_[n].get(k));
       return em.And();
 
-   case T_owl_unionOf::index:
+   case owl_unionOf::index:
       if( otl_.empty() ) return k.getExpressionManager()->Bottom();
       if( otl_.size() == 1U ) return otl_[0].get(k);
       em.newArgList();

@@ -22,8 +22,8 @@ namespace owlcpp{ namespace terms{
 
 /**@brief
 @code
-struct T_empty_ {
-   typedef N_empty ns_type;
+struct empty_ {
+   typedef empty ns_type;
    typedef ::owlcpp::Node_id id_type;
    static const unsigned index = 0;
    static std::string const & name() {
@@ -40,7 +40,7 @@ OWLCPP_GENERATE_NODE_TAGS(OWLCPP_NODE_LIST_SYSTEM, 0)
 
 /**
 *******************************************************************************/
-inline bool is_empty(const Node_id id) {return id == terms::T_empty_::id();}
+inline bool is_empty(const Node_id id) {return id == terms::empty_::id();}
 
 }//namespace owlcpp
 #endif /* NODE_TAGS_SYSTEM_HPP_ */
