@@ -5,7 +5,6 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_TO_FACT_HPP_
 #define TRIPLE_TO_FACT_HPP_
-//#include "owlcpp/logic/config.hpp"
 #include "owlcpp/logic/detail/triple_to_fact_adaptor.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "factpp/config.hpp"
@@ -21,15 +20,16 @@ namespace owlcpp{
 @param strict if true (default), all requirements specified in
 http://www.w3.org/TR/2009/REC-owl2-mapping-to-rdf-20091027/
 are enforced
+@return number of axioms generated
 *******************************************************************************/
-template<class Range> inline void submit_triples(
+template<class Range> inline std::size_t submit_triples(
          Range r,
          Triple_store const& ts,
          ReasoningKernel& kernel,
          const bool strict = true
 ) {
    logic::factpp::Adaptor_triple ttfa(ts, kernel, strict);
-   ttfa.submit(r);
+   return ttfa.submit(r);
 }
 
 /** Convert all stored RDF triples to axioms and submit them to reasoning kernel
@@ -38,13 +38,14 @@ template<class Range> inline void submit_triples(
 @param strict if true (default), all requirements specified in
 http://www.w3.org/TR/2009/REC-owl2-mapping-to-rdf-20091027/
 are enforced
+@return number of axioms generated
 *******************************************************************************/
-inline void submit_triples(
+inline std::size_t submit_triples(
          Triple_store const& ts,
          ReasoningKernel& kernel,
          const bool strict = true
 ) {
-   submit_triples(ts.map_triple(), ts, kernel, strict);
+   return submit_triples(ts.map_triple(), ts, kernel, strict);
 }
 
 /**Example of submitting triples to reasoner

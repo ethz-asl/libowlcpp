@@ -27,9 +27,9 @@ using namespace owlcpp::terms;
 
 /*
 *******************************************************************************/
-void Adaptor_triple::submit(Triple const& t) {
+TDLAxiom* Adaptor_triple::submit(Triple const& t) {
    try{
-      axiom(t);
+      return axiom(t);
       //k_.isKBConsistent(); //check if triple crashes reasoner
    } catch(...) {
       BOOST_THROW_EXCEPTION(

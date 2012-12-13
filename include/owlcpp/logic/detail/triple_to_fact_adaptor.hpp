@@ -35,10 +35,14 @@ public:
    : strict_(strict), ts_(ts), k_(k)
    {}
 
-   void submit(Triple const&);
+   TDLAxiom* submit(Triple const&);
 
-   template<class Range> void submit(Range const& r) {
-      BOOST_FOREACH(Triple const& t, r) submit(t);
+   template<class Range> std::size_t submit(Range const& r) {
+      std::size_t n = 0;
+      BOOST_FOREACH(Triple const& t, r) {
+         if( submit(t) ) ++n;
+      }
+      return n;
    }
 
 private:

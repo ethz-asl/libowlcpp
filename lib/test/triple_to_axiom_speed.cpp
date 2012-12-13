@@ -35,28 +35,39 @@ int main(int argc, char* argv[]) {
    try{
       owlcpp::Catalog cat;
       const bfs::path in = argv[1];
-      add(cat, in.parent_path(), true);
-      owlcpp::Triple_store ts;
       typedef boost::chrono::high_resolution_clock clock_t;
       typedef clock_t::time_point time_t;
+      typedef boost::chrono::duration<double, boost::ratio<1,1> > dur_t;
+
       const time_t t0 = clock_t::now();
-      load_file(in, ts, cat);
-      typedef boost::chrono::duration<double, boost::nano> dur_t;
+      add(cat, in.parent_path(), false);
       const dur_t d0 = clock_t::now() - t0;
-        std::cout
-        << d0 / ts.map_triple().size() << " per triple" << '\n'
-        << ts.map_triple().size() << " triples" << '\n'
-        << ts.map_node().size() << " nodes" << '\n'
-        << ts.map_ns().size() << " namespace IRIs" << '\n'
-        ;
+      std::cout
+      << "cataloging:\n"
+      << d0 << '\n'
+      ;
+
+      owlcpp::Triple_store ts;
+      const time_t t1 = clock_t::now();
+      load_file(in, ts, cat);
+      const dur_t d1 = clock_t::now() - t1;
+      std::cout
+      << "parsing:\n"
+      << d1 << '\n'
+      << ts.map_triple().size() << " triples" << '\n'
+      << ts.map_node().size() << " nodes" << '\n'
+      << ts.map_ns().size() << " namespace IRIs" << '\n'
+      ;
 
         ReasoningKernel k;
-      const time_t t1 = clock_t::now();
-        submit_triples(ts, k);
-      const dur_t d1 = clock_t::now() - t1;
-        std::cout
-        << d1 / ts.map_triple().size() << " per triple" << '\n'
-        ;
+      const time_t t2 = clock_t::now();
+      const std::size_t n = submit_triples(ts, k);
+      const dur_t d2 = clock_t::now() - t2;
+      std::cout
+      << "axiom generation:\n"
+      << n << " axioms" << '\n'
+      << d2 << '\n'
+      ;
    }catch(...) {
       std::cerr << boost::current_exception_diagnostic_information() << std::endl;
       return 1;
