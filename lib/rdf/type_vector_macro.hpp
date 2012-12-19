@@ -46,7 +46,7 @@ part of owlcpp project.
 
 #define OWLCPP_MPL_VECTOR(seq) BOOST_PP_CAT(::boost::mpl::vector, BOOST_PP_SEQ_SIZE(seq))
 
-/** e.g., @code
+/** @details e.g., @code
 boost::mpl::vector48<
    rdfs_subClassOf, rdfs_subPropertyOf, ...   > @endcode
 *******************************************************************************/

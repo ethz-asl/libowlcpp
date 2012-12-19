@@ -31,9 +31,9 @@ template<class Super> class Map_node_literal_crtpb {
 public:
 
    /** @brief find literal node
-    @param value
-    @param dtype
-    @param lang
+    @param value literal node value
+    @param dt_iri datatype IRI
+    @param lang language
     */
    Node_id const* find_literal(
             std::string const& value,
