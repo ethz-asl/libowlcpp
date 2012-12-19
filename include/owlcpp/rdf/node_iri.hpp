@@ -26,7 +26,7 @@ public:
       );
    }
 
-   std::string const& name() const {return val_;}
+   std::string const& fragment() const {return val_;}
 
 private:
    std::string val_;
@@ -35,8 +35,6 @@ private:
    OWLCPP_VISITABLE
 
    Ns_id ns_id_impl() const { return ns_; }
-
-   bool empty_impl() const { return is_empty(ns_) && val_.empty(); }
 
    bool equal_impl(const Node& n) const {
       //todo: use typeid()?

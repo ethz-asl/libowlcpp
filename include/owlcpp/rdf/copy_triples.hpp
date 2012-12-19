@@ -98,7 +98,7 @@ private:
 
    void visit_impl(Node_iri const& node) {
       const Ns_id nsid = cp(node.ns_id());
-      last_inserted_id_ = dest_.insert_node_iri(nsid, node.name());
+      last_inserted_id_ = dest_.insert_node_iri(nsid, node.fragment());
    }
 
    void visit_impl(Node_blank const& node) {

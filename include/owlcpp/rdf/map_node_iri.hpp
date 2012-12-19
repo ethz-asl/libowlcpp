@@ -131,7 +131,7 @@ public:
                   Err()
                   << Err::msg_t("node already exists")
                   << Err::int1_t(node.ns_id()())
-                  << Err::str1_t(node.name())
+                  << Err::str1_t(node.fragment())
          );
       }
 

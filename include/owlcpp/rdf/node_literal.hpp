@@ -89,8 +89,6 @@ private:
 
    Node_id datatype_impl() const {return dt_;}
 
-   bool empty_impl() const { return false; }
-
    bool equal_impl(const Node& n) const {
       //todo: use typeid()?
       if( self_type const*const p = dynamic_cast<self_type const*>(&n) ) {

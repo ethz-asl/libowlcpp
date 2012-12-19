@@ -41,9 +41,9 @@ BOOST_AUTO_TEST_CASE( test_iri_node ) {
    BOOST_CHECK_EQUAL(n1,  n4);
 
    const Node_iri n5(owlcpp::terms::empty::id(), "");
-   BOOST_CHECK(n5.empty());
    const Node_iri n6;
-   BOOST_CHECK(n6.empty());
+   BOOST_CHECK_EQUAL(n6.ns_id(), owlcpp::terms::empty::id());
+   BOOST_CHECK_EQUAL(n6.fragment(), "");
    BOOST_CHECK_EQUAL(n5,  n6);
 
    const Node_iri n7(owlcpp::terms::empty::id(), "blah");

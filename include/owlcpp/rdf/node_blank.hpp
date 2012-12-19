@@ -32,8 +32,6 @@ private:
 
    Ns_id ns_id_impl() const { return terms::blank::id(); }
 
-   bool empty_impl() const { return false; }
-
    bool equal_impl(const Node& n) const {
       //todo: use typeid()?
       if( Node_blank const*const p = dynamic_cast<Node_blank const*>(&n) ) {
