@@ -47,7 +47,7 @@ template<> struct Map_traits<Triple_store> {
 #ifdef OWLCPP_RDF_INDEX_PREDICATE
             OWLCPP_RDF_INDEX_PREDICATE
 #else
-            0
+            1
 #endif
             ,
 #ifdef OWLCPP_RDF_INDEX_OBJECT
