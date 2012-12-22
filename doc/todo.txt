@@ -9,3 +9,5 @@ TODO
 - lax (non-strict) axiom generation
 
 - in Raptor wrapper, allocate fixed-length buffer
+
+- make Ns_iri class to represent namespace IRIs
