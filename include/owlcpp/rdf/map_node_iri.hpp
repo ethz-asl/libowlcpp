@@ -14,7 +14,6 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/node_iri.hpp"
 #include "owlcpp/rdf/exception.hpp"
-#include "owlcpp/rdf/hash_node.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/detail/iterator_member_pair.hpp"
 #include "owlcpp/terms/detail/max_standard_id.hpp"

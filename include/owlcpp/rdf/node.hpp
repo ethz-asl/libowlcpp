@@ -30,6 +30,9 @@ private:
    virtual Node* clone_impl() const =0;
 };
 
+/**
+*******************************************************************************/
+inline std::size_t hash_value(Node const& node) {return node.hash();}
 
 }//namespace owlcpp
 #endif /* RDF_NODE_HPP_ */

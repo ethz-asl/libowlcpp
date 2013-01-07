@@ -55,5 +55,10 @@ private:
 
 };
 
+/**
+*******************************************************************************/
+inline std::size_t hash_value(Node_iri const& node) {return node.hash();}
+
+
 }//namespace owlcpp
 #endif /* NODE_IRI_HPP_ */

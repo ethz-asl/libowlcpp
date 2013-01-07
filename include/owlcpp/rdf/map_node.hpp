@@ -21,7 +21,6 @@ part of owlcpp project.
 #include "owlcpp/rdf/node_literal.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/rdf/print_node.hpp"
-#include "owlcpp/rdf/hash_node.hpp"
 #include "owlcpp/doc_id.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/detail/iterator_member_pair.hpp"
