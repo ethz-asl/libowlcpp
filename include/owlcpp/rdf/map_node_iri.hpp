@@ -69,19 +69,13 @@ public:
    const_iterator end() const {return map_.end();}
    bool empty() const {return map_.empty();}
 
-   bool valid(const Node_id id) const {
-      if( id < min_id_ ) return false;
-      const std::size_t n = sz(id);
-      return n < vid_.size() && vid_[n];
-   }
-
    Node_iri const& operator[](const Node_id id) const {
-      BOOST_ASSERT(valid(id));
+      BOOST_ASSERT(find(id));
       return get(id);
    }
 
    Node_iri const& at(const Node_id id) const {
-      if( ! valid(id) ) BOOST_THROW_EXCEPTION(
+      if( ! find(id) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("invalid node ID")
                << Err::int1_t(id())
@@ -134,7 +128,7 @@ public:
          );
       }
 
-      if( valid(id) ) BOOST_THROW_EXCEPTION(
+      if( find(id) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("node ID not available")
                << Err::int1_t(id())
@@ -161,7 +155,7 @@ public:
    }
 
    void remove(const Node_id id) {
-      BOOST_ASSERT(valid(id));
+      BOOST_ASSERT(find(id));
       const std::size_t n = map_.erase(get(id));
       boost::ignore_unused_variable_warning(n);
       BOOST_ASSERT(n);

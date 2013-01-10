@@ -40,17 +40,17 @@ BOOST_AUTO_TEST_CASE( test_map_ns_01 ) {
    mns1.remove(id2);
    BOOST_CHECK_EQUAL(mns1.size(), 2U);
    BOOST_CHECK( ! mns1.find_prefix("p2"));
-   BOOST_CHECK( ! mns1.valid(id2) );
+   BOOST_CHECK( ! mns1.find(id2) );
 
    BOOST_CHECK(  mns2.find_prefix("p2"));
-   BOOST_CHECK(  mns2.valid(id2) );
+   BOOST_CHECK(  mns2.find(id2) );
    BOOST_CHECK_EQUAL(mns2[id2], "i2");
    BOOST_CHECK_EQUAL(mns2.prefix(id2), "p2");
 
    mns1.remove(id10);
-   BOOST_CHECK( ! mns1.valid(id10) );
+   BOOST_CHECK( ! mns1.find(id10) );
    mns1.remove(id1);
-   BOOST_CHECK( ! mns1.valid(id1) );
+   BOOST_CHECK( ! mns1.find(id1) );
 
    const Ns_id id13 = mns1.insert("i13");
    //removed IDs are recycled

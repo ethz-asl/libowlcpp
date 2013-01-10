@@ -37,25 +37,32 @@ template<class Super> class Map_std_node_crtpb {
 
 public:
 
-   bool valid(const Node_id nid) const {
-      BOOST_ASSERT( ! (_map_std().valid(nid) && _map_node().valid(nid)) );
-      return _map_std().valid(nid) || _map_node().valid(nid);
-   }
-
-   bool is_standard(const Node_id nid) const {return _map_std().valid(nid);}
+   bool is_standard(const Node_id nid) const {return _map_std().is_standard(nid);}
 
    node_type const& operator[](const Node_id id) const {
-      return id < detail::min_node_id() ? _map_std()[id] : _map_node()[id];
+      return _map_std().is_standard(id) ? _map_std()[id] : _map_node()[id];
    }
 
    /**
     @param id node ID
-    @return immutable reference to node object with specified ID
+    @return node object with specified ID
     @throw Rdf_err if @b id does not exist
    */
    node_type const& at(const Node_id id) const {
-      return id < detail::min_node_id() ? _map_std().at(id) : _map_node().at(id);
+      return _map_std().is_standard(id) ? _map_std().at(id) : _map_node().at(id);
    }
+
+   /**
+    @param id node ID
+    @return pointer to node object with specified ID or NULL if ID is invalid
+   */
+   node_type const* find(const Node_id id) const {
+      return _map_std().is_standard(id) ?
+               _map_std().find(id) :
+               _map_node().find(id)
+               ;
+   }
+
 
    /**@brief Insert IRI node
     @param nsid namespace IRI id
@@ -64,7 +71,7 @@ public:
    */
    Node_id insert_node_iri(const Ns_id nsid, std::string const& name) {
       BOOST_ASSERT(
-               static_cast<Super const&>(*this).valid(nsid) &&
+               static_cast<Super const&>(*this).find(nsid) &&
                "invalid namespace ID"
       );
       typedef typename Super::Err Err;
@@ -90,7 +97,7 @@ public:
 
    Node_id const* find_node_iri(const Ns_id nsid, std::string const& name) const {
       BOOST_ASSERT(
-               static_cast<Super const&>(*this).valid(nsid) &&
+               static_cast<Super const&>(*this).find(nsid) &&
                "invalid namespace ID"
       );
       if( Node_id const*const nid = _map_std().find(nsid, name) ) return nid;

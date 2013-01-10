@@ -52,7 +52,8 @@ public:
    bool empty() const {return map_.empty();}
 
    obj_type const& operator[](const id_type id) const {
-      BOOST_ASSERT(find(id));
+      BOOST_ASSERT( vpos(id) < vid_.size() );
+      BOOST_ASSERT( vid_[vpos(id)] );
       return *vid_[vpos(id)];
    }
 

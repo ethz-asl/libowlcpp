@@ -80,21 +80,20 @@ public:
    const_iterator end() const {return map_.end();}
    bool empty() const {return map_.empty();}
 
-   bool valid(const Node_id id) const {
-      if( id < detail::min_node_id() ) return false;
-      const std::size_t n = sz(id);
-      return n < vid_.size() && ! vid_.is_null(n);
+   Node const& operator[](const Node_id id) const {
+      const std::size_t n = vpos(id);
+      BOOST_ASSERT( n < vid_.size() );
+      BOOST_ASSERT( ! vid_.is_null(n) );
+      return vid_[n];
    }
 
-   Node const& operator[](const Node_id id) const {return get(id);}
-
    Node const& at(const Node_id id) const {
-      if( ! valid(id) ) BOOST_THROW_EXCEPTION(
+      if( Node const* node = find(id) ) return *node;
+      BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("invalid node ID")
                << Err::int1_t(id())
       );
-      return get(id);
    }
 
    Node const* find(const Node_id id) const {
@@ -102,7 +101,7 @@ public:
                id < detail::min_node_id() ||
                id() >= vid_.size() + detail::min_node_id()()
       ) return 0;
-      return  &vid_[sz(id)];
+      return  &vid_[vpos(id)];
    }
 
    Node_id const* find(Node const& node) const {
@@ -153,7 +152,7 @@ public:
       }
       const Node_id id = erased_.back();
       erased_.pop_back();
-      const std::size_t n = sz(id);
+      const std::size_t n = vpos(id);
       BOOST_ASSERT(vid_.is_null(n));
       vid_.replace(n, np);
       map_.emplace(np, id);
@@ -192,13 +191,13 @@ public:
    }
 
    std::auto_ptr<Node> remove(const Node_id id) {
-      BOOST_ASSERT(valid(id));
+      BOOST_ASSERT(find(id));
       const std::size_t n = map_.erase(&get(id));
       boost::ignore_unused_variable_warning(n);
       BOOST_ASSERT(n);
 
       erased_.push_back(id);
-      return ptr_t( vid_.replace(sz(id), 0).release() );
+      return ptr_t( vid_.replace(vpos(id), 0).release() );
    }
 
    void clear() {
@@ -212,14 +211,14 @@ private:
    map_t map_;
    std::vector<Node_id> erased_;
 
-   std::size_t sz(const Node_id id) const {
+   std::size_t vpos(const Node_id id) const {
       BOOST_ASSERT(id >= detail::min_node_id());
       return id() - detail::min_node_id()();
    }
 
    Node_id nid(const std::size_t n) const {return Node_id(n + detail::min_node_id()());}
 
-   Node const& get(const Node_id id) const {return vid_[sz(id)];}
+   Node const& get(const Node_id id) const {return vid_[vpos(id)];}
 
    void check_insert(const Node_id id, ptr_t np) {
       Node_id const* id0 = find(*np);
@@ -232,7 +231,7 @@ private:
                   << Err::str1_t(to_string(*np))
          );
       }
-      if( valid(id) ) BOOST_THROW_EXCEPTION(
+      if( find(id) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("node ID is reserved")
                << Err::int1_t(id())
@@ -241,7 +240,7 @@ private:
    }
 
    void insert(const Node_id id, Node* np) {
-      const std::size_t n = sz(id);
+      const std::size_t n = vpos(id);
       if( n < vid_.size() ) {
          vid_.replace(n, np);
       } else {

@@ -22,11 +22,9 @@ public:
    typedef typename traits::ns_id_type ns_id_type;
 
    BOOST_CONCEPT_USAGE(Ns_store) {
-      const bool b = t_.valid(nsid_);
-      boost::ignore_unused_variable_warning(b);
-
       str_ = t_[nsid_];
       str_ = t_.at(nsid_);
+      str_ = *t_.find(nsid_);
       str_ = t_.prefix(nsid_);
 
       map_ns_type const& map_ns = t_.map_ns();
@@ -54,10 +52,11 @@ public:
    typedef typename traits::map_node_type map_node_type;
    typedef typename traits::node_id_type node_id_type;
    typedef typename traits::ns_id_type ns_id_type;
+   typedef typename traits::node_type node_type;
 
    BOOST_CONCEPT_USAGE(Iri_node_store) {
-      const bool b = t_.valid(nid_);
-      boost::ignore_unused_variable_warning(b);
+      node_type const* node = t_.find(nid_);
+      boost::ignore_unused_variable_warning(node);
 
       map_node_type const& map_node = t_.map_node();
       boost::ignore_unused_variable_warning(map_node);
@@ -84,10 +83,11 @@ public:
    typedef typename traits::map_doc_type map_doc_type;
    typedef typename traits::doc_id_type doc_id_type;
    typedef typename traits::node_id_type node_id_type;
+   typedef typename traits::doc_type doc_type;
 
    BOOST_CONCEPT_USAGE(Doc_store) {
-      const bool b = t_.valid(did_);
-      boost::ignore_unused_variable_warning(b);
+      doc_type const* doc = t_.find(did_);
+      boost::ignore_unused_variable_warning(doc);
 
       map_doc_type const& map_doc = t_.map_doc();
       boost::ignore_unused_variable_warning(map_doc);

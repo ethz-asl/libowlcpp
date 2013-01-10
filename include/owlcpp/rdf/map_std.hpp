@@ -77,23 +77,23 @@ public:
     That is, all nodes from this namespace should reside in this map.
    */
    bool is_standard(const Ns_id nsid) const {
-      return
-               ! is_empty(nsid) &&
-               ! is_blank(nsid) &&
-               nsid < detail::min_ns_id()
-               ;
+      return nsid < detail::min_ns_id();
    }
 
-   bool valid(const Ns_id nsid) const {return map_ns_.valid(nsid);}
+   bool is_standard(const Node_id nid) const {
+      return nid < detail::min_node_id();
+   }
+
    Ns_id const* find_iri(std::string const& iri) const {return map_ns_.find_iri(iri);}
    Ns_id const* find_prefix(std::string const& pref) const {return map_ns_.find_prefix(pref);}
    std::string operator[](const Ns_id nsid) const {return map_ns_[nsid];}
    std::string at(const Ns_id nsid) const {return map_ns_.at(nsid);}
+   std::string const* find(const Ns_id nsid) const {return map_ns_.find(nsid);}
    std::string prefix(const Ns_id nsid) const {return map_ns_.prefix(nsid);}
 
-   bool valid(const Node_id nid) const {return map_node_.valid(nid);}
    Node_iri const& operator[](const Node_id nid) const {return map_node_[nid];}
    Node_iri const& at(const Node_id nid) const {return map_node_.at(nid);}
+   Node_iri const* find(const Node_id nid) const {return map_node_.find(nid);}
    Node_id const* find(Node_iri const& node) const {return map_node_.find(node);}
 
    Node_id const* find(const Ns_id ns, std::string const& val) const {

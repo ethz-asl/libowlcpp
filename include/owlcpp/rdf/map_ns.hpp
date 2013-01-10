@@ -59,26 +59,24 @@ public:
    const_iterator end() const {return iri_.end();}
    bool empty() const {return iri_.empty();}
 
-   bool valid(const Ns_id id) const {
-      return
-               id >= min_id_ &&
-               id() - min_id_() < id_.size() &&
-               get(id).first != iri_.end()
-               ;
-   }
-
    std::string operator[](const Ns_id id) const {
-      BOOST_ASSERT(valid(id));
       return get(id).first->first;
    }
 
    std::string at(const Ns_id id) const {
-      if( ! valid(id) ) BOOST_THROW_EXCEPTION(
+      if( std::string const*const str = find(id) ) return *str;
+      BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("invalid namespace ID")
                << Err::int1_t(id())
       );
-      return get(id).first->first;
+   }
+
+   std::string const* find(const Ns_id id) const {
+      if( id < min_id_ ) return 0;
+      const std::size_t n = id() - min_id_();
+      if( n < id_.size() ) return &id_[n].first->first;
+      return 0;
    }
 
    /**
@@ -92,7 +90,6 @@ public:
    }
 
    std::string prefix(const Ns_id id) const {
-      BOOST_ASSERT( valid(id) );
       id_value_t const& v = get(id);
       if( v.second == pref_.end() ) return "";
       return v.second->first;
@@ -136,7 +133,6 @@ public:
     if \b pref is empty, the existing prefix is cleared from the IRI
    */
    void set_prefix(const Ns_id id, std::string const& pref = "") {
-      BOOST_ASSERT( valid(id) );
       id_value_t& v = get(id);
 
       if( pref.empty() ) {
@@ -171,7 +167,7 @@ public:
    }
 
    void remove(const Ns_id id) {
-      if( ! valid(id) ) BOOST_THROW_EXCEPTION(
+      if( ! find(id) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("removing non-existing IRI ID")
                << Err::int1_t(id())
@@ -205,11 +201,17 @@ private:
    }
 
    id_value_t& get(const Ns_id id) {
-      return id_[id() - min_id_()];
+      BOOST_ASSERT( id >= min_id_ );
+      const std::size_t n = id() - min_id_();
+      BOOST_ASSERT( n < id_.size() );
+      return id_[n];
    }
 
    id_value_t const& get(const Ns_id id) const {
-      return id_[id() - min_id_()];
+      BOOST_ASSERT( id >= min_id_ );
+      const std::size_t n = id() - min_id_();
+      BOOST_ASSERT( n < id_.size() );
+      return id_[n];
    }
 
    void resize(const Ns_id id) {

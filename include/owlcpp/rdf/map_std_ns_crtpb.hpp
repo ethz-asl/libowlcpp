@@ -35,19 +35,20 @@ template<class Super> class Map_std_ns_crtpb {
    }
 
 public:
-   bool valid(const Ns_id nsid) const {
-      BOOST_ASSERT(! (_map_std().valid(nsid) && _map_ns().valid(nsid)) );
-      return _map_std().valid(nsid) || _map_ns().valid(nsid);
-   }
 
    std::string operator[](const Ns_id nsid) const {
-      BOOST_ASSERT( valid(nsid) );
-      return nsid < detail::min_ns_id() ? _map_std()[nsid] : _map_ns()[nsid];
+      return _map_std().is_standard(nsid) ?
+               _map_std()[nsid] : _map_ns()[nsid];
    }
 
    std::string at(const Ns_id nsid) const {
-      return nsid < detail::min_ns_id() ?
+      return _map_std().is_standard(nsid) ?
                _map_std().at(nsid) : _map_ns().at(nsid);
+   }
+
+   std::string const* find(const Ns_id nsid) const {
+      return _map_std().is_standard(nsid) ?
+               _map_std().find(nsid) : _map_ns().find(nsid);
    }
 
    /**
@@ -55,8 +56,7 @@ public:
     @return IRI prefix string or "" if no prefix was defined
    */
    std::string prefix(const Ns_id nsid) const {
-      BOOST_ASSERT( valid(nsid) );
-      return nsid < detail::min_ns_id() ?
+      return _map_std().is_standard(nsid) ?
                _map_std().prefix(nsid) : _map_ns().prefix(nsid);
    }
 
@@ -99,7 +99,7 @@ public:
                   << typename Err::str2_t(_map_std().prefix(nsid))
          );
       }
-      BOOST_ASSERT( _map_ns().valid(nsid) );
+      BOOST_ASSERT( _map_ns().find(nsid) );
       if( pref.empty() ) {
          _map_ns().set_prefix(nsid);
          return;

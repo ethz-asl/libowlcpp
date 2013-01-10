@@ -34,14 +34,16 @@ public:
    typedef typename map_doc_type::iri_range doc_iri_range;
    typedef typename map_doc_type::version_range doc_version_range;
 
-   bool valid(const Doc_id did) const {return _map_doc().valid(did);}
-
    doc_type const& operator[](const Doc_id did) const {
       return _map_doc()[did];
    }
 
    doc_type const& at(const Doc_id did) const {
       return _map_doc().at(did);
+   }
+
+   doc_type const* find(const Doc_id did) const {
+      return _map_doc().find(did);
    }
 
    /**@brief Add document info: location, ontologyIRI, and versionIRI.
@@ -71,8 +73,8 @@ public:
             const Node_id vers_id = terms::empty_::id()
    ) {
       BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(iri_id) && "invalid ontology IRI ID" );
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(vers_id) && "invalid version IRI ID" );
+      BOOST_ASSERT( static_cast<Super const&>(*this).find(iri_id) && "invalid ontology IRI ID" );
+      BOOST_ASSERT( static_cast<Super const&>(*this).find(vers_id) && "invalid version IRI ID" );
       return _map_doc().insert(iri_id, path, vers_id);
    }
 

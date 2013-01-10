@@ -96,8 +96,8 @@ public:
    using Map_std_node_crtpb<Triple_store_temp>::find_node_iri;
    using Crtpb_ns_node_iri<Triple_store_temp>::find_node_iri;
 
-   using Map_std_ns_crtpb<Triple_store_temp>::valid;
-   using Map_std_node_crtpb<Triple_store_temp>::valid;
+   using Map_std_ns_crtpb<Triple_store_temp>::find;
+   using Map_std_node_crtpb<Triple_store_temp>::find;
 
 private:
    map_std_type const& map_std_;

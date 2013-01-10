@@ -28,20 +28,20 @@ const Node_iri n2(nsid2, "blah");
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_map_node_iri_01 ) {
    Map_node_iri mni1(nid0);
-   BOOST_CHECK( ! mni1.valid(nid1) );
+   BOOST_CHECK( ! mni1.find(nid1) );
 
    const Node_id nid2 = mni1.insert(n2);
-   BOOST_REQUIRE( mni1.valid(nid2) );
+   BOOST_REQUIRE( mni1.find(nid2) );
    BOOST_CHECK_EQUAL(mni1[nid2], n2);
    std::cout << n2 << std::endl;
 
    const Node_id nid2a = mni1.insert_iri(nsid2, "blah");
-   BOOST_CHECK( mni1.valid(nid2a) );
+   BOOST_CHECK( mni1.find(nid2a) );
 
    BOOST_CHECK_EQUAL(nid2, nid2a);
 
    const Node_id nid3 = mni1.insert_iri(nsid3, "blah");
-   BOOST_CHECK( mni1.valid(nid3) );
+   BOOST_CHECK( mni1.find(nid3) );
 
    BOOST_CHECK_NE(nid2, nid3);
 
@@ -50,17 +50,15 @@ BOOST_AUTO_TEST_CASE( test_map_node_iri_01 ) {
 
    mni1.remove(nid2);
    BOOST_CHECK( ! mni1.find(n2) );
-   BOOST_CHECK( ! mni1.valid(nid2) );
    BOOST_CHECK( ! mni1.find(nid2) );
 
    BOOST_CHECK(   mni2.find(n2) );
-   BOOST_CHECK(   mni2.valid(nid2) );
    BOOST_CHECK(   mni2.find(nid2) );
    BOOST_CHECK_EQUAL(mni2[nid2].ns_id(), nsid2);
    BOOST_CHECK_EQUAL(mni2[nid2], n2);
 
    const Node_id id4 = mni1.insert_iri(Ns_id(13), "blahblah");
-   BOOST_CHECK( mni1.valid(id4) );
+   BOOST_CHECK( mni1.find(id4) );
    BOOST_CHECK_EQUAL(nid2, id4); //ID got recycled
 
    //insert existing node with new ID
@@ -78,7 +76,7 @@ BOOST_AUTO_TEST_CASE( test_map_node_iri_01 ) {
    //insert existing node with its current ID (NOP)
    mni1.insert_iri(id4, Ns_id(13), "blahblah");
 
-   BOOST_CHECK( ! mni1.valid(Node_id(42)) );
+   BOOST_CHECK( ! mni1.find(Node_id(42)) );
    mni1.insert_iri(Node_id(42), Ns_id(142), "new_node");
 }
 
