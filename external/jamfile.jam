@@ -28,10 +28,9 @@ alias factpp_kernel
 ;
 
 # libxml2 (not Expat) is used with Raptor because it better handles encodings.
-# Building libxml2 requires iconv.
-# On Linux libxml2 is integrated into the system and is expected to be available.
-# On Windows, libxml2 is built from source
-# On Mac, pre-built libxml2 is currently required.
+# libxml2 is built from source.
+# On MS Windows, this requires pre-built iconv library.
+# On Linux, iconv is integrated into the system and is expected to be available.
 
 if ! $(LIBXML2) { 
    EXIT "
@@ -41,7 +40,11 @@ if ! $(LIBXML2) {
 }
 
 import modules ;
-if [ modules.peek : OS ] = NT && ! $(ICONV) && ! ( $(ICONV_DLL) && $(ICONV2_LIB) && $(ICONV_H) ) { 
+if 
+   [ modules.peek : OS ] = NT && 
+   ! $(ICONV) && 
+   ! ( $(ICONV_DLL) && $(ICONV2_LIB) && $(ICONV_H) ) 
+{ 
    EXIT "
    Please set variable ICONV to location of pre-compiled iconv library.
    See doc/user-config.jam

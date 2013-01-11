@@ -58,9 +58,9 @@ local utils = "c:/utils" ;
 
 ## Boost library source
 ## http://www.boost.org/
-# constant BOOST : "$(utils)/boost_1_51_0/" 1.51.0 ;
+# constant BOOST : "$(utils)/boost_1_52_0/" 1.52.0 ;
 
-## libxml2 library source (required under MS Windows)
+## libxml2 library source
 ## http://xmlsoft.org/
 # constant LIBXML2 : "$(utils)/libxml2-2.9.0" 2.9.0 ;
 
@@ -74,9 +74,9 @@ local utils = "c:/utils" ;
 
 ## FaCT++ library source
 ## http://code.google.com/p/factplusplus/
-# constant FACTPP : "$(utils)/FaCT++-1.6.0" 1.6.0 ;
+# constant FACTPP : "$(utils)/FaCT++-1.6.1" 1.6.1 ;
 
 ## owlcpp library source
 ## http://sourceforge.net/projects/owl-cpp/
 ## (optionally) uncomment this to use owlcpp library in your projects
-# constant OWLCPP : "$(utils)/owlcpp" 0.0.3 ;
+# constant OWLCPP : "$(utils)/owlcpp" 0.2.0 ;

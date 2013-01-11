@@ -113,9 +113,6 @@ rule init ( version ? : location ? : options * ) {
 
    local headers = [ copy-headers $(version) : $(location) ] ;
    
-#   exit "
-#"$(headers) ;
-   
    ICONV_LIB ?= $(ICONV[1])/lib/iconv_a.lib ;
    ICONV_DLL ?= $(ICONV[1])/bin/iconv.dll $(ICONV[1])/lib/iconv.lib ;
    ICONV_H ?= $(ICONV[1])/include ;
