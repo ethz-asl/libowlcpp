@@ -7,6 +7,7 @@ project external ;
 
 if ! $(RAPTOR) { 
    EXIT "
+   ERROR:
    Please set variable RAPTOR to location and version of expat library.
    See doc/user-config.jam
    " ;
@@ -17,6 +18,7 @@ alias raptor : /ext/raptor//raptor ;
 
 if ! $(FACTPP) { 
    EXIT "
+   ERROR:
    Please set variable FACTPP to location and version of FaCT++ library.
    See doc/user-config.jam
    " ;
@@ -34,6 +36,7 @@ alias factpp_kernel
 
 if ! $(LIBXML2) { 
    EXIT "
+   ERROR:
    Please set variable LIBXML2 to location of libxml2 library source.
    See doc/user-config.jam
    " ;
@@ -46,6 +49,7 @@ if
    ! ( $(ICONV_DLL) && $(ICONV2_LIB) && $(ICONV_H) ) 
 { 
    EXIT "
+   ERROR:
    Please set variable ICONV to location of pre-compiled iconv library.
    See doc/user-config.jam
    " ;

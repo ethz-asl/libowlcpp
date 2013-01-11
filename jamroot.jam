@@ -25,7 +25,13 @@ constant LIB_REQUIREMENTS :
    <toolset>msvc:<cxxflags>/Gy
 ;
 
-if ! $(BOOST) { EXIT "download boost library and set location for BOOST; see doc/user-config.jam" ; }
+if ! $(BOOST) {
+   EXIT "
+   ERROR:
+   Please set variable BOOST to location and version of Boost library.
+   See doc/user-config.jam
+   " ; 
+}
 use-project /boost : $(BOOST[1]) ;
 
 project owlcpp
