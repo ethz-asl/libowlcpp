@@ -11,6 +11,7 @@ part of owlcpp project.
 #include "boost/numeric/conversion/cast.hpp"
 #include "boost/lexical_cast.hpp"
 #include "boost/functional.hpp"
+#include "boost/function.hpp"
 
 #include "owlcpp/rdf/node_blank.hpp"
 #include "owlcpp/rdf/node_literal.hpp"
@@ -50,18 +51,25 @@ std::string to_string(Node_string const& node) {
 namespace{
 /*
 *******************************************************************************/
-template<class IRIPrint> class To_string : public Visitor_node {
+class To_string : public Visitor_node {
+   typedef boost::function<std::string(Node_iri const&)> iri_printer_t;
+
+   explicit To_string(iri_printer_t const& iri_printer)
+   : iri_printer_(iri_printer)
+   {}
+
 public:
-   To_string(IRIPrint const& iri_print, Node const& node)
-   : iri_print_(iri_print)
-   {
-      node.accept(*this);
+   static std::string run(iri_printer_t const& iri_printer, Node const& node) {
+      To_string ts(iri_printer);
+      node.accept(ts);
+      return ts.str_;
    }
-   std::string str_;
 
 private:
-   IRIPrint const& iri_print_;
-   void visit_impl(Node_iri const& node) {str_ = iri_print_(node);}
+   iri_printer_t iri_printer_;
+   std::string str_;
+//   IRIPrint const& iri_print_;
+   void visit_impl(Node_iri const& node) {str_ = iri_printer_(node);}
    void visit_impl(Node_blank const& node) {str_ = to_string(node);}
    void visit_impl(Node_bool const& node) {str_ = to_string(node);}
    void visit_impl(Node_int const& node) {str_ = to_string(node);}
@@ -70,19 +78,14 @@ private:
    void visit_impl(Node_string const& node) {str_ = to_string(node);}
 };
 
-template<class IRIPrint> std::string run_to_string(
-         IRIPrint const& iri_print, Node const& node
-) {
-   return To_string<IRIPrint>(iri_print, node).str_;
-}
-
 }//namespace anonymous
 
 /*
 *******************************************************************************/
 std::string to_string(Node const& node) {
-   return run_to_string(
-            static_cast<std::string(&)(Node_iri const&)>(to_string),
+   //resolve overload
+   return To_string::run(
+            static_cast<std::string(*)(Node_iri const&)>(to_string),
             node
    );
 }
@@ -90,8 +93,9 @@ std::string to_string(Node const& node) {
 /**@return IRI node string with complete namespace or prefix (if defined)
 *******************************************************************************/
 std::string to_string(Node const& node, Triple_store const& ts) {
-   typedef std::string(&fun_t)(Node_iri const&, Triple_store const&);
-   return run_to_string(
+   //resolve overload
+   typedef std::string(*fun_t)(Node_iri const&, Triple_store const&);
+   return To_string::run(
             boost::bind2nd(static_cast<fun_t>(to_string), ts),
             node
    );
@@ -106,8 +110,9 @@ std::string to_string(const Node_id nid, Triple_store const& ts) {
 /**@return IRI node string with namespace prefix, generated, if needed
 *******************************************************************************/
 std::string to_string_pref(Node const& node, Triple_store const& ts) {
-   typedef std::string(&fun_t)(Node_iri const&, Triple_store const&);
-   return run_to_string(
+   //resolve overload
+   typedef std::string(*fun_t)(Node_iri const&, Triple_store const&);
+   return To_string::run(
             boost::bind2nd(static_cast<fun_t>(to_string_pref), ts),
             node
    );
@@ -122,8 +127,9 @@ std::string to_string_pref(const Node_id nid, Triple_store const& ts) {
 /**@return node string with complete namespace
 *******************************************************************************/
 std::string to_string_full(Node const& node, Triple_store const& ts) {
-   typedef std::string(&fun_t)(Node_iri const&, Triple_store const&);
-   return run_to_string(
+   //resolve overload
+   typedef std::string(*fun_t)(Node_iri const&, Triple_store const&);
+   return To_string::run(
             boost::bind2nd(static_cast<fun_t>(to_string_full), ts),
             node
    );
