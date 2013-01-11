@@ -55,7 +55,8 @@ actions config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 ## 
 ################################################################################
 rule transform_hpp ( src_dir : version ) {
-   local files = [ glob $(src_dir)/*.h ] ;
+   # parseTime.h is not used
+   local files = [ path.glob $(src_dir) : *.h : *parseTime.h ] ;
    local out_dir = factpp ;
    for local file in $(files) {
       make-singleton $(file:B).hpp
@@ -185,7 +186,8 @@ actions transform_hpp_action { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 ## 
 ################################################################################
 rule transform_cpp ( src_dir : version : headers * ) {
-   local files = [ glob $(src_dir)/*.cpp : $(src_dir)/parseTime.cpp ] ;
+   # parseTime.cpp does not compile under Windows
+   local files = [ path.glob $(src_dir) : *.cpp : *parseTime.cpp ] ;
    local out_dir = factpp ;
    for local file in $(files) {
       make-singleton $(file:D=$(GENERATED_LIB)/$(out_dir))
