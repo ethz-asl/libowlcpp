@@ -21,8 +21,8 @@ part of owlcpp project.
 /**@brief Generate light-weight type definition for standard OWL term
 @details OWLCPP_STD_TERM_TYPE( , , 2, (rdfs)(subClassOf))
 @code
-struct T_owl_allValuesFrom {
-   typedef N_owl ns_type;
+struct owl_allValuesFrom {
+   typedef owl ns_type;
    typedef ::owlcpp::Node_id id_type;
    static const unsigned index = 4;
    static std::string const & name() {

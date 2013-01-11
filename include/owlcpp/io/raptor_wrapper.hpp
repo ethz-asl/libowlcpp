@@ -25,25 +25,29 @@ namespace owlcpp{
 class OWLCPP_IO_DECL Raptor_wrapper {
    typedef void (*handle_statement_fun_t)(void *, const void*);
    typedef bool (*stop_parsing_fun_t)(const void *);
+
+   static char* blank_prefix_char() {
+      static char pref[] = "b";
+      return pref;
+   }
 public:
    struct Err : public Input_err {};
 
+   static std::string const& blank_prefix() {
+      static const std::string pref(blank_prefix_char());
+      return pref;
+   }
+
    Raptor_wrapper();
 
-   template<class Sink> void operator()(
-         std::istream& stream,
-         Sink& sink
-   ) {
+   template<class Sink> void operator()(std::istream& stream, Sink& sink) {
       setup(&sink, &handle_statement<Sink>);
       parse(stream);
    }
 
-   template<class Sink> void operator()(
-         std::string const& file_name,
-         Sink& sink
-   ) {
+   template<class Sink> void operator()(std::string const& file, Sink& sink) {
       setup(&sink, &handle_statement<Sink>);
-      parse(file_name);
+      parse(file);
    }
 
    const boost::function<void()> abort_call() {

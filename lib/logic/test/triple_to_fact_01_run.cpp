@@ -18,40 +18,40 @@ TExpressionManager& em(ReasoningKernel& k) {return *k.getExpressionManager();}
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_01 ) {
+   Triple_store ts;
    load_file(sample_file_path("negative_property_assertion_01.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
    BOOST_CHECK( ! k.isKBConsistent() );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_02 ) {
+   Triple_store ts;
    load_file(sample_file_path("og_01.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case03 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_03 ) {
+   Triple_store ts;
    load_file(sample_file_path("og_02.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case04 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_04 ) {
+   Triple_store ts;
    load_file(sample_file_path("owl2-rl-rules-fp-differentFrom.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
@@ -61,10 +61,10 @@ BOOST_AUTO_TEST_CASE( case04 ) {
    BOOST_CHECK( ! k.isSameIndividuals(i1, i2) );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case05 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_05 ) {
+   Triple_store ts;
    load_file(sample_file_path("owl2-rl-rules-fp-sameAs.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
@@ -74,10 +74,10 @@ BOOST_AUTO_TEST_CASE( case05 ) {
    BOOST_CHECK( k.isSameIndividuals(i1, i2) );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case06 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_06 ) {
+   Triple_store ts;
    load_file(sample_file_path("owl2-rl-rules-ifp-differentFrom.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
@@ -87,10 +87,10 @@ BOOST_AUTO_TEST_CASE( case06 ) {
    BOOST_CHECK( ! k.isSameIndividuals(i1, i2) );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case07 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_07 ) {
+   Triple_store ts;
    load_file(sample_file_path("owl2-rl-rules-ifp-sameAs.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
@@ -100,30 +100,30 @@ BOOST_AUTO_TEST_CASE( case07 ) {
    BOOST_CHECK( k.isSameIndividuals(i1, i2) );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case08 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_08 ) {
+   Triple_store ts;
    load_file(sample_file_path("one_eq_two_01.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
    BOOST_CHECK( ! k.isKBConsistent() );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case09 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_09 ) {
+   Triple_store ts;
    load_file(sample_file_path("negative_property_assertion_01.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
    BOOST_CHECK( ! k.isKBConsistent() );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case10 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_10 ) {
+   Triple_store ts;
    load_file(sample_file_path("propertyChain_01.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
@@ -138,14 +138,24 @@ BOOST_AUTO_TEST_CASE( case10 ) {
    BOOST_CHECK( ! k.isRelated(lois,   hasAunt, carol) );
 }
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case11 ) {
-   Triple_store ts(Node_map_std::get(Nodes_owl()));
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_11 ) {
+   Triple_store ts;
    load_file(sample_file_path("data_value_clash.owl"), ts);
    ReasoningKernel k;
    submit_triples(ts, k, false);
    BOOST_CHECK( ! k.isKBConsistent() );
+}
+
+/**@test
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_triple_to_fact_12 ) {
+   Triple_store ts;
+   load_file(sample_file_path("version_test_b.owl"), ts);
+   ReasoningKernel k;
+   submit_triples(ts, k, false);
+   BOOST_CHECK( k.isKBConsistent() );
 }
 
 }//namespace test

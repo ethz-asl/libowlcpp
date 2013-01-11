@@ -28,6 +28,9 @@ struct Triple {
    Node_id object() const {return obj_;}
    Doc_id document() const {return doc_;}
 
+   bool operator==(Triple const& t) const {
+      return subj_==t.subj_ && pred_==t.pred_ && obj_==t.obj_ && doc_==t.doc_;
+   }
 };
 
 }//namespace owlcpp

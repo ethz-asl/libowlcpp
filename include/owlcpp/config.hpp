@@ -19,4 +19,20 @@ part of owlcpp project.
    #pragma warning (disable : 4503) // not enough actual parameters for macro
 #endif
 
+
+#ifndef BOOST_SYMBOL_EXPORT
+  #define BOOST_SYMBOL_EXPORT
+  #define BOOST_SYMBOL_IMPORT
+#endif
+
+#if defined(OWLCPP_DYN_LINK)
+#  if defined(OWLCPP_SOURCE)
+#     define OWLCPP_DECL BOOST_SYMBOL_EXPORT
+#  else
+#     define OWLCPP_DECL BOOST_SYMBOL_IMPORT
+#  endif
+#else
+#  define OWLCPP_DECL
+#endif
+
 #endif /* CONFIG_HPP_ */

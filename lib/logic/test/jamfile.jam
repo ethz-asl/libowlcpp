@@ -1,4 +1,4 @@
-# owlcpp/lib/io/test/jamfile.jam
+# owlcpp/lib/logic/test/jamfile.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2012
@@ -38,4 +38,3 @@ test-suite all_tests
    :
 #     [ run test_01.cpp ]
 ;
-

@@ -16,9 +16,9 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/** print triples from sample ontologies
+/**@test print triples from sample ontologies
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_parser ) {
    BOOST_FOREACH(Sample_info const& si, sample_files()) {
       std::cout << si.path << '\n';
       Raptor_wrapper parser;

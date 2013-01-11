@@ -7,91 +7,137 @@ part of owlcpp project.
 #define QUERY_NODE_HPP_
 #include "boost/lexical_cast.hpp"
 #include "boost/numeric/conversion/cast.hpp"
-#include "boost/type_traits/is_integral.hpp"
-#include "boost/type_traits/is_unsigned.hpp"
-#include "boost/type_traits/is_floating_point.hpp"
 
 #include "owlcpp/rdf/config.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/exception.hpp"
-#include "owlcpp/terms/term_methods.hpp"
+#include "owlcpp/node_id.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/print_node.hpp"
+#include "owlcpp/terms/iri_tags.hpp"
 
 namespace owlcpp{
-class Triple_store;
 
-/**@brief print node ID
+/**@return true if node is literal
 *******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string(const Node_id nid);
+inline bool is_literal(const Node_id nid, Triple_store const& ts) {
+   Node const& node = ts[nid];
+   return is_empty(node.ns_id());
+}
 
-/**@brief print full node value
-*******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string(const Node_id nid, Triple_store const& ts);
-
-/**@brief print node value replacing namespace IRI with a prefix if declared
-*******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string_short(const Node_id nid, Triple_store const& ts);
-
-/**@brief print node value replacing namespace IRI with a prefix always
-*******************************************************************************/
-OWLCPP_RDF_DECL std::string to_string_shortest(const Node_id nid, Triple_store const& ts);
+inline Node_literal const& to_literal(Node const& node) {
+   try{
+      return dynamic_cast<Node_literal const&>(node);
+   }catch(std::bad_cast&) {
+      BOOST_THROW_EXCEPTION(
+               Rdf_err()
+               << Rdf_err::msg_t("literal node is required")
+               << Rdf_err::str1_t(to_string(node))
+      );
+   }
+}
 
 namespace detail{
+template<class Out> class Get_value : public Visitor_node {
+   Triple_store const& ts_;
+   Out out_;
 
-template<class T> struct Converter {
-   static T convert(std::string const& str) {
-      if( boost::is_integral<T>::value ) {
-         if( boost::is_unsigned<T>::value ) {
-            return boost::numeric_cast<T>(boost::lexical_cast<unsigned long>(str));
-         } else {
-            return boost::numeric_cast<T>(boost::lexical_cast<long>(str));
-         }
-      }
-      if( boost::is_floating_point<T>::value ) {
-         return boost::numeric_cast<T>(boost::lexical_cast<double>(str));
-      }
-      return boost::lexical_cast<T>(str);
+public:
+   Get_value(Triple_store const& ts): ts_(ts) {}
+
+   Out operator()() const {return out_;}
+
+   void visit_impl(Node_iri const& node) {
+      BOOST_THROW_EXCEPTION(
+               Rdf_err()
+               << Rdf_err::msg_t("error converting IRI node to value")
+               << Rdf_err::str1_t(to_string(node))
+      );
+   }
+
+   void visit_impl(Node_blank const& node) {
+      BOOST_THROW_EXCEPTION(
+               Rdf_err()
+               << Rdf_err::msg_t("error converting blank node to value")
+               << Rdf_err::str1_t(to_string(node))
+      );
+   }
+
+   void visit_impl(Node_bool const& node) {
+      out_ = boost::numeric_cast<Out>(node.value());
+   }
+
+   void visit_impl(Node_int const& node) {
+      out_ = boost::numeric_cast<Out>(node.value());
+   }
+
+   void visit_impl(Node_unsigned const& node) {
+      out_ = boost::numeric_cast<Out>(node.value());
+   }
+
+   void visit_impl(Node_double const& node) {
+      out_ = boost::numeric_cast<Out>(node.value());
+   }
+
+   void visit_impl(Node_string const& node) {
+      out_ = boost::lexical_cast<Out>(node.value());
    }
 };
 
-template<> struct Converter<bool> {
-   static bool convert(std::string const& str) {
-      if( str == "true" ) return true;
-      if( str == "false" ) return false;
-      return boost::lexical_cast<bool>(str);
+template<> class Get_value<std::string> : public Visitor_node {
+   Triple_store const& ts_;
+   std::string out_;
+
+public:
+   Get_value(Triple_store const& ts): ts_(ts) {}
+
+   std::string operator()() const {return out_;}
+
+   void visit_impl(Node_iri const& node) {
+      out_ = to_string_full(node, ts_);
+   }
+
+   void visit_impl(Node_blank const& node) {
+      out_ = to_string_full(node, ts_);
+   }
+
+   void visit_impl(Node_bool const& node) {
+      out_ = node.value_str();
+   }
+
+   void visit_impl(Node_int const& node) {
+      out_ = node.value_str();
+   }
+
+   void visit_impl(Node_unsigned const& node) {
+      out_ = node.value_str();
+   }
+
+   void visit_impl(Node_double const& node) {
+      out_ = node.value_str();
+   }
+
+   void visit_impl(Node_string const& node) {
+      out_ = node.value();
    }
 };
-
-template<class Ch,class Tr,class All> struct Converter<std::basic_string<Ch,Tr,All> > {
-   static std::basic_string<Ch,Tr,All> convert(std::string const& str) {
-      return boost::lexical_cast<std::basic_string<Ch,Tr,All> >(str);
-   }
-};
-
 }//namespace detail
 
-/**@brief
+/**
 *******************************************************************************/
-template<class T> inline T value(const Node_id nid, Triple_store const& ts) {
+template<class Out> inline Out value(const Node_id nid, Triple_store const& ts) {
    Node const& node = ts[nid];
-   if( is_empty(node.ns_id()) ) {
-      //todo: check declared type
-      try {
-         return detail::Converter<T>::convert(node.value_str());
-      } catch(...) {
-         const char* t = typeid(T).name();
-         BOOST_THROW_EXCEPTION(
-                  Rdf_err()
-                  << Rdf_err::msg_t("conversion error")
-                  << Rdf_err::str1_t(node.value_str())
-                  << Rdf_err::str2_t(std::string(t))
-                  << Rdf_err::nested_t(boost::current_exception())
-         );
-      }
+   detail::Get_value<Out> gv(ts);
+   try{
+      node.accept(gv);
+   }catch(...) {
+      BOOST_THROW_EXCEPTION(
+               Rdf_err()
+               << Rdf_err::msg_t("conversion error")
+               << Rdf_err::str1_t(to_string(node))
+               << Rdf_err::nested_t(boost::current_exception())
+      );
    }
-   BOOST_THROW_EXCEPTION(
-            Rdf_err()
-            << Rdf_err::msg_t("non-literal node has no value")
-   );
+   return gv();
 }
 
 }//namespace owlcpp

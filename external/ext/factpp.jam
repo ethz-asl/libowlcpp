@@ -7,7 +7,6 @@
 # <http://code.google.com/p/factplusplus/>
 
 import extension ;
-
 import project ;
 import regex ;
 import path ;
@@ -56,14 +55,15 @@ actions config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 ## 
 ################################################################################
 rule transform_hpp ( src_dir : version ) {
-   local files = [ glob $(src_dir)/*.h ] ;
+   # parseTime.h is not used
+   local files = [ path.glob $(src_dir) : *.h : *parseTime.h ] ;
    local out_dir = factpp ;
    for local file in $(files) {
       make-singleton $(file:B).hpp
-      :  $(file) $(files)
-      :  @transform_hpp_action
-      :  <location>$(GENERATED_INCLUDE)/$(out_dir)
-         <version>$(version)
+         : $(file) $(files)
+         : @transform_hpp_action
+         : <location>$(GENERATED_INCLUDE)/$(out_dir)
+           <version>$(version)
       ;
    }
    return $(files) ;
@@ -163,7 +163,9 @@ rule transform_hpp_action ( targets * : sources * : properties * ) {
    orig = [ add_class_export $(orig) : $(export_classes) ] ;
    local export_funs = 
       isSNF equalTrees isSubTree createInverse createSNFNot createSNFAnd
-      createSNFReducedAnd createSNFForall createSNFGE TokenName #"operator <<"
+      createSNFReducedAnd createSNFForall createSNFGE TokenName
+      createRole
+      #"operator <<"
    ;
    orig = [ add_fun_export $(orig) : $(export_funs) ] ;
    
@@ -184,12 +186,13 @@ actions transform_hpp_action { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 ## 
 ################################################################################
 rule transform_cpp ( src_dir : version : headers * ) {
-   local files = [ glob $(src_dir)/*.cpp : $(src_dir)/parseTime.cpp ] ;
+   # parseTime.cpp does not compile under Windows
+   local files = [ path.glob $(src_dir) : *.cpp : *parseTime.cpp ] ;
    local out_dir = factpp ;
    for local file in $(files) {
       make-singleton $(file:D=$(GENERATED_LIB)/$(out_dir))
-      :  $(file) $(headers)
-      :  @transform_cpp_action
+         :  $(file) $(headers)
+         :  @transform_cpp_action
       ;
    }
    return $(files:D=$(GENERATED_LIB)/$(out_dir)) ;

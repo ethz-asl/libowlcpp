@@ -46,9 +46,9 @@ part of owlcpp project.
 
 #define OWLCPP_MPL_VECTOR(seq) BOOST_PP_CAT(::boost::mpl::vector, BOOST_PP_SEQ_SIZE(seq))
 
-/** e.g., @code
+/** @details e.g., @code
 boost::mpl::vector48<
-   T_rdfs_subClassOf, T_rdfs_subPropertyOf, ...   > @endcode
+   rdfs_subClassOf, rdfs_subPropertyOf, ...   > @endcode
 *******************************************************************************/
 #define OWLCPP_NAMESPACE_MPL_VECTOR(seq) \
    OWLCPP_MPL_VECTOR(seq)<OWLCPP_NAMESPACE_ENUM(seq)>
@@ -57,7 +57,7 @@ boost::mpl::vector48<
 
 /**@brief Generate comma-separated list of standard triplet types
 @details OWLCPP_STD_TERM_ENUM(OWLCPP_STD_TERM_SEQ)
-@code T_rdfs_subClassOf, T_rdfs_subPropertyOf, T_rdfs_domain @endcode
+@code rdfs_subClassOf, rdfs_subPropertyOf, rdfs_domain @endcode
 *******************************************************************************/
 #define OWLCPP_TERM_ENUM(seq) \
       BOOST_PP_SEQ_ENUM( BOOST_PP_SEQ_FOR_EACH(OWLCPP_TERM_ENUM_MACRO, , seq) )
@@ -65,7 +65,7 @@ boost::mpl::vector48<
 /**@brief
 @details e.g., @code
 boost::mpl::vector48<
-   T_rdfs_subClassOf, T_rdfs_subPropertyOf, ...   > @endcode
+   rdfs_subClassOf, rdfs_subPropertyOf, ...   > @endcode
 *******************************************************************************/
 #define OWLCPP_TERM_MPL_VECTOR(seq) OWLCPP_MPL_VECTOR(seq)<OWLCPP_TERM_ENUM(seq)>
 

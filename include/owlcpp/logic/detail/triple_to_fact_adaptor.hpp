@@ -8,9 +8,8 @@ part of owlcpp project.
 #include "boost/foreach.hpp"
 #include "boost/range.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/query_node.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 #include "owlcpp/logic/exception.hpp"
-#include "owlcpp/logic/detail/node_declaration.hpp"
 #include "owlcpp/logic/config.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
@@ -32,40 +31,26 @@ class OWLCPP_LOGIC_DECL Adaptor_triple {
 public:
    struct Err : public Logic_err {};
 
-   Adaptor_triple(Triple_store const& ts, ReasoningKernel& k, bool lax)
-   : lax_(lax), ts_(ts), k_(k)
+   Adaptor_triple(Triple_store const& ts, ReasoningKernel& k, bool strict)
+   : strict_(strict), ts_(ts), k_(k)
    {}
 
-   void submit(Triple const& t) {axiom(t);}
+   TDLAxiom* submit(Triple const&);
 
-   template<class Range> void submit(Range r) {
+   template<class Range> std::size_t submit(Range const& r) {
+      std::size_t n = 0;
       BOOST_FOREACH(Triple const& t, r) {
-         try{
-            submit(t);
-         } catch(...) {
-            BOOST_THROW_EXCEPTION(
-                     Err()
-                     << Err::msg_t("error submitting triple")
-                     << Err::str1_t(
-                              to_string_short(t.subject(), ts_) + ' ' +
-                              to_string_short(t.predicate(), ts_) + ' ' +
-                              to_string_short(t.object(), ts_)
-                     )
-                     << Err::nested_t(boost::current_exception())
-            );
-         }
+         if( submit(t) ) ++n;
       }
+      return n;
    }
 
-   TDLAxiom* axiom(Triple const& t);
-
 private:
-   bool lax_;
+   bool strict_;
    Triple_store const& ts_;
    ReasoningKernel& k_;
 
-   /**@param t triple x y z */
-   void submit_custom_triple(Triple const& t);
+   TDLAxiom* axiom(Triple const& t);
 
    TDLConceptExpression* obj_type(const Node_id nid);
 
@@ -100,7 +85,7 @@ private:
             const Node_id op,
             const Node_id seq_nid,
             const std::size_t min_len,
-            const Node_id subj = owlcpp::terms::T_empty_::id()
+            const Node_id subj = owlcpp::terms::empty_::id()
    );
 
    TExpressionManager& e_m();

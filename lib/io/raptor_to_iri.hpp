@@ -80,12 +80,12 @@ private:
       unsigned char const* term_uc =
                raptor_uri_as_counted_string(rs.object->value.uri, &len);
       char const* term = reinterpret_cast<char const*>(term_uc);
-      if( ! comparison(term, len, terms::T_owl_Ontology()) ) return false;
+      if( ! comparison(term, len, terms::owl_Ontology()) ) return false;
 
       term_uc =
                raptor_uri_as_counted_string(rs.predicate->value.uri, &len);
       term = reinterpret_cast<char const*>(term_uc);
-      return comparison(term, len, terms::T_rdf_type());
+      return comparison(term, len, terms::rdf_type());
    }
 
    static bool is_versionIRI(raptor_statement const& rs, std::string const& iri) {
@@ -100,7 +100,7 @@ private:
       unsigned char const* term_uc =
                raptor_uri_as_counted_string(rs.predicate->value.uri, &len);
       char const* term = reinterpret_cast<char const*>(term_uc);
-      if( ! comparison(term, len, terms::T_owl_versionIRI()) ) return false;
+      if( ! comparison(term, len, terms::owl_versionIRI()) ) return false;
 
       term_uc =
                raptor_uri_as_counted_string(rs.subject->value.uri, &len);

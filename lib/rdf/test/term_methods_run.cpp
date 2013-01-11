@@ -13,18 +13,18 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
-/**
+/**@test
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case01 ) {
+BOOST_AUTO_TEST_CASE( test_term_methods ) {
    char const* iri1 = "http://www.w3.org/2002/07/owl#Class";
-   BOOST_CHECK_EQUAL(to_string(terms::T_owl_Class()), iri1);
-   BOOST_CHECK_EQUAL(to_string_short(terms::T_owl_Class()), "owl:Class");
-   BOOST_CHECK( comparison(iri1, 35, terms::T_owl_Class()));
-   BOOST_CHECK( ! comparison("httt://www.w3.org/2002/07/owl#Class", terms::T_owl_Class()));
-   BOOST_CHECK( ! comparison("http://www.w3.org/2002/07/owl/Class", terms::T_owl_Class()));
-   BOOST_CHECK( ! comparison("http://www.w3.org/2002/07/owl#Clasu", terms::T_owl_Class()));
+   BOOST_CHECK_EQUAL(to_string_full(terms::owl_Class()), iri1);
+   BOOST_CHECK_EQUAL(to_string_pref(terms::owl_Class()), "owl:Class");
+   BOOST_CHECK( comparison(iri1, 35, terms::owl_Class()));
+   BOOST_CHECK( ! comparison("httt://www.w3.org/2002/07/owl#Class", terms::owl_Class()));
+   BOOST_CHECK( ! comparison("http://www.w3.org/2002/07/owl/Class", terms::owl_Class()));
+   BOOST_CHECK( ! comparison("http://www.w3.org/2002/07/owl#Clasu", terms::owl_Class()));
 
-   BOOST_CHECK( comparison(std::string(iri1), terms::T_owl_Class()));
+   BOOST_CHECK( comparison(std::string(iri1), terms::owl_Class()));
 }
 
 }//namespace test
