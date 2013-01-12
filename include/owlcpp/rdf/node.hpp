@@ -13,9 +13,11 @@ class Visitor_node;
 /**@brief Pure virtual interface for RDF nodes
 *******************************************************************************/
 class Node {
+   friend inline std::size_t hash_value(Node const& node)
+   {return node.hash_impl();}
+
 public:
    Ns_id ns_id() const {return ns_id_impl();}
-   std::size_t hash() const {return hash_impl();}
    bool operator== (const Node& n) const {return equal_impl(n);}
    bool operator!= (const Node& n) const {return ! equal_impl(n);}
    void accept(Visitor_node& visitor) const {accept_impl(visitor);}
@@ -29,10 +31,6 @@ private:
    virtual void accept_impl(Visitor_node&) const =0;
    virtual Node* clone_impl() const =0;
 };
-
-/**
-*******************************************************************************/
-inline std::size_t hash_value(Node const& node) {return node.hash();}
 
 }//namespace owlcpp
 #endif /* RDF_NODE_HPP_ */

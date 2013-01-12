@@ -16,6 +16,9 @@ namespace owlcpp{
 /**@brief 
 *******************************************************************************/
 class Node_iri : public Node {
+   friend inline std::size_t hash_value(Node_iri const& node)
+   {return node.hash_impl();}
+
 public:
 
    explicit Node_iri(const Ns_id ns = terms::empty::id(), std::string const& val = "")
@@ -52,13 +55,7 @@ private:
    }
 
    Node* clone_impl() const {return new Node_iri(*this);}
-
 };
-
-/**
-*******************************************************************************/
-inline std::size_t hash_value(Node_iri const& node) {return node.hash();}
-
 
 }//namespace owlcpp
 #endif /* NODE_IRI_HPP_ */
