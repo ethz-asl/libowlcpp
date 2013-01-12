@@ -75,7 +75,11 @@ public:
    std::string const* find(const Ns_id id) const {
       if( id < min_id_ ) return 0;
       const std::size_t n = id() - min_id_();
-      if( n < id_.size() ) return &id_[n].first->first;
+      if( n < id_.size() ) {
+         id_value_t const & v = id_[n];
+         if( v.first == iri_.end() ) return 0;
+         return &v.first->first;
+      }
       return 0;
    }
 
