@@ -9,7 +9,7 @@ Libraries required by owlcpp are listed in file "owlcpp/doc/user-config.jam".
 
 1. Download current distribution of Boost (http://www.boost.org/).
    Expand the archive to a directory on your hard drive, 
-   e.g., to "C:\Program Files\boost\boost_1_47_0".
+   e.g., to "C:\Program Files\boost\boost_X_XX_0".
    In this document, this directory will be referred as $(BOOST).
 
 2. In your terminal, change directory to $(BOOST)/tools/build/v2/.

@@ -34,7 +34,7 @@
 
 ## Python (for generating python bindings)
 ## For more details see 
-## http://www.boost.org/doc/libs/1_51_0/libs/python/doc/building.html
+## http://www.boost.org/doc/libs/release/libs/python/doc/building.html
 ## Alternatives:
 # using python ;
 # using python : 2.7 : /usr/bin/python ;

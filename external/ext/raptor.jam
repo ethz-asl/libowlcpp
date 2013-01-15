@@ -12,6 +12,7 @@ import feature ;
 import common ;
 import regex ;
 import path ;
+import errors ;
 
 extension.declare raptor ;
 
@@ -33,8 +34,7 @@ rule copy-source ( version : location ) {
       curie iri language rdfa rdfa_utils subject triple
    ;
    if $(version) <= "2.0.6" {
-      src += raptor_nfc_data raptor_nfc
-      ;
+      src += raptor_nfc_data raptor_nfc ;
    }
    if $(version) >= "2.0.8" {
       src_rdfa += context lists namespace strtok_r ;
@@ -79,11 +79,6 @@ rule copy-headers ( version : location : properties * ) {
 ################################################################################
 rule copy-modify ( targets * : sources * : properties * ) {
    local src = [ read_file $(sources:G=) ] ;
-   local v = [ version_raptor $(properties) ] ;
-   
-   #if $(v) = "2.0.8" && $(sources:G="":D="") = "strtok_r.h" {
-   #   src = [ regex.replace $(src) rdfa_strtok_s rdfa_strtok_r ] ;
-   #}
    
    STR on $(<) = $(src) ;
 }
@@ -92,20 +87,20 @@ actions copy-modify { @($(STDOUT):E=$(STR)) > "$(<)" }
 ## extract version string
 ################################################################################
 rule version_raptor ( properties * ) {
-   local v = [ property.select <raptor-version> : $(properties) ] ;
-   return $(v:G=) ;
+   local version = [ property.select <raptor-version> : $(properties) ] ;
+   return $(version:G=) ;
 }
 
 ## 
 ################################################################################
-rule version_split ( v ) {
-   return [ regex.split $(v) "\\." ] ;
+rule version_split ( version ) {
+   return [ regex.split $(version) "\\." ] ;
 }
 
 ## 
 ################################################################################
-rule version_calc ( v ) {
-   local vs = [ version_split $(v) ] ;
+rule version_calc ( version ) {
+   local vs = [ version_split $(version) ] ;
    local vdmin = $(vs[1])0000 ;
    local vd = [ CALC [ CALC $(vdmin) + $(vs[2])00 ] + $(vs[3]) ] ;
    return $(vdmin) $(vd) ;
@@ -113,12 +108,12 @@ rule version_calc ( v ) {
 
 ## 
 ################################################################################
-rule replace-version ( src : v ) {
-   local vs = [ version_split $(v) ] ;
-   local vc = [ version_calc $(v) ] ;
+rule replace-version ( src : version ) {
+   local vs = [ version_split $(version) ] ;
+   local vc = [ version_calc $(version) ] ;
 
    src = [ regex.replace $(src) @RAPTOR_VERSION_DECIMAL@ $(vc[2]) ] ;
-   src = [ regex.replace $(src) @VERSION@ $(v) ] ;
+   src = [ regex.replace $(src) @VERSION@ $(version) ] ;
    src = [ regex.replace $(src) @RAPTOR_VERSION_MAJOR@ $(vs[1]) ] ;
    src = [ regex.replace $(src) @RAPTOR_VERSION_MINOR@ $(vs[2]) ] ;
    src = [ regex.replace $(src) @RAPTOR_VERSION_RELEASE@ $(vs[3]) ] ;
@@ -131,7 +126,7 @@ rule replace-version ( src : v ) {
 rule define-as ( src : from : as ? ) {
    local re = " *#undef +$(from) *[\n]" ;
    if ! [ MATCH "($(re))" : $(src) ] {
-      exit "could not find " $(re) ;
+      errors.error "could not find " $(re) ;
    }
    
    as ?= 1 ;
@@ -145,7 +140,7 @@ rule define-as ( src : from : as ? ) {
 ################################################################################
 rule comment-out ( src : expr ) {
    if ! [ MATCH "($(expr))" : $(src) ] {
-      exit "could not find " $(expr) ;
+      errors.error "could not find " $(expr) ;
    }
    
    local to = "/*$(expr)*/" ;
@@ -155,11 +150,11 @@ rule comment-out ( src : expr ) {
 
 ## 
 ################################################################################
-rule define-version ( src : v ) {
-   local vs = [ version_split $(v) ] ;
-   local vc = [ version_calc $(v) ] ;
+rule define-version ( src : version ) {
+   local vs = [ version_split $(version) ] ;
+   local vc = [ version_calc $(version) ] ;
    
-   src = [ define-as $(src) : VERSION : "\"$(v)\"" ] ;
+   src = [ define-as $(src) : VERSION : "\"$(version)\"" ] ;
    src = [ define-as $(src) : RAPTOR_VERSION_DECIMAL : $(vc[2]) ] ;
    src = [ define-as $(src) : RAPTOR_VERSION_MAJOR : $(vs[1]) ] ;
    src = [ define-as $(src) : RAPTOR_VERSION_MINOR : $(vs[2]) ] ;
@@ -173,8 +168,8 @@ rule define-version ( src : v ) {
 rule raptor_config_gen ( targets * : sources * : properties * ) {
 
    local src = [ read_file $(sources:G=) ] ;
-   local v = [ version_raptor $(properties) ] ;
-   src = [ define-version $(src) : $(v) ] ;   
+   local version = [ version_raptor $(properties) ] ;
+   src = [ define-version $(src) : $(version) ] ;   
    
    local defs =
       HAVE_DLFCN_H HAVE_ERRNO_H HAVE_FCNTL_H HAVE_GETOPT
@@ -182,8 +177,8 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
       HAVE_LIBXML_HASH_H
       HAVE_LIBXML_HTMLPARSER_H HAVE_LIBXML_PARSER_H HAVE_LIBXML_SAX2_H 
       HAVE_LIMITS_H
-      HAVE_MATH_H HAVE_MEMORY_H HAVE_SETJMP HAVE_SETJMP_H HAVE_STAT
-      HAVE_STDDEF_H HAVE_STDINT_H HAVE_STDLIB_H HAVE_STRING_H HAVE_SYS_PARAM_H
+      HAVE_MATH_H HAVE_MEMORY_H HAVE_SETJMP HAVE_SETJMP_H
+      HAVE_STDINT_H HAVE_STDLIB_H HAVE_STRING_H HAVE_SYS_PARAM_H
       HAVE_SYS_STAT_H HAVE_SYS_TYPES_H HAVE_VSNPRINTF HAVE_XMLCTXTUSEOPTIONS 
       HAVE_XMLSAX2INTERNALSUBSET
       RAPTOR_LIBXML_ENTITY_ETYPE RAPTOR_LIBXML_HTML_PARSE_NONET 
@@ -194,32 +189,43 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
       RAPTOR_WWW_NONE RAPTOR_XML_LIBXML STDC_HEADERS
    ;
    
+   if $(version) >= "2.0.7" {
+      defs += HAVE_STAT ;
+   } else {
+      src = [ define-as $(src) : SIZEOF_UNSIGNED_CHAR : 1 ] ;
+      src = [ define-as $(src) : SIZEOF_UNSIGNED_SHORT : 2 ] ;
+   }
+   if $(version) >= "2.0.6" {
+      defs += HAVE_STDDEF_H ;
+   }
+   switch [ property.select <target-os> : $(properties) ] {
+      case *linux* :
+         defs += 
+            HAVE_GETOPT_H HAVE_STRCASECMP HAVE_SYS_TIME_H TIME_WITH_SYS_TIME
+            HAVE_UNISTD_H HAVE_STRINGS_H
+         ;
+         if $(version) >= "2.0.6" {
+            defs += HAVE_VASPRINTF ;
+         }
+         if $(version) >= "2.0.8" {
+            defs += HAVE_STRTOK_R ;
+         }
+
+      case *windows* :
+   }
+   
    for local def in $(defs) {
       src = [ define-as $(src) : $(def) ] ;
    }
    
    src = [ define-as $(src) : PACKAGE : "\"raptor2\"" ] ;
    src = [ define-as $(src) : PACKAGE_NAME : "\"Raptor RDF Parser and Serializer library\"" ] ;
-   src = [ define-as $(src) : PACKAGE_VERSION : "\"$(v)\"" ] ;
-   src = [ define-as $(src) : PACKAGE_STRING : "\"Raptor RDF Parser and Serializer library $(v)\"" ] ;
+   src = [ define-as $(src) : PACKAGE_VERSION : "\"$(version)\"" ] ;
+   src = [ define-as $(src) : PACKAGE_STRING : "\"Raptor RDF Parser and Serializer library $(version)\"" ] ;
    src = [ define-as $(src) : PACKAGE_BUGREPORT : "\"http://bugs.librdf.org/\"" ] ;
    src = [ define-as $(src) : PACKAGE_TARNAME : "\"raptor2\"" ] ;
    src = [ define-as $(src) : PACKAGE_URL : "\"http://librdf.org/raptor/\"" ] ;
    src = [ define-as $(src) : RAPTOR_MIN_VERSION_DECIMAL : 20000 ] ;
-   
-   switch [ property.select <target-os> : $(properties) ] {
-      case *linux* :
-         src = [ define-as $(src) : HAVE_GETOPT_H ] ;
-         src = [ define-as $(src) : HAVE_STRCASECMP ] ;
-         src = [ define-as $(src) : HAVE_SYS_TIME_H ] ;
-         src = [ define-as $(src) : HAVE_VASPRINTF ] ;
-         src = [ define-as $(src) : TIME_WITH_SYS_TIME ] ;
-         src = [ define-as $(src) : HAVE_UNISTD_H ] ;
-         src = [ define-as $(src) : HAVE_STRINGS_H ] ;
-         src = [ define-as $(src) : HAVE_STRTOK_R ] ;
-
-      case *windows* :
-   }
    
    STR on $(<) = $(src) ;
 }
@@ -230,8 +236,8 @@ actions raptor_config_gen { @($(STDOUT):E=$(STR)) > "$(<)" }
 rule win32_raptor_config_gen ( targets * : sources * : properties * ) {
 
    local src = [ read_file $(sources:G=) ] ;
-   local v = [ version_raptor $(properties) ] ;
-   src = [ replace-version $(src) : $(v) ] ;
+   local version = [ version_raptor $(properties) ] ;
+   src = [ replace-version $(src) : $(version) ] ;
    
    src = [ comment-out $(src) : "#define vsnprintf _vsnprintf" ] ;
    
@@ -271,9 +277,9 @@ actions win32_raptor_config_gen { @($(STDOUT):E=$(STR)) > "$(<)" }
 ## 
 ################################################################################
 rule raptor2_gen ( targets * : sources * : properties * ) {
-   local v = [ version_raptor $(properties) ] ;
+   local version = [ version_raptor $(properties) ] ;
    local src = [ read_file $(sources:G=) ] ;
-   src = [ replace-version $(src) : $(v) ] ;   
+   src = [ replace-version $(src) : $(version) ] ;   
    
    local str =
       "#define RAPTOR_H"
