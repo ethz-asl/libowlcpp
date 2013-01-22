@@ -212,6 +212,11 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
          }
 
       case *windows* :
+      
+      case *darwin* :
+         if $(version) >= "2.0.8" {
+            defs += HAVE_STRTOK_R ;
+         }
    }
    
    for local def in $(defs) {

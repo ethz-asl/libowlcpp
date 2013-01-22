@@ -25,7 +25,7 @@ rule copy-source ( version : location ) {
       parserInternals pattern relaxng SAX2 SAX schematron threads tree uri valid 
       xinclude xlink xmlIO xmlmemory xmlreader xmlregexp xmlmodule xmlsave 
       xmlschemas xmlschemastypes xmlunicode xmlwriter xpath xpointer xmlstring
-#      nanoftp nanohttp
+##    nanoftp nanohttp
    ;
    
    local files-dest = [ path.join $(GENERATED_LIB) libxml ] ;
@@ -79,7 +79,6 @@ rule config_h ( targets * : sources * : properties * ) {
    
    local v = [ property.select <version> : $(properties) ] ;
    v = $(v:G=) ;
-#   exit "version " $(v) ;
    src = [ regex.replace $(src) "@VERSION@" $(v) ] ;
 
    STR on $(<) = $(src) ;
