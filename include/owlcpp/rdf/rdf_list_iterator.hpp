@@ -53,7 +53,7 @@ private:
                << Err::str1_t(to_string(nid_, *ts_))
       );
       Triple const& t = r.front();
-      if( distance(r) != 1U ) BOOST_THROW_EXCEPTION(
+      if( boost::distance(r) != 1U ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("multiple rdf:rest triples")
                << Err::str1_t(to_string(nid_, *ts_))
@@ -74,7 +74,7 @@ private:
                << Err::str1_t(to_string(nid_, *ts_))
       );
       Triple const& t = r.front();
-      if( distance(r) != 1U ) BOOST_THROW_EXCEPTION(
+      if( boost::distance(r) != 1U ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("multiple rdf:first triples")
                << Err::str1_t(to_string(nid_, *ts_))

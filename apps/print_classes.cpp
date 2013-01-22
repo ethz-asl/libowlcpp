@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
          << store.map_triple().size() << " triples" << '\n'
          << store.map_node().size() << " nodes" << '\n'
          << store.map_ns().size() << " namespace IRIs" << '\n'
-         << distance(r) << " owl:Class definitions" << '\n'
+         << boost::distance(r) << " owl:Class definitions" << '\n'
          ;
       } else {
          BOOST_FOREACH( owlcpp::Triple const& t, r ) {
