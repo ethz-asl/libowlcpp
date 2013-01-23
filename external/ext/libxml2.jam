@@ -161,6 +161,7 @@ rule init ( version ? : location ? : options * ) {
       <toolset>msvc:<define>_CRT_SECURE_NO_DEPRECATE
       <toolset>msvc:<define>_CRT_NONSTDC_NO_DEPRECATE
       <toolset>msvc:<library>iconv
+      <toolset>darwin:<library>iconv
       <link>shared:<define>NOLIBTOOL
       <target-os>linux,<link>shared:<library>dl
    ;
