@@ -70,28 +70,28 @@ BOOST_AUTO_TEST_CASE( test_map_triple_02 ) {
    insert_seq(tm, t);
 
    triple_map::result_b<0,0,0,0>::type r1 = tm.find(any(), any(), any(), any());
-   BOOST_CHECK_EQUAL( distance(r1), 7 );
+   BOOST_CHECK_EQUAL( boost::distance(r1), 7 );
 
    triple_map::result_b<1,0,0,0>::type r2 = tm.find(Node_id(0), any(), any(), any());
-   BOOST_CHECK_EQUAL( distance(r2), 6 );
+   BOOST_CHECK_EQUAL( boost::distance(r2), 6 );
 
    triple_map::result_b<1,0,1,0>::type r3 = tm.find(Node_id(0), any(), Node_id(0), any());
-   BOOST_CHECK_EQUAL( distance(r3), 5 );
+   BOOST_CHECK_EQUAL( boost::distance(r3), 5 );
 
    triple_map::result_b<0,0,0,1>::type r4 = tm.find(any(), any(), any(), Doc_id(1));
-   BOOST_CHECK_EQUAL( distance(r4), 1 );
+   BOOST_CHECK_EQUAL( boost::distance(r4), 1 );
 
    triple_map::result_b<1,1,1,1>::type r5 = tm.find(Node_id(0), Node_id(2), Node_id(0), Doc_id(0));
-   BOOST_CHECK_EQUAL( distance(r5), 1 );
+   BOOST_CHECK_EQUAL( boost::distance(r5), 1 );
 
    triple_map::result_b<1,0,1,0>::type r6 = tm.find(Node_id(0), any(), Node_id(2), any());
-   BOOST_CHECK_EQUAL( distance(r6), 0 );
+   BOOST_CHECK_EQUAL( boost::distance(r6), 0 );
 
    triple_map::result_b<0,0,1,0>::type r7 = tm.find(any(), any(), Node_id(0), any());
-   BOOST_CHECK_EQUAL( distance(r7), 6 );
+   BOOST_CHECK_EQUAL( boost::distance(r7), 6 );
 
    triple_map::result_b<1,1,0,0>::type r8 = tm.find(Node_id(0), Node_id(3), any(), any());
-   BOOST_CHECK_EQUAL( distance(r8), 3 );
+   BOOST_CHECK_EQUAL( boost::distance(r8), 3 );
 }
 
 }//namespace test
