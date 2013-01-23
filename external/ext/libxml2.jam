@@ -112,20 +112,33 @@ rule init ( version ? : location ? : options * ) {
 
    local headers = [ copy-headers $(version) : $(location) ] ;
    
-   ICONV_LIB ?= $(ICONV[1])/lib/iconv_a.lib ;
-   ICONV_DLL ?= $(ICONV[1])/bin/iconv.dll $(ICONV[1])/lib/iconv.lib ;
-   ICONV_H ?= $(ICONV[1])/include ;
+   if [ modules.peek : OS ] = NT {
+      if ! $(ICONV) && ! ( $(ICONV_DLL) && $(ICONV2_LIB) && $(ICONV_H) ) { 
+         EXIT "
+         ERROR:
+         Please set variable ICONV to location of pre-compiled iconv library.
+         See doc/user-config.jam
+         " ;
+      }
+      ICONV_LIB ?= $(ICONV[1])/lib/iconv_a.lib ;
+      ICONV_DLL ?= $(ICONV[1])/bin/iconv.dll $(ICONV[1])/lib/iconv.lib ;
+      ICONV_H ?= $(ICONV[1])/include ;
+      
+      lib iconv
+         : #sources
+         : #requirements
+            <include>$(ICONV_H)
+            <link>shared:<file>$(ICONV_DLL)
+            <link>static:<file>$(ICONV_LIB)
+         : #default options
+         : #usage requirements
+            <include>$(ICONV_H)
+      ;
+   } else {
+      lib iconv : : <name>iconv ;
+   }
    
-   lib iconv
-      : #sources
-      : #requirements
-         <include>$(ICONV_H)
-         <link>shared:<file>$(ICONV_DLL)
-         <link>static:<file>$(ICONV_LIB)
-      : #default options
-      : #usage requirements
-         <include>$(ICONV_H)
-   ;
+   
    
    lib dl
       : #sources
