@@ -22,10 +22,11 @@ rule copy-source ( version : location ) {
       local src =
       buf c14n catalog chvalid debugXML dict DOCBparser encoding entities error 
       globals hash HTMLparser HTMLtree legacy list parser 
-      parserInternals pattern relaxng SAX2 SAX schematron threads tree uri valid 
+      parserInternals pattern relaxng SAX2 SAX schematron tree uri valid 
       xinclude xlink xmlIO xmlmemory xmlreader xmlregexp xmlmodule xmlsave 
       xmlschemas xmlschemastypes xmlunicode xmlwriter xpath xpointer xmlstring
 ##    nanoftp nanohttp
+##    threads
    ;
    
    local files-dest = [ path.join $(GENERATED_LIB) libxml ] ;
@@ -36,8 +37,40 @@ rule copy-source ( version : location ) {
       make-singleton $(file-out) : [ path.join $(location) $(file).c ] : @common.copy ;
    }
    
+   local file = threads ;
+   local file-out = [ path.join $(files-dest) $(file).c ] ;
+   files-out += $(file-out) ;
+   make-singleton $(file-out) 
+      : [ path.join $(location) $(file).c ] 
+      : @threads_c
+      : <version>$(version)
+   ;
+   
    return $(files-out) ;
 }
+
+## 
+################################################################################
+rule threads_c ( targets * : sources * : properties * ) {
+   local src = [ read_file $(sources:G=) ] ;
+   local v = [ property.select <version> : $(properties) ] ;
+   if $(v:G=) = "2.9.0" { #fix bug
+      local str1 = "static pthread_once_t once_control = PTHREAD_ONCE_INIT;" ;
+      local str2 = $(str1)"
+/*bug fix*/
+static pthread_once_t once_control_init = PTHREAD_ONCE_INIT;" ;
+      src = [ regex.replace $(src) $(str1) $(str2) ] ;
+      
+      str1 = "    once_control = PTHREAD_ONCE_INIT;" ;
+      str2 = "
+/*bug fix*/
+    once_control = once_control_init;" ;
+      src = [ regex.replace $(src) $(str1) $(str2) ] ;
+   }
+
+   STR on $(<) = $(src) ;
+}
+actions threads_c { @($(STDOUT):E=$(STR)) > "$(<)" }
 
 ## 
 ################################################################################
