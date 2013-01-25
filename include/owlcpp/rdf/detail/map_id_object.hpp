@@ -97,30 +97,30 @@ public:
       return ip.first->second;
    }
 
-   void insert(const id_type id, obj_type const& node) {
+   void insert(const id_type id, obj_type const& obj) {
       if( id < id0_ ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("invalid ID")
                << Err::int1_t(id())
       );
 
-      if( id_type const* id0 = find(node) ) {
+      if( id_type const* id0 = find(obj) ) {
          if( *id0 == id ) return;
          BOOST_THROW_EXCEPTION(
                   Err()
-                  << Err::msg_t("node already exists")
-                  << Err::int1_t(node.ns_id()())
-                  << Err::str1_t(node.fragment())
+                  << Err::msg_t("object already mapped to different ID")
+                  << Err::int1_t(id())
+                  << Err::int2_t((*id0)())
          );
       }
 
       if( find(id) ) BOOST_THROW_EXCEPTION(
                Err()
-               << Err::msg_t("node ID not available")
+               << Err::msg_t("ID is not available")
                << Err::int1_t(id())
       );
 
-      std::pair<const_iterator,bool> ip = map_.emplace(node, id);
+      std::pair<const_iterator,bool> ip = map_.emplace(obj, id);
       BOOST_ASSERT(ip.second);
       //ignore erased_
       const std::size_t n = vpos(id);
@@ -163,7 +163,7 @@ private:
       BOOST_ASSERT(id0_ == mio.id0_ && "base ID should be same");
       BOOST_FOREACH(map_value_t const& p, mio.map_) {
          std::pair<const_iterator,bool> ip = map_.insert(p);
-         BOOST_ASSERT(ip.second && "duplicate node");
+         BOOST_ASSERT(ip.second && "duplicate object");
          vid_[vpos(p.second)] = &(ip.first->first);
       }
    }

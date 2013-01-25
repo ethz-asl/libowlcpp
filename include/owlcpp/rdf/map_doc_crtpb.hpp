@@ -51,8 +51,8 @@ public:
     @param path document location
     @param vers_id versionIRI
     @return document ID and whether new document info was actually added
-    @throw Err if an entry with the same non-empty @a path and different @a iri or @a version
-    is already present.
+    @throw Err if an entry with the same non-empty @a path and different
+    @a iri or @a version is already present.
     @details
     Duplicate document info entries are not allowed.
 
@@ -61,11 +61,12 @@ public:
 
     Since documents with same ontologyIRI and versionIRI may be found
     at different paths,
-    multiple entries with different @a path and same @a iri or @a version can be added.
+    multiple entries with different @a path and same @a iri or @a version
+    can be added.
 
     Sometimes, document path is not known.
-    Therefore multiple entries with empty @a path and different @a iri or @a version
-    are allowed.
+    Therefore multiple entries with empty @a path and different @a iri or
+    @a version are allowed.
    */
    std::pair<Doc_id,bool> insert_doc(
             const Node_id iri_id,
@@ -73,8 +74,16 @@ public:
             const Node_id vers_id = terms::empty_::id()
    ) {
       BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
-      BOOST_ASSERT( static_cast<Super const&>(*this).find(iri_id) && "invalid ontology IRI ID" );
-      BOOST_ASSERT( static_cast<Super const&>(*this).find(vers_id) && "invalid version IRI ID" );
+      BOOST_ASSERT(
+               static_cast<Super const&>(*this).find(iri_id) &&
+               "invalid ontology IRI ID"
+      );
+
+      BOOST_ASSERT(
+               static_cast<Super const&>(*this).find(vers_id) &&
+               "invalid version IRI ID"
+      );
+
       return _map_doc().insert(iri_id, path, vers_id);
    }
 

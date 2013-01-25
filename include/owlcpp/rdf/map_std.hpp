@@ -11,7 +11,7 @@ part of owlcpp project.
 #include "boost/utility.hpp"
 #include "boost/concept/assert.hpp"
 
-#include "owlcpp/rdf/map_ns.hpp"
+#include "owlcpp/rdf/map_ns_prefix.hpp"
 #include "owlcpp/rdf/node_iri.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/rdf/detail/map_id_object.hpp"
@@ -24,10 +24,11 @@ namespace owlcpp{
 @details Contains at least blank and empty (literal) namespaces and empty node.
 *******************************************************************************/
 class Map_std : boost::noncopyable {
+   typedef detail::Map_id_object<std::string, Ns_id> map_ns_t;
    typedef detail::Map_id_object<Node_iri, Node_id> map_node_t;
 
    template<class Inserter> explicit Map_std(Inserter const& ins)
-   : map_ns_(Ns_id(0)), map_node_(Node_id(0))
+   : map_ns_(Ns_id(0)), map_pref_(), map_node_(Node_id(0))
    {
       insert_ns_tag(terms::empty());
       insert_ns_tag(terms::blank());
@@ -61,7 +62,7 @@ public:
    template<class NsTag> void insert_ns_tag(NsTag const&) {
       BOOST_ASSERT(map_ns_.size() < detail::min_ns_id()());
       map_ns_.insert(NsTag::id(), NsTag::iri());
-      map_ns_.set_prefix(NsTag::id(), NsTag::prefix());
+      map_pref_.set(NsTag::id(), NsTag::prefix());
    }
 
    /**Insert standard IRI node;
@@ -87,12 +88,12 @@ public:
       return nid < detail::min_node_id();
    }
 
-   Ns_id const* find_iri(std::string const& iri) const {return map_ns_.find_iri(iri);}
-   Ns_id const* find_prefix(std::string const& pref) const {return map_ns_.find_prefix(pref);}
+   Ns_id const* find_iri(std::string const& iri) const {return map_ns_.find(iri);}
+   Ns_id const* find_prefix(std::string const& pref) const {return map_pref_.find(pref);}
    std::string operator[](const Ns_id nsid) const {return map_ns_[nsid];}
    std::string at(const Ns_id nsid) const {return map_ns_.at(nsid);}
    std::string const* find(const Ns_id nsid) const {return map_ns_.find(nsid);}
-   std::string prefix(const Ns_id nsid) const {return map_ns_.prefix(nsid);}
+   std::string prefix(const Ns_id nsid) const {return map_pref_.prefix(nsid);}
 
    Node_iri const& operator[](const Node_id nid) const {return map_node_[nid];}
    Node_iri const& at(const Node_id nid) const {return map_node_.at(nid);}
@@ -105,7 +106,8 @@ public:
    }
 
 private:
-   Map_ns map_ns_;
+   map_ns_t map_ns_;
+   Map_ns_prefix map_pref_;
    map_node_t map_node_;
 };
 
