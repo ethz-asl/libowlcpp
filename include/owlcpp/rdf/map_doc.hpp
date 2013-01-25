@@ -164,8 +164,8 @@ public:
     @param path document location
     @param vers versionIRI
     @return document ID and whether new document info was actually added
-    @throw Err if an entry with the same non-empty @a path and different @a iri or @a version
-    is already present.
+    @throw Err if an entry with the same non-empty @a path and different @a iri
+    or @a version is already present.
     @details
     Duplicate document info entries are not allowed.
 
@@ -174,11 +174,12 @@ public:
 
     Since documents with same ontologyIRI and versionIRI may be found
     at different paths,
-    multiple entries with different @a path and same @a iri or @a version can be added.
+    multiple entries with different @a path and same @a iri or @a version
+    can be added.
 
     Sometimes, document path is not known.
-    Therefore multiple entries with empty @a path and different @a iri or @a version
-    are allowed.
+    Therefore multiple entries with empty @a path and different @a iri or
+    @a version are allowed.
    */
    std::pair<Doc_id,bool> insert(
             const Node_id iri,

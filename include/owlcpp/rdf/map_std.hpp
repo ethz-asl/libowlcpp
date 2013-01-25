@@ -1,7 +1,7 @@
 /** @file "/owlcpp/include/owlcpp/rdf/map_std.hpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-@n Copyright Mikhail K Levin 2012
+@n Copyright Mikhail K Levin 2012-3
 *******************************************************************************/
 #ifndef MAP_STD_HPP_
 #define MAP_STD_HPP_
@@ -12,7 +12,9 @@ part of owlcpp project.
 #include "boost/concept/assert.hpp"
 
 #include "owlcpp/rdf/map_ns.hpp"
-#include "owlcpp/rdf/map_node_iri.hpp"
+#include "owlcpp/rdf/node_iri.hpp"
+#include "owlcpp/node_id.hpp"
+#include "owlcpp/rdf/detail/map_id_object.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/terms/detail/max_standard_id.hpp"
 
@@ -22,6 +24,7 @@ namespace owlcpp{
 @details Contains at least blank and empty (literal) namespaces and empty node.
 *******************************************************************************/
 class Map_std : boost::noncopyable {
+   typedef detail::Map_id_object<Node_iri, Node_id> map_node_t;
 
    template<class Inserter> explicit Map_std(Inserter const& ins)
    : map_ns_(Ns_id(0)), map_node_(Node_id(0))
@@ -67,7 +70,7 @@ public:
       BOOST_ASSERT(map_node_.size() < detail::min_node_id()());
       typedef typename NTag::ns_type ns_type;
       insert_ns_tag(ns_type());
-      map_node_.insert_iri(NTag::id(), ns_type::id(), NTag::name());
+      map_node_.insert(NTag::id(), Node_iri(ns_type::id(), NTag::name()));
    }
 
    /**
@@ -103,7 +106,7 @@ public:
 
 private:
    Map_ns map_ns_;
-   Map_node_iri map_node_;
+   map_node_t map_node_;
 };
 
 }//namespace owlcpp

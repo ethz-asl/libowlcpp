@@ -1,7 +1,7 @@
 /** @file "/owlcpp/include/owlcpp/rdf/detail/map_id_object.hpp" 
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-@n Copyright Mikhail K Levin 2012
+@n Copyright Mikhail K Levin 2012-3
 *******************************************************************************/
 #ifndef MAP_ID_OBJECT_HPP_
 #define MAP_ID_OBJECT_HPP_
@@ -46,6 +46,15 @@ public:
       copy(mio);
    }
 
+   self_type& operator=(self_type const& mio) {
+      clear();
+      id0_ = mio.id0_;
+      vid_.resize(mio.vid_.size());
+      copy(mio);
+      erased_ = mio.erased_;
+      return *this;
+   }
+
    std::size_t size() const { return map_.size(); }
    const_iterator begin() const {return map_.begin();}
    const_iterator end() const {return map_.end();}
@@ -78,17 +87,8 @@ public:
       return i == map_.end() ? 0 : &i->second;
    }
 
-   self_type& operator=(self_type const& mio) {
-      clear();
-      id0_ = mio.id0_;
-      vid_.resize(mio.vid_.size());
-      copy(mio);
-      erased_ = mio.erased_;
-      return *this;
-   }
-
    id_type insert(obj_type const& obj) {
-      std::pair<iterator,bool> ip = map_.emplace(obj, Node_id());
+      std::pair<iterator,bool> ip = map_.emplace(obj, id_type());
       if( ip.second ) {
          const id_type id = make_id(ip.first);
          ip.first->second = id;
@@ -123,7 +123,7 @@ public:
       std::pair<const_iterator,bool> ip = map_.emplace(node, id);
       BOOST_ASSERT(ip.second);
       //ignore erased_
-      const std::size_t n = sz(id);
+      const std::size_t n = vpos(id);
       if( n < vid_.size() ) {
          vid_[n] = &ip.first->first;
       } else {
@@ -186,7 +186,6 @@ private:
    }
 
 };
-
 
 }//namespace detail
 }//namespace owlcpp

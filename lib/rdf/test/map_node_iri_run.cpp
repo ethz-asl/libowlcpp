@@ -60,37 +60,7 @@ BOOST_AUTO_TEST_CASE( test_map_node_iri_01 ) {
    const Node_id id4 = mni1.insert_iri(Ns_id(13), "blahblah");
    BOOST_CHECK( mni1.find(id4) );
    BOOST_CHECK_EQUAL(nid2, id4); //ID got recycled
-
-   //insert existing node with new ID
-   BOOST_CHECK_THROW(
-            mni1.insert_iri(Node_id(42), Ns_id(43), "blah"),
-            Rdf_err
-   );
-
-   //insert new node with existing ID
-   BOOST_CHECK_THROW(
-            mni1.insert_iri(id4, Ns_id(142), "new_node"),
-            Rdf_err
-   );
-
-   //insert existing node with its current ID (NOP)
-   mni1.insert_iri(id4, Ns_id(13), "blahblah");
-
-   BOOST_CHECK( ! mni1.find(Node_id(42)) );
-   mni1.insert_iri(Node_id(42), Ns_id(142), "new_node");
 }
 
-/**@test
-*******************************************************************************/
-BOOST_AUTO_TEST_CASE( test_map_node_iri_02 ) {
-   const Node_id min_id = ::owlcpp::detail::min_node_id();
-   Map_node_iri mnb;
-
-   const Node_id id_1(( 10 ));
-   BOOST_CHECK_THROW( mnb.insert_iri(id_1, Ns_id(43), "blah"), Rdf_err );
-
-   mnb.insert_iri(min_id, Ns_id(43), "blah");
-
-}
 }//namespace test
 }//namespace owlcpp

@@ -22,8 +22,9 @@ const Ns_id nsid2(43);
 const Node_id nid0(13);
 const Node_iri n1(nsid1, "n1");
 const Node_iri n2(nsid1, "n2");
+const Node_iri n3(nsid1, "n3");
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
    d::Map_id_object<Node_iri, Node_id> mio1(nid0);
@@ -40,6 +41,28 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 
    d::Map_id_object<Node_iri, Node_id> mio2(Node_id(0));
    mio2 = mio1;
+
+   //insert existing node with new ID
+   BOOST_CHECK_THROW(
+            mio2.insert(Node_id(42), n1),
+            Rdf_err
+   );
+
+   //insert new node with existing ID
+   BOOST_CHECK_THROW(
+            mio2.insert(nid2, n3),
+            Rdf_err
+   );
+
+   //insert existing node with its current ID (NOP)
+   BOOST_CHECK_NO_THROW( mio2.insert(nid2, n2); );
+
+   //insert new node with ID below id0
+   const Node_id nid01(1);
+   BOOST_CHECK_THROW(
+            mio2.insert(nid01, n3),
+            Rdf_err
+   );
 }
 
 }//namespace test
