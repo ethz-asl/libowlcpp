@@ -11,6 +11,7 @@ part of owlcpp project.
 #include "boost/concept/detail/concept_def.hpp"
 
 namespace owlcpp{
+class Ns_iri;
 
 /**
 Namespace IRI store concept
@@ -22,24 +23,24 @@ public:
    typedef typename traits::ns_id_type ns_id_type;
 
    BOOST_CONCEPT_USAGE(Ns_store) {
-      str_ = t_[nsid_];
-      str_ = t_.at(nsid_);
-      str_ = *t_.find(nsid_);
-      str_ = t_.prefix(nsid_);
+      ns_iri_ = t_[nsid_];
+      ns_iri_ = t_.at(nsid_);
+      ns_iri_ = *t_.find(nsid_);
+      ns_iri_ = t_.prefix(nsid_);
 
       map_ns_type const& map_ns = t_.map_ns();
       boost::ignore_unused_variable_warning(map_ns);
 
-      nsid_ = t_.insert_ns(str_);
+      nsid_ = t_.insert_ns(ns_iri_);
 
-      ns_id_type const* nsid = t_.find_ns(str_);
-      nsid = t_.find_prefix(str_);
+      ns_id_type const* nsid = t_.find_ns(ns_iri_);
+      nsid = t_.find_prefix(ns_iri_);
       boost::ignore_unused_variable_warning(nsid);
    }
 
 private:
    T t_;
-   std::string str_;
+   Ns_iri ns_iri_;
    ns_id_type nsid_;
 };
 

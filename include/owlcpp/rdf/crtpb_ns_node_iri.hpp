@@ -25,11 +25,12 @@ template<class Super> struct Crtpb_ns_node_iri {
       BOOST_CONCEPT_ASSERT((Ns_store<Super>));
       BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
       const std::size_t n = iri.find('#');
-      Super& super = static_cast<Super&>(*this);
-      const Ns_id iid =
+      const Ns_iri ns_iri =
                std::string::npos == n ?
-                        super.insert_ns(iri) :
-                        super.insert_ns(iri.substr(0,n));
+                        iri : iri.substr(0,n)
+                        ;
+      Super& super = static_cast<Super&>(*this);
+      const Ns_id iid = super.insert(ns_iri);
 
       const std::string name = std::string::npos == n ? "" : iri.substr(n+1);
       try{
@@ -49,11 +50,12 @@ template<class Super> struct Crtpb_ns_node_iri {
       BOOST_CONCEPT_ASSERT((Ns_store<Super>));
       BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
       const std::size_t n = iri.find('#');
-      Super const& super = static_cast<Super const&>(*this);
-      Ns_id const*const ns_id =
+      const Ns_iri ns_iri =
                std::string::npos == n ?
-                        super.find_ns(iri) :
-                        super.find_ns(iri.substr(0,n));
+                        iri : iri.substr(0,n)
+                        ;
+      Super const& super = static_cast<Super const&>(*this);
+      Ns_id const*const ns_id = super.find(ns_iri);
       if( ! ns_id ) return 0;
       const std::string name = std::string::npos == n ? "" : iri.substr(n+1);
       return super.find_node_iri( *ns_id, name );

@@ -89,7 +89,7 @@ public:
                   Err()
                   << typename Err::msg_t("unknown term in standard namespace")
                   << typename Err::str1_t( name )
-                  << typename Err::str2_t( _map_std().at(nsid) )
+                  << typename Err::str2_t( _map_std().at(nsid).str() )
          );
       }
       return _map_node().insert_iri(nsid, name);

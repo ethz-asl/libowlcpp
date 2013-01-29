@@ -5,13 +5,13 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef MAP_NS_HPP_
 #define MAP_NS_HPP_
-#include <string>
 #include <map>
 #include <vector>
 #include <functional>
 #include "boost/assert.hpp"
 
 #include "owlcpp/ns_id.hpp"
+#include "owlcpp/rdf/ns_iri.hpp"
 #include "owlcpp/rdf/detail/map_id_object.hpp"
 #include "owlcpp/rdf/map_ns_prefix.hpp"
 #include "owlcpp/detail/iterator_member_pair.hpp"
@@ -27,7 +27,7 @@ public:
    typedef Ns_id id_type;
 private:
 
-   typedef detail::Map_id_object<std::string, id_type> map_t;
+   typedef detail::Map_id_object<Ns_iri, id_type> map_t;
 
 public:
    typedef Iterator_member_pair<map_t::const_iterator, id_type const, 2> iterator;
@@ -51,9 +51,9 @@ public:
    const_iterator begin() const {return iri_.begin();}
    const_iterator end() const {return iri_.end();}
    bool empty() const {return iri_.empty();}
-   std::string operator[](const Ns_id id) const {return iri_[id];}
-   std::string at(const Ns_id id) const {return iri_.at(id);}
-   std::string const* find(const Ns_id id) const {return iri_.find(id);}
+   Ns_iri const& operator[](const Ns_id id) const {return iri_[id];}
+   Ns_iri const& at(const Ns_id id) const {return iri_.at(id);}
+   Ns_iri const* find(const Ns_id id) const {return iri_.find(id);}
    std::string prefix(const Ns_id id) const {return pref_.prefix(id);}
    Ns_id const* find_prefix(std::string const& pref) const {return pref_.find(pref);}
 
@@ -61,9 +61,9 @@ public:
     @param iri namespace IRI string
     @return pointer to namespace IRI ID or NULL if iri is unknown
    */
-   Ns_id const* find_iri(std::string const& iri) const {return iri_.find(iri);}
+   Ns_id const* find(Ns_iri const& iri) const {return iri_.find(iri);}
 
-   Ns_id insert(std::string const& iri) {return iri_.insert(iri);}
+   Ns_id insert(Ns_iri const& iri) {return iri_.insert(iri);}
 
    void set_prefix(const Ns_id id, std::string const& pref = "") {
       if( ! find(id) ) BOOST_THROW_EXCEPTION(

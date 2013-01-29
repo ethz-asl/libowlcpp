@@ -12,6 +12,7 @@ part of owlcpp project.
 #include "boost/concept/assert.hpp"
 
 #include "owlcpp/rdf/map_ns_prefix.hpp"
+#include "owlcpp/rdf/ns_iri.hpp"
 #include "owlcpp/rdf/node_iri.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/rdf/detail/map_id_object.hpp"
@@ -24,7 +25,7 @@ namespace owlcpp{
 @details Contains at least blank and empty (literal) namespaces and empty node.
 *******************************************************************************/
 class Map_std : boost::noncopyable {
-   typedef detail::Map_id_object<std::string, Ns_id> map_ns_t;
+   typedef detail::Map_id_object<Ns_iri, Ns_id> map_ns_t;
    typedef detail::Map_id_object<Node_iri, Node_id> map_node_t;
 
    template<class Inserter> explicit Map_std(Inserter const& ins)
@@ -61,7 +62,7 @@ public:
    non-constant method, can be used only during construction */
    template<class NsTag> void insert_ns_tag(NsTag const&) {
       BOOST_ASSERT(map_ns_.size() < detail::min_ns_id()());
-      map_ns_.insert(NsTag::id(), NsTag::iri());
+      map_ns_.insert(NsTag::id(), Ns_iri(NsTag::iri()));
       map_pref_.set(NsTag::id(), NsTag::prefix());
    }
 
@@ -88,11 +89,11 @@ public:
       return nid < detail::min_node_id();
    }
 
-   Ns_id const* find_iri(std::string const& iri) const {return map_ns_.find(iri);}
+   Ns_id const* find(Ns_iri const& iri) const {return map_ns_.find(iri);}
    Ns_id const* find_prefix(std::string const& pref) const {return map_pref_.find(pref);}
-   std::string operator[](const Ns_id nsid) const {return map_ns_[nsid];}
-   std::string at(const Ns_id nsid) const {return map_ns_.at(nsid);}
-   std::string const* find(const Ns_id nsid) const {return map_ns_.find(nsid);}
+   Ns_iri const& operator[](const Ns_id nsid) const {return map_ns_[nsid];}
+   Ns_iri const& at(const Ns_id nsid) const {return map_ns_.at(nsid);}
+   Ns_iri const* find(const Ns_id nsid) const {return map_ns_.find(nsid);}
    std::string prefix(const Ns_id nsid) const {return map_pref_.prefix(nsid);}
 
    Node_iri const& operator[](const Node_id nid) const {return map_node_[nid];}
