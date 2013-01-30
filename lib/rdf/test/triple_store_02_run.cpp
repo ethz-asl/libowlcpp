@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE( test_print_triples ) {
       ;
       Node const& node = ts.at(t.subject());
       const Ns_id nsid1 = node.ns_id();
-      const std::string iri = ts[nsid1];
+      /*Ns_iri const& iri =*/ ts[nsid1];
       const std::string pref = ts.prefix(nsid1);
    }
 }

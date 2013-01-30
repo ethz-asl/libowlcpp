@@ -65,8 +65,8 @@ public:
     @return pointer to namespace IRI ID or NULL if iri is unknown
    */
    Ns_id const* find(Ns_iri const& iri) const {
-      if( Ns_id const*const id = _map_std().find_iri(iri) ) return id;
-      return _map_ns().find_iri(iri);
+      if( Ns_id const*const id = _map_std().find(iri) ) return id;
+      return _map_ns().find(iri);
    }
 
    /**
@@ -111,8 +111,8 @@ public:
                   Err()
                   << typename Err::msg_t("prefix reserved for different IRI")
                   << typename Err::str1_t(pref)
-                  << typename Err::str2_t(at(nsid))
-                  << typename Err::str3_t(at(*iid0))
+                  << typename Err::str2_t(at(nsid).str())
+                  << typename Err::str3_t(at(*iid0).str())
          );
       }
       _map_ns().set_prefix(nsid, pref);

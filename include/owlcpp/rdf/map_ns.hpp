@@ -62,8 +62,10 @@ public:
     @return pointer to namespace IRI ID or NULL if iri is unknown
    */
    Ns_id const* find(Ns_iri const& iri) const {return iri_.find(iri);}
+   Ns_id const* find(std::string const& iri) const {return iri_.find(Ns_iri(iri));}
 
    Ns_id insert(Ns_iri const& iri) {return iri_.insert(iri);}
+   Ns_id insert(std::string const& iri) {return insert(Ns_iri(iri));}
 
    void set_prefix(const Ns_id id, std::string const& pref = "") {
       if( ! find(id) ) BOOST_THROW_EXCEPTION(

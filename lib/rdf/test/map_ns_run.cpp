@@ -19,8 +19,8 @@ BOOST_AUTO_TEST_CASE( test_map_ns_01 ) {
    Map_ns mns1(Ns_id(5));
    BOOST_CHECK_EQUAL(mns1.size(), 0u);
    const Ns_id id1 = mns1.insert("i1");
-   BOOST_CHECK(mns1.find_iri("i1"));
-   BOOST_CHECK_EQUAL(*mns1.find_iri("i1"), id1);
+   BOOST_CHECK(mns1.find("i1"));
+   BOOST_CHECK_EQUAL(*mns1.find("i1"), id1);
    const Ns_id id2 = mns1.insert("i2");
    mns1.set_prefix(id2, "p2");
    BOOST_CHECK_EQUAL(mns1.prefix(id2), "p2");

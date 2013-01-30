@@ -31,16 +31,17 @@ public:
       map_ns_type const& map_ns = t_.map_ns();
       boost::ignore_unused_variable_warning(map_ns);
 
-      nsid_ = t_.insert_ns(ns_iri_);
+      nsid_ = t_.insert(ns_iri_);
 
-      ns_id_type const* nsid = t_.find_ns(ns_iri_);
-      nsid = t_.find_prefix(ns_iri_);
+      ns_id_type const* nsid = t_.find(ns_iri_);
+      nsid = t_.find_prefix(pref_);
       boost::ignore_unused_variable_warning(nsid);
    }
 
 private:
    T t_;
    Ns_iri ns_iri_;
+   std::string pref_;
    ns_id_type nsid_;
 };
 
