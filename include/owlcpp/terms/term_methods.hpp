@@ -12,14 +12,14 @@ namespace owlcpp{ namespace terms{
 
 /** @return complete IRI for standard terms
 *******************************************************************************/
-template<class T> inline std::string to_string(const T&) {
+template<class T> inline std::string to_string_full(const T&) {
    typedef typename T::ns_type ns_t;
    return ns_t::iri() + "#" + T::name();
 }
 
 /** @return prefix IRI for standard terms
 *******************************************************************************/
-template<class T> inline std::string to_string_short(const T&) {
+template<class T> inline std::string to_string_pref(const T&) {
    typedef typename T::ns_type ns_t;
    return ns_t::prefix() + ":" + T::name();
 }

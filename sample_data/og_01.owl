@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE rdf:RDF [
   <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
-  <!ENTITY owl2 "http://www.w3.org/2006/12/owl2#" >
   <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
   <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
-  <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
   <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
   <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
   <!ENTITY OG "http://www.sample.com/owl/sample.owl#" >
 ]>
 <rdf:RDF xmlns="http://www.sample.com/owl/sample.owl#"
   xml:base="og_01.owl#"
-  xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-  xmlns:dc="http://purl.org/dc/elements/1.1/"
-  xmlns:owl2="http://www.w3.org/2006/12/owl2#"
-  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-  xmlns:owl="http://www.w3.org/2002/07/owl#"
-  xmlns:OpenGALEN="http://www.sample.com/owl/sample.owl#">
+  xmlns:xsd="&xsd;"
+  xmlns:dc="&dc;"
+  xmlns:rdfs="&rdfs;"
+  xmlns:rdf="&rdf;"
+  xmlns:owl="&owl;"
+  >
 
 <owl:Ontology rdf:about="">
 	<owl:imports><owl:Ontology rdf:about="og_02.owl"/></owl:imports>

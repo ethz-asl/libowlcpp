@@ -6,20 +6,15 @@ part of owlcpp project.
 #ifndef TERM_TYPENAME_MACRO_HPP_
 #define TERM_TYPENAME_MACRO_HPP_
 
-/**@brief Standard OWL predicate type names begin from this */
-#define OWLCPP_TERM_TYPE_PREFIX T_
-
 /**@brief Generate type name @details e.g.,
 OWLCPP_TERM_TYPE_NAME((rdfs)(subClassOf)) produces T_rdfs_subClassOf
 *******************************************************************************/
 #define OWLCPP_TERM_TYPE_NAME(n) \
       BOOST_PP_CAT( \
-            OWLCPP_TERM_TYPE_PREFIX, BOOST_PP_CAT( \
-                  BOOST_PP_SEQ_ELEM(0,n), BOOST_PP_CAT( \
+               BOOST_PP_SEQ_ELEM(0,n), BOOST_PP_CAT( \
                         _, BOOST_PP_SEQ_ELEM(1,n) \
-                  ) \
+               ) \
             ) \
-      ) \
 /* */
 
 #endif /* TERM_TYPENAME_MACRO_HPP_ */

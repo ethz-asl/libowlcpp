@@ -12,7 +12,7 @@ part of owlcpp project.
 #include "owlcpp/terms/node_tags_owl.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/logic/exception.hpp"
-#include "expression_args.hpp"
+#include "logic/expression_args.hpp"
 
 class ReasoningKernel;
 class TDLConceptExpression;
@@ -59,16 +59,16 @@ template<class T> struct Expression {
 template<class T> typename Expression<T>::ptr_t
 make_expression(Expression_args const& ea, Triple_store const& ts);
 
-template<> typename Expression<Obj_type>::ptr_t
+template<> Expression<Obj_type>::ptr_t
 make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts);
 
-template<> typename Expression<Obj_prop>::ptr_t
+template<> Expression<Obj_prop>::ptr_t
 make_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts);
 
-template<> typename Expression<Data_type>::ptr_t
+template<> Expression<Data_type>::ptr_t
 make_expression<Data_type>(Expression_args const& ea, Triple_store const& ts);
 
-template<> typename Expression<Data_prop>::ptr_t
+template<> Expression<Data_prop>::ptr_t
 make_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts);
 
 template<class T> inline typename Expression<T>::ptr_t

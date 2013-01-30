@@ -4,4 +4,4 @@
 ## Uncomment "boost-build" statement and provide full path to Boost.Build.
 ## IMPORTANT: Use forward slashes '/' and put space before semicolon
 
-# boost-build "C:/Program Files/boost/boost_1_47_0/tools/build/v2" ;
+# boost-build "C:/Program Files/boost/boost_1_52_0/tools/build/v2" ;

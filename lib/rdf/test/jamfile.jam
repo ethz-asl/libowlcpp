@@ -11,25 +11,25 @@ project
    : requirements
       <include>../
       <library>/boost//unit_test_framework
-      <library>/owlcpp//rdf
 ;
 
 import testing ;
 
-rule run-all ( sources * )
+rule run-all ( sources * : requirements * )
 {
    for local source in $(sources)
    {
-       return [ run $(source) ] ;
+       return [ run $(source) : : : $(requirements) ] ;
    }
 }
 
-local auto_run_src = [ glob *_run.cpp ] ;
-
-test-suite simple_tests : [ run-all $(auto_run_src) ] ;
-
-test-suite all_tests
+test-suite simple_tests 
    :
-#     [ run test_01.cpp ]
+      [ run-all [ glob *run.cpp ] : <library>/owlcpp//rdf ]
+;
+
+test-suite other_tests
+   :
+     [ compile-fail object_id_01_cfail.cpp ]
 ;
 

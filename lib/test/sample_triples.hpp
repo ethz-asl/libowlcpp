@@ -9,9 +9,11 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-const std::string ns1 = "http://ns1";
-const std::string ns2 = "http://ns2";
-const std::string ns3 = "http://ns3";
+const Ns_iri ns1("http://example.xyz/example1");
+const std::string ns1p = "ex1";
+const Ns_iri ns2("http://example.xyz/example2");
+const std::string ns2p = "ex2";
+const Ns_iri ns3("http://ns3");
 
 const std::string doc1 = "http://doc1";
 const std::string doc2 = "http://doc2";
@@ -21,35 +23,29 @@ const std::string path1 = "path1";
 const std::string path2 = "path2";
 const std::string path3 = "path3";
 
-const std::string iri11 = ns1 + "#" + "node1";
-const std::string iri12 = ns1 + "#" + "node2";
-const std::string iri13 = ns1 + "#" + "node3";
-const std::string iri14 = ns1 + "#" + "node4";
+const std::string iri11 = add_fragment(ns1, "node1");
+const std::string iri12 = add_fragment(ns1, "node2");
+const std::string iri13 = add_fragment(ns1, "node3");
+const std::string iri14 = add_fragment(ns1, "node4");
 
-const std::string iri21 = ns2 + "#" + "node1";
-const std::string iri22 = ns2 + "#" + "node2";
-const std::string iri23 = ns2 + "#" + "node3";
-const std::string iri24 = ns2 + "#" + "node4";
-
-const std::string b1 = "b1";
-const std::string b2 = "b2";
-const std::string b3 = "b3";
-const std::string b4 = "b4";
-const std::string b5 = "b5";
+const std::string iri21 = add_fragment(ns2, "node1");
+const std::string iri22 = add_fragment(ns2, "node2");
+const std::string iri23 = add_fragment(ns2, "node3");
+const std::string iri24 = add_fragment(ns2, "node4");
 
 /**@brief 
 *******************************************************************************/
 Triple_store& sample_triples_01(Triple_store& ts) {
-   const Node_id nid1 = ts.insert_iri_node(iri11);
-   const Node_id nid2 = ts.insert_iri_node(iri12);
-   const Node_id nid3 = ts.insert_iri_node(iri13);
-   const Node_id nid4 = ts.insert_iri_node(iri14);
-   const Doc_id did1 = ts.insert_doc(path1, doc1, "").first;
-   const Node_id nid5 = ts.insert_blank_node(did1, b1);
-   const Node_id nid6 = ts.insert_blank_node(did1, b2);
-   const Node_id nid7 = ts.insert_blank_node(did1, b3);
-   const Node_id nid8 = ts.insert_blank_node(did1, b4);
-   const Node_id nid9 = ts.insert_blank_node(did1, b5);
+   const Node_id nid1 = ts.insert_node_iri(iri11);
+   const Node_id nid2 = ts.insert_node_iri(iri12);
+   const Node_id nid3 = ts.insert_node_iri(iri13);
+   const Node_id nid4 = ts.insert_node_iri(iri14);
+   const Doc_id did1 = ts.insert_doc(doc1, path1, "").first;
+   const Node_id nid5 = ts.insert_blank(1, did1);
+   const Node_id nid6 = ts.insert_blank(2, did1);
+   const Node_id nid7 = ts.insert_blank(3, did1);
+   const Node_id nid8 = ts.insert_blank(4, did1);
+   const Node_id nid9 = ts.insert_blank(5, did1);
 
    ts.insert_triple(nid1, nid2, nid3, did1);
    ts.insert_triple(nid4, nid2, nid3, did1);
@@ -70,16 +66,16 @@ Triple_store sample_triples_01() {
 /**@brief
 *******************************************************************************/
 Triple_store& sample_triples_02(Triple_store& ts) {
-   const Doc_id did1 = ts.insert_doc(path2, doc2, doc3).first;
-   const Node_id nid5 = ts.insert_blank_node(did1, b1);
-   const Node_id nid6 = ts.insert_blank_node(did1, b2);
-   const Node_id nid7 = ts.insert_blank_node(did1, b3);
-   const Node_id nid8 = ts.insert_blank_node(did1, b4);
-   const Node_id nid9 = ts.insert_blank_node(did1, b5);
-   const Node_id nid1 = ts.insert_iri_node(iri21);
-   const Node_id nid2 = ts.insert_iri_node(iri12);
-   const Node_id nid3 = ts.insert_iri_node(iri23);
-   const Node_id nid4 = ts.insert_iri_node(iri14);
+   const Doc_id did1 = ts.insert_doc(doc2, path2, doc3).first;
+   const Node_id nid5 = ts.insert_blank(1, did1);
+   const Node_id nid6 = ts.insert_blank(2, did1);
+   const Node_id nid7 = ts.insert_blank(3, did1);
+   const Node_id nid8 = ts.insert_blank(4, did1);
+   const Node_id nid9 = ts.insert_blank(5, did1);
+   const Node_id nid1 = ts.insert_node_iri(iri21);
+   const Node_id nid2 = ts.insert_node_iri(iri12);
+   const Node_id nid3 = ts.insert_node_iri(iri23);
+   const Node_id nid4 = ts.insert_node_iri(iri14);
 
    ts.insert_triple(nid1, nid2, nid3, did1);
    ts.insert_triple(nid4, nid2, nid3, did1);

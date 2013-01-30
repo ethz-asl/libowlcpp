@@ -1,6 +1,11 @@
 TODO
 
+- check that all FaCT++ kernel and expression manager methods work;
+  some may require more methods exported in DLL
+
 - lax (non-strict) parsing into triple store
    allow adding new terms to standard namespaces
    
 - lax (non-strict) axiom generation
+
+- in Raptor wrapper, allocate fixed-length buffer

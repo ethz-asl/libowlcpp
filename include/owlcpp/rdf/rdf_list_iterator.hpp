@@ -9,79 +9,9 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
+#include "owlcpp/rdf/print_node.hpp"
 
 namespace owlcpp{
-
-/**@brief Iterates over members of RDF list
-*******************************************************************************/
-class Rdf_list_iter_m
-: public boost::iterator_facade<
-  Rdf_list_iter_m,
-  Node_id const,
-  boost::forward_traversal_tag
-  >
-{
-public:
-   struct Err : public Rdf_err {};
-
-   Rdf_list_iter_m()
-   : tm_(0), nid_(terms::T_rdf_nil::id())
-   {}
-
-   Rdf_list_iter_m(const Node_id nid, Triple_map const& tm)
-   : tm_(&tm), nid_(nid)
-   {}
-
-private:
-   Triple_map const* tm_;
-   Node_id nid_;
-
-   friend class boost::iterator_core_access;
-
-   void increment() {
-      const Query<1,1,0,0>::range r = tm_->find(
-               nid_,
-               terms::T_rdf_rest::id(),
-               any(),
-               any()
-      );
-      if( ! r ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("rdf:rest triple not found")
-               << Err::int1_t(nid_())
-      );
-      Triple const& t = r.front();
-      if( distance(r) != 1U ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("multiple rdf:rest triples")
-               << Err::int1_t(nid_())
-      );
-      nid_ = t.object();
-   }
-
-   Node_id const& dereference() const {
-      const Query<1,1,0,0>::range r = tm_->find(
-               nid_,
-               terms::T_rdf_first::id(),
-               any(),
-               any()
-      );
-      if( ! r ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("rdf:first triple not found")
-               << Err::int1_t(nid_())
-      );
-      Triple const& t = r.front();
-      if( distance(r) != 1U ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("multiple rdf:first triples")
-               << Err::int1_t(nid_())
-      );
-      return t.obj_;
-   }
-
-   bool equal(Rdf_list_iter_m const& i) const {return nid_ == i.nid_;}
-};
 
 /**@brief Iterates over members of RDF list
 @details Triple store provides additional information for troubleshooting.
@@ -97,7 +27,7 @@ public:
    struct Err : public Rdf_err {};
 
    Rdf_list_iter_s()
-   : ts_(0), nid_(terms::T_rdf_nil::id())
+   : ts_(0), nid_(terms::rdf_nil::id())
    {}
 
    Rdf_list_iter_s(const Node_id nid, Triple_store const& ts)
@@ -111,43 +41,43 @@ private:
    friend class boost::iterator_core_access;
 
    void increment() {
-      const Query<1,1,0,0>::range r = ts_->triples().find(
+      const Triple_store::result_b<1,1,0,0>::type r = ts_->find_triple(
                nid_,
-               terms::T_rdf_rest::id(),
+               terms::rdf_rest::id(),
                any(),
                any()
       );
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("rdf:rest triple not found")
-               << Err::str1_t(ts_->string(nid_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       Triple const& t = r.front();
-      if( distance(r) != 1U ) BOOST_THROW_EXCEPTION(
+      if( boost::distance(r) != 1U ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("multiple rdf:rest triples")
-               << Err::str1_t(ts_->string(nid_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       nid_ = t.object();
    }
 
    Node_id const& dereference() const {
-      const Query<1,1,0,0>::range r = ts_->triples().find(
+      const Triple_store::result_b<1,1,0,0>::type r = ts_->find_triple(
                nid_,
-               terms::T_rdf_first::id(),
+               terms::rdf_first::id(),
                any(),
                any()
       );
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("rdf:first triple not found")
-               << Err::str1_t(ts_->string(nid_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       Triple const& t = r.front();
-      if( distance(r) != 1U ) BOOST_THROW_EXCEPTION(
+      if( boost::distance(r) != 1U ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("multiple rdf:first triples")
-               << Err::str1_t(ts_->string(nid_))
+               << Err::str1_t(to_string(nid_, *ts_))
       );
       return t.obj_;
    }
