@@ -47,11 +47,13 @@ public:
    }
 
    self_type& operator=(self_type const& mio) {
-      clear();
-      id0_ = mio.id0_;
-      vid_.resize(mio.vid_.size());
-      copy(mio);
-      erased_ = mio.erased_;
+      if( this != &mio ) {
+         clear();
+         id0_ = mio.id0_;
+         vid_.resize(mio.vid_.size());
+         copy(mio);
+         erased_ = mio.erased_;
+      }
       return *this;
    }
 

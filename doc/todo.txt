@@ -9,5 +9,3 @@ TODO
 - lax (non-strict) axiom generation
 
 - in Raptor wrapper, allocate fixed-length buffer
-
-- check how classes handle self-assignment

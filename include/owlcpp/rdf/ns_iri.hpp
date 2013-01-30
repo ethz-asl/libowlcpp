@@ -15,24 +15,12 @@ namespace owlcpp{
 *******************************************************************************/
 class Ns_iri {
 public:
-   explicit Ns_iri(std::string const& nsiri) : str_(nsiri) {}
    explicit Ns_iri(char const* nsiri) : str_(nsiri) {}
+   explicit Ns_iri(std::string const& nsiri) : str_(nsiri) {}
    Ns_iri(char const* nsiri, const std::size_t n) : str_(nsiri, n) {}
 
-   Ns_iri& operator=(Ns_iri const& nsiri) {
-      str_ = nsiri.str_;
-      return *this;
-   }
-
-   Ns_iri& operator=(std::string const& nsiri) {
-      str_ = nsiri;
-      return *this;
-   }
-
-   Ns_iri& operator=(char const* nsiri) {
-      str_ = nsiri;
-      return *this;
-   }
+   bool operator==(Ns_iri const& n) const {return str_ == n.str_;}
+   bool operator==(std::string const& str) const {return str_ == str;}
 
    std::string const& str() const {return str_;}
 
@@ -44,19 +32,10 @@ template<class Ch, class Tr> inline std::basic_ostream<Ch,Tr>&
    operator<<(std::basic_ostream<Ch,Tr>& os, Ns_iri const& ns_iri)
 {return os << ns_iri.str();}
 
-inline bool operator==(Ns_iri const& n1, Ns_iri const& n2)
-{return n1.str() == n2.str();}
-
-inline bool operator==(std::string const& n1, Ns_iri const& n2)
-{return n1 == n2.str();}
-
-inline bool operator==(Ns_iri const& n1, std::string const& n2)
-{return n1.str() == n2;}
-
 inline std::size_t hash_value(Ns_iri const& n)
 {return boost::hash_value<std::string>(n.str());}
 
-/**@brief remove fragment identifier from the rest of the IRI
+/**@brief remove fragment identifier from the rest of IRI string
  @param[in] iri IRI string
  @param[out] n position of the first character in fragment identifier
  or iri.size() if fragment not found

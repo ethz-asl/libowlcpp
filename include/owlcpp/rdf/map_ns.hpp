@@ -39,14 +39,6 @@ public:
    : iri_(id0), pref_()
    {}
 
-   Map_ns(Map_ns const& mns) : iri_(mns.iri_), pref_(mns.pref_) {}
-
-   Map_ns& operator=(Map_ns const& mns) {
-      iri_ = mns.iri_;
-      pref_ = mns.pref_;
-      return *this;
-   }
-
    std::size_t size() const {return iri_.size();}
    const_iterator begin() const {return iri_.begin();}
    const_iterator end() const {return iri_.end();}

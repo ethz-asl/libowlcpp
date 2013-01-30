@@ -68,10 +68,12 @@ public:
    }
 
    Map_node& operator=(Map_node const& mn) {
-      clear();
-      vid_.reserve(mn.vid_.size());
-      copy(mn);
-      erased_ = mn.erased_;
+      if( this != &mn) {
+         clear();
+         vid_.reserve(mn.vid_.size());
+         copy(mn);
+         erased_ = mn.erased_;
+      }
       return *this;
    }
 

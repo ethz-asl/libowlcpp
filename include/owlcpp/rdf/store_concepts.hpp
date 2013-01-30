@@ -26,7 +26,7 @@ public:
       ns_iri_ = t_[nsid_];
       ns_iri_ = t_.at(nsid_);
       ns_iri_ = *t_.find(nsid_);
-      ns_iri_ = t_.prefix(nsid_);
+      pref_ = t_.prefix(nsid_);
 
       map_ns_type const& map_ns = t_.map_ns();
       boost::ignore_unused_variable_warning(map_ns);

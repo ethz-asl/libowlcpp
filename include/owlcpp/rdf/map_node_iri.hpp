@@ -43,15 +43,6 @@ public:
    : map_(id0)
    {}
 
-   Map_node_iri(Map_node_iri const& mni)
-   : map_(mni.map_)
-   {}
-
-   Map_node_iri& operator=(Map_node_iri const& mni) {
-      map_ = mni.map_;
-      return *this;
-   }
-
    std::size_t size() const { return map_.size(); }
    const_iterator begin() const {return map_.begin();}
    const_iterator end() const {return map_.end();}
