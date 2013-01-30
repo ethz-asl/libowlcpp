@@ -16,7 +16,6 @@ Distributed under GNU General Public License; see doc/license.txt.
 #include "owlcpp/rdf/node_iri.hpp"
 #include "owlcpp/rdf/node_literal.hpp"
 #include "owlcpp/rdf/node_blank.hpp"
-#include "owlcpp/rdf/hash_node.hpp"
 #include "owlcpp/rdf/print_node.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 

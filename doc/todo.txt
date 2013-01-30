@@ -10,4 +10,4 @@ TODO
 
 - in Raptor wrapper, allocate fixed-length buffer
 
-- make Ns_iri class to represent namespace IRIs
+- check how classes handle self-assignment

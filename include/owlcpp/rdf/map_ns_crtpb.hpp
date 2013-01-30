@@ -26,10 +26,6 @@ template<class Super> class Map_ns_crtpb {
    }
 
 public:
-   bool valid(const Ns_id nsid) const {
-      return _map_ns().valid(nsid);
-   }
-
    std::string operator[](const Ns_id nsid) const {
       return _map_ns()[nsid];
    }

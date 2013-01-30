@@ -62,9 +62,9 @@ public:
    using Map_std_node_crtpb<Catalog>::find_node_iri;
    using Crtpb_ns_node_iri<Catalog>::find_node_iri;
 
-   using Map_std_ns_crtpb<Catalog>::valid;
-   using Map_std_node_crtpb<Catalog>::valid;
-   using Map_doc_crtpb<Catalog>::valid;
+   using Map_std_ns_crtpb<Catalog>::find;
+   using Map_std_node_crtpb<Catalog>::find;
+   using Map_doc_crtpb<Catalog>::find;
 
    Catalog() : map_std_(map_std_type::get(Nodes_none())) {}
 

@@ -14,6 +14,8 @@ namespace owlcpp{ namespace test{
 
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
+namespace t = owlcpp::terms;
+
 /**@test Iterate over members of RDF list
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_query_triple ) {
@@ -27,10 +29,10 @@ BOOST_AUTO_TEST_CASE( test_query_triple ) {
    const Node_id nb2 = ts.insert_blank(2, did1);
    const Node_id ni1 = ts.insert_node_iri(iri11);
    const Node_id ni2 = ts.insert_node_iri(iri12);
-   ts.insert_triple(nb1, terms::rdf_first::id(), ni1, did1);
-   ts.insert_triple(nb1, terms::rdf_rest::id(), nb2, did1);
-   ts.insert_triple(nb2, terms::rdf_first::id(), ni2, did1);
-   ts.insert_triple(nb2, terms::rdf_rest::id(), terms::rdf_nil::id(), did1);
+   ts.insert_triple(nb1, t::rdf_first::id(), ni1, did1);
+   ts.insert_triple(nb1, t::rdf_rest::id(), nb2, did1);
+   ts.insert_triple(nb2, t::rdf_first::id(), ni2, did1);
+   ts.insert_triple(nb2, t::rdf_rest::id(), t::rdf_nil::id(), did1);
 
    Rdf_list_iter_s i(nb1, ts), i1;
    BOOST_CHECK(i != i1);
@@ -43,7 +45,7 @@ BOOST_AUTO_TEST_CASE( test_query_triple ) {
             boost::copy_range<std::vector<Node_id> >(rdf_list(nb1, ts))
    );
 
-   ts.insert_triple(nb2, terms::rdf_rest::id(), terms::rdf_nil::id(), did1);
+   ts.insert_triple(nb2, t::rdf_rest::id(), t::rdf_nil::id(), did1);
    BOOST_CHECK_THROW(
             boost::copy_range<std::vector<Node_id> >(rdf_list(nb1, ts)),
             Rdf_err

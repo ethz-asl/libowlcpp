@@ -35,19 +35,20 @@ template<class Super> class Map_std_ns_crtpb {
    }
 
 public:
-   bool valid(const Ns_id nsid) const {
-      BOOST_ASSERT(! (_map_std().valid(nsid) && _map_ns().valid(nsid)) );
-      return _map_std().valid(nsid) || _map_ns().valid(nsid);
+
+   Ns_iri const& operator[](const Ns_id nsid) const {
+      return _map_std().is_standard(nsid) ?
+               _map_std()[nsid] : _map_ns()[nsid];
    }
 
-   std::string operator[](const Ns_id nsid) const {
-      BOOST_ASSERT( valid(nsid) );
-      return nsid < detail::min_ns_id() ? _map_std()[nsid] : _map_ns()[nsid];
-   }
-
-   std::string at(const Ns_id nsid) const {
-      return nsid < detail::min_ns_id() ?
+   Ns_iri const& at(const Ns_id nsid) const {
+      return _map_std().is_standard(nsid) ?
                _map_std().at(nsid) : _map_ns().at(nsid);
+   }
+
+   Ns_iri const* find(const Ns_id nsid) const {
+      return _map_std().is_standard(nsid) ?
+               _map_std().find(nsid) : _map_ns().find(nsid);
    }
 
    /**
@@ -55,8 +56,7 @@ public:
     @return IRI prefix string or "" if no prefix was defined
    */
    std::string prefix(const Ns_id nsid) const {
-      BOOST_ASSERT( valid(nsid) );
-      return nsid < detail::min_ns_id() ?
+      return _map_std().is_standard(nsid) ?
                _map_std().prefix(nsid) : _map_ns().prefix(nsid);
    }
 
@@ -64,9 +64,9 @@ public:
     @param iri namespace IRI string
     @return pointer to namespace IRI ID or NULL if iri is unknown
    */
-   Ns_id const* find_ns(std::string const& iri) const {
-      if( Ns_id const*const id = _map_std().find_iri(iri) ) return id;
-      return _map_ns().find_iri(iri);
+   Ns_id const* find(Ns_iri const& iri) const {
+      if( Ns_id const*const id = _map_std().find(iri) ) return id;
+      return _map_ns().find(iri);
    }
 
    /**
@@ -78,8 +78,8 @@ public:
       return _map_ns().find_prefix(pref);
    }
 
-   Ns_id insert_ns(std::string const& iri) {
-      if( Ns_id const*const iid = find_ns(iri) ) return *iid;
+   Ns_id insert(Ns_iri const& iri) {
+      if( Ns_id const*const iid = find(iri) ) return *iid;
       return _map_ns().insert(iri);
    }
 
@@ -99,7 +99,7 @@ public:
                   << typename Err::str2_t(_map_std().prefix(nsid))
          );
       }
-      BOOST_ASSERT( _map_ns().valid(nsid) );
+      BOOST_ASSERT( _map_ns().find(nsid) );
       if( pref.empty() ) {
          _map_ns().set_prefix(nsid);
          return;
@@ -111,8 +111,8 @@ public:
                   Err()
                   << typename Err::msg_t("prefix reserved for different IRI")
                   << typename Err::str1_t(pref)
-                  << typename Err::str2_t(at(nsid))
-                  << typename Err::str3_t(at(*iid0))
+                  << typename Err::str2_t(at(nsid).str())
+                  << typename Err::str3_t(at(*iid0).str())
          );
       }
       _map_ns().set_prefix(nsid, pref);
