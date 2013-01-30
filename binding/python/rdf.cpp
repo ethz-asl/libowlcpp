@@ -55,6 +55,6 @@ BOOST_PYTHON_MODULE(rdf) {
 */
 
    bp::class_<owlcpp::Triple_store, boost::noncopyable>("Triple_store")
-      .def("path", &owlcpp::Triple_store::path)
+//      .def("path", &owlcpp::Triple_store::path)
       ;
 }

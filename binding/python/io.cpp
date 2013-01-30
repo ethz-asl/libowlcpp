@@ -59,12 +59,12 @@ void translator(owlcpp::base_exception const& e) {
 BOOST_PYTHON_MODULE(io) {
    bp::register_exception_translator<owlcpp::base_exception>(&translator);
    bp::class_<owlcpp::Catalog>("Catalog")
-      .def("insert_doc", &owlcpp::Catalog::insert_doc)
-      .def(
-            "find_location",
-            &owlcpp::Catalog::find_location,
-            bp::return_value_policy<bp::return_by_value>()
-            )
+//      .def("insert_doc", &owlcpp::Catalog::insert_doc)
+//      .def(
+//            "find_location",
+//            &owlcpp::Catalog::find_location,
+//            bp::return_value_policy<bp::return_by_value>()
+//            )
       ;
    bp::implicitly_convertible<std::string,boost::filesystem::path>();
 //   Tuple2tuple_converter<std::string, std::string>();
@@ -76,20 +76,20 @@ BOOST_PYTHON_MODULE(io) {
    );
 
    bp::def(
-         "load",
+         "load_file",
          static_cast<
-            void (*) (std::string const&, owlcpp::Triple_store&)
-         >(&owlcpp::load)
+            void (*) (boost::filesystem::path const&, owlcpp::Triple_store&)
+         >(&owlcpp::load_file)
    );
 
    bp::def(
-         "load",
+         "load_file",
          static_cast<
             void (*) (
-                  std::string const&,
-                  owlcpp::Triple_store&,
-                  owlcpp::Catalog const&
+                     boost::filesystem::path const&,
+                     owlcpp::Triple_store&,
+                     owlcpp::Catalog const&
                   )
-         >(&owlcpp::load)
+         >(&owlcpp::load_file)
    );
 }
