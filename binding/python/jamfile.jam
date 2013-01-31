@@ -3,11 +3,16 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011
 
+alias boost_python_pic : /boost/python//boost_python : <link>static <pic>on ;
+alias rdf_pic : /owlcpp//rdf : <link>static <pic>on ;
+alias io_pic : /owlcpp//io : <link>static <pic>on ;
+explicit boost_python_pic rdf_pic io_pic ;
+
 project binding/python
     : build-dir $(PYTHON_OUT)
     : requirements 
-      <library>/boost/python//boost_python 
-      <library>/owlcpp//rdf
+      <library>boost_python_pic
+      <library>rdf_pic
 ;
 
 import python ;
@@ -31,7 +36,7 @@ python-extension io
    : 
       io.cpp 
    :
-      <library>/owlcpp//io
+      <library>io_pic
 ;
 install io_install
    : 
