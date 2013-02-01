@@ -7,9 +7,12 @@ part of owlcpp project.
 #include "boost/python/module.hpp"
 #include "boost/python/def.hpp"
 #include "boost/python/operators.hpp"
+#include "boost/python/return_internal_reference.hpp"
 #include "boost/utility.hpp"
 
-#include "owlcpp/rdf/triple_store.hpp"
+#include "python/triple_store.hpp"
+#include "python/triple.hpp"
+namespace op = owlcpp::py;
 
 BOOST_PYTHON_MODULE(_rdf) {
    namespace bp = boost::python;
@@ -41,20 +44,42 @@ BOOST_PYTHON_MODULE(_rdf) {
       .def("__call__", &owlcpp::Node_id::operator())
       ;
 
-/*
-   bp::class_<owlcpp::Triple>("Triple")
+   bp::class_<op::Triple>(
+            "Triple",
+            "IDs for subject, predicate, object, and document",
+            bp::init<
+            const owlcpp::Node_id,const owlcpp::Node_id,
+            const owlcpp::Node_id,const owlcpp::Doc_id
+            >())
       .def(str(bp::self))
-      .def(bp::self < bp::self)
-      .def(bp::self > bp::self)
       .def(bp::self == bp::self)
       .def(bp::self != bp::self)
-      .def("subject", &owlcpp::Triple::get<0>())
-      .def("predicate", &owlcpp::Triple::get<1>())
-      .def("object", &owlcpp::Triple::get<2>())
+      .def_readonly("subj_", &op::Triple::subj_)
+      .def_readonly("pred_", &op::Triple::pred_)
+      .def_readonly("obj_", &op::Triple::obj_)
+      .def_readonly("doc_", &op::Triple::doc_)
       ;
-*/
 
-   bp::class_<owlcpp::Triple_store, boost::noncopyable>("Triple_store")
-//      .def("path", &owlcpp::Triple_store::path)
+   bp::class_<owlcpp::Ns_iri>(
+            "Ns_iri", "namespace IRI",
+            bp::init<std::string>()
+   )
+      .def(str(bp::self))
+      .def("str", &owlcpp::Ns_iri::str, bp::return_internal_reference<>())
+   ;
+
+   bp::class_<op::Triple_store, boost::noncopyable>(
+            "Triple_store",
+            "Store namespace IRIs, RDF nodes, ontology descriptions, and triples",
+            bp::init<>()
+   )
+      .def(
+               "map_ns",
+//               "map of namespace IRIs"
+               &op::Triple_store::map_ns,
+               bp::return_internal_reference<>()
+      )
+//      .def("map_node", &owlcpp::Triple_store::map_node)
+//      .def("map_doc", &owlcpp::Triple_store::map_doc)
       ;
 }

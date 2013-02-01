@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+'''
+owlcpp/binding/python/test/node_id.py is part of owlcpp project
+Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+Copyright Mikhail K Levin 2011-3
+'''
+import unittest
+import owlcpp
 
 r'''
 >>> import owlcpp
@@ -19,13 +26,10 @@ False
 True
 '''
 
-def run(args = None):
-    if args is not None:
-        import sys
-        sys.argv = args
-    import doctest
-    return doctest.testmod(verbose=True)
+class Test(unittest.TestCase):
+    def test_1(self):
+        nid1 = owlcpp.Node_id(0)
+        self.assertEqual(nid1(), 0)
+        
 
-if __name__ == '__main__':
-    import sys
-    sys.exit(run()[0])
+if __name__ == '__main__': unittest.main()

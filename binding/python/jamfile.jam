@@ -1,7 +1,7 @@
 # owlcpp/binding/python/jamfile.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2011
+# Copyright Mikhail K Levin 2011-3
 
 project binding/python
     : build-dir $(PYTHON_OUT)
