@@ -56,7 +56,7 @@ void translator(owlcpp::base_exception const& e) {
 
 }//namespace anonymous
 
-BOOST_PYTHON_MODULE(io) {
+BOOST_PYTHON_MODULE(_io) {
    bp::register_exception_translator<owlcpp::base_exception>(&translator);
    bp::class_<owlcpp::Catalog>("Catalog")
 //      .def("insert_doc", &owlcpp::Catalog::insert_doc)
@@ -75,21 +75,21 @@ BOOST_PYTHON_MODULE(io) {
          >(&owlcpp::read_ontology_iri)
    );
 
-   bp::def(
-         "load_file",
-         static_cast<
-            void (*) (boost::filesystem::path const&, owlcpp::Triple_store&)
-         >(&owlcpp::load_file)
-   );
+//   bp::def(
+//         "load_file",
+//         static_cast<
+//            void (*) (boost::filesystem::path const&, owlcpp::Triple_store&)
+//         >(&owlcpp::load_file)
+//   );
 
    bp::def(
-         "load_file",
+         "load_iri",
          static_cast<
             void (*) (
-                     boost::filesystem::path const&,
+                     std::string const&,
                      owlcpp::Triple_store&,
                      owlcpp::Catalog const&
                   )
-         >(&owlcpp::load_file)
+         >(&owlcpp::load_iri)
    );
 }

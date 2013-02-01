@@ -3,28 +3,31 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011
 
-alias boost_python_pic : /boost/python//boost_python : <link>static <pic>on ;
-alias rdf_pic : /owlcpp//rdf : <link>static <pic>on ;
-alias io_pic : /owlcpp//io : <link>static <pic>on ;
-explicit boost_python_pic rdf_pic io_pic ;
-
 project binding/python
     : build-dir $(PYTHON_OUT)
     : requirements 
-      <library>boost_python_pic
-      <library>rdf_pic
+      <library>/boost/python//boost_python 
+      <library>/owlcpp//rdf
 ;
 
 import python ;
 
-python-extension rdf 
+python-extension _rdf 
    : 
       rdf.cpp 
    : 
 ;
-install rdf_install
+
+python-extension _io 
    : 
-      rdf
+      io.cpp 
+   :
+      <library>/owlcpp//io
+;
+
+install install
+   : 
+      _rdf _io
    : 
       <location>$(PYTHON_OUT)/owlcpp
       <install-dependencies>on
@@ -32,26 +35,11 @@ install rdf_install
       <dependency>__init__.py
 ;
 
-python-extension io 
-   : 
-      io.cpp 
-   :
-      <library>io_pic
-;
-install io_install
-   : 
-      io
-   : 
-      <location>$(PYTHON_OUT)/owlcpp
-      <install-dependencies>on
-      <install-type>LIB
-      <dependency>rdf_install
-;
-
 make __init__.py : : @init_py : <location>$(PYTHON_OUT)/owlcpp ;
 actions init_py {
     @($(STDOUT):E=#!/usr/bin/env python
-__all__ = ["rdf", "io"]
+from _rdf import *
+from _io import *
 ) > "$(<)"
 echo $(<)
 }

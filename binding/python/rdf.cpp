@@ -11,7 +11,7 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/triple_store.hpp"
 
-BOOST_PYTHON_MODULE(rdf) {
+BOOST_PYTHON_MODULE(_rdf) {
    namespace bp = boost::python;
 
    bp::class_<owlcpp::Ns_id>("Ns_id", bp::init<unsigned>())

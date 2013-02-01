@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 r'''
->>> import owlcpp.rdf
->>> ts = owlcpp.rdf.Store_triple()
+>>> import owlcpp
+>>> id = owlcpp.Ns_id(0)
 '''
 
 def run(args=None):

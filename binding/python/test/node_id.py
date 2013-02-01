@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 
 r'''
->>> import owlcpp.rdf
->>> nid1 = owlcpp.rdf.Node_id(0)
+>>> import owlcpp
+>>> nid1 = owlcpp.Node_id(0)
 >>> print nid1
-0
+Node0
 >>> nid1() == 0
 True
->>> nid2 = owlcpp.rdf.Node_id(1)
+>>> nid2 = owlcpp.Node_id(1)
 >>> nid1 < nid2
 True
 >>> nid1 <= nid2
 True
 >>> nid1 > nid2
 False
->>> nid3 = owlcpp.rdf.Node_id(1)
+>>> nid3 = owlcpp.Node_id(1)
 >>> nid3 == nid2
 True
 '''

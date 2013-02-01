@@ -71,10 +71,8 @@ alias libxml2 : external//libxml2 ;
 alias raptor : external//raptor ;
 explicit factpp_kernel raptor ;
 
-alias rdf-py : binding/python//rdf_install ;
-alias io-py : binding/python//io_install ;
-alias api-py : rdf-py io-py ;
-explicit rdf-py io-py api-py ;
+alias owlcpp-py : binding/python//install ;
+explicit owlcpp-py ;
 
 if [ modules.peek doxygen : .initialized ] {
    
