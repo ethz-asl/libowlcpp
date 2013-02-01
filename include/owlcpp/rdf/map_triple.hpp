@@ -120,7 +120,7 @@ public:
             const Node_id obj,
             const Doc_id doc
    ) {
-      const Triple t(subj, pred, obj, doc);
+      const Triple t = Triple::make(subj, pred, obj, doc);
       Insert ins(t);
       boost::fusion::for_each(store_, ins);
    }

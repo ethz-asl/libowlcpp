@@ -5,33 +5,46 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_HPP_
 #define TRIPLE_HPP_
-
+#include <iosfwd>
 #include "owlcpp/doc_id.hpp"
 #include "owlcpp/node_id.hpp"
 
 namespace owlcpp{
 
-/**@brief 
+/**@brief RDF triple plus document ID
 *******************************************************************************/
 struct Triple {
-   Node_id subj_, pred_, obj_;
-   Doc_id doc_;
-
-   Triple(
+   static Triple make(
             const Node_id subj, const Node_id pred,
             const Node_id obj, const Doc_id doc
-   ) : subj_(subj), pred_(pred), obj_(obj), doc_(doc)
-   {}
+   ) {
+      Triple t;
+      t.subj_ = subj;
+      t.pred_ = pred;
+      t.obj_ = obj;
+      t.doc_ = doc;
+      return t;
+   }
 
-   Node_id subject() const {return subj_;}
-   Node_id predicate() const {return pred_;}
-   Node_id object() const {return obj_;}
-   Doc_id document() const {return doc_;}
+   Node_id subj_, pred_, obj_;
+   Doc_id doc_;
 
    bool operator==(Triple const& t) const {
       return subj_==t.subj_ && pred_==t.pred_ && obj_==t.obj_ && doc_==t.doc_;
    }
+
+   bool operator!=(Triple const& t) const {return !(*this == t);}
 };
+
+/**
+*******************************************************************************/
+template<class ChT, class Tr> inline std::basic_ostream<ChT,Tr>& operator<<(
+      std::basic_ostream<ChT,Tr>& os,
+      Triple const& t
+) {
+   return os << t.subj_ << ',' << t.pred_ << ',' << t.obj_ << ',' << t.doc_;
+}
+
 
 }//namespace owlcpp
 #endif /* TRIPLE_HPP_ */

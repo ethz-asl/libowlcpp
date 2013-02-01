@@ -28,9 +28,9 @@ BOOST_AUTO_TEST_CASE( test_triple_adaptor ) {
    owlcpp::logic::factpp::Adaptor_triple at(ts, k, false);
    BOOST_FOREACH(Triple const& t, ts.map_triple()) {
       std::cout
-      << to_string(t.subject(), ts) << ' '
-      << to_string(t.predicate(), ts) << ' '
-      << to_string(t.object(), ts)
+      << to_string(t.subj_, ts) << ' '
+      << to_string(t.pred_, ts) << ' '
+      << to_string(t.obj_, ts)
       << std::endl;
       at.submit(t);
    }

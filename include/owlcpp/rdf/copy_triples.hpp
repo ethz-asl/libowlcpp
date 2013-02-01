@@ -33,10 +33,10 @@ public:
    {}
 
    void operator()(Triple const& t) {
-      const Node_id subj = cp(t.subject());
-      const Node_id pred = cp(t.predicate());
-      const Node_id obj  = cp(t.object());
-      const  Doc_id doc  = cp(t.document());
+      const Node_id subj = cp(t.subj_);
+      const Node_id pred = cp(t.pred_);
+      const Node_id obj  = cp(t.obj_);
+      const  Doc_id doc  = cp(t.doc_);
       dest_.insert_triple(subj, pred, obj, doc);
    }
 

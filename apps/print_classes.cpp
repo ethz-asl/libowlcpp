@@ -84,9 +84,9 @@ int main(int argc, char* argv[]) {
          BOOST_FOREACH( owlcpp::Triple const& t, r ) {
             std::cout
             << '\"'
-            << to_string(t.subject(), store) << "\"\t\""
-            << to_string(t.predicate(), store) << "\"\t\""
-            << to_string(t.object(), store) << "\"\t\n"
+            << to_string(t.subj_, store) << "\"\t\""
+            << to_string(t.pred_, store) << "\"\t\""
+            << to_string(t.obj_, store) << "\"\t\n"
             ;
          }
       }

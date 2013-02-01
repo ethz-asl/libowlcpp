@@ -28,9 +28,9 @@ BOOST_AUTO_TEST_CASE( test_triple_store_print ) {
       load_file(si.path, ts);
       BOOST_FOREACH(Triple const& t, ts.map_triple()) {
          std::cout
-         << to_string_pref(t.subject(), ts) << ' '
-         << to_string_pref(t.predicate(), ts) << ' '
-         << to_string_pref(t.object(), ts) << '\n'
+         << to_string_pref(t.subj_, ts) << ' '
+         << to_string_pref(t.pred_, ts) << ' '
+         << to_string_pref(t.obj_, ts) << '\n'
          ;
       }
       std::cout << '\n';
