@@ -27,7 +27,20 @@ class Test(unittest.TestCase):
         self.assertEqual(nid1(), 1)
         with self.assertRaises(AttributeError): t2.subj_ = Node_id(1)
         
+    def test_ns_iri(self):
+        s = "http://example.com"
+        iri1 = Ns_iri(s)
+        self.assertEqual(iri1, s)
+        iri2 = Ns_iri(s)
+        self.assertEqual(iri1, iri2)
+        
     def test_triple_store(self):
         ts = Triple_store()
+        iri1 = "http://example1.com"
+        nsid1 = ts.insert(Ns_iri(iri1))
+        iri2 = "http://example2.com"
+        nsid2 = ts.insert(Ns_iri(iri2))
+        self.assertNotEqual("blah", ts.map_ns()[nsid1])
+        self.assertEqual(iri1, ts.map_ns()[nsid1])
 
 if __name__ == '__main__': unittest.main()

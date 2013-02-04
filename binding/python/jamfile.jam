@@ -14,7 +14,7 @@ import python ;
 
 python-extension _rdf 
    : 
-      rdf.cpp 
+      [ glob rdf*.cpp ]
    : 
 ;
 
