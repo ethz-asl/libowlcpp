@@ -40,7 +40,7 @@ class Test(unittest.TestCase):
         nsid1 = ts.insert(Ns_iri(iri1))
         iri2 = "http://example2.com"
         nsid2 = ts.insert(Ns_iri(iri2))
-        self.assertNotEqual("blah", ts.map_ns()[nsid1])
+        self.assertNotEqual("blah", ts[nsid1])
         self.assertEqual(iri1, ts.map_ns()[nsid1])
 
 if __name__ == '__main__': unittest.main()
