@@ -11,9 +11,8 @@ part of owlcpp project.
 #include "boost/python/return_internal_reference.hpp"
 #include "boost/utility.hpp"
 
-#include "python/triple_store.hpp"
-#include "python/triple.hpp"
-namespace op = owlcpp::py;
+#include "owlcpp/rdf/triple.hpp"
+#include "owlcpp/rdf/ns_iri.hpp"
 
 void export_ids();
 void export_maps();
@@ -26,20 +25,20 @@ BOOST_PYTHON_MODULE(_rdf) {
    export_maps();
    export_triple_store();
 
-   bp::class_<op::Triple>(
+   bp::class_<owlcpp::Triple>(
             "Triple",
-            "IDs for subject, predicate, object, and document",
+            "IDs for subject, predicate, object, and document"/*,
             bp::init<
             const owlcpp::Node_id,const owlcpp::Node_id,
             const owlcpp::Node_id,const owlcpp::Doc_id
-            >())
+            >()*/)
       .def(str(bp::self))
       .def(bp::self == bp::self)
       .def(bp::self != bp::self)
-      .def_readonly("subj_", &op::Triple::subj_)
-      .def_readonly("pred_", &op::Triple::pred_)
-      .def_readonly("obj_", &op::Triple::obj_)
-      .def_readonly("doc_", &op::Triple::doc_)
+      .def_readonly("subj_", &owlcpp::Triple::subj_)
+      .def_readonly("pred_", &owlcpp::Triple::pred_)
+      .def_readonly("obj_", &owlcpp::Triple::obj_)
+      .def_readonly("doc_", &owlcpp::Triple::doc_)
       ;
 
    bp::class_<owlcpp::Ns_iri>("Ns_iri", "namespace IRI",bp::init<std::string>())

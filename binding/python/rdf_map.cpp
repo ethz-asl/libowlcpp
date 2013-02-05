@@ -3,8 +3,7 @@ part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2013
 *******************************************************************************/
-#include "boost/python/suite/indexing/indexing_suite.hpp"
-#include "boost/python/suite/indexing/container_utils.hpp"
+#include "boost/python/iterator.hpp"
 namespace bp = boost::python;
 
 #include "owlcpp/rdf/map_ns.hpp"
