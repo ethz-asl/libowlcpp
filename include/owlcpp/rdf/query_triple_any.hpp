@@ -19,8 +19,9 @@ struct Triple;
 class Node_id;
 class Doc_id;
 
-typedef boost::any_range<Triple, boost::forward_traversal_tag, Triple const&, std::ptrdiff_t>
-triple_any_range_t;
+typedef boost::any_range<
+         Triple, boost::single_pass_traversal_tag, Triple const&, std::ptrdiff_t
+         > triple_any_range_t;
 
 /**@brief search triples without using templates
 *******************************************************************************/

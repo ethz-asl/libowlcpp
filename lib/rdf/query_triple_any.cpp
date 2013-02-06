@@ -32,11 +32,22 @@ triple_any_range_t find_triple(
             ( doc ? D : 0 )
             ;
    switch (n) {
-      case 0: return ts.map_triple();
-      case S: return ts.find_triple(*subj, any(), any(), any());
-      case P: return ts.find_triple(any(), *pred, any(), any());
-      case O: return ts.find_triple(any(), any(),  *obj, any());
-      case D: return ts.find_triple(any(), any(), any(),  *doc);
+      case 0      : return ts.map_triple();
+      case       D: return ts.find_triple(any(), any(), any(),  *doc);
+      case     O  : return ts.find_triple(any(), any(),  *obj, any());
+      case     O|D: return ts.find_triple(any(), any(),  *obj,  *doc);
+      case   P    : return ts.find_triple(any(), *pred, any(), any());
+      case   P|  D: return ts.find_triple(any(), *pred, any(),  *doc);
+      case   P|O  : return ts.find_triple(any(), *pred,  *obj, any());
+      case   P|O|D: return ts.find_triple(any(), *pred,  *obj,  *doc);
+      case S      : return ts.find_triple(*subj, any(), any(), any());
+      case S|    D: return ts.find_triple(*subj, any(), any(),  *doc);
+      case S|  O  : return ts.find_triple(*subj, any(),  *obj, any());
+      case S|  O|D: return ts.find_triple(*subj, any(),  *obj,  *doc);
+      case S|P    : return ts.find_triple(*subj, *pred, any(), any());
+      case S|P|  D: return ts.find_triple(*subj, *pred, any(),  *doc);
+      case S|P|O  : return ts.find_triple(*subj, *pred,  *obj, any());
+      case S|P|O|D: return ts.find_triple(*subj, *pred,  *obj,  *doc);
       default:
          BOOST_THROW_EXCEPTION(
                   Rdf_err() << Rdf_err::msg_t("unsupported query")
