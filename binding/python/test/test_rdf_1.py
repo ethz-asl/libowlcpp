@@ -58,13 +58,14 @@ class Test(unittest.TestCase):
         ts.insert_triple(nid1, nid1, nid1, docid)
         ts.insert_triple(nid2, nid1, nid1, docid)
         ts.insert_triple(nid3, nid1, nid1, docid)
-        ts.insert_triple(nid4, nid1, nid1, docid)
+        ts.insert_triple(nid4, nid1, nid3, docid)
         ts.insert_triple(nid1, nid2, nid3, docid)
         ts.insert_triple(nid1, nid3, nid4, docid)
         ts.insert_triple(nid1, nid2, nid3, docid)
-        for triple in ts.find_triple(subj=nid1):
-            print triple
-        self.assertTrue(False)
+        l = list(ts.find_triple(subj=nid1))
+        self.assertEqual(len(l), 4)
+        l = list(ts.find_triple(pred=nid1, obj=nid3))
+        self.assertEqual(len(l), 1)
         
 
 if __name__ == '__main__': unittest.main()

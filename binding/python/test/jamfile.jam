@@ -15,6 +15,5 @@ import testing ;
 test-suite python :
    [ bpl-test import : import.py ]
    [ bpl-test rdf_1 : test_rdf_1.py ]
-#   [ bpl-test triple_store : triple_store.py ]
-#   [ bpl-test io : io.py ]
+   [ bpl-test io_1 : test_io_1.py ]
 ;

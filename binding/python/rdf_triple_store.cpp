@@ -4,7 +4,6 @@ part of owlcpp project.
 @n Copyright Mikhail K Levin 2013
 *******************************************************************************/
 #include "boost/python.hpp"
-#include "boost/python/iterator.hpp"
 namespace bp = boost::python;
 
 #include "owlcpp/rdf/triple_store.hpp"
@@ -17,8 +16,7 @@ owlcpp::Doc_id insert_doc(
          std::string const& path,
          std::string const& vers
          ) {
-   const std::pair<owlcpp::Doc_id,bool> p = ts.insert_doc(iri, path, vers);
-   return p.first;
+   return ts.insert_doc(iri, path, vers).first;
 }
 
 }//namespace anonymous
