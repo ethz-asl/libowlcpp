@@ -56,8 +56,9 @@ class Map_triple {
    };
 
 public:
-   typedef typename main_store::iterator iterator;
+//   typedef typename main_store::iterator iterator;
    typedef typename main_store::const_iterator const_iterator;
+   typedef typename main_store::const_iterator iterator;
 
    /** Define return type of triple search based on search argument types
    @tparam Subj type for matching/ignoring triple subject,   e.g., Node_id or any
@@ -95,6 +96,7 @@ public:
 
    /** @return number of stored triples */
    std::size_t size() const {return boost::fusion::front(store_).get_range().size();}
+   bool empty() const {return boost::fusion::front(store_).get_range().empty();}
    const_iterator begin() const {return boost::fusion::front(store_).get_range().begin();}
    const_iterator end() const {return boost::fusion::front(store_).get_range().end();}
 
