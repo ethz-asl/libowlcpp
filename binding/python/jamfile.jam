@@ -20,7 +20,7 @@ python-extension _rdf
 
 python-extension _io 
    : 
-      io.cpp 
+      [ glob io*.cpp ] 
    :
       <library>/owlcpp//io
 ;

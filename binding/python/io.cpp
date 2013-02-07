@@ -12,6 +12,10 @@ namespace bp = boost::python;
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/io/read_ontology_iri.hpp"
+using owlcpp::Triple_store;
+using owlcpp::Catalog;
+
+void export_catalog();
 
 namespace{
 
@@ -31,22 +35,24 @@ bp::tuple read_ontology_iri(
 }
 
 void load_file_1(boost::filesystem::path const& file, Triple_store& ts) {
+   owlcpp::load_file(file, ts);
+}
 
+void load_file_2(
+         boost::filesystem::path const& file,
+         Triple_store& ts,
+         Catalog const& cat
+) {
+   owlcpp::load_file(file, ts, cat);
 }
 
 }//namespace anonymous
 
 BOOST_PYTHON_MODULE(_io) {
    bp::register_exception_translator<owlcpp::base_exception>(&translator);
-   bp::class_<owlcpp::Catalog>("Catalog")
-//      .def("insert_doc", &owlcpp::Catalog::insert_doc)
-//      .def(
-//            "find_location",
-//            &owlcpp::Catalog::find_location,
-//            bp::return_value_policy<bp::return_by_value>()
-//            )
-      ;
    bp::implicitly_convertible<std::string,boost::filesystem::path>();
+   export_catalog();
+
 //   Tuple2tuple_converter<std::string, std::string>();
    bp::def(
             "read_ontology_iri",
@@ -59,10 +65,16 @@ BOOST_PYTHON_MODULE(_io) {
 
    bp::def(
          "load_file",
-         &load_file_1
-//         static_cast<
-//            void (*) (boost::filesystem::path const&, owlcpp::Triple_store&)
-//         >(&owlcpp::load_file)
+         &load_file_1,
+         (bp::arg("file"), bp::arg("store")),
+         "load ontology document ignoring imports"
+   );
+
+   bp::def(
+         "load_file",
+         &load_file_2,
+         (bp::arg("file"), bp::arg("store"), bp::arg("catalog")),
+         "load ontology document including its imports"
    );
 
    bp::def(
@@ -70,8 +82,8 @@ BOOST_PYTHON_MODULE(_io) {
          static_cast<
             void (*) (
                      std::string const&,
-                     owlcpp::Triple_store&,
-                     owlcpp::Catalog const&
+                     Triple_store&,
+                     Catalog const&
                   )
          >(&owlcpp::load_iri)
    );
