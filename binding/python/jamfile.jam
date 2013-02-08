@@ -18,6 +18,13 @@ python-extension _rdf
    : 
 ;
 
+python-extension terms
+   : 
+      terms.cpp
+   :
+      <include>$(PROJ_ROOT)/lib
+;
+
 python-extension _io 
    : 
       [ glob io*.cpp ] 
@@ -27,7 +34,7 @@ python-extension _io
 
 install install
    : 
-      _rdf _io
+      _rdf terms _io
    : 
       <location>$(PYTHON_OUT)/owlcpp
       <install-dependencies>on
@@ -40,6 +47,7 @@ actions init_py {
     @($(STDOUT):E=#!/usr/bin/env python
 from _rdf import *
 from _io import *
+import terms
 ) > "$(<)"
 echo $(<)
 }

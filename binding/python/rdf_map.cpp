@@ -29,7 +29,6 @@ void export_maps() {
       .def("__iter__", bp::iterator<map_triple_type>())
    ;
 
-
    typedef Map_doc::iri_range doc_iri_range;
    bp::class_<doc_iri_range>("doc_iri_range", bp::no_init)
       .def("__iter__", bp::iterator<doc_iri_range>())

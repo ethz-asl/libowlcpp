@@ -67,5 +67,18 @@ class Test(unittest.TestCase):
         l = list(ts.find_triple(pred=nid1, obj=nid3))
         self.assertEqual(len(l), 1)
         
+    def test_standard_ns(self):
+        self.assertEqual(terms.owl.iri, 'http://www.w3.org/2002/07/owl')
+        self.assertEqual(terms.owl.prefix, 'owl')
+        self.assertEqual(terms.owl.id(), 5)
+
+        self.assertEqual(terms.rdf.iri, 'http://www.w3.org/1999/02/22-rdf-syntax-ns')
+        self.assertEqual(terms.rdf.prefix, 'rdf')
+        self.assertEqual(terms.rdf.id(), 2)
+        
+    def test_standard_terms(self):
+        self.assertEqual(terms.owl_Class.id(), 44)
+        self.assertEqual(terms.owl_Class.name, 'Class')
+        self.assertEqual(terms.owl_Class.ns_type.iri, 'http://www.w3.org/2002/07/owl')
 
 if __name__ == '__main__': unittest.main()

@@ -53,7 +53,6 @@ BOOST_PYTHON_MODULE(_io) {
    bp::implicitly_convertible<std::string,boost::filesystem::path>();
    export_catalog();
 
-//   Tuple2tuple_converter<std::string, std::string>();
    bp::def(
             "read_ontology_iri",
             &read_ontology_iri,
