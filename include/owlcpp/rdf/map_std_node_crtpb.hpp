@@ -21,7 +21,6 @@ template<class Super> class Map_std_node_crtpb {
    typedef detail::Map_traits<Super> traits;
    typedef typename traits::map_std_type map_std_type;
    typedef typename traits::map_node_type map_node_type;
-   typedef typename traits::node_type node_type;
 
    map_std_type const& _map_std() const {
       return static_cast<Super const&>(*this).map_std_;
@@ -36,6 +35,7 @@ template<class Super> class Map_std_node_crtpb {
    }
 
 public:
+   typedef typename traits::node_type node_type;
 
    bool is_standard(const Node_id nid) const {return _map_std().is_standard(nid);}
 

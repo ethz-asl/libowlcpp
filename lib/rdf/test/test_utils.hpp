@@ -13,7 +13,7 @@ namespace owlcpp{ namespace test{
 
 
 Triple triple(const unsigned t0, const unsigned t1, const unsigned t2, const unsigned t3) {
-   return Triple(Node_id(t0), Node_id(t1), Node_id(t2), Doc_id(t3));
+   return Triple::make(Node_id(t0), Node_id(t1), Node_id(t2), Doc_id(t3));
 }
 
 template<class Tm, class Seq> void insert_triple(Tm& tm, Seq const& s) {
@@ -22,11 +22,6 @@ template<class Tm, class Seq> void insert_triple(Tm& tm, Seq const& s) {
 
 template<class Tm, class Seq> void insert_seq(Tm& tm, Seq const& s) {
    for(std::size_t i = 0; i != boost::size(s); ++i) insert_triple(tm, s[i]);
-}
-
-template<class ChT, class Tr> inline std::basic_ostream<ChT,Tr>& operator<<(
-      std::basic_ostream<ChT,Tr>& os, Triple const& t) {
-   return os << t.subj_ << ' ' << t.pred_ << ' ' << t.obj_ << ' ' << t.doc_;
 }
 
 }//namespace test

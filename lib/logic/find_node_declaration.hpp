@@ -23,18 +23,18 @@ template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts)
       if( ts.is_standard(nid) ) d.set(nid);
 
       BOOST_FOREACH( Triple const& t, ts.find_triple(nid, any(), any(), any()) ) {
-         if( t.predicate() == rdf_type::id() ) {
-            d.set(t.object());
+         if( t.pred_ == rdf_type::id() ) {
+            d.set(t.obj_);
             continue;
          }
-         d.set(t.predicate());
+         d.set(t.pred_);
       }
 
       BOOST_FOREACH(
                Triple const& t,
                ts.find_triple(any(), owl_annotatedSource::id(), nid, any())) {
 
-         const Node_id x = t.subject();
+         const Node_id x = t.subj_;
          if( ts[x].ns_id() != blank::id() ) BOOST_THROW_EXCEPTION(
                   Logic_err()
                   << Logic_err::msg_t("non-blank subject in _:x owl:annotatedSource y")
@@ -43,7 +43,7 @@ template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts)
          BOOST_FOREACH(
                   Triple const& t,
                   ts.find_triple(x, owl_annotatedTarget::id(), any(), any())) {
-            d.set(t.object());
+            d.set(t.obj_);
          }
       }
    } catch( Logic_err const& e) {

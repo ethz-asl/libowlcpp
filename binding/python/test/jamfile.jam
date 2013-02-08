@@ -1,12 +1,12 @@
 # owlcpp/binding/python/test/jamfile.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2011
+# Copyright Mikhail K Levin 2011-3
 
 project binding/python/test
     : requirements
       <pythonpath>$(PYTHON_OUT)
-      <dependency>..//rdf_install
+      <dependency>..//install
 ;
 
 import python ;
@@ -14,7 +14,6 @@ import testing ;
 
 test-suite python :
    [ bpl-test import : import.py ]
-   [ bpl-test node_id : node_id.py ]
-   [ bpl-test triple_store : triple_store.py ]
-   [ bpl-test io : io.py : <dependency>..//io_install ]
+   [ bpl-test rdf_1 : test_rdf_1.py ]
+   [ bpl-test io_1 : test_io_1.py ]
 ;

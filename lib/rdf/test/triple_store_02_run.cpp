@@ -130,11 +130,11 @@ BOOST_AUTO_TEST_CASE( test_print_triples ) {
    BOOST_FOREACH(Triple const& t, ts.map_triple()) {
       std::cout
       << '\"'
-      << to_string(t.subject(), ts) << "\"\t\""
-      << to_string(t.predicate(), ts) << "\"\t\""
-      << to_string(t.object(), ts) << "\"\t\n"
+      << to_string(t.subj_, ts) << "\"\t\""
+      << to_string(t.pred_, ts) << "\"\t\""
+      << to_string(t.obj_, ts) << "\"\t\n"
       ;
-      Node const& node = ts.at(t.subject());
+      Node const& node = ts.at(t.subj_);
       const Ns_id nsid1 = node.ns_id();
       /*Ns_iri const& iri =*/ ts[nsid1];
       const std::string pref = ts.prefix(nsid1);
