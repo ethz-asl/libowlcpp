@@ -3,42 +3,21 @@ part of owlcpp project.
 @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2011
 *******************************************************************************/
-#include <string>
-#include "boost/python/class.hpp"
-#include "boost/python/module.hpp"
-#include "boost/python/def.hpp"
-#include "boost/python/return_by_value.hpp"
-#include "boost/python/tuple.hpp"
-#include "boost/python/to_python_converter.hpp"
-#include "boost/python/exception_translator.hpp"
+#include "boost/python.hpp"
+namespace bp = boost::python;
 #include "boost/tuple/tuple.hpp"
 
 #include "owlcpp/exception.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/io/catalog.hpp"
-#include "owlcpp/io/parse_to_triple_store.hpp"
-namespace owl = owlcpp;
-namespace bp = boost::python;
+#include "owlcpp/io/input.hpp"
+#include "owlcpp/io/read_ontology_iri.hpp"
+using owlcpp::Triple_store;
+using owlcpp::Catalog;
+
+void export_catalog();
 
 namespace{
-template<class T1, class T2> struct Tuple2tuple_converter {
-
-  static PyObject* convert(boost::tuple<T1, T2> const& t) {
-     return bp::incref(
-           bp::make_tuple( t.template get<0>(), t.template get<1>() ).ptr()
-     );
-  }
-
-  static PyTypeObject const* get_pytype () {return &PyTuple_Type; }
-
-  Tuple2tuple_converter() {
-     bp::to_python_converter<
-        boost::tuple<T1,T2>,
-        Tuple2tuple_converter<T1,T2>,
-        true
-     >();
-  }
-};
 
 void translator(owlcpp::base_exception const& e) {
    PyErr_SetString(
@@ -46,41 +25,65 @@ void translator(owlcpp::base_exception const& e) {
    );
 }
 
+bp::tuple read_ontology_iri(
+         boost::filesystem::path const& path,
+         const std::size_t depth
+) {
+   const std::pair<std::string,std::string> p =
+            owlcpp::read_ontology_iri(path, depth);
+   return bp::make_tuple(p.first, p.second);
+}
+
+void load_file_1(boost::filesystem::path const& file, Triple_store& ts) {
+   owlcpp::load_file(file, ts);
+}
+
+void load_file_2(
+         boost::filesystem::path const& file,
+         Triple_store& ts,
+         Catalog const& cat
+) {
+   owlcpp::load_file(file, ts, cat);
+}
+
 }//namespace anonymous
 
-BOOST_PYTHON_MODULE(io) {
+BOOST_PYTHON_MODULE(_io) {
    bp::register_exception_translator<owlcpp::base_exception>(&translator);
-
-   bp::class_<owl::Catalog>("Catalog")
-      .def("insert", &owl::Catalog::insert)
-      .def(
-            "find_location",
-            &owl::Catalog::find_location,
-            bp::return_value_policy<bp::return_by_value>()
-            )
-      ;
-
-   Tuple2tuple_converter<std::string, std::string>();
-
-   bp::def("ontology_id", &owl::ontology_id);
-
-   bp::def("find_ontologies", &owl::find_ontologies);
+   bp::implicitly_convertible<std::string,boost::filesystem::path>();
+   export_catalog();
 
    bp::def(
-         "load",
-         static_cast<
-            void (*) (std::string const&, owl::Triple_store&)
-         >(&owl::load)
+            "read_ontology_iri",
+            &read_ontology_iri,
+            (bp::arg("path"), bp::arg("depth")= std::numeric_limits<std::size_t>::max()),
+            "Find ontologyIRI and versionIRI declarations in ontology document."
+            "Once ontologyIRI is found, look for *depth* number of triples"
+            "to locate versionIRI."
    );
 
    bp::def(
-         "load",
+         "load_file",
+         &load_file_1,
+         (bp::arg("file"), bp::arg("store")),
+         "load ontology document ignoring imports"
+   );
+
+   bp::def(
+         "load_file",
+         &load_file_2,
+         (bp::arg("file"), bp::arg("store"), bp::arg("catalog")),
+         "load ontology document including its imports"
+   );
+
+   bp::def(
+         "load_iri",
          static_cast<
             void (*) (
-                  std::string const&,
-                  owl::Triple_store&,
-                  owl::Catalog const&
+                     std::string const&,
+                     Triple_store&,
+                     Catalog const&
                   )
-         >(&owl::load)
+         >(&owlcpp::load_iri)
    );
 }

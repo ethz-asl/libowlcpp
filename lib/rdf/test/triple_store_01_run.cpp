@@ -22,19 +22,19 @@ namespace t = owlcpp::terms;
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_namespaces ) {
    Triple_store ts(( Nodes_none() ));
-   BOOST_CHECK(   ts.valid(t::empty::id()));
-   BOOST_CHECK( ! ts.valid(t::owl::id()));
+   BOOST_CHECK(   ts.find(t::empty::id()));
+   BOOST_CHECK( ! ts.find(t::owl::id()));
 }
 
 /**@test Test namespaces, OWL-aware triple store
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_namespaces_owl ) {
    Triple_store ts;
-   BOOST_CHECK(ts.valid(t::empty::id()));
-   BOOST_CHECK(ts.valid(t::owl::id()));
+   BOOST_CHECK(ts.find(t::empty::id()));
+   BOOST_CHECK(ts.find(t::owl::id()));
 
    BOOST_CHECK_EQUAL(ts.map_ns().size(), 0U);
-   const Ns_id nsid1 = ts.insert_ns(ns1);
+   const Ns_id nsid1 = ts.insert(ns1);
    BOOST_CHECK_EQUAL(ts.map_ns().size(), 1U);
    BOOST_CHECK_EQUAL(ts[nsid1], ns1);
    ts.insert_prefix(nsid1, ns1p);

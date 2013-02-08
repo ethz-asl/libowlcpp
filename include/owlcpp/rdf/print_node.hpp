@@ -61,8 +61,8 @@ OWLCPP_RDF_DECL std::string to_string_full(const Node_id, Triple_store const&);
 *******************************************************************************/
 template<class Store> inline std::string
 to_string_full(Node_iri const& node, Store const& store) {
-   if( node.fragment().empty() ) return store[node.ns_id()];
-   return store[node.ns_id()] + '#' + node.fragment();
+   if( node.fragment().empty() ) return store[node.ns_id()].str();
+   return store[node.ns_id()].str() + '#' + node.fragment();
 }
 
 /**@return IRI node string with namespace prefix, generated, if needed

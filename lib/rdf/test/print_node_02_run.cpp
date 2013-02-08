@@ -22,8 +22,8 @@ namespace t = owlcpp::terms;
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_print_node_02 ) {
    Triple_store ts;
-   const Ns_id nsid1 = ts.insert_ns(ns1);
-   /*const Ns_id nsid2 =*/ ts.insert_ns(ns2);
+   const Ns_id nsid1 = ts.insert(ns1);
+   /*const Ns_id nsid2 =*/ ts.insert(ns2);
    ts.insert_prefix(nsid1, ns1p);
    const Node_id nid1 = ts.insert_node_iri(iri11);
    const Node_id nid2 = ts.insert_node_iri(iri23);

@@ -28,10 +28,6 @@ template<class Super> class Map_node_crtpb {
 
 public:
 
-   bool valid(const Node_id nid) const {
-      return _map_node().valid(nid);
-   }
-
    node_type const& operator[](const Node_id id) const {
       return _map_node()[id];
    }
@@ -52,7 +48,7 @@ public:
    */
    Node_id insert_node_iri(const Ns_id nsid, std::string const& name) {
       BOOST_ASSERT(
-               static_cast<Super const&>(*this).valid(nsid) &&
+               static_cast<Super const&>(*this).find(nsid) &&
                "invalid namespace ID"
       );
       typedef typename Super::Err Err;
@@ -68,7 +64,7 @@ public:
 
    Node_id const* find_node_iri(const Ns_id nsid, std::string const& name) const {
       BOOST_ASSERT(
-               static_cast<Super const&>(*this).valid(nsid) &&
+               static_cast<Super const&>(*this).find(nsid) &&
                "invalid namespace ID"
       );
       return _map_node().find_iri(nsid, name);

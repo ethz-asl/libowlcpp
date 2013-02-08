@@ -1,7 +1,7 @@
 # owlcpp/binding/python/jamfile.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2011
+# Copyright Mikhail K Levin 2011-3
 
 project binding/python
     : build-dir $(PYTHON_OUT)
@@ -12,14 +12,29 @@ project binding/python
 
 import python ;
 
-python-extension rdf 
+python-extension _rdf 
    : 
-      rdf.cpp 
+      [ glob rdf*.cpp ]
    : 
 ;
-install rdf_install
+
+python-extension terms
    : 
-      rdf
+      terms.cpp
+   :
+      <include>$(PROJ_ROOT)/lib
+;
+
+python-extension _io 
+   : 
+      [ glob io*.cpp ] 
+   :
+      <library>/owlcpp//io
+;
+
+install install
+   : 
+      _rdf terms _io
    : 
       <location>$(PYTHON_OUT)/owlcpp
       <install-dependencies>on
@@ -27,26 +42,12 @@ install rdf_install
       <dependency>__init__.py
 ;
 
-python-extension io 
-   : 
-      io.cpp 
-   :
-      <library>/owlcpp//io
-;
-install io_install
-   : 
-      io
-   : 
-      <location>$(PYTHON_OUT)/owlcpp
-      <install-dependencies>on
-      <install-type>LIB
-      <dependency>rdf_install
-;
-
 make __init__.py : : @init_py : <location>$(PYTHON_OUT)/owlcpp ;
 actions init_py {
     @($(STDOUT):E=#!/usr/bin/env python
-__all__ = ["rdf", "io"]
+from _rdf import *
+from _io import *
+import terms
 ) > "$(<)"
 echo $(<)
 }

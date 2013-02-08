@@ -36,9 +36,9 @@ TDLAxiom* Adaptor_triple::submit(Triple const& t) {
             Err()
             << Err::msg_t("error submitting triple")
       << Err::str1_t(
-            to_string(t.subject(), ts_) + ' ' +
-            to_string(t.predicate(), ts_) + ' ' +
-            to_string(t.object(), ts_)
+            to_string(t.subj_, ts_) + ' ' +
+            to_string(t.pred_, ts_) + ' ' +
+            to_string(t.obj_, ts_)
       )
       << Err::nested_t(boost::current_exception())
       );
@@ -49,9 +49,9 @@ TDLAxiom* Adaptor_triple::submit(Triple const& t) {
 /*
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
-   const Node_id subj = t.subject();
-   const Node_id pred = t.predicate();
-   const Node_id obj = t.object();
+   const Node_id subj = t.subj_;
+   const Node_id pred = t.pred_;
+   const Node_id obj = t.obj_;
    switch (pred()) {
    case rdf_type::index:
       return axiom_type(t);
@@ -255,8 +255,8 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
 /*
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
-   const Node_id subj = t.subject();
-   const Node_id obj = t.object();
+   const Node_id subj = t.subj_;
+   const Node_id obj = t.obj_;
    Node const& subj_node = ts_[subj];
    switch (obj()) {
 
@@ -342,8 +342,8 @@ TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
 /*
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::axiom_iri_node_type(Triple const& t) {
-   const Node_id subj = t.subject();
-   const Node_id obj = t.object();
+   const Node_id subj = t.subj_;
+   const Node_id obj = t.obj_;
    BOOST_ASSERT( is_iri(ts_[subj].ns_id()) );
 
    switch (obj()) {
@@ -391,8 +391,8 @@ TDLAxiom* Adaptor_triple::axiom_iri_node_type(Triple const& t) {
 /*
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
-   const Node_id subj = t.subject();
-   const Node_id obj = t.object();
+   const Node_id subj = t.subj_;
+   const Node_id obj = t.obj_;
    BOOST_ASSERT( is_blank(ts_[subj].ns_id()) );
 
    switch (obj()) {
@@ -409,7 +409,7 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
                )
                << Err::str1_t(to_string(subj, ts_))
       );
-      return axiom_from_seq(obj, r.front().object(), 2);
+      return axiom_from_seq(obj, r.front().obj_, 2);
    }
 
    case owl_AllDifferent::index: {
@@ -426,7 +426,7 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
                )
                << Err::str1_t(to_string(subj, ts_))
       );
-      return axiom_from_seq(obj, r.front().object(), 2);
+      return axiom_from_seq(obj, r.front().obj_, 2);
    }
 
    case owl_NegativePropertyAssertion::index:
@@ -535,9 +535,9 @@ TDLAxiom* Adaptor_triple::axiom_from_seq(
 /*
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::axiom_custom_predicate(Triple const& t) {
-   const Node_id subj = t.subject();
-   const Node_id pred = t.predicate();
-   const Node_id obj = t.object();
+   const Node_id subj = t.subj_;
+   const Node_id pred = t.pred_;
+   const Node_id obj = t.obj_;
 
    if( ! is_iri(ts_[pred].ns_id() ) ) BOOST_THROW_EXCEPTION(
             Err()
@@ -629,7 +629,7 @@ TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
             << Err::msg_t("no owl:sourceIndividual in owl:NegativePropertyAssertion")
             << Err::str1_t(to_string(nid, ts_))
    );
-   const Node_id src_ind = r1.front().object();
+   const Node_id src_ind = r1.front().obj_;
 
    Triple_store::result_b<1,1,0,0>::type r2 =
             ts_.find_triple(nid, owl_assertionProperty::id(), any(), any());
@@ -639,7 +639,7 @@ TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
             << Err::str1_t(to_string(nid, ts_))
             << Err::str2_t(to_string(src_ind, ts_))
    );
-   const Node_id prop = r2.front().object();
+   const Node_id prop = r2.front().obj_;
    const Node_property nt = declaration<Node_property>(prop, ts_);
    if( ! nt.is_object() && ! nt.is_data() ) BOOST_THROW_EXCEPTION(
             Err()
@@ -658,7 +658,7 @@ TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
             << Err::str2_t(to_string(src_ind, ts_))
             << Err::str3_t(to_string(prop, ts_))
    );
-   const Node_id target = r3.front().object();
+   const Node_id target = r3.front().obj_;
 
    if( nt.is_object() ) {
       return k_.relatedToNot(obj_value(src_ind), obj_property(prop), obj_value(target));

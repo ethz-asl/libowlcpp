@@ -29,8 +29,8 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
    if( ! is_blank(ts[handle].ns_id()) ) return;
 
    BOOST_FOREACH(Triple const& t, ts.find_triple(h, any(), any(), any())) {
-      const Node_id pred = t.predicate();
-      const Node_id obj = t.object();
+      const Node_id pred = t.pred_;
+      const Node_id obj = t.obj_;
       switch (pred()) {
          case rdf_type::index:
             e_type = obj;

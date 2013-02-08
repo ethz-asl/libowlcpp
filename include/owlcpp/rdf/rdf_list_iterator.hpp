@@ -58,7 +58,7 @@ private:
                << Err::msg_t("multiple rdf:rest triples")
                << Err::str1_t(to_string(nid_, *ts_))
       );
-      nid_ = t.object();
+      nid_ = t.obj_;
    }
 
    Node_id const& dereference() const {

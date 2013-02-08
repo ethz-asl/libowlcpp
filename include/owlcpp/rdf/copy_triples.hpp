@@ -33,10 +33,10 @@ public:
    {}
 
    void operator()(Triple const& t) {
-      const Node_id subj = cp(t.subject());
-      const Node_id pred = cp(t.predicate());
-      const Node_id obj  = cp(t.object());
-      const  Doc_id doc  = cp(t.document());
+      const Node_id subj = cp(t.subj_);
+      const Node_id pred = cp(t.pred_);
+      const Node_id obj  = cp(t.obj_);
+      const  Doc_id doc  = cp(t.doc_);
       dest_.insert_triple(subj, pred, obj, doc);
    }
 
@@ -75,7 +75,7 @@ public:
    Ns_id cp(const Ns_id nsid0) {
       const ns_iter_t i = nsm_.find(nsid0);
       if( i != nsm_.end() ) return i->second;
-      const Ns_id nsid1 = dest_.insert_ns(src_[nsid0]);
+      const Ns_id nsid1 = dest_.insert(src_[nsid0]);
       std::string const& pref = src_.prefix(nsid0);
       if(
                ! pref.empty() &&

@@ -63,7 +63,7 @@ public:
    ) {
       BOOST_CONCEPT_ASSERT((Iri_node_store<Super>));
       BOOST_ASSERT(
-               static_cast<Super const&>(*this).valid(dt_id) &&
+               static_cast<Super const&>(*this).find(dt_id) &&
                "invalid datatype ID"
       );
       return _map_node().insert_literal(value, dt_id, lang);

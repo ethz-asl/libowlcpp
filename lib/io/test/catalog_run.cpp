@@ -81,12 +81,12 @@ BOOST_AUTO_TEST_CASE( test_catalog_sample_data ) {
       Catalog::map_doc_type::path_range r = cat.map_doc().find_path(si.path);
       BOOST_REQUIRE(r);
       const Doc_id did = r.front();
-      BOOST_REQUIRE(cat.valid(did));
+      BOOST_REQUIRE(cat.find(did));
       BOOST_CHECK_EQUAL(cat.path(did), si.path);
       const Node_id iri_id = cat.ontology_iri_id(did);
-      BOOST_REQUIRE(cat.valid(iri_id));
+      BOOST_REQUIRE(cat.find(iri_id));
       const Node_id vers_id = cat.version_iri_id(did);
-      BOOST_REQUIRE(cat.valid(vers_id));
+      BOOST_REQUIRE(cat.find(vers_id));
       BOOST_CHECK_EQUAL(cat.ontology_iri_str(did), si.iri);
       BOOST_CHECK_EQUAL(cat.version_iri_str(did), si.version);
    }

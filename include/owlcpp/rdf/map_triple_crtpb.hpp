@@ -79,18 +79,18 @@ public:
    ) {
       BOOST_CONCEPT_ASSERT((Node_store<Super>));
       BOOST_ASSERT(
-            static_cast<Super const&>(*this).valid(subj) &&
+            static_cast<Super const&>(*this).find(subj) &&
             "invalid subject ID"
       );
       BOOST_ASSERT(
-            static_cast<Super const&>(*this).valid(pred) &&
+            static_cast<Super const&>(*this).find(pred) &&
             "invalid predicate ID"
       );
       BOOST_ASSERT(
-            static_cast<Super const&>(*this).valid(obj) &&
+            static_cast<Super const&>(*this).find(obj) &&
             "invalid object ID"
       );
-      BOOST_ASSERT( static_cast<Super const&>(*this).valid(doc) &&
+      BOOST_ASSERT( static_cast<Super const&>(*this).find(doc) &&
             "invalid document ID"
       );
       _map_triple().insert(subj, pred, obj, doc);
