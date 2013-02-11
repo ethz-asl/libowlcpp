@@ -34,7 +34,7 @@ python-extension _io
 
 python-extension _logic
    : 
-      [ glob logic*.cpp ]
+      [ glob logic*.cpp ] [ glob factpp*.cpp ]
    :
       <library>/owlcpp//logic
 ;

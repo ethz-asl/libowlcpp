@@ -6,8 +6,26 @@ part of owlcpp project.
 #include "boost/python.hpp"
 namespace bp = boost::python;
 
-void export_factpp();
+#include "factpp/Kernel.hpp"
+#include "owlcpp/logic/triple_to_fact.hpp"
+
+void export_factpp_kernel();
+void export_factpp_expression_manager();
+void export_factpp_expressions();
 
 BOOST_PYTHON_MODULE(_logic) {
-   export_factpp();
+   export_factpp_expressions();
+   export_factpp_expression_manager();
+   export_factpp_kernel();
+
+   bp::def(
+            "submit",
+            static_cast<
+            std::size_t (*)
+            (owlcpp::Triple_store const&, ReasoningKernel&, const bool)
+            >(&owlcpp::submit),
+            (bp::arg("store"), bp::arg("kernel"), bp::arg("strict")=true),
+            "Convert RDF triples from the triple store to axioms and submit "
+            "them to reasoning kernel"
+   );
 }
