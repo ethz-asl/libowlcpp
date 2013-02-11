@@ -32,9 +32,16 @@ python-extension _io
       <library>/owlcpp//io
 ;
 
+python-extension _logic
+   : 
+      [ glob logic*.cpp ]
+   :
+      <library>/owlcpp//logic
+;
+
 install install
    : 
-      _rdf terms _io
+      _rdf terms _io _logic
    : 
       <location>$(PYTHON_OUT)/owlcpp
       <install-dependencies>on
@@ -47,6 +54,7 @@ actions init_py {
     @($(STDOUT):E=#!/usr/bin/env python
 from _rdf import *
 from _io import *
+from _logic import *
 import terms
 ) > "$(<)"
 echo $(<)
