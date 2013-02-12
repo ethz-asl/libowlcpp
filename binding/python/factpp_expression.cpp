@@ -5,40 +5,62 @@ part of owlcpp project.
 *******************************************************************************/
 
 #include "boost/python.hpp"
+#include "boost/python/suite/indexing/vector_indexing_suite.hpp"
 #include "boost/noncopyable.hpp"
 namespace bp = boost::python;
 #include "factpp/tExpressionManager.hpp"
 
-struct TDLExpression_wrap: TDLExpression, bp::wrapper<TDLExpression> {
-   void accept(DLExpressionVisitor& visitor) const {
-      this->get_override("accept")();
-   }
-};
-
-struct TDLConceptExpression_wrap:
-         public TDLConceptExpression, public bp::wrapper<TDLConceptExpression> {
-   void accept(DLExpressionVisitor& visitor) const {
-      this->get_override("accept")();
-   }
-};
-
 void export_factpp_expressions() {
-   bp::class_<TDLExpression_wrap, boost::noncopyable>(
-            "TDLExpression", bp::no_init
-   );
-   bp::class_<TDLConceptExpression_wrap, bp::bases<TDLExpression_wrap>, boost::noncopyable>(
-            "TDLConceptExpression", bp::no_init
-   );
 
-/*
-   bp::class_<TDLExpression>(
-            "TDLExpression", bp::init<>()
-   )
-      .def(
-               "clear",
-               &TExpressionManager::clear,
-               "clear the ontology"
-      )
-   ;
-*/
+   bp::class_<
+   TDLExpression, boost::noncopyable
+   >("TDLExpression", bp::no_init);
+
+   bp::class_<
+   TDLConceptExpression, bp::bases<TDLExpression>, boost::noncopyable
+   >("TDLConceptExpression", bp::no_init);
+
+   bp::class_<
+   TDLRoleExpression, bp::bases<TDLExpression>, boost::noncopyable
+   >("TDLRoleExpression", bp::no_init);
+
+   bp::class_<
+   TDLObjectRoleComplexExpression, bp::bases<TDLRoleExpression>, boost::noncopyable
+   >("TDLObjectRoleComplexExpression", bp::no_init);
+
+   bp::class_<
+   TDLObjectRoleExpression, bp::bases<TDLObjectRoleComplexExpression>, boost::noncopyable
+   >("TDLObjectRoleExpression", bp::no_init);
+
+   bp::class_<
+   TDLDataRoleExpression, bp::bases<TDLRoleExpression>, boost::noncopyable
+   >("TDLDataRoleExpression", bp::no_init);
+
+   bp::class_<
+   TDLIndividualExpression, bp::bases<TDLExpression>, boost::noncopyable
+   >("TDLIndividualExpression", bp::no_init);
+
+   bp::class_<
+   TDLDataExpression, bp::bases<TDLExpression>, boost::noncopyable
+   >("TDLDataExpression", bp::no_init);
+
+   bp::class_<
+   TDLDataTypeExpression, bp::bases<TDLDataExpression>, boost::noncopyable
+   >("TDLDataTypeExpression", bp::no_init);
+
+   bp::class_<
+   TDLDataValue, bp::bases<TDLDataExpression>, boost::noncopyable
+   >("TDLDataValue", bp::no_init);
+
+   bp::class_<
+   TDLFacetExpression, bp::bases<TDLDataExpression>, boost::noncopyable
+   >("TDLFacetExpression", bp::no_init);
+
+   bp::class_<
+   TDLDataTypeName, bp::bases<TDLDataTypeExpression>, boost::noncopyable
+   >("TDLDataTypeName", bp::no_init);
+
+
+   bp::class_<std::vector<TDLExpression const*> >("expression_vector")
+   .def(bp::vector_indexing_suite<std::vector<TDLExpression const*> >());
 }

@@ -11,22 +11,40 @@ class Test(unittest.TestCase):
     def setUp(self):
         unittest.TestCase.setUp(self)
         self.dir = 'sample_data'
-        self.path1 = os.path.abspath(os.path.join(self.dir, 'og_01.owl'))
-        self.path2 = os.path.abspath(os.path.join(self.dir, 'one_eq_two_01.owl'))
 
     def test_1(self):
         ts = Triple_store();
-        load_file(self.path1, ts)
+        load_file(os.path.join(self.dir, 'og_01.owl'), ts)
         k = ReasoningKernel();
         submit(ts, k)
         self.assertTrue(k.isKBConsistent())
 
-    def test_1(self):
+    def test_2(self):
         ts = Triple_store();
-        load_file(self.path2, ts)
+        load_file(os.path.join(self.dir, 'one_eq_two_01.owl'), ts)
         k = ReasoningKernel();
         submit(ts, k)
         self.assertFalse(k.isKBConsistent())
+
+    def test_3(self):
+        ts = Triple_store();
+        load_file(os.path.join(self.dir, 'owl2-rl-rules-fp-differentFrom.owl'), ts)
+        k = ReasoningKernel();
+        submit(ts, k)
+        em = k.getExpressionManager()
+        e1 = em.Individual("http://owl2.test/rules/X1")
+        e2 = em.Individual("http://owl2.test/rules/X2")
+        self.assertFalse(k.isSameIndividuals(e1, e2))
+
+    def test_4(self):
+        ts = Triple_store();
+        load_file(os.path.join(self.dir, 'owl2-rl-rules-fp-sameAs.owl'), ts)
+        k = ReasoningKernel();
+        submit(ts, k)
+        em = k.getExpressionManager()
+        e1 = em.Individual("http://owl2.test/rules/X1")
+        e2 = em.Individual("http://owl2.test/rules/X2")
+        self.assertTrue(k.isSameIndividuals(e1, e2))
         
 
 if __name__ == '__main__': unittest.main()
