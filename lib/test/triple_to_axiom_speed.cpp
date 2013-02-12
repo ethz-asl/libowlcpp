@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
 
         ReasoningKernel k;
       const time_t t2 = clock_t::now();
-      const std::size_t n = submit_triples(ts, k);
+      const std::size_t n = submit(ts, k);
       const dur_t d2 = clock_t::now() - t2;
       std::cout
       << "axiom generation:\n"

@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
       }
 
       ReasoningKernel kernel;
-      submit_triples(store, kernel, vm["strict"].as<bool>());
+      submit(store, kernel, vm["strict"].as<bool>());
 
       if( ! kernel.isKBConsistent() ) {
          std::cout << "inconsistent ontology";

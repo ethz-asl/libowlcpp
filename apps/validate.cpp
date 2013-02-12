@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
       }
 
       ReasoningKernel kernel;
-      submit_triples(store, kernel, vm["lax"].as<bool>());
+      submit(store, kernel, vm["lax"].as<bool>());
       const bool consistent = kernel.isKBConsistent();
       std::cout
       << '\n' << "ontology is "

@@ -16,4 +16,5 @@ test-suite python :
    [ bpl-test import : import.py ]
    [ bpl-test rdf_1 : test_rdf_1.py ]
    [ bpl-test io_1 : test_io_1.py ]
+   [ bpl-test logic_1 : test_logic_1.py ]
 ;

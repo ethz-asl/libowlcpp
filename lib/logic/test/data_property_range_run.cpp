@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE( test_data_property_range ) {
    Triple_store ts;
    load_file(sample_file_path("data_property_range.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
 }
 

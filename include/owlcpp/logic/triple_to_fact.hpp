@@ -22,7 +22,7 @@ http://www.w3.org/TR/2009/REC-owl2-mapping-to-rdf-20091027/
 are enforced
 @return number of axioms generated
 *******************************************************************************/
-template<class Range> inline std::size_t submit_triples(
+template<class Range> inline std::size_t submit(
          Range r,
          Triple_store const& ts,
          ReasoningKernel& kernel,
@@ -40,12 +40,12 @@ http://www.w3.org/TR/2009/REC-owl2-mapping-to-rdf-20091027/
 are enforced
 @return number of axioms generated
 *******************************************************************************/
-inline std::size_t submit_triples(
+inline std::size_t submit(
          Triple_store const& ts,
          ReasoningKernel& kernel,
          const bool strict = true
 ) {
-   return submit_triples(ts.map_triple(), ts, kernel, strict);
+   return submit(ts.map_triple(), ts, kernel, strict);
 }
 
 /**Example of submitting triples to reasoner
