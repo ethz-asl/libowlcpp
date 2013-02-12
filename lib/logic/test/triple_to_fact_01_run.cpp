@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_01 ) {
    Triple_store ts;
    load_file(sample_file_path("negative_property_assertion_01.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( ! k.isKBConsistent() );
 }
 
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_02 ) {
    Triple_store ts;
    load_file(sample_file_path("og_01.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
 }
 
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_03 ) {
    Triple_store ts;
    load_file(sample_file_path("og_02.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
 }
 
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_04 ) {
    Triple_store ts;
    load_file(sample_file_path("owl2-rl-rules-fp-differentFrom.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
    const TDLIndividualExpression* i1 = em(k).Individual("http://owl2.test/rules/Y1");
    const TDLIndividualExpression* i2 = em(k).Individual("http://owl2.test/rules/Y2");
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_05 ) {
    Triple_store ts;
    load_file(sample_file_path("owl2-rl-rules-fp-sameAs.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
    const TDLIndividualExpression* i1 = em(k).Individual("http://owl2.test/rules/X1");
    const TDLIndividualExpression* i2 = em(k).Individual("http://owl2.test/rules/X2");
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_06 ) {
    Triple_store ts;
    load_file(sample_file_path("owl2-rl-rules-ifp-differentFrom.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
    const TDLIndividualExpression* i1 = em(k).Individual("http://owl2.test/rules/X1");
    const TDLIndividualExpression* i2 = em(k).Individual("http://owl2.test/rules/X2");
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_07 ) {
    Triple_store ts;
    load_file(sample_file_path("owl2-rl-rules-ifp-sameAs.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
    const TDLIndividualExpression* i1 = em(k).Individual("http://owl2.test/rules/Y1");
    const TDLIndividualExpression* i2 = em(k).Individual("http://owl2.test/rules/Y2");
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_08 ) {
    Triple_store ts;
    load_file(sample_file_path("one_eq_two_01.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( ! k.isKBConsistent() );
 }
 
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_09 ) {
    Triple_store ts;
    load_file(sample_file_path("negative_property_assertion_01.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( ! k.isKBConsistent() );
 }
 
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_10 ) {
    Triple_store ts;
    load_file(sample_file_path("propertyChain_01.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
    const std::string iri = "http://owl.semanticweb.org/page/New-Feature-ObjectPropertyChain-001";
    const TDLIndividualExpression* stewie =   em(k).Individual(iri + "#Stewie");
@@ -144,7 +144,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_11 ) {
    Triple_store ts;
    load_file(sample_file_path("data_value_clash.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( ! k.isKBConsistent() );
 }
 
@@ -154,7 +154,7 @@ BOOST_AUTO_TEST_CASE( test_triple_to_fact_12 ) {
    Triple_store ts;
    load_file(sample_file_path("version_test_b.owl"), ts);
    ReasoningKernel k;
-   submit_triples(ts, k, false);
+   submit(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
 }
 
