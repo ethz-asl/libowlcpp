@@ -35,7 +35,8 @@ const std::string iri3 = sample_files()[3].iri;
 BOOST_AUTO_TEST_CASE( test_triple_store_01 ) {
    Triple_store ts;
    BOOST_CHECK_EQUAL( ts.map_doc().size(), 0u );
-   owlcpp::detail::Raptor_to_store rts(ts, path1, Check_both(iri1, ver1));
+   Check_both cb(iri1, ver1);
+   owlcpp::detail::Raptor_to_store rts(ts, path1, cb);
    boost::filesystem::ifstream ifs(path1);
    rts.parse(ifs);
    BOOST_REQUIRE_EQUAL( ts.map_doc().size(), 1u );
@@ -71,7 +72,8 @@ BOOST_AUTO_TEST_CASE( test_triple_store_03 ) {
    BOOST_CHECK( ! ts.find_doc_iri("blah3") );
    BOOST_CHECK( ! ts.find_doc_iri(iri1) );
    BOOST_CHECK( ! ts.find_doc_iri(iri2) );
-   owlcpp::detail::Raptor_to_store rts(ts, path2, Check_both(iri2, ver2));
+   Check_both cb(iri2, ver2);
+   owlcpp::detail::Raptor_to_store rts(ts, path2, cb);
    boost::filesystem::ifstream ifs(path2);
    rts.parse(ifs);
    BOOST_CHECK( ! ts.find_doc_iri(iri1) );

@@ -66,13 +66,13 @@ public:
                Err()
                << Err::msg_t("ontology IRI mismatch")
                << Err::str1_t(iri)
-               << Err::str3_t(iri_)
+               << Err::str2_t(iri_)
       );
       if( ver_ != ver ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("ontology versionIRI mismatch")
-               << Err::str2_t(ver)
-               << Err::str3_t(ver_)
+               << Err::str1_t(ver)
+               << Err::str2_t(ver_)
       );
    }
 private:

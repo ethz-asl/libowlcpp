@@ -58,7 +58,7 @@ local utils = "c:/utils" ;
 
 ## Boost library source
 ## http://www.boost.org/
-# constant BOOST : "$(utils)/boost_1_52_0/" 1.52.0 ;
+# constant BOOST : "$(utils)/boost_1_53_0/" 1.53.0 ;
 
 ## libxml2 library source
 ## http://xmlsoft.org/
