@@ -39,9 +39,23 @@ template<class Wrapped> Node_id insert_node_iri(
    return ts.insert_node_iri(str);
 }
 
+template<class Wrapped> Ns_iri const&
+get_ns(Wrapped const& ts, const Ns_id nsid) {
+   return ts.at(nsid);
+}
+
 template<class Wrapped> typename Wrapped::node_type const&
 get_node(Wrapped const& ts, const Node_id nid) {
    return ts.at(nid);
+}
+
+template<class Wrapped> Doc_meta const&
+get_doc(Wrapped const& ts, const Doc_id docid) {
+   return ts.at(docid);
+}
+
+template<class Wrapped> Ns_id insert_ns(Wrapped& ts, Ns_iri const& ns) {
+   return ts.insert(ns);
 }
 
 /**@brief 
@@ -73,10 +87,7 @@ template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
 
       .def(
                "__getitem__",
-               static_cast<
-                  Ns_iri const&
-                  (wrapped_type::*)(Ns_id const) const
-               >(&wrapped_type::at),
+               &get_ns<wrapped_type>,
                bp::return_internal_reference<>(),
                (bp::arg("ns_id")),
                "retrieve namespace IRI"
@@ -92,10 +103,7 @@ template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
 
       .def(
                "__getitem__",
-               static_cast<
-                  Doc_meta const&
-                  (wrapped_type::*)(Doc_id const) const
-               >(&wrapped_type::at),
+               &get_doc<wrapped_type>,
                bp::return_internal_reference<>(),
                (bp::arg("doc_id")),
                "retrieve ontology document info"
@@ -103,9 +111,7 @@ template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
 
       .def(
                "insert",
-               static_cast<
-                  Ns_id (wrapped_type::*)(Ns_iri const&)
-               >(&wrapped_type::insert),
+               &insert_ns<wrapped_type>,
                (bp::arg("ns_iri")),
                "insert namespace IRI"
       )
