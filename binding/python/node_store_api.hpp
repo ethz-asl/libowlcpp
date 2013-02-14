@@ -39,6 +39,11 @@ template<class Wrapped> Node_id insert_node_iri(
    return ts.insert_node_iri(str);
 }
 
+template<class Wrapped> typename Wrapped::node_type const&
+get_node(Wrapped const& ts, const Node_id nid) {
+   return ts.at(nid);
+}
+
 /**@brief 
 *******************************************************************************/
 template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
@@ -79,10 +84,7 @@ template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
 
       .def(
                "__getitem__",
-               static_cast<
-               node_type const&
-                  (wrapped_type::*)(Node_id const) const
-               >(&wrapped_type::at),
+               &get_node<wrapped_type>,
                bp::return_internal_reference<>(),
                (bp::arg("node_id")),
                "retrieve RDF node"
