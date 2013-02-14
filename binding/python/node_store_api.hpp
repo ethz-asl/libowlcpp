@@ -32,6 +32,13 @@ Doc_id insert_doc(
    return ts.insert_doc(iri, path, vers).first;
 }
 
+template<class Wrapped> Node_id insert_node_iri(
+         Wrapped& ts,
+         std::string const& str
+) {
+   return ts.insert_node_iri(str);
+}
+
 /**@brief 
 *******************************************************************************/
 template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
@@ -66,7 +73,8 @@ template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
                   (wrapped_type::*)(Ns_id const) const
                >(&wrapped_type::at),
                bp::return_internal_reference<>(),
-               "TODO: doc string"
+               (bp::arg("ns_id")),
+               "retrieve namespace IRI"
       )
 
       .def(
@@ -76,7 +84,8 @@ template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
                   (wrapped_type::*)(Node_id const) const
                >(&wrapped_type::at),
                bp::return_internal_reference<>(),
-               "TODO: doc string"
+               (bp::arg("node_id")),
+               "retrieve RDF node"
       )
 
       .def(
@@ -86,7 +95,8 @@ template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
                   (wrapped_type::*)(Doc_id const) const
                >(&wrapped_type::at),
                bp::return_internal_reference<>(),
-               "TODO: doc string"
+               (bp::arg("doc_id")),
+               "retrieve ontology document info"
       )
 
       .def(
@@ -94,15 +104,15 @@ template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
                static_cast<
                   Ns_id (wrapped_type::*)(Ns_iri const&)
                >(&wrapped_type::insert),
-               "TODO: doc string"
+               (bp::arg("ns_iri")),
+               "insert namespace IRI"
       )
 
       .def(
                "insert_node_iri",
-               static_cast<
-                  Node_id (wrapped_type::*)(std::string const&)
-               >(&wrapped_type::insert_node_iri),
-               "TODO: doc string"
+               &insert_node_iri<wrapped_type>,
+               (bp::arg("iri")),
+               "insert node IRI"
       )
 
       .def(
@@ -114,12 +124,16 @@ template<class BP_Class> inline BP_Class& export_node_store_api(BP_Class& bpc) {
 
       .def(
                "find_doc_iri",
-               &wrapped_type::find_doc_iri
+               &wrapped_type::find_doc_iri,
+               (bp::arg("iri")),
+               "find documents with specified ontology IRI"
       )
 
       .def(
                "find_doc_version",
-               &wrapped_type::find_doc_version
+               &wrapped_type::find_doc_version,
+               (bp::arg("iri")),
+               "find documents with specified version IRI"
       )
       ;
 
