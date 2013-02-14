@@ -9,11 +9,16 @@ namespace bp = boost::python;
 
 #include "owlcpp/rdf/triple.hpp"
 #include "owlcpp/rdf/ns_iri.hpp"
+#include "owlcpp/rdf/node.hpp"
+#include "owlcpp/rdf/print_node.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 
 using owlcpp::Triple;
 using owlcpp::Node_id;
 using owlcpp::Doc_id;
 using owlcpp::Ns_iri;
+using owlcpp::Node;
+using owlcpp::Triple_store;
 
 Triple* make_triple(
          const Node_id subj, const Node_id pred,
@@ -47,11 +52,64 @@ void export_objects() {
       .def_readonly( "doc_", &Triple:: doc_)
       ;
 
-   bp::class_<Ns_iri>("Ns_iri", "namespace IRI",bp::init<std::string>())
+   bp::class_<Ns_iri>("Ns_iri", "namespace IRI", bp::init<std::string>())
       .def(str(bp::self))
       .def("str", &Ns_iri::str, bp::return_internal_reference<>())
       .def(bp::self == bp::self)
       .def(bp::self == std::string())
    ;
 
+   bp::class_<Node, boost::noncopyable>("Node", "RDF node", bp::no_init)
+      .def(str(bp::self))
+      .def(bp::self == bp::self)
+      .def(bp::self != bp::self)
+      ;
+
+   bp::def(
+            "to_string",
+            static_cast<std::string (*)(Node const&, Triple_store const&)>
+            (owlcpp::to_string),
+            (bp::arg("node"), bp::arg("store")),
+            "return string representation of a node"
+   );
+
+   bp::def(
+            "to_string",
+            static_cast<std::string (*)(const Node_id, Triple_store const&)>
+            (owlcpp::to_string),
+            (bp::arg("node_id"), bp::arg("store")),
+            "return string representation of a node"
+   );
+
+   bp::def(
+            "to_string_full",
+            static_cast<std::string (*)(Node const&, Triple_store const&)>
+            (owlcpp::to_string_full),
+            (bp::arg("node"), bp::arg("store")),
+            "return node string with complete namespace"
+   );
+
+   bp::def(
+            "to_string_full",
+            static_cast<std::string (*)(const Node_id, Triple_store const&)>
+            (owlcpp::to_string_full),
+            (bp::arg("node_id"), bp::arg("store")),
+            "return node string with complete namespace"
+   );
+
+   bp::def(
+            "to_string_pref",
+            static_cast<std::string (*)(Node const&, Triple_store const&)>
+            (owlcpp::to_string_pref),
+            (bp::arg("node"), bp::arg("store")),
+            "return node string with namespace prefix"
+   );
+
+   bp::def(
+            "to_string_pref",
+            static_cast<std::string (*)(const Node_id, Triple_store const&)>
+            (owlcpp::to_string_pref),
+            (bp::arg("node_id"), bp::arg("store")),
+            "return node string with namespace prefix"
+   );
 }

@@ -5,7 +5,8 @@
 
 project binding/python/test
     : requirements
-      <pythonpath>$(PYTHON_OUT)
+      #path-constant does not expand correctly under WIN
+      <pythonpath>../../../out/binding/python
       <dependency>..//install
 ;
 
