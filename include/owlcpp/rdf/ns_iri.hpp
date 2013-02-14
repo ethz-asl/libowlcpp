@@ -33,7 +33,7 @@ template<class Ch, class Tr> inline std::basic_ostream<Ch,Tr>&
 {return os << ns_iri.str();}
 
 inline std::size_t hash_value(Ns_iri const& n)
-{return boost::hash_value<std::string>(n.str());}
+{return boost::hash_value(n.str());}
 
 /**@brief remove fragment identifier from the rest of IRI string
  @param[in] iri IRI string
