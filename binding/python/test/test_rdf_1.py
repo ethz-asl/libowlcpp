@@ -48,13 +48,21 @@ class Test(unittest.TestCase):
     def test_find_triples(self):
         ts = Triple_store()
         docid = ts.insert_doc(iri='http://example1.com', path='path1')
-        nid1 = ts.insert_node_iri('http://example1.com#Node1')
+        iri1 = 'http://example1.com#Node1'
+        nid1 = ts.insert_node_iri(iri1)
         nid2 = ts.insert_node_iri('http://example1.com#Node2')
         nid3 = ts.insert_node_iri('http://example1.com#Node3')
         nid4 = ts.insert_node_iri('http://example1.com#Node4')
         self.assertNotEqual(nid1, nid2)
         self.assertNotEqual(nid2, nid3)
         self.assertNotEqual(nid2, nid4)
+        node1 = ts[nid1]
+        self.assertIn(':Node1', str(node1))
+        self.assertIn(':Node1', to_string_pref(node1, ts))
+        self.assertEqual(to_string(node1, ts), iri1)
+        self.assertEqual(to_string_full(node1, ts), iri1)
+        self.assertEqual(to_string(node1, ts), to_string(nid1, ts))
+        
         ts.insert_triple(nid1, nid1, nid1, docid)
         ts.insert_triple(nid2, nid1, nid1, docid)
         ts.insert_triple(nid3, nid1, nid1, docid)
