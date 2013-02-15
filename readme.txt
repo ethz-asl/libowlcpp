@@ -1,6 +1,6 @@
 owlcpp is a C++ library for reading and querying OWL ontologies.
 
-Copyright (C) 2010-2 Mikhail K Levin
+Copyright (C) 2010-3 Mikhail K Levin
 
 - parse OWL/RDF files into RDF triple store
 - query triple store

@@ -1,7 +1,7 @@
 # owlcpp/jamroot.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2010-2
+# Copyright Mikhail K Levin 2010-3
 
 import build/singleton-target ;
 import build/version ;
@@ -147,5 +147,5 @@ import notfile ;
 notfile make-release : @make-release ;
 explicit make-release ;
 rule make-release ( targets * : sources * : properties * ) { }
-actions make-release { python build/release.py $(OUT)/release }
+actions make-release { python build/release.py $(PROJ_ROOT) }
    
