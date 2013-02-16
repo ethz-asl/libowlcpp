@@ -6,6 +6,15 @@
 
 import os, subprocess, sys, shutil, re, zipfile, tarfile
 
+def copy_convert_crlf(src, dst, ending):
+    for dir, sub, files in os.walk(src):
+        reldir = os.path.relpath(dir, src)
+        dstdir = os.path.join(dst, reldir)
+        os.makedirs(dstdir)
+        for file in files:
+            s = open(os.path.join(dir, file), 'r').read()
+            
+
 root_path = sys.argv[1]
 out_path = os.path.join(root_path, 'out', 'release')
 version = subprocess.check_output(args=['git', 'describe', '--always', '--dirty=*'])
@@ -25,7 +34,10 @@ dir_list = [
 for dir in dir_list:
     src = os.path.join(root_path, dir)
     dst = os.path.join(rel_path, dir)
-    shutil.copytree(src, dst)
+#    shutil.copytree(src, dst)
+    copy_convert_crlf(src, dst, 'dos')
+    
+sys.exit()
 
 shutil.copy(os.path.join(root_path, 'readme.txt'), rel_path)
 jr_fn = 'jamroot.jam'
