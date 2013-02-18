@@ -11,8 +11,13 @@ import os, subprocess, sys, shutil, re, zipfile, tarfile
 def convert_crlf(src_file, dst, target_os):
     s = open(src_file, 'rb').read()
     if '\0' not in s:
-        if target_os == 'unix': s = re.sub(r'\r\n', r'\n', s)
-        if target_os == 'dos':  s = re.sub(r'\n', r'\r\n', s)
+        if target_os == 'unix':
+            s = s.replace('\r\n', '\n')
+            s = s.replace('\r', '\n')
+        if target_os == 'dos':
+            s = s.replace('\r\n', '\n')
+            s = s.replace('\r', '\n')
+            s = s.replace('\n', '\r\n')
     if os.path.isdir(dst): dst = os.path.join(dst, os.path.basename(src_file))
     open(dst, 'wb').write(s)
 
