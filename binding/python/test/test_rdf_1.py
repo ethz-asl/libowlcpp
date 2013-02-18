@@ -16,7 +16,7 @@ class Test(unittest.TestCase):
         self.assertEqual(nid2(), 42)
         self.assertEqual(str(nid2), 'Node42')
         self.assertGreater(nid2, nid1)
-        
+
     def test_triple(self):
         t1 = Triple(Node_id(1), Node_id(2), Node_id(3), Doc_id(42))
         self.assertEqual(str(t1), 'Node1,Node2,Node3,Doc42')
@@ -26,14 +26,14 @@ class Test(unittest.TestCase):
         nid1 = t1.subj_
         self.assertEqual(nid1(), 1)
         with self.assertRaises(AttributeError): t2.subj_ = Node_id(1)
-        
+
     def test_ns_iri(self):
         s = 'http://example.com'
         iri1 = Ns_iri(s)
         self.assertEqual(iri1, s)
         iri2 = Ns_iri(s)
         self.assertEqual(iri1, iri2)
-        
+
     def test_triple_store_1(self):
         ts = Triple_store()
         iri1 = 'http://example1.com'
@@ -44,7 +44,7 @@ class Test(unittest.TestCase):
         self.assertEqual(iri1, ts.map_ns()[nsid1])
         for triple in ts.find_triple(subj=Node_id(0)):
             print triple.subj_
-        
+
     def test_find_triples(self):
         ts = Triple_store()
         docid = ts.insert_doc(iri='http://example1.com', path='path1')
@@ -62,7 +62,7 @@ class Test(unittest.TestCase):
         self.assertEqual(to_string(node1, ts), iri1)
         self.assertEqual(to_string_full(node1, ts), iri1)
         self.assertEqual(to_string(node1, ts), to_string(nid1, ts))
-        
+
         ts.insert_triple(nid1, nid1, nid1, docid)
         ts.insert_triple(nid2, nid1, nid1, docid)
         ts.insert_triple(nid3, nid1, nid1, docid)
@@ -74,7 +74,7 @@ class Test(unittest.TestCase):
         self.assertEqual(len(l), 4)
         l = list(ts.find_triple(pred=nid1, obj=nid3))
         self.assertEqual(len(l), 1)
-        
+
     def test_standard_ns(self):
         self.assertEqual(terms.owl.iri, 'http://www.w3.org/2002/07/owl')
         self.assertEqual(terms.owl.prefix, 'owl')
@@ -83,7 +83,7 @@ class Test(unittest.TestCase):
         self.assertEqual(terms.rdf.iri, 'http://www.w3.org/1999/02/22-rdf-syntax-ns')
         self.assertEqual(terms.rdf.prefix, 'rdf')
         self.assertEqual(terms.rdf.id(), 2)
-        
+
     def test_standard_terms(self):
         self.assertEqual(terms.owl_Class.id(), 44)
         self.assertEqual(terms.owl_Class.name, 'Class')
