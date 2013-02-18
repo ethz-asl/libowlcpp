@@ -20,7 +20,7 @@ def convert_tree_crlf(src, dst, target_os):
     if os.path.isfile(src):
         convert_crlf(src, dst, target_os)
         return
-    
+
     for dir, sub, files in os.walk(src):
         reldir = os.path.relpath(dir, src)
         dstdir = os.path.join(dst, reldir)
@@ -48,7 +48,7 @@ def src_compress(out_path, rel_name, target_os):
         b = tarfile.open(rel_path + '.tar.bz2', 'w|bz2')
         for dir, sub, files in os.walk(rel_path):
             reldir = os.path.relpath(dir, out_path)
-            for file in files: 
+            for file in files:
                 b.add(os.path.join(dir, file), os.path.join(reldir, file))
         b.close()
 
@@ -57,17 +57,17 @@ def src_release(root_path, out_path, rel_name, rel_version, target_os):
     rel_path = os.path.join(out_path, rel_name)
     if os.path.exists(rel_path): shutil.rmtree(rel_path)
     os.makedirs(rel_path)
-    
+
     obj_list = [
-                'apps', 'binding', 'include', 'lib', 'build', 
-                'doc', 'external', 'sample_data', 
+                'apps', 'binding', 'include', 'lib', 'build',
+                'doc', 'external', 'sample_data',
                 'readme.txt', 'jamroot.jam'
                 ]
     for obj in obj_list:
         src = os.path.join(root_path, obj)
         dst = os.path.join(rel_path, obj)
         convert_tree_crlf(src, dst, 'dos')
-    
+
     jr_str = open(os.path.join(root_path, obj_list[-1]), 'r').read()
     patt = re.compile(r'(constant\s+OWLCPP_VERSION\s+:\s+)(\[[^[]+\])')
     repl = r'\1"' + rel_version + '"'
@@ -76,14 +76,14 @@ def src_release(root_path, out_path, rel_name, rel_version, target_os):
     src_compress(out_path, rel_name, target_os)
 
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     root_path = sys.argv[1]
     out_path = os.path.join(root_path, 'out', 'release')
+    if os.path.exists(out_path): shutil.rmtree(out_path)
     v = get_version()
     if len(v) == 4: rel_version = '%s.%s.%s%s' % v
     else: rel_version = '%s.%s.%s' % v
     rel_name = 'owlcpp-' + rel_version
-    
     print 'release ' + rel_name
     src_release(root_path, out_path, rel_name, rel_version, 'dos')
     src_release(root_path, out_path, rel_name, rel_version, 'unix')
