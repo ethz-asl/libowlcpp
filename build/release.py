@@ -18,6 +18,7 @@ def convert_crlf(src_file, dst, target_os):
             s = s.replace('\r\n', '\n')
             s = s.replace('\r', '\n')
             s = s.replace('\n', '\r\n')
+    else: print src_file + ' binary'
     if os.path.isdir(dst): dst = os.path.join(dst, os.path.basename(src_file))
     open(dst, 'wb').write(s)
 
@@ -31,6 +32,8 @@ def convert_tree_crlf(src, dst, target_os):
         dstdir = os.path.join(dst, reldir)
         os.makedirs(dstdir)
         for file in files:
+            if file[0] == '.': continue
+            if re.search(r'\.pyc$', file): continue
             src_file = os.path.join(dir, file)
             dst_file = os.path.join(dstdir, file)
             convert_crlf(src_file, dst_file, target_os)
@@ -43,7 +46,7 @@ def get_version():
 def src_compress(out_path, rel_name, target_os):
     rel_path = os.path.join(out_path, rel_name)
     if target_os == 'dos':
-        z = zipfile.ZipFile(rel_path + '.zip', 'w')
+        z = zipfile.ZipFile(rel_path + '.zip', 'w', zipfile.ZIP_DEFLATED)
         for dir, sub, files in os.walk(rel_path):
             reldir = os.path.relpath(dir, out_path)
             for file in files:
@@ -57,7 +60,8 @@ def src_compress(out_path, rel_name, target_os):
                 b.add(os.path.join(dir, file), os.path.join(reldir, file))
         b.close()
 
-def src_release(root_path, out_path, rel_name, rel_version, target_os):
+def src_release(root_path, out_path, name, rel_version, target_os):
+    rel_name = name + '-' + rel_version
     print 'making ' + target_os + ' version'
     rel_path = os.path.join(out_path, rel_name)
     if os.path.exists(rel_path): shutil.rmtree(rel_path)
@@ -71,15 +75,19 @@ def src_release(root_path, out_path, rel_name, rel_version, target_os):
     for obj in obj_list:
         src = os.path.join(root_path, obj)
         dst = os.path.join(rel_path, obj)
-        convert_tree_crlf(src, dst, 'dos')
+        convert_tree_crlf(src, dst, target_os)
 
-    jr_str = open(os.path.join(root_path, obj_list[-1]), 'r').read()
+    s = open(os.path.join(rel_path, obj_list[-1]), 'r').read()
     patt = re.compile(r'(constant\s+OWLCPP_VERSION\s+:\s+)(\[[^[]+\])')
     repl = r'\1"' + rel_version + '"'
-    t = re.subn(patt, repl, jr_str)
+    t = re.subn(patt, repl, s)
     open(os.path.join(rel_path, obj_list[-1]), 'w').write(t[0])
-    src_compress(out_path, rel_name, target_os)
 
+    s = open(os.path.join(rel_path, obj_list[-2]), 'r').read()
+    s = name + ' version ' + rel_version + s
+    open(os.path.join(rel_path, obj_list[-2]), 'w').write(s)
+
+    src_compress(out_path, rel_name, target_os)
 
 if __name__ == '__main__':
     root_path = sys.argv[1]
@@ -88,7 +96,7 @@ if __name__ == '__main__':
     v = get_version()
     if len(v) == 4: rel_version = '%s.%s.%s%s' % v
     else: rel_version = '%s.%s.%s' % v
-    rel_name = 'owlcpp-' + rel_version
-    print 'release ' + rel_name
+    rel_name = 'owlcpp'
+    print 'release ' + rel_name + ' v' + rel_version
     src_release(root_path, out_path, rel_name, rel_version, 'dos')
     src_release(root_path, out_path, rel_name, rel_version, 'unix')
