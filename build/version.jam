@@ -17,12 +17,12 @@ rule build_version ( n ? ) {
 # return version based on a git tag
 rule git_describe ( git_path ? : default ) {
    git_path ?= git ;
-   local res = [ SHELL "\"$(git_path)\" describe --always --dirty=*" : exit-status ] ;
+   local res = [ SHELL "\"$(git_path)\" describe --always --dirty=~" : exit-status ] ;
    if $(res[2]) = "0" { return [ trim_whitespace $(res[1]) ] ; }
    else { return $(default) ; }
 }
 
-# split tag "v1.2.5-8-gda17203*" into "1", "2", "5", "8-gda17203*"
+# split tag "v1.2.5-8-gda17203~" into "1", "2", "5", "8-gda17203~"
 rule process_version_string ( v_str : v_def_1 v_def_2 v_def_3 v_def_e ) {
    local re = "v?([0-9]*)[ \-\.]?([0-9]*)[ \-\.]?([0-9]*)-?(.*)" ;
    local v = [ MATCH $(re) : $(v_str) ] ;

@@ -45,6 +45,6 @@ class Test(unittest.TestCase):
         e1 = em.Individual("http://owl2.test/rules/X1")
         e2 = em.Individual("http://owl2.test/rules/X2")
         self.assertTrue(k.isSameIndividuals(e1, e2))
-        
+
 
 if __name__ == '__main__': unittest.main()
