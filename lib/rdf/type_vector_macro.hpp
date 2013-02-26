@@ -15,8 +15,7 @@ part of owlcpp project.
 #include "boost/preprocessor/seq/enum.hpp"
 #include "boost/preprocessor/seq/for_each.hpp"
 
-#include "owlcpp/terms/detail/term_typename_macro.hpp"
-#include "owlcpp/terms/detail/uri_typename_macro.hpp"
+#include "owlcpp/terms/node_iri_tag_name_macro.hpp"
 
 /**@brief Round up number
 *******************************************************************************/
@@ -36,7 +35,7 @@ part of owlcpp project.
       ) \
 /* */
 
-#define OWLCPP_NS_TYPESEQ_MACRO(r, d, e) (OWLCPP_NAMESPACE_TYPE_NAME(e))
+#define OWLCPP_NS_TYPESEQ_MACRO(r, d, e) (BOOST_PP_SEQ_ELEM(0,e))
 
 /**@brief Generate comma-separated list of standard URI types
 *******************************************************************************/
@@ -53,7 +52,7 @@ boost::mpl::vector48<
 #define OWLCPP_NAMESPACE_MPL_VECTOR(seq) \
    OWLCPP_MPL_VECTOR(seq)<OWLCPP_NAMESPACE_ENUM(seq)>
 
-#define OWLCPP_TERM_ENUM_MACRO(r, d, e) (OWLCPP_TERM_TYPE_NAME(e))
+#define OWLCPP_TERM_ENUM_MACRO(r, d, e) (OWLCPP_NODE_TYPE_NAME(e))
 
 /**@brief Generate comma-separated list of standard triplet types
 @details OWLCPP_STD_TERM_ENUM(OWLCPP_STD_TERM_SEQ)

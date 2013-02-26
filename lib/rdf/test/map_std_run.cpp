@@ -10,7 +10,6 @@ part of owlcpp project.
 #include "owlcpp/rdf/map_std.hpp"
 #include "owlcpp/rdf/nodes_std.hpp"
 #include "owlcpp/rdf/node_iri.hpp"
-#include "owlcpp/terms/iri_tags.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
@@ -19,7 +18,7 @@ namespace owlcpp{ namespace test{
 BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 template<class Tag> Node_iri make_iri(Tag const&) {
-   return Node_iri(Tag::ns_type::id(), Tag::name());
+   return Node_iri(Tag::ns_type::id(), Tag::fragment());
 }
 
 namespace t = owlcpp::terms;

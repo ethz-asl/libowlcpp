@@ -99,7 +99,9 @@ BOOST_AUTO_TEST_CASE( test_nodes_owl ) {
    );
 
    //correct term
-   const Node_id nid1 = ts.insert_node_iri(t::owl::id(), t::owl_Ontology::name());
+   const Node_id nid1 = ts.insert_node_iri(
+            t::owl::id(), t::owl_Ontology::fragment()
+   );
    BOOST_CHECK_EQUAL(nid1, t::owl_Ontology::id());
 
    const Node_id nid2 = ts.insert_node_iri(t::owl::iri() + "#Ontology");

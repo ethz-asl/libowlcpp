@@ -72,7 +72,7 @@ public:
       BOOST_ASSERT(map_node_.size() < detail::min_node_id()());
       typedef typename NTag::ns_type ns_type;
       insert_ns_tag(ns_type());
-      map_node_.insert(NTag::id(), Node_iri(ns_type::id(), NTag::name()));
+      map_node_.insert(NTag::id(), Node_iri(ns_type::id(), NTag::fragment()));
    }
 
    /**
