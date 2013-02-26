@@ -70,7 +70,8 @@ int main(int argc, char* argv[]) {
       }
 
       ReasoningKernel kernel;
-      submit(store, kernel, vm["lax"].as<bool>());
+      const std::size_t n = submit(store, kernel, vm["lax"].as<bool>());
+      std::cout << n << " axioms generated" << std::endl;
       const bool consistent = kernel.isKBConsistent();
       std::cout
       << '\n' << "ontology is "
