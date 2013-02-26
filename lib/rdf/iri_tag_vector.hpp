@@ -5,16 +5,16 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef IRI_TAG_VECTOR_HPP_
 #define IRI_TAG_VECTOR_HPP_
-#include "owlcpp/terms/iri_tags.hpp"
+#include "owlcpp/terms/ns_iri_tags.hpp"
 #include "type_vector_macro.hpp"
 // include appropriate boost::mpl vector header
-#include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_IRI_LIST)
+#include OWLCPP_MPL_VECTORnn_HPP(OWLCPP_NAMESPACE_IRI_LIST)
 
 namespace owlcpp{ namespace terms{
 
 /**@brief typelist of standard OWL namespace tags
 *******************************************************************************/
-typedef OWLCPP_NAMESPACE_MPL_VECTOR(OWLCPP_IRI_LIST) mpl_vector_iris_t;
+typedef OWLCPP_NAMESPACE_MPL_VECTOR(OWLCPP_NAMESPACE_IRI_LIST) mpl_vector_iris_t;
 
 
 

@@ -7,44 +7,21 @@ part of owlcpp project.
 #define OWLCPP_RDF_SOURCE
 #endif
 #include "owlcpp/rdf/nodes_std.hpp"
-
 #include "boost/mpl/for_each.hpp"
-
 #include "iri_tag_vector.hpp"
 #include "node_tag_vector_system.hpp"
 #include "node_tag_vector_owl.hpp"
 #include "owlcpp/rdf/map_std.hpp"
 
-namespace owlcpp{ namespace{
-
-struct Node_tag_inserter {
-   explicit Node_tag_inserter(Map_std& map) : map_(&map) {}
-
-   template<class T> void operator()(T const& t) const {
-      map_->insert_node_tag(t);
-   }
-
-   mutable Map_std* map_;
-};
-
-struct Ns_tag_inserter {
-   explicit Ns_tag_inserter(Map_std& map) : map_(&map) {}
-
-   template<class T> void operator()(T const& t) const {
-      map_->insert_ns_tag(t);
-   }
-
-   mutable Map_std* map_;
-};
-}//namespace anonymous
+namespace owlcpp{
 
 /*
 *******************************************************************************/
 void Nodes_owl::operator()(Map_std& map) const {
-   Ns_tag_inserter ns_ins(map);
+   detail::Ns_inserter ns_ins(map);
    boost::mpl::for_each<terms::mpl_vector_iris_t>(ns_ins);
 
-   Node_tag_inserter node_ins(map);
+   detail::Node_inserter node_ins(map);
    boost::mpl::for_each<terms::mpl_vector_terms_rdfs_t>(node_ins);
    boost::mpl::for_each<terms::mpl_vector_terms_rdf_t>(node_ins);
    boost::mpl::for_each<terms::mpl_vector_terms_xsd_t>(node_ins);

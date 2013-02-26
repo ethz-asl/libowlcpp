@@ -13,7 +13,6 @@ part of owlcpp project.
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
 #include "owlcpp/rdf/print_node.hpp"
-#include "owlcpp/terms/iri_tags.hpp"
 
 namespace owlcpp{
 

@@ -13,10 +13,8 @@ part of owlcpp project.
       ((empty)()) \
 /* */
 
-#include <string>
-#include "owlcpp/terms/term_macro.hpp"
-#include "owlcpp/terms/iri_tags.hpp"
-#include "owlcpp/node_id.hpp"
+#include "owlcpp/terms/node_iri_tag_gen_macro.hpp"
+#include "owlcpp/terms/ns_iri_tags.hpp"
 
 namespace owlcpp{ namespace terms{
 

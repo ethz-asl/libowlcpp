@@ -29,18 +29,20 @@ using namespace owlcpp::terms;
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::submit(Triple const& t) {
    try{
-      return axiom(t);
-      //k_.isKBConsistent(); //check if triple crashes reasoner
+      TDLAxiom* const a = axiom(t);
+      //if( a ) k_.isKBConsistent(); //check if axiom crashes reasoner
+      return a;
    } catch(...) {
       BOOST_THROW_EXCEPTION(
-            Err()
-            << Err::msg_t("error submitting triple")
-      << Err::str1_t(
-            to_string(t.subj_, ts_) + ' ' +
-            to_string(t.pred_, ts_) + ' ' +
-            to_string(t.obj_, ts_)
-      )
-      << Err::nested_t(boost::current_exception())
+               Err()
+               << Err::msg_t("error submitting triple")
+               << Err::str1_t(
+                        to_string(t.subj_, ts_) + ' ' +
+                        to_string(t.pred_, ts_) + ' ' +
+                        to_string(t.obj_, ts_)
+               )
+               << Err::str2_t(ts_[t.doc_].path)
+               << Err::nested_t(boost::current_exception())
       );
    }
 }

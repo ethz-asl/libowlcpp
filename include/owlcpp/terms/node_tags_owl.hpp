@@ -5,17 +5,15 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef NODE_TAGS_OWL_HPP_
 #define NODE_TAGS_OWL_HPP_
-#include <string>
 #include "boost/preprocessor/arithmetic/add.hpp"
 #include "boost/preprocessor/seq/size.hpp"
-#include "owlcpp/terms/term_macro.hpp"
-#include "owlcpp/terms/iri_tags.hpp"
-#include "owlcpp/node_id.hpp"
+#include "owlcpp/terms/node_iri_tag_gen_macro.hpp"
+#include "owlcpp/terms/ns_iri_tags.hpp"
 
 /**@brief Standard OWL nodes in RDFS namespace
-@details ((standard namespace IRI prefix)(node name))
+@details ((namespace IRI type name)(fragment ID))
 *******************************************************************************/
-#define OWLCPP_TERMS_RDFS_N0 5
+#define OWLCPP_TERMS_RDFS_N0_ 5
 #define OWLCPP_TERMS_RDFS \
       ((rdfs)(Class)) \
       ((rdfs)(Container)) \
@@ -51,14 +49,15 @@ struct empty_ {
 }; @endcode
 
 *******************************************************************************/
-OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_RDFS, OWLCPP_TERMS_RDFS_N0)
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_RDFS, OWLCPP_TERMS_RDFS_N0_)
 
 }//namespace terms
 }//namespace owlcpp
 
 /**@brief OWL terms in RDF namespace
 *******************************************************************************/
-#define OWLCPP_TERMS_RDF_N0 BOOST_PP_ADD(OWLCPP_TERMS_RDFS_N0, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_RDFS))
+#define OWLCPP_TERMS_RDF_N0_ \
+   BOOST_PP_ADD(OWLCPP_TERMS_RDFS_N0_, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_RDFS))
 #define OWLCPP_TERMS_RDF \
       ((rdf)(List)) \
       ((rdf)(PlainLiteral)) \
@@ -81,13 +80,14 @@ OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_RDFS, OWLCPP_TERMS_RDFS_N0)
       ((rdf)(value)) \
 */
 namespace owlcpp{ namespace terms{
-OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_RDF, OWLCPP_TERMS_RDF_N0)
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_RDF, OWLCPP_TERMS_RDF_N0_)
 }}
 
 /**@brief OWL 2 RDF-Based Vocabulary
  http://www.w3.org/TR/2009/REC-owl2-rdf-based-semantics-20091027/
 *******************************************************************************/
-#define OWLCPP_TERMS_OWL1_N0 BOOST_PP_ADD(OWLCPP_TERMS_RDF_N0, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_RDF))
+#define OWLCPP_TERMS_OWL1_N0_ \
+   BOOST_PP_ADD(OWLCPP_TERMS_RDF_N0_, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_RDF))
 #define OWLCPP_TERMS_OWL1 \
       ((owl)(AllDifferent)) \
       ((owl)(AllDisjointClasses)) \
@@ -130,10 +130,11 @@ OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_RDF, OWLCPP_TERMS_RDF_N0)
       ((owl)(inverseOf)) \
 /* */
 namespace owlcpp{ namespace terms{
-OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_OWL1, OWLCPP_TERMS_OWL1_N0)
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_OWL1, OWLCPP_TERMS_OWL1_N0_)
 }}
 
-#define OWLCPP_TERMS_OWL2_N0 BOOST_PP_ADD(OWLCPP_TERMS_OWL1_N0, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_OWL1))
+#define OWLCPP_TERMS_OWL2_N0_ \
+   BOOST_PP_ADD(OWLCPP_TERMS_OWL1_N0_, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_OWL1))
 #define OWLCPP_TERMS_OWL2 \
       ((owl)(IrreflexiveProperty)) \
       ((owl)(maxCardinality)) \
@@ -177,13 +178,14 @@ OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_OWL1, OWLCPP_TERMS_OWL1_N0)
       ((owl)(withRestrictions)) \
 /* */
 namespace owlcpp{ namespace terms{
-OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_OWL2, OWLCPP_TERMS_OWL2_N0)
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_OWL2, OWLCPP_TERMS_OWL2_N0_)
 }}
 
 //TODO: map to internally stored types
 /**@brief OWL terms in XSD namespace
 *******************************************************************************/
-#define OWLCPP_TERMS_XSD_N0 BOOST_PP_ADD(OWLCPP_TERMS_OWL2_N0, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_OWL2))
+#define OWLCPP_TERMS_XSD_N0_ \
+   BOOST_PP_ADD(OWLCPP_TERMS_OWL2_N0_, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_OWL2))
 #define OWLCPP_TERMS_XSD \
          ((xsd)(anyURI)) \
          ((xsd)(base64Binary)) \
@@ -231,23 +233,10 @@ OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_OWL2, OWLCPP_TERMS_OWL2_N0)
          ((xsd)(unsignedShort)) \
 /* */
 namespace owlcpp{ namespace terms{
-OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_XSD, OWLCPP_TERMS_XSD_N0)
+OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_XSD, OWLCPP_TERMS_XSD_N0_)
 }}
 
-/**@brief Combined set of supported OWL terms
-@details Define sequence of standard OWL terms.
-The sequences are used for generating small Tag types and typelists.
-Each term is defined by a sequence of 2 or 3 elements
-of which the first one refers to IRI prefix defined in "uri_list.hpp".
-The name of the type is formed by concatenating first and second elements.
-The last element---either second or third---is used as string value of the term.
-*******************************************************************************/
-#define OWLCPP_TERMS_ALL \
-      OWLCPP_TERMS_OWL1 \
-      OWLCPP_TERMS_OWL2 \
-      OWLCPP_TERMS_RDF \
-      OWLCPP_TERMS_RDFS \
-      OWLCPP_TERMS_XSD \
-/* */
+#define OWLCPP_NODE_TAGS_TOTAL \
+         BOOST_PP_ADD(OWLCPP_TERMS_XSD_N0_, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_XSD))
 
 #endif /* NODE_TAGS_OWL_HPP_ */
