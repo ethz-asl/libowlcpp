@@ -20,6 +20,8 @@ part of owlcpp project.
 /* */
 
 #include "owlcpp/terms/ns_iri_tag_gen_macro.hpp"
+#include "boost/preprocessor/seq/size.hpp"
+#define OWLCPP_NAMESPACE_TAGS_TOTAL BOOST_PP_SEQ_SIZE(OWLCPP_NAMESPACE_IRI_LIST)
 
 namespace owlcpp{ namespace terms{
 
@@ -43,6 +45,7 @@ namespace owlcpp{ namespace terms{
 OWLCPP_GENERATE_NAMESPACE_TAGS(OWLCPP_NAMESPACE_IRI_LIST, 0)
 
 }//namespace terms
+
 
 /**
 *******************************************************************************/

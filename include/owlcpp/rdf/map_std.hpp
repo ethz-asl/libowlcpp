@@ -28,15 +28,7 @@ class Map_std : boost::noncopyable {
    typedef detail::Map_id_object<Ns_iri, Ns_id> map_ns_t;
    typedef detail::Map_id_object<Node_iri, Node_id> map_node_t;
 
-   template<class Inserter> explicit Map_std(Inserter const& ins)
-   : map_ns_(Ns_id(0)), map_pref_(), map_node_(Node_id(0))
-   {
-      insert_ns_tag(terms::empty());
-      insert_ns_tag(terms::blank());
-      insert_node_tag(terms::empty_());
-
-      ins(*this);
-   }
+   template<class Inserter> explicit Map_std(Inserter const& ins);
 
 public:
 
@@ -58,21 +50,16 @@ public:
       return map;
    }
 
-   /**Insert standard namespace;
-   non-constant method, can be used only during construction */
-   template<class NsTag> void insert_ns_tag(NsTag const&) {
-      BOOST_ASSERT(map_ns_.size() < detail::min_ns_id()());
-      map_ns_.insert(NsTag::id(), Ns_iri(NsTag::iri()));
-      map_pref_.set(NsTag::id(), NsTag::prefix());
+   void insert(const Ns_id nsid, Ns_iri const& nsiri, std::string const& pref) {
+      BOOST_ASSERT(nsid < detail::min_ns_id());
+      map_ns_.insert(nsid, nsiri);
+      map_pref_.set(nsid, pref);
    }
 
-   /**Insert standard IRI node;
-   non-constant method, can be used only during construction */
-   template<class NTag> void insert_node_tag(NTag const&) {
-      BOOST_ASSERT(map_node_.size() < detail::min_node_id()());
-      typedef typename NTag::ns_type ns_type;
-      insert_ns_tag(ns_type());
-      map_node_.insert(NTag::id(), Node_iri(ns_type::id(), NTag::fragment()));
+   void insert(const Node_id nid, Node_iri const& node) {
+      BOOST_ASSERT(nid < detail::min_node_id());
+      BOOST_ASSERT(find(node.ns_id()));
+      map_node_.insert(nid, node);
    }
 
    /**
@@ -111,6 +98,47 @@ private:
    Map_ns_prefix map_pref_;
    map_node_t map_node_;
 };
+
+namespace detail{
+
+/**Insert namespace IRI tags into standard node map
+*******************************************************************************/
+class Ns_inserter {
+public:
+   explicit Ns_inserter(Map_std& map) : map_(&map) {}
+   template<class NsTag> void operator()(NsTag const&) const {
+      map_->insert(NsTag::id(), Ns_iri(NsTag::iri()), NsTag::prefix());
+   }
+private:
+   mutable Map_std* map_;
+};
+
+/**Insert node IRI tags into standard node map
+*******************************************************************************/
+class Node_inserter {
+public:
+   explicit Node_inserter(Map_std& map) : map_(&map) {}
+   template<class NodeTag> void operator()(NodeTag const&) const {
+      typedef typename NodeTag::ns_type ns_type;
+      map_->insert(ns_type::id(), Ns_iri(ns_type::iri()), ns_type::prefix());
+      map_->insert(NodeTag::id(), Node_iri(ns_type::id(), NodeTag::fragment()));
+   }
+private:
+   mutable Map_std* map_;
+};
+}//namespace detail
+
+template<class Inserter> Map_std::Map_std(Inserter const& ins)
+: map_ns_(Ns_id(0)), map_pref_(), map_node_(Node_id(0))
+{
+   detail::Ns_inserter ns_ins(*this);
+   ns_ins(terms::empty());
+   ns_ins(terms::blank());
+   detail::Node_inserter node_ins(*this);
+   node_ins(terms::empty_());
+
+   ins(*this);
+}
 
 }//namespace owlcpp
 #endif /* MAP_STD_HPP_ */
