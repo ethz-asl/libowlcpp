@@ -9,7 +9,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/triple_store.hpp"
 #include "factpp/config.hpp"
 
-class /*FACTPP_KERNEL_DECL*/ ReasoningKernel;
+class ReasoningKernel;
 
 namespace owlcpp{
 

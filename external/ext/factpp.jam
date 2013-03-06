@@ -3,7 +3,7 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
-# Boost.build script for building FaCT++ library 
+# Boost.build script for building FaCT++ library
 # <http://code.google.com/p/factplusplus/>
 
 import extension ;
@@ -46,13 +46,13 @@ rule config_hpp ( targets * : sources * : properties * ) {
       ""
       "#endif /* FACTPP_CONFIG_HPP */"
    ;
-   
+
    NL on $(<) = "
 " ;
 }
 actions config_hpp { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 
-## 
+##
 ################################################################################
 rule transform_hpp ( src_dir : version ) {
    # parseTime.h is not used
@@ -69,7 +69,7 @@ rule transform_hpp ( src_dir : version ) {
    return $(files) ;
 }
 
-## 
+##
 ################################################################################
 rule replace_include ( str : incl * ) {
    local re = "^(.*) *#[ \t]*include *\"([0-9a-zA-Z_]+)\.h\"(.*)" ;
@@ -92,98 +92,106 @@ rule replace_include ( str : incl * ) {
    return $(result) ;
 }
 
-## 
+##
 ################################################################################
-rule add_class_export ( str : list * ) {
-   local re = "^(.*)class[ \t]+([0-9a-zA-Z_]+)([^;]*[{].*)" ;
-   local result = "" ;
-   local parts = 1 ;
-   while $(parts) {
-      parts = [ MATCH $(re) : $(str) ] ;
-      if $(parts) {
-         parts += "" ;
-         if $(parts[2]) in $(list) {
-            result = "class FACTPP_KERNEL_DECL $(parts[2])$(parts[3])$(result)" ;
-         } else {
-            result = "class $(parts[2])$(parts[3])$(result)" ;
-         }
-         str = $(parts[1]) ;
-      }
+rule export_class ( str : class : file ) {
+   local re = "^(.*)class[ \t]+"$(class)"([^a-zA-Z_;][^;]*[{].*)" ;
+   local parts = [ MATCH $(re) : $(str) ] ;
+   if $(parts) {
+      return $(parts[1])"class FACTPP_KERNEL_DECL "$(class)$(parts[2]) ;
+   } else {
+      exit "could not find " $(class) " in " $(file) ;
    }
-   str ?= "" ;
-   result = "$(str)$(result)" ;
-   return $(result) ;
 }
 
-## 
+##
 ################################################################################
-rule add_fun_export ( str : list * ) {
-   local re = "^(.*)extern[ \t\n]*([a-zA-Z_][ 0-9a-zA-Z_]+[ *&\t\n]+)([0-9a-zA-Z_]+)[ \t\n]*([(][^();]*[)];.*)" ;
-   local result = "" ;
-   local parts = 1 ;
-   while $(parts) {
-      parts = [ MATCH $(re) : $(str) ] ;
-      if $(parts) {
-         parts += "" ;
-         if $(parts[3]) in $(list) {
-            result = "extern FACTPP_KERNEL_DECL $(parts[2])$(parts[3])$(parts[4])$(result)" ;
-         } else {
-            result = "extern $(parts[2]) $(parts[3])$(parts[4])$(result)" ;
-         }
-         str = $(parts[1]) ;
-      }
+rule export_fun ( str : fun : file ) {
+   local re = "^(.*)extern[ \t\n]*([a-zA-Z_][ 0-9a-zA-Z_]+[ *&\t\n]+)"$(fun)"[ \t\n]*([(][^();]*[)];.*)" ;
+   local parts = [ MATCH $(re) : $(str) ] ;
+   if $(parts) {
+      return $(parts[1])"extern FACTPP_KERNEL_DECL "$(parts[2])$(fun)$(parts[3]) ;
+   } else {
+      exit "could not find " $(fun) " in " $(file) ;
    }
-   str ?= "" ;
-   result = "$(str)$(result)" ;
-   return $(result) ;
 }
 
-## 
+##
+################################################################################
+rule export_funs ( str : funs + : file ) {
+   for fun in $(funs) { str = [ export_fun $(str) : $(fun) : $(file) ] ; }
+   return $(str) ;
+}
+
+##
 ################################################################################
 rule transform_hpp_action ( targets * : sources * : properties * ) {
    local files = $(sources:G=) ;
+   local file_in = $(files[1]) ;
    local incl_dir = factpp ;
-   local src = 
+   local header =
       "/* Modified to control symbol export */"
       "#include \"$(incl_dir)/config.hpp\""
    ;
    import property ;
    local version = [ property.select <version> : $(properties) ] ;
    version = $(version:G=) ;
-   if "tSignature" = $(files[1]:B) && $(version) < "1.5.3" { 
-      src += "#include <iterator>" ;
+   if "tSignature" = $(file_in:B) && $(version) < "1.5.3" {
+      header += "#include <iterator>" ;
    }
-   src += "" ;
-   local orig = [ read_file $(files[1]) ] ;
-   orig = [ replace_include $(orig) : $(files[2-]:B) ] ;
-   local export_classes = 
-      ReasoningKernel TNamedEntry TRole TExpressionManager TBox 
-      DLConceptTaxonomy Taxonomy DlSatTester TRole TDLAxiom RoleMaster
-   ;
-   orig = [ add_class_export $(orig) : $(export_classes) ] ;
-   local export_funs = 
-      isSNF equalTrees isSubTree createInverse createSNFNot createSNFAnd
-      createSNFReducedAnd createSNFForall createSNFGE createSNFLE TokenName
-      createRole
-      #"operator <<"
-   ;
-   orig = [ add_fun_export $(orig) : $(export_funs) ] ;
-   
-   #move getVersion definition to Kernel.cpp
-   if Kernel = $(files[1]:B) {
-      local re = "const[ \t\n]+char[ \t\n]*[*][ \t\n]*getVersion[ \t\n]*[(][a-z \t\n]*[)][ \t\n]*[{][^}]*[}]" ;
-      local decl = "//definition moved to Kernel.cpp to fix MSVC linking
+   local str_in = [ read_file $(file_in) ] ;
+   str_in = [ replace_include $(str_in) : $(files[2-]:B) ] ;
+
+   switch $(file_in:B) {
+      case tSignature :
+         if $(version) < "1.5.3" {
+            header += "#include <iterator>" ;
+         }
+
+      case dltree :
+         local funs =
+            isSNF  isSubTree createInverse createSNFNot createSNFAnd
+            createSNFReducedAnd createSNFForall createSNFGE createSNFLE TokenName
+            createRole equalTrees
+            ;
+         str_in = [ export_funs $(str_in) : $(funs) : $(file_in) ] ;
+
+      case Kernel :
+         str_in = [ export_class $(str_in) : ReasoningKernel : $(file_in) ] ;
+         local re = "const[ \t\n]+char[ \t\n]*[*][ \t\n]*getVersion[ \t\n]*[(][a-z \t\n]*[)][ \t\n]*[{][^}]*[}]" ;
+         local decl = "//definition moved to Kernel.cpp to fix MSVC linking
 const char* getVersion();" ;
-      orig = [ regex.replace $(orig) $(re) $(decl) ] ;
+         str_in = [ regex.replace $(str_in) $(re) $(decl) ] ;
+
+      case Actor :
+         str_in = [ export_class $(str_in) : Actor : $(file_in) ] ;
+      case DLConceptTaxonomy :
+         str_in = [ export_class $(str_in) : DLConceptTaxonomy : $(file_in) ] ;
+      case dlTBox :
+         str_in = [ export_class $(str_in) : TBox : $(file_in) ] ;
+      case Reasoner :
+         str_in = [ export_class $(str_in) : DlSatTester : $(file_in) ] ;
+      case RoleMaster :
+         str_in = [ export_class $(str_in) : RoleMaster : $(file_in) ] ;
+      case Taxonomy :
+         str_in = [ export_class $(str_in) : Taxonomy : $(file_in) ] ;
+      case tDLAxiom :
+         str_in = [ export_class $(str_in) : TDLAxiom : $(file_in) ] ;
+      case tExpressionManager :
+         str_in = [ export_class $(str_in) : TExpressionManager : $(file_in) ] ;
+      case tNamedEntry :
+         str_in = [ export_class $(str_in) : TNamedEntry : $(file_in) ] ;
+      case tRole :
+         str_in = [ export_class $(str_in) : TRole : $(file_in) ] ;
    }
-   
-   STR on $(<) = $(src) $(orig) ;
+
+   STR on $(<) = $(header) "" $(str_in) ;
    NL on $(<) = "
 " ;
 }
 actions transform_hpp_action { @($(STDOUT):E=$(STR:J=$(NL))$(NL)) > "$(<)" }
 
-## 
+##
 ################################################################################
 rule transform_cpp ( src_dir : version : headers * ) {
    # parseTime.cpp does not compile under Windows
@@ -198,13 +206,13 @@ rule transform_cpp ( src_dir : version : headers * ) {
    return $(files:D=$(GENERATED_LIB)/$(out_dir)) ;
 }
 
-## 
+##
 ################################################################################
 rule transform_cpp_action ( targets * : sources * : properties * ) {
    local files = $(sources:G=) ;
    local src = [ read_file $(files[1]) ] ;
    src = [ replace_include $(src) : $(files[2-]:B) ] ;
-   
+
    #make getVersion definition in Kernel.cpp
    if Kernel = $(files[1]:B) {
       local re = "\"factpp/Kernel.hpp\"" ;
@@ -213,30 +221,30 @@ rule transform_cpp_action ( targets * : sources * : properties * ) {
 const char* ReasoningKernel::getVersion() { return ReasoningKernel::Version; }" ;
       src = [ regex.replace $(src) $(re) $(def) ] ;
    }
-   
+
    STR on $(<) = $(src) ;
 }
 actions transform_cpp_action { @($(STDOUT):E=$(STR)) > "$(<)" }
 
-## 
+##
 ################################################################################
 rule init ( version ? : location : options * )
 {
    version ?= default ;
-   
+
    local kernel_location = [ path.join $(location) src/Kernel ] ;
-   
-   make-singleton config.hpp 
-      : 
+
+   make-singleton config.hpp
+      :
       :  @config_hpp
       :  <factpp-version>$(version)
          <location>$(GENERATED_INCLUDE)/factpp
    ;
-   
+
    local headers = [ transform_hpp $(kernel_location) : $(version) ] ;
    local src = [ transform_cpp $(kernel_location) : $(version) : $(headers) ] ;
-   
-   local requirements = 
+
+   local requirements =
       [ extension.define factpp $(version) : $(kernel_location) : $(options) ]
       <include>$(GENERATED_INCLUDE)
       <implicit-dependency>config.hpp
@@ -245,7 +253,7 @@ rule init ( version ? : location : options * )
       <link>shared:<define>FACTPP_KERNEL_DYN_LINK
       <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
    ;
-   
+
    lib factpp_kernel
       :   $(src)
       :   $(requirements)
