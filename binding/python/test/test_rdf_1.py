@@ -86,7 +86,7 @@ class Test(unittest.TestCase):
 
     def test_standard_terms(self):
         self.assertEqual(terms.owl_Class.id(), 44)
-        self.assertEqual(terms.owl_Class.name, 'Class')
+        self.assertEqual(terms.owl_Class.fragment, 'Class')
         self.assertEqual(terms.owl_Class.ns_type.iri, 'http://www.w3.org/2002/07/owl')
 
 if __name__ == '__main__': unittest.main()

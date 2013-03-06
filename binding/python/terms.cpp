@@ -50,7 +50,7 @@ template<class T> struct Term_tag_name {
       return
                Ns_tag_name<typename T::ns_type>::get() +
                "_" +
-               T::name()
+               T::fragment()
       ;
    }
 };
@@ -58,11 +58,11 @@ template<class T> struct Term_tag_name {
 class Term_tag_inserter {
 public:
    Term_tag_inserter(map_t const& map) : map_(map) {}
-   template<class T> static char const* name() {return T::name().c_str();}
+   template<class T> static char const* fragment() {return T::fragment().c_str();}
    template<class T> void operator()(T const& t) const {
       bp::class_<T>(Term_tag_name<T>::get().c_str())
          .add_static_property("id", &T::id)
-         .add_static_property("name", &name<T>)
+         .add_static_property("fragment", &fragment<T>)
          .add_static_property("ns_type", map_.find(T::ns_type::id())->second)
          ;
    }
