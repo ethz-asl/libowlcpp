@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+<!ENTITY base "http://owl-cpp.sf.net/test/owl/err_spell_owl.owl">
+<!ENTITY w3 "http://www.w3.org">
+<!ENTITY owl "&w3;/2002/07/owl#">
+<!ENTITY rdf "&w3;/1999/02/22-rdf-syntax-ns#">
+<!ENTITY rdfs "&w3;/2000/01/rdf-schema#">
+<!ENTITY xsd "&w3;/2001/XMLSchema#">
+]>
+<rdf:RDF 
+   xmlns="&base;" 
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+   xmlns:owl="http://www.w3.org/2002/07/owl#"
+   xmlns:xsd="&xsd;" 
+   xml:base="&base;"
+>
+   <owl:Class rdf:about="&base;class_A" />
+   <owl:Class rdf:about="&base;class_B" />
+   <owl:Class rdf:about="&base;class_C" />
+   <owl:Class rdf:about="&base;class_D" />
+   <owl:Ontology rdf:about="">
+   </owl:Ontology>
+   <owl:Unknown_keyword rdf:about="&base;hasAlternativeId" />
+   <owl:ObjectProperty rdf:about="prop_a">
+      <rdfs:label xml:lang="en">property a</rdfs:label>
+   </owl:ObjectProperty>
+   <owl:TransitiveProperty rdf:about="prop_b">
+      <rdfs:label xml:lang="en">property b</rdfs:label>
+      <owl:inverseOf rdf:resource="&base;prop_a" />
+   </owl:TransitiveProperty>
+</rdf:RDF>

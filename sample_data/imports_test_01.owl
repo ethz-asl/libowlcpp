@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE rdf:RDF [
-<!ENTITY base "http://purl.obolibrary.org/obo/ido/dev/imports_test_01.owl">
+<!ENTITY base "http://owl-cpp.sf.net/test/owl/imports_test_01.owl">
 <!ENTITY test "&base;#">
 <!ENTITY w3 "http://www.w3.org">
 <!ENTITY owl "&w3;/2002/07/owl#">
@@ -17,13 +17,13 @@
 >
 
 <!-- 
-Test that ontology ID is "http://purl.obolibrary.org/obo/ido/dev/imports_test_01.owl"
-and that "http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl" is imported.
+Test that ontology ID is "http://owl-cpp.sf.net/test/owl/imports_test_01.owl"
+and that "http://owl-cpp.sf.net/test/owl/version_test_b.owl" is imported.
  -->
 
 <owl:Ontology rdf:about="">
    <owl:imports>
-      <owl:Ontology rdf:about="http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl"/>
+      <owl:Ontology rdf:about="http://owl-cpp.sf.net/test/owl/version_test_b.owl"/>
    </owl:imports>
 </owl:Ontology>
 

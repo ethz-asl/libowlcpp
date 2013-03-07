@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE rdf:RDF [
+  <!ENTITY base "http://owl-cpp.sf.net/test/owl/og_01.owl" >
   <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
   <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
   <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
@@ -8,7 +9,7 @@
   <!ENTITY OG "http://www.sample.com/owl/sample.owl#" >
 ]>
 <rdf:RDF xmlns="http://www.sample.com/owl/sample.owl#"
-  xml:base="og_01.owl#"
+  xml:base="&base;"
   xmlns:xsd="&xsd;"
   xmlns:dc="&dc;"
   xmlns:rdfs="&rdfs;"
@@ -17,7 +18,7 @@
   >
 
 <owl:Ontology rdf:about="">
-	<owl:imports><owl:Ontology rdf:about="og_02.owl"/></owl:imports>
+	<owl:imports><owl:Ontology rdf:about="http://owl-cpp.sf.net/test/owl/og_02.owl"/></owl:imports>
 	<dc:date>October 10, 2000</dc:date>
 	<dc:title>title</dc:title>
 </owl:Ontology>
