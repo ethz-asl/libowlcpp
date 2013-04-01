@@ -7,7 +7,6 @@ part of owlcpp project.
 #include <string>
 #include "boost/filesystem.hpp"
 #include "boost/exception/diagnostic_information.hpp"
-#include "boost/filesystem.hpp"
 #include "boost/chrono/chrono.hpp"
 #include "boost/chrono/chrono_io.hpp"
 #include "factpp/Kernel.hpp"
@@ -40,7 +39,7 @@ int main(int argc, char* argv[]) {
       typedef boost::chrono::duration<double, boost::ratio<1,1> > dur_t;
 
       const time_t t0 = clock_t::now();
-      add(cat, in.parent_path(), false);
+      add(cat, in.parent_path(), false, 100);
       const dur_t d0 = clock_t::now() - t0;
       std::cout
       << "cataloging:\n"

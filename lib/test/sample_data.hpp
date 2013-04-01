@@ -58,6 +58,7 @@ inline std::vector<Sample_info> const& sample_files() {
    /* 13 */("version_test_b.owl", "http://owl-cpp.sf.net/test/owl/version_test.owl", "http://owl-cpp.sf.net/test/owl/version_test_b.owl")
    /* 14 */("data_value_clash.owl", "http://owl.semanticweb.org/page/Functionality-clash", "")
    /* 15 */("data_property_assertion_01.owl", "http://owl-cpp.sf.net/test/owl/data_property_assertion_01.owl", "")
+   /* 16 */("err_missing_def01.owl", "http://owl-cpp.sf.net/test/owl/err_missing_def01.owl", "")
    ;
    return v;
 }

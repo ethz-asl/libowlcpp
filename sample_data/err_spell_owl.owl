@@ -9,24 +9,25 @@
 ]>
 <rdf:RDF 
    xmlns="&base;" 
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
-   xmlns:owl="http://www.w3.org/2002/07/owl#"
+   xmlns:rdf="&rdf;"
+   xmlns:rdfs="&rdfs;" 
+   xmlns:owl="&owl;"
    xmlns:xsd="&xsd;" 
    xml:base="&base;"
 >
-   <owl:Class rdf:about="&base;class_A" />
-   <owl:Class rdf:about="&base;class_B" />
-   <owl:Class rdf:about="&base;class_C" />
-   <owl:Class rdf:about="&base;class_D" />
+   <owl:Class rdf:about="#class_A" />
+   <owl:Class rdf:about="#class_B" />
+   <owl:Class rdf:about="#class_C" />
+   <owl:Class rdf:about="#class_D" />
    <owl:Ontology rdf:about="">
    </owl:Ontology>
-   <owl:Unknown_keyword rdf:about="&base;hasAlternativeId" />
+   <!-- non-standard keyword in owl namespace -->
+   <owl:Unknown_keyword rdf:about="#hasAlternativeId" />
    <owl:ObjectProperty rdf:about="prop_a">
       <rdfs:label xml:lang="en">property a</rdfs:label>
    </owl:ObjectProperty>
    <owl:TransitiveProperty rdf:about="prop_b">
       <rdfs:label xml:lang="en">property b</rdfs:label>
-      <owl:inverseOf rdf:resource="&base;prop_a" />
+      <owl:inverseOf rdf:resource="#prop_a" />
    </owl:TransitiveProperty>
 </rdf:RDF>

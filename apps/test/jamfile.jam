@@ -32,7 +32,7 @@ run
       find_owl_2
 ;
 
-alias test_01 : $(SMPL_DATA)/test_01.owl ;
+alias test_01 : $(SMPL_DATA)/test_01a.owl ;
 run
       ../print_triples.cpp
    : #args

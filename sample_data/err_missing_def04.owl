@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+<!ENTITY base "http://owl-cpp.sf.net/test/owl/err_missing_def04.owl">
+<!ENTITY w3 "http://www.w3.org">
+<!ENTITY owl "&w3;/2002/07/owl#">
+<!ENTITY rdf "&w3;/1999/02/22-rdf-syntax-ns#">
+<!ENTITY rdfs "&w3;/2000/01/rdf-schema#">
+<!ENTITY xsd "&w3;/2001/XMLSchema#">
+]>
+<rdf:RDF 
+   xmlns="&base;" 
+   xmlns:rdf="&rdf;"
+   xmlns:rdfs="&rdfs;" 
+   xmlns:owl="&owl;"
+   xmlns:xsd="&xsd;" 
+   xml:base="&base;"
+>
+   <!-- distinct members collection with only one member -->
+   <owl:Ontology rdf:about="" />
+   <owl:AllDifferent>
+      <owl:distinctMembers rdf:parseType="Collection">
+         <rdf:Description rdf:about="#individual_i"/>
+      </owl:distinctMembers>
+   </owl:AllDifferent>
+</rdf:RDF>
