@@ -171,6 +171,38 @@ private:
    e_index stor_;
 };
 
+namespace mpl = boost::mpl;
+
+/**
+Store triples that have same one of the nodes
+@tparam T1 numeric tag indicating triple element by which to order first
+*******************************************************************************/
+template<class T1, class T2, class T3> class Ordered_vector{
+   typedef typename mpl::at<Triple, T1>::type n1_t;
+   typedef typename mpl::at<Triple, T2>::type n2_t;
+   typedef typename mpl::at<Triple, T3>::type n3_t;
+   typedef fusion::vector<n1_t,n2_t,n3_t>::type element_t;
+   typedef std::vector<element_t> stor_t;
+public:
+
+   void insert(const n1_t n1, const n2_t n2, const n3_t n3) {
+      //TODO: maintain the order
+   }
+
+   template<class P1, class P2, class P3> range_t find(
+            const P1 p1, const P2 p2, const P3 p3
+            ) const {
+      //todo:
+   }
+
+   void erase(iterator i) {
+
+   }
+
+private:
+   stor_t v_;
+};
+
 
 }//namespace map_triple_detail
 }//namespace owlcpp
