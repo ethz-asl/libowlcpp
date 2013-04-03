@@ -115,7 +115,8 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
       return axiom_from_seq(pred, obj, 2, subj);
 
    case owl_equivalentProperty::index: {
-      const Node_property np = check_same_declaration<Node_property>(subj, obj, ts_);
+      const Node_property np =
+               check_same_declaration<Node_property>(subj, obj, ts_);
       if( np.is_object() ) {
          e_m().newArgList();
          e_m().addArg(obj_property(subj));
@@ -131,7 +132,8 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    }
 
    case owl_propertyDisjointWith::index:{
-      const Node_property np = check_same_declaration<Node_property>(subj, obj, ts_);
+      const Node_property np =
+               check_same_declaration<Node_property>(subj, obj, ts_);
       if( np.is_object() ) {
          e_m().newArgList();
          e_m().addArg(obj_property(subj));
@@ -223,6 +225,10 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    case owl_onProperties::index: //TODO
    case owl_onDataRange::index: //TODO
    case owl_someValuesFrom::index: //class expression, not axiom
+   case xsd_maxExclusive::index:
+   case xsd_maxInclusive::index:
+   case xsd_minExclusive::index:
+   case xsd_minInclusive::index:
       if( ! is_blank(ts_[subj].ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("blank node subject is expected")
@@ -663,9 +669,19 @@ TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
    const Node_id target = r3.front().obj_;
 
    if( nt.is_object() ) {
-      return k_.relatedToNot(obj_value(src_ind), obj_property(prop), obj_value(target));
+      return
+               k_.relatedToNot(
+                        obj_value(src_ind),
+                        obj_property(prop),
+                        obj_value(target)
+               );
    } else {
-      return k_.valueOfNot(obj_value(src_ind), data_property(prop), data_value(target));
+      return
+               k_.valueOfNot(
+                        obj_value(src_ind),
+                        data_property(prop),
+                        data_value(target)
+               );
    }
 }
 

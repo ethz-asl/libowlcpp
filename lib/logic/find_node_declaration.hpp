@@ -16,7 +16,8 @@ namespace owlcpp{ namespace logic{
 
 /**@brief 
 *******************************************************************************/
-template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts) {
+template<class Decl>
+inline Decl declaration(const Node_id nid, Triple_store const& ts) {
    using namespace owlcpp::terms;
    Decl d;
    try {
@@ -67,8 +68,8 @@ template<class Decl> Decl declaration(const Node_id nid, Triple_store const& ts)
 
 /**@brief
 *******************************************************************************/
-template<class Decl>
-void check_declaration(const Node_id nid, const Decl d, Triple_store const& ts) {
+template<class Decl> inline void
+check_declaration(const Node_id nid, const Decl d, Triple_store const& ts) {
    const Decl nt = declaration<Decl>(nid, ts);
    if( nt != d ) BOOST_THROW_EXCEPTION(
                Logic_err()
@@ -82,8 +83,8 @@ void check_declaration(const Node_id nid, const Decl d, Triple_store const& ts) 
 
 /**@brief
 *******************************************************************************/
-template<class Decl, class Range>
-void check_seq_declaration(Range& r, const Decl d, Triple_store const& ts) {
+template<class Decl, class Range> inline void
+check_seq_declaration(Range& r, const Decl d, Triple_store const& ts) {
    BOOST_FOREACH(const Node_id nid, r) {
       const Decl nt = declaration<Decl>(nid, ts);
       if( nt != d ) BOOST_THROW_EXCEPTION(
@@ -100,7 +101,7 @@ void check_seq_declaration(Range& r, const Decl d, Triple_store const& ts) {
 /**@brief
 *******************************************************************************/
 template<class Decl, class Range>
-Decl check_seq_declaration(Range& r, Triple_store const& ts) {
+inline Decl check_seq_declaration(Range& r, Triple_store const& ts) {
    boost::sub_range<Range> bsr(r);
    if( ! bsr ) BOOST_THROW_EXCEPTION(
             Logic_err()
@@ -119,7 +120,7 @@ Decl check_seq_declaration(Range& r, Triple_store const& ts) {
 
 /**@brief
 *******************************************************************************/
-template<class Decl> Decl
+template<class Decl> inline Decl
 check_same_declaration(const Node_id n1, const Node_id n2, Triple_store const& ts) {
    const Decl d1 = declaration<Decl>(n1, ts);
    if( d1.is_none() ) BOOST_THROW_EXCEPTION(

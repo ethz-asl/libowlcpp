@@ -58,6 +58,7 @@ inline std::vector<Sample_info> const& sample_files() {
    /* 13 */("version_test_b.owl", "http://purl.obolibrary.org/obo/ido/dev/version_test.owl", "http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl")
    /* 14 */("data_value_clash.owl", "http://owl.semanticweb.org/page/Functionality-clash", "")
    /* 15 */("data_property_assertion_01.owl", "http://owl-cpp.sourceforge.net/owl/data_property_assertion_01.owl", "")
+   /* 16 */("datatype-min-max.owl", "http://owl-cpp.sf.net/test/owl/datatype-min-max.owl", "")
    ;
    return v;
 }

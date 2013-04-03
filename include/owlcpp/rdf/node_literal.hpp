@@ -48,10 +48,8 @@ public:
       } catch(std::bad_cast const&) {
          BOOST_THROW_EXCEPTION(
                   Rdf_err()
-                  << Rdf_err::msg_t(
-                           std::string("error converting to ") + Dt::name_str(dt)
-                  )
-                  << Rdf_err::str1_t(boost::lexical_cast<std::string>(in))
+                  << Rdf_err::msg_t("error converting to " + Dt::name_str(dt))
+                  << Rdf_err::str1_t("\"" + boost::lexical_cast<std::string>(in) + "\"")
          );
       }
    }

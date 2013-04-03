@@ -5,12 +5,10 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef EXPRESSION_HPP_
 #define EXPRESSION_HPP_
-#include <vector>
+#include <string>
 #include <memory>
 
-#include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/terms/node_tags_owl.hpp"
-#include "owlcpp/terms/node_tags_system.hpp"
+#include "owlcpp/node_id.hpp"
 #include "owlcpp/logic/exception.hpp"
 #include "logic/expression_args.hpp"
 
@@ -18,10 +16,15 @@ class ReasoningKernel;
 class TDLConceptExpression;
 class TDLIndividualExpression;
 class TDLObjectRoleExpression;
+class TDLDataExpression;
 class TDLDataTypeExpression;
 class TDLDataRoleExpression;
+class TDLFacetExpression;
+class TDLDataValue;
 
-namespace owlcpp{ namespace logic{ namespace factpp{
+namespace owlcpp{
+class Triple_store;
+namespace logic{ namespace factpp{
 
 struct Obj_type {
    typedef TDLConceptExpression* fact_type;
@@ -35,12 +38,24 @@ struct Obj_inst {
    typedef TDLIndividualExpression* fact_type;
 };
 
+struct Data_range {
+   typedef TDLDataExpression* fact_type;
+};
+
 struct Data_type {
    typedef TDLDataTypeExpression* fact_type;
 };
 
 struct Data_prop {
    typedef TDLDataRoleExpression* fact_type;
+};
+
+struct Data_facet {
+   typedef TDLFacetExpression const* fact_type;
+};
+
+struct Data_inst {
+   typedef TDLDataValue const* fact_type;
 };
 
 /**@brief 
@@ -58,18 +73,6 @@ template<class T> struct Expression {
 
 template<class T> typename Expression<T>::ptr_t
 make_expression(Expression_args const& ea, Triple_store const& ts);
-
-template<> Expression<Obj_type>::ptr_t
-make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts);
-
-template<> Expression<Obj_prop>::ptr_t
-make_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts);
-
-template<> Expression<Data_type>::ptr_t
-make_expression<Data_type>(Expression_args const& ea, Triple_store const& ts);
-
-template<> Expression<Data_prop>::ptr_t
-make_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts);
 
 template<class T> inline typename Expression<T>::ptr_t
 make_expression(const Node_id h, Triple_store const& ts) {
