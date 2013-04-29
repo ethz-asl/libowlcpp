@@ -6,3 +6,6 @@ TODO
 - lax (non-strict) axiom generation
 
 - in Raptor wrapper, allocate fixed-length buffer
+
+- make Boost.Build feature to control triple indexing,
+   e.g., <t-index>SP or <t-index>SpodOspd
