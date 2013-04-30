@@ -11,7 +11,7 @@ part of owlcpp project.
 #include "owlcpp/logic/detail/triple_to_fact_adaptor.hpp"
 #include "test/sample_data.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/print_node.hpp"
+#include "owlcpp/rdf/print_triple.hpp"
 #include "owlcpp/io/input.hpp"
 #include "factpp/Kernel.hpp"
 
@@ -27,11 +27,7 @@ BOOST_AUTO_TEST_CASE( test_triple_adaptor ) {
    ReasoningKernel k;
    owlcpp::logic::factpp::Adaptor_triple at(ts, k, false);
    BOOST_FOREACH(Triple const& t, ts.map_triple()) {
-      std::cout
-      << to_string(t.subj_, ts) << ' '
-      << to_string(t.pred_, ts) << ' '
-      << to_string(t.obj_, ts)
-      << std::endl;
+      std::cout << to_string(t.subj_, ts) << std::endl;
       at.submit(t);
    }
 }

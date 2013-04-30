@@ -41,6 +41,11 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
          case owl_complementOf::index:
          case owl_oneOf::index:
          case owl_onProperty::index:
+         case owl_onDatatype::index:
+         case xsd_maxExclusive::index:
+         case xsd_maxInclusive::index:
+         case xsd_minExclusive::index:
+         case xsd_minInclusive::index:
             pred1 = pred;
             obj1 = obj;
             break;
@@ -49,6 +54,7 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
          case owl_hasSelf::index:
          case owl_someValuesFrom::index:
          case owl_onClass::index:
+         case owl_withRestrictions::index:
             pred2 = pred;
             obj2 = obj;
             break;
@@ -63,24 +69,14 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
             break;
          default:
             BOOST_THROW_EXCEPTION(
-                        Err()
-                        << Err::msg_t("unsupported class declaration")
-                        << Err::str1_t(to_string(h, ts))
-                        << Err::str2_t(to_string(pred, ts))
-               );
+                     Err()
+                     << Err::msg_t("unsupported class declaration")
+                     << Err::str1_t(to_string(h, ts))
+                     << Err::str2_t(to_string(pred, ts))
+            );
+            /* no break */
       }
    }
-   if( is_empty(e_type) ) BOOST_THROW_EXCEPTION(
-            Err()
-            << Err::msg_t("class expression rdf:type not found")
-            << Err::str1_t(to_string(h, ts))
-   );
-   if( e_type != owl_Class::id() && e_type != owl_Restriction::id() )
-      BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("unsupported rdf:type")
-               << Err::str1_t(to_string(e_type, ts))
-   );
 }
 
 }//namespace logic

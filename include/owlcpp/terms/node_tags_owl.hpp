@@ -213,6 +213,10 @@ OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_OWL2, OWLCPP_TERMS_OWL2_N0_)
          ((xsd)(integer)) \
          ((xsd)(language)) \
          ((xsd)(long)) \
+         ((xsd)(maxExclusive)) \
+         ((xsd)(maxInclusive)) \
+         ((xsd)(minExclusive)) \
+         ((xsd)(minInclusive)) \
          ((xsd)(Name)) \
          ((xsd)(NCName)) \
          ((xsd)(negativeInteger)) \

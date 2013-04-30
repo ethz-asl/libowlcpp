@@ -1,17 +1,17 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE rdf:RDF [
-<!ENTITY base "http://owl.semanticweb.org/page/New-Feature-ObjectPropertyChain-001">
-<!ENTITY test "&base;#">
-<!ENTITY w3 "http://www.w3.org">
-<!ENTITY owl "&w3;/2002/07/owl#">
-<!ENTITY rdf "&w3;/1999/02/22-rdf-syntax-ns#">
-<!ENTITY rdfs "&w3;/2000/01/rdf-schema#">
-<!ENTITY xsd "&w3;/2001/XMLSchema#">
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;propertyChain_01.owl" >
 ]>
 <rdf:RDF 
+   xmlns="&base;#"
    xml:base="&base;"
-   xmlns="&test;"
-   xmlns:test="&test;"
+   xmlns:xsd="&xsd;"
    xmlns:rdfs="&rdfs;"
    xmlns:rdf="&rdf;"
    xmlns:owl="&owl;"
@@ -32,11 +32,11 @@
     <owl:NamedIndividual rdf:about="#Carol"/>
     
     <owl:NamedIndividual rdf:about="#Lois">
-        <test:hasSister rdf:resource="#Carol"/>
+        <hasSister rdf:resource="#Carol"/>
     </owl:NamedIndividual>
 
     <owl:NamedIndividual rdf:about="#Stewie">
-        <test:hasMother rdf:resource="#Lois"/>
+        <hasMother rdf:resource="#Lois"/>
     </owl:NamedIndividual>
     
 </rdf:RDF>

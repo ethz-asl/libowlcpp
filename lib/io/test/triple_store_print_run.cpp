@@ -11,7 +11,7 @@ part of owlcpp project.
 #include "boost/lexical_cast.hpp"
 #include "test/sample_data.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/print_node.hpp"
+#include "owlcpp/rdf/print_triple.hpp"
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
 
@@ -27,11 +27,7 @@ BOOST_AUTO_TEST_CASE( test_triple_store_print ) {
       Triple_store ts;
       load_file(si.path, ts);
       BOOST_FOREACH(Triple const& t, ts.map_triple()) {
-         std::cout
-         << to_string_pref(t.subj_, ts) << ' '
-         << to_string_pref(t.pred_, ts) << ' '
-         << to_string_pref(t.obj_, ts) << '\n'
-         ;
+         std::cout << to_string(t, ts) << '\n';
       }
       std::cout << '\n';
    }

@@ -56,7 +56,6 @@ class Map_triple {
    };
 
 public:
-//   typedef typename main_store::iterator iterator;
    typedef typename main_store::const_iterator const_iterator;
    typedef typename main_store::const_iterator iterator;
 

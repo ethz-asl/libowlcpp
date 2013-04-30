@@ -74,7 +74,7 @@ run-fail
       print_triples_invalid_02
 ;
 
-alias invalid_03 : $(SMPL_DATA)/invalid_03.owl ;
+alias invalid_03 : $(SMPL_DATA)/err_spell_owl.owl ;
 run-fail
       ../print_triples.cpp
    : #args

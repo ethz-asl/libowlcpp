@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE( parse_invalid_docs ) {
    );
 
    BOOST_CHECK_THROW(
-            load_file(sample_file_path("invalid_03.owl"), ts, cat),
+            load_file(sample_file_path("err_spell_owl.owl"), ts, cat),
             Input_err
    );
 }

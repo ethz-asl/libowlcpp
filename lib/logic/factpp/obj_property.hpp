@@ -6,41 +6,28 @@ part of owlcpp project.
 #ifndef OBJ_PROPERTY_HPP_
 #define OBJ_PROPERTY_HPP_
 #include "expression.hpp"
-#include "factpp/Kernel.hpp"
-#include "boost/assert.hpp"
-#include "owlcpp/rdf/print_node.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
-using namespace owlcpp::terms;
 
 /**@brief
 *******************************************************************************/
 struct Op_top : public Expression<Obj_prop> {
-   generated_t get(ReasoningKernel& k ) const {
-      return k.getExpressionManager()->ObjectRoleTop();
-   }
+   generated_t get(ReasoningKernel& k ) const;
 };
 
 /**@brief
 *******************************************************************************/
 struct Op_bottom : public Expression<Obj_prop> {
-   generated_t get(ReasoningKernel& k ) const {
-      return k.getExpressionManager()->ObjectRoleBottom();
-   }
+   generated_t get(ReasoningKernel& k ) const;
 };
 
 /**@brief
 *******************************************************************************/
 class Op_declared : public Expression<Obj_prop> {
 public:
-   Op_declared(Expression_args const& ea, Triple_store const& ts)
-   : iri_(to_string(ea.handle, ts)) {
-      BOOST_ASSERT(is_iri(ts[ea.handle].ns_id()));
-   }
+   Op_declared(Expression_args const& ea, Triple_store const& ts);
 
-   generated_t get(ReasoningKernel& k ) const {
-      return k.getExpressionManager()->ObjectRole(iri_);
-   }
+   generated_t get(ReasoningKernel& k ) const;
 
 private:
    std::string iri_;
@@ -50,18 +37,9 @@ private:
 *******************************************************************************/
 class Op_inverse : public Expression<Obj_prop> {
 public:
-   Op_inverse(Expression_args const& ea, Triple_store const& ts)
-   : op_(make_expression<Obj_prop>(ea.obj1, ts)) {
-      if( ! is_iri(ts[ea.handle].ns_id()) ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("non-IRI object in _:x owl:inverseOf *:y")
-               << Err::str1_t(to_string(ea.obj1, ts))
-      );
-   }
+   Op_inverse(Expression_args const& ea, Triple_store const& ts);
 
-   generated_t get(ReasoningKernel& k ) const {
-      return k.getExpressionManager()->Inverse(op_->get(k));
-   }
+   generated_t get(ReasoningKernel& k ) const;
 
 private:
    ptr_t op_;

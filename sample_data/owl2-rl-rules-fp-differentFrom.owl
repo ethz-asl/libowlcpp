@@ -1,22 +1,35 @@
-<rdf:RDF
-   xml:base="http://owl.semanticweb.org/page/Owl2-rl-rules-fp-differentFrom"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:owl="http://www.w3.org/2002/07/owl#"
-    xmlns:j.0="http://owl2.test/rules/">
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE rdf:RDF [
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;owl2-rl-rules-fp-differentFrom.owl" >
+]>
+<rdf:RDF 
+   xmlns="&base;#"
+   xml:base="&base;"
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
+>
 
   <owl:Ontology rdf:about=""/>
-  <owl:FunctionalProperty rdf:about="http://owl2.test/rules/fp">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  <owl:FunctionalProperty rdf:about="#fp">
+    <rdf:type rdf:resource="&owl;ObjectProperty"/>
   </owl:FunctionalProperty>
-  <owl:NamedIndividual rdf:about="http://owl2.test/rules/Y2">
-    <j.0:fp>
-      <owl:NamedIndividual rdf:about="http://owl2.test/rules/X2"/>
-    </j.0:fp>
+  <owl:NamedIndividual rdf:about="#Y2">
+    <fp>
+      <owl:NamedIndividual rdf:about="#X2"/>
+    </fp>
   </owl:NamedIndividual>
-  <owl:NamedIndividual rdf:about="http://owl2.test/rules/X1">
-    <owl:differentFrom rdf:resource="http://owl2.test/rules/X2"/>
+  <owl:NamedIndividual rdf:about="#X1">
+    <owl:differentFrom rdf:resource="#X2"/>
   </owl:NamedIndividual>
-  <owl:NamedIndividual rdf:about="http://owl2.test/rules/Y1">
-    <j.0:fp rdf:resource="http://owl2.test/rules/X1"/>
+  <owl:NamedIndividual rdf:about="#Y1">
+    <fp rdf:resource="#X1"/>
   </owl:NamedIndividual>
 </rdf:RDF>
