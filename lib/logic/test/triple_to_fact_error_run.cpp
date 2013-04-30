@@ -25,7 +25,7 @@ const std::vector<std::string> logic_error_files =
 ("err_missing_def01.owl")
 ("err_missing_def02.owl")
 ("err_missing_def03.owl")
-("err_missing_def04.owl")
+("err_distinctMembers.owl")
 ;
 
 /**

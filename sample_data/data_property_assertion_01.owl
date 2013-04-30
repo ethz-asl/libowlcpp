@@ -1,24 +1,29 @@
 <?xml version="1.0"?>
 <!DOCTYPE rdf:RDF [
-<!ENTITY base "http://owl-cpp.sourceforge.net/owl/data_property_assertion_01.owl">
-<!ENTITY test "&base;#">
-<!ENTITY w3 "http://www.w3.org">
-<!ENTITY owl "&w3;/2002/07/owl#">
-<!ENTITY rdf "&w3;/1999/02/22-rdf-syntax-ns#">
-<!ENTITY rdfs "&w3;/2000/01/rdf-schema#">
-<!ENTITY xsd "&w3;/2001/XMLSchema#">
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;data_property_assertion_01.owl">
 ]>
-<rdf:RDF xmlns="&test;" xmlns:test="&test;" xml:base="&base;"
-   xmlns:rdfs="&rdfs;" xmlns:rdf="&rdf;" xmlns:owl="&owl;"
+<rdf:RDF 
+   xmlns="&base;#"
+   xml:base="&base;"
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
 >
    <owl:Ontology rdf:about="" />
    
-   <test:class1 rdf:about="&test;individual1">
-      <test:property1>some value</test:property1>
-   </test:class1>
+   <class1 rdf:about="#individual1">
+      <property1>some value</property1>
+   </class1>
    
-   <owl:DatatypeProperty rdf:about="&test;property1" />
+   <owl:DatatypeProperty rdf:about="#property1" />
    
-   <owl:Class rdf:about="&test;class1" />
+   <owl:Class rdf:about="#class1" />
 
 </rdf:RDF>

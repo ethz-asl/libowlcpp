@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE rdf:RDF [
    <!ENTITY w3 "http://www.w3.org/" >
    <!ENTITY owl "&w3;2002/07/owl#" >
@@ -7,7 +6,7 @@
    <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
    <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
    <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
-   <!ENTITY base "&owlcpp;invalid_01.xml" >
+   <!ENTITY base "&owlcpp;test_01.owl" >
 ]>
 <rdf:RDF 
    xmlns="&base;#"
@@ -17,16 +16,17 @@
    xmlns:rdf="&rdf;"
    xmlns:owl="&owl;"
 >
+      
    <owl:Ontology rdf:about="">
-      <owl:versionIRI rdf:resource="invalid_01a.xml"/>
+      <owl:versionIRI rdf:resource="test_01a.owl" />
    </owl:Ontology>
 
    <owl:Class rdf:about="#C1" />
-   <owl:Class rdf:about="#C2" >
-     <rdfs:subClassOf rdf:resource="#C1" />
+   <owl:Class rdf:about="#C2">
+      <rdfs:subClassOf rdf:resource="#C1" />
    </owl:Class>
-   <owl:Class rdf:about="#C3" >
-     <rdfs:subClassOf rdf:resource="#C1" />
+   <owl:Class rdf:about="#C3">
+      <rdfs:subClassOf rdf:resource="#C1" />
    </owl:Class>
    <owl:AllDisjointClasses>
       <owl:members rdf:parseType="Collection">
@@ -35,4 +35,4 @@
       </owl:members>
    </owl:AllDisjointClasses>
 
-<!-- </rdf:RDF> -->
+</rdf:RDF>

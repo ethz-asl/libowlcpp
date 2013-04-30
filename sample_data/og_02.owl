@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE rdf:RDF [
-  <!ENTITY base "http://owl-cpp.sf.net/test/owl/og_02.owl" >
-  <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
-  <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
-  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
-  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
-  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
-  <!ENTITY OG "http://www.sample.com/owl/sample.owl#" >
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+   <!ENTITY OG "http://www.sample.com/owl/sample.owl#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;og_02.owl" >
 ]>
-<rdf:RDF xmlns="http://www.sample.com/owl/sample.owl#"
-  xml:base="&base;"
-  xmlns:xsd="&xsd;"
-  xmlns:dc="&dc;"
-  xmlns:rdfs="&rdfs;"
-  xmlns:rdf="&rdf;"
-  xmlns:owl="&owl;"
-  >
+<rdf:RDF 
+   xmlns="&base;#"
+   xml:base="&base;"
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
+   xmlns:dc="&dc;"
+>
 
 <owl:Ontology rdf:about="" />
 

@@ -6,7 +6,7 @@
    <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
    <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
    <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
-   <!ENTITY base "&owlcpp;err_missing_def02.owl" >
+   <!ENTITY base "&owlcpp;err_distinctMembers.owl" >
 ]>
 <rdf:RDF 
    xmlns="&base;#"
@@ -16,12 +16,11 @@
    xmlns:rdf="&rdf;"
    xmlns:owl="&owl;"
 >
+   <!-- distinct members collection with only one member -->
    <owl:Ontology rdf:about="" />
-   <owl:ObjectProperty rdf:about="#prop_a" />
-   <!-- missing object property declaration; 
-   should be: owl:ObjectProperty df:about="#prop_b" -->
-   <rdf:Description rdf:about="#prop_b">
-      <rdfs:label xml:lang="en">property b</rdfs:label>
-      <rdfs:subPropertyOf rdf:resource="#prop_a" />
-   </rdf:Description>
+   <owl:AllDifferent>
+      <owl:distinctMembers rdf:parseType="Collection">
+         <rdf:Description rdf:about="#individual_i"/>
+      </owl:distinctMembers>
+   </owl:AllDifferent>
 </rdf:RDF>

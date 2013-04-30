@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE rdf:RDF [
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;datatype-min-max.owl" >
+]>
+<rdf:RDF 
+   xmlns="&base;#"
+   xml:base="&base;"
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
+>
+
+   <owl:Ontology rdf:about="" />
+
+   <!-- adapted from http://ontogenesis.knowledgeblog.org/88 -->
+   <owl:Class rdf:about="#Person" />
+   
+   <owl:DatatypeProperty rdf:about="#hasAge" />
+   <owl:FunctionalProperty rdf:about="#hasAge" />
+   
+   <owl:Class rdf:about="#Teenager">
+      <owl:equivalentClass>
+         <owl:Class>
+            <owl:intersectionOf rdf:parseType="Collection">
+               <rdf:Description rdf:about="#Person" />
+               <owl:Restriction>
+                  <owl:onProperty rdf:resource="#hasAge" />
+                  <owl:someValuesFrom>
+                     <rdfs:Datatype>
+                        <owl:onDatatype rdf:resource="&xsd;integer" />
+                        <owl:withRestrictions rdf:parseType="Collection">
+                           <rdf:Description>
+                              <xsd:maxExclusive rdf:datatype="&xsd;integer">20</xsd:maxExclusive>
+                           </rdf:Description>
+                           <rdf:Description>
+                              <xsd:minExclusive rdf:datatype="&xsd;integer">12</xsd:minExclusive>
+                           </rdf:Description>
+                        </owl:withRestrictions>
+                     </rdfs:Datatype>
+                  </owl:someValuesFrom>
+               </owl:Restriction>
+            </owl:intersectionOf>
+         </owl:Class>
+      </owl:equivalentClass>
+   </owl:Class>
+   
+   <Teenager rdf:about="#A" >
+      <hasAge rdf:datatype="&xsd;integer">20</hasAge>
+   </Teenager>
+</rdf:RDF>

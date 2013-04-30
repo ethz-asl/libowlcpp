@@ -1,31 +1,36 @@
 <?xml version="1.0"?>
 <!DOCTYPE rdf:RDF [
-<!ENTITY base "http://owl.semanticweb.org/page/Functionality-clash">
-<!ENTITY test "&base;#">
-<!ENTITY w3 "http://www.w3.org">
-<!ENTITY owl "&w3;/2002/07/owl#">
-<!ENTITY rdf "&w3;/1999/02/22-rdf-syntax-ns#">
-<!ENTITY rdfs "&w3;/2000/01/rdf-schema#">
-<!ENTITY xsd "&w3;/2001/XMLSchema#">
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;data_value_clash.owl" >
 ]>
-<rdf:RDF xmlns="&test;" xmlns:test="&test;" xml:base="&base;"
-   xmlns:rdfs="&rdfs;" xmlns:rdf="&rdf;" xmlns:owl="&owl;"
+<rdf:RDF 
+   xmlns="&base;#"
+   xml:base="&base;"
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
 >
    <owl:Ontology rdf:about="" />
-   <owl:DatatypeProperty rdf:about="&test;hasAge">
+   <owl:DatatypeProperty rdf:about="#hasAge">
       <rdf:type rdf:resource="&owl;FunctionalProperty" />
    </owl:DatatypeProperty>
 
-   <owl:NamedIndividual rdf:about="&test;a">
+   <owl:NamedIndividual rdf:about="#a">
       <rdf:type>
          <owl:Restriction>
-            <owl:onProperty rdf:resource="&test;hasAge" />
+            <owl:onProperty rdf:resource="#hasAge" />
             <owl:hasValue rdf:datatype="&xsd;integer">19</owl:hasValue>
          </owl:Restriction>
       </rdf:type>
       <rdf:type>
          <owl:Restriction>
-            <owl:onProperty rdf:resource="&test;hasAge" />
+            <owl:onProperty rdf:resource="#hasAge" />
             <owl:hasValue rdf:datatype="&xsd;integer">18</owl:hasValue>
          </owl:Restriction>
       </rdf:type>
