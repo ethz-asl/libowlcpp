@@ -6,7 +6,7 @@
    <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
    <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
    <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
-   <!ENTITY base "&owlcpp;data_property_assertion_01.owl">
+   <!ENTITY base "&owlcpp;err_missing_def02.owl" >
 ]>
 <rdf:RDF 
    xmlns="&base;#"
@@ -17,13 +17,11 @@
    xmlns:owl="&owl;"
 >
    <owl:Ontology rdf:about="" />
-   
-   <class1 rdf:about="#individual1">
-      <property1>some value</property1>
-   </class1>
-   
-   <owl:DatatypeProperty rdf:about="#property1" />
-   
-   <owl:Class rdf:about="#class1" />
-
+   <owl:ObjectProperty rdf:about="#prop_a" />
+   <!-- missing object property declaration; 
+   should be: owl:ObjectProperty df:about="#prop_b" -->
+   <rdf:Description rdf:about="#prop_b">
+      <rdfs:label xml:lang="en">property b</rdfs:label>
+      <rdfs:subPropertyOf rdf:resource="#prop_a" />
+   </rdf:Description>
 </rdf:RDF>

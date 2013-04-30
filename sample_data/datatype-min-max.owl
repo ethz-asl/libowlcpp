@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE rdf:RDF [
-  <!ENTITY base "http://owl-cpp.sf.net/test/owl/datatype-min-max.owl" >
-  <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
-  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
-  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
-  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;datatype-min-max.owl" >
 ]>
-<rdf:RDF xmlns="&base;#"
-  xml:base="&base;"
-  xmlns:xsd="&xsd;"
-  xmlns:rdfs="&rdfs;"
-  xmlns:rdf="&rdf;"
-  xmlns:owl="&owl;"
-  >
-
-<owl:Ontology rdf:about="" />
+<rdf:RDF 
+   xmlns="&base;#"
+   xml:base="&base;"
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
+>
+   <owl:Ontology rdf:about="" />
 
    <!-- adapted from http://ontogenesis.knowledgeblog.org/88 -->
    <owl:Class rdf:about="#Person" />
@@ -34,10 +36,12 @@
                         <owl:onDatatype rdf:resource="&xsd;integer" />
                         <owl:withRestrictions rdf:parseType="Collection">
                            <rdf:Description>
-                              <xsd:maxExclusive rdf:datatype="&xsd;integer">20</xsd:maxExclusive>
+                              <xsd:minExclusive rdf:datatype="&xsd;integer"
+                                 >12</xsd:minExclusive>
                            </rdf:Description>
                            <rdf:Description>
-                              <xsd:minExclusive rdf:datatype="&xsd;integer">12</xsd:minExclusive>
+                              <xsd:maxExclusive rdf:datatype="&xsd;integer"
+                                 >20</xsd:maxExclusive>
                            </rdf:Description>
                         </owl:withRestrictions>
                      </rdfs:Datatype>
@@ -51,4 +55,5 @@
    <Teenager rdf:about="#A" >
       <hasAge rdf:datatype="&xsd;integer">20</hasAge>
    </Teenager>
+   
 </rdf:RDF>

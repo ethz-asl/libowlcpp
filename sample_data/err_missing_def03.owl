@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;err_missing_def03.owl" >
+]>
+<rdf:RDF 
+   xmlns="&base;#"
+   xml:base="&base;"
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
+>
+   <owl:Ontology rdf:about="" />
+   <!-- <owl:Class rdf:about="#class_A" /> -->
+   <owl:Class rdf:about="#class_B" />
+   <owl:Class rdf:about="#class_C" >
+      <owl:equivalentClass>
+         <owl:Class>
+            <owl:intersectionOf rdf:parseType="Collection">
+               <rdf:Description rdf:about="#class_A" />
+               <rdf:Description rdf:about="#class_B" />
+            </owl:intersectionOf>
+         </owl:Class>
+      </owl:equivalentClass>
+   </owl:Class>
+</rdf:RDF>
