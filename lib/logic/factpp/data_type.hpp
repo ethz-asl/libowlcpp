@@ -7,8 +7,7 @@ part of owlcpp project.
 #define DATA_TYPE_HPP_
 #include <string>
 #include "expression.hpp"
-
-class ReasoningKernel;
+#include "factpp/tDLExpression.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 
@@ -27,11 +26,11 @@ private:
 
 /**@brief
 *******************************************************************************/
-class Dt_declared : public Expression<Data_type> {
+class Dt_declared : public Expression<Data_type>, public Expression<Data_range> {
 public:
    Dt_declared(Expression_args const& ea, Triple_store const& ts);
 
-   generated_t get(ReasoningKernel& k ) const;
+   TDLDataTypeName* get(ReasoningKernel& k ) const;
 
 private:
    std::string iri_;

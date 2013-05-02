@@ -32,11 +32,19 @@ BOOST_AUTO_TEST_CASE( test_data_property_assertion ) {
 BOOST_AUTO_TEST_CASE( test_datatype_restriction ) {
    Triple_store ts;
    load_file(sample_file_path("datatype-min-max.owl"), ts);
-   BOOST_FOREACH(Triple const& t, ts.map_triple())
-      std::cout << to_string(t, ts) << '\n';
    ReasoningKernel k;
    submit(ts, k, false);
    BOOST_CHECK( ! k.isKBConsistent() );
+}
+
+/**
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_dp_restriction ) {
+   Triple_store ts;
+   load_file(sample_file_path("data_property_restriction.owl"), ts);
+   ReasoningKernel k;
+   submit(ts, k, false);
+   BOOST_CHECK( k.isKBConsistent() );
 }
 
 }//namespace test

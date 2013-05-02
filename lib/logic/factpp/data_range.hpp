@@ -30,6 +30,18 @@ private:
    Expression<Data_inst>::ptr_t val_;
 };
 
+/**@brief
+*******************************************************************************/
+class Dr_standard : public Expression<Data_range> {
+public:
+   Dr_standard(Expression_args const& ea, Triple_store const& ts);
+
+   generated_t get(ReasoningKernel& k ) const;
+
+private:
+   const Node_id nid_;
+};
+
 /**@brief DatatypeRestriction
 *******************************************************************************/
 class Dt_restriction : public Expression<Data_range> {

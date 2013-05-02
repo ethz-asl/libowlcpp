@@ -16,6 +16,7 @@ part of owlcpp project.
 #include "logic/node_property_declaration.hpp"
 #include "logic/node_type_declaration.hpp"
 #include "logic/find_node_declaration.hpp"
+#include "owlcpp/detail/datatype_impl.hpp"
 
 namespace owlcpp{ namespace logic{ namespace factpp{
 using namespace owlcpp::terms;
@@ -49,7 +50,7 @@ make_expression<Obj_type>(Expression_args const& ea, Triple_store const& ts) {
    default: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unsupported object type")
-            << Err::str1_t(to_string(ea.handle, ts))
+            << Err::str1_t(ea.string(ts))
    );
    /* no break */
    }
@@ -73,7 +74,7 @@ make_expression<Obj_prop>(Expression_args const& ea, Triple_store const& ts) {
    BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unsupported object property")
-               << Err::str1_t(to_string(ea.handle, ts))
+               << Err::str1_t(ea.string(ts))
    );
 }
 
@@ -89,7 +90,14 @@ make_expression<Data_range>(Expression_args const& ea, Triple_store const& ts) {
             << Err::msg_t("data range not declared")
    );
 
-   BOOST_ASSERT(ea.e_type == rdfs_Datatype::id());
+   switch( internal_type_id(ea.handle) ) {
+   case detail::Empty_tid:
+   case detail::Unknown_tid:
+      break;
+   default: return ptr_t(new Dr_standard(ea, ts));
+   }
+
+   if( is_iri(ts[ea.handle].ns_id()) ) return ptr_t(new Dt_declared(ea, ts));
 
    switch(ea.pred1()) {
    case owl_intersectionOf::index:
@@ -101,7 +109,7 @@ make_expression<Data_range>(Expression_args const& ea, Triple_store const& ts) {
    BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unsupported data range")
-               << Err::str1_t(to_string(ea.handle, ts))
+               << Err::str1_t(ea.string(ts))
    );
 }
 
@@ -117,16 +125,16 @@ make_expression<Data_type>(Expression_args const& ea, Triple_store const& ts) {
             << Err::msg_t("data type not declared")
    );
 
-   if( ea.handle == rdfs_Literal::id() || ts[ea.handle].ns_id() == xsd::id() )
-      return ptr_t(new Dt_standard(ea, ts));
-
-   if( is_iri(ts[ea.handle].ns_id()) ) return ptr_t(new Dt_declared(ea, ts));
-
-   BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("unsupported data type")
-               << Err::str1_t(to_string(ea.handle, ts))
+   if( ! is_iri(ts[ea.handle].ns_id()) ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("unsupported data type")
+            << Err::str1_t(ea.string(ts))
    );
+
+   switch( internal_type_id(ea.handle) ) {
+   case detail::Unknown_tid: return ptr_t(new Dt_declared(ea, ts));
+   default: return ptr_t(new Dt_standard(ea, ts));
+   }
 }
 
 /*
@@ -145,7 +153,7 @@ make_expression<Data_prop>(Expression_args const& ea, Triple_store const& ts) {
    BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("unsupported data property")
-               << Err::str1_t(to_string(ea.handle, ts))
+               << Err::str1_t(ea.string(ts))
    );
 }
 
@@ -181,7 +189,7 @@ make_restriction_ote(Expression_args const& ea, Triple_store const& ts) {
                      "\"_:x rdf:type owl:Restriction\" without \"_:x "
                      "owl:onProperty y\""
             )
-            << Err::str1_t(to_string(ea.handle, ts))
+            << Err::str1_t(ea.string(ts))
    );
    const Node_property np = declaration<Node_property>(ea.obj1, ts);
    if( ! np.is_object() && ! np.is_data() ) BOOST_THROW_EXCEPTION(
@@ -190,7 +198,7 @@ make_restriction_ote(Expression_args const& ea, Triple_store const& ts) {
                      "object in \"_:x owl:onProperty y\" should be defined as "
                      "object or data property"
             )
-            << Err::str1_t(to_string(ea.obj1, ts))
+            << Err::str1_t(ea.string(ts))
    );
 
    switch (ea.cardinality()) {
@@ -208,7 +216,7 @@ make_restriction_ote(Expression_args const& ea, Triple_store const& ts) {
    default: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unexpected cardinality node in owl:Restriction expression")
-            << Err::str1_t(to_string(ea.cardinality, ts))
+            << Err::str1_t(ea.string(ts))
    );
    /* no break */
    }
@@ -226,7 +234,7 @@ make_restriction_ote(Expression_args const& ea, Triple_store const& ts) {
    default: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unsupported predicate for owl:Restriction expression")
-            << Err::str1_t(to_string(ea.pred1, ts))
+            << Err::str1_t(ea.string(ts))
    );
    /* no break */
    }
@@ -248,7 +256,7 @@ make_class_ote(Expression_args const& ea, Triple_store const& ts) {
    default: BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("unsupported predicate for owl:Class expression")
-            << Err::str1_t(to_string(ea.pred1, ts))
+            << Err::str1_t(ea.string(ts))
    );
    /* no break */
    }

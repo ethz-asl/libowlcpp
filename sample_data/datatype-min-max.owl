@@ -21,8 +21,9 @@
    <!-- adapted from http://ontogenesis.knowledgeblog.org/88 -->
    <owl:Class rdf:about="#Person" />
    
-   <owl:DatatypeProperty rdf:about="#hasAge" />
-   <owl:FunctionalProperty rdf:about="#hasAge" />
+   <owl:DatatypeProperty rdf:about="#hasAge">
+      <rdf:type rdf:resource="&owl;FunctionalProperty" />
+   </owl:DatatypeProperty>
    
    <owl:Class rdf:about="#Teenager">
       <owl:equivalentClass>

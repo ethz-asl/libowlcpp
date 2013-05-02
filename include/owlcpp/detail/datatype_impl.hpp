@@ -11,7 +11,15 @@ part of owlcpp project.
 namespace owlcpp{ namespace detail{
 
 enum Internal_type_id {
-   Empty_tid, Bool_tid, Int_tid, Unsigned_tid, Double_tid, String_tid, Unknown_tid
+   Top_tid,
+   Empty_tid,
+   Bool_tid,
+   Int_tid,
+   Unsigned_tid,
+   Double_tid,
+   String_tid,
+   Time_tid,
+   Unknown_tid
 };
 
 }//namespace detail
@@ -25,6 +33,8 @@ inline detail::Internal_type_id internal_type_id(const Node_id nid) {
    case empty_::index:
       return Empty_tid;
 
+   case rdfs_Literal::index:
+      return Top_tid;
    case xsd_string::index:
    case xsd_anyURI::index:
    case xsd_normalizedString::index:
@@ -33,6 +43,8 @@ inline detail::Internal_type_id internal_type_id(const Node_id nid) {
    case xsd_NMTOKEN::index:
    case xsd_Name::index:
    case xsd_NCName::index:
+   case owl_rational::index:
+      return String_tid;
 
    case xsd_dateTime::index:
    case xsd_time::index:
@@ -42,7 +54,7 @@ inline detail::Internal_type_id internal_type_id(const Node_id nid) {
    case xsd_gMonthDay::index:
    case xsd_gDay::index:
    case xsd_gMonth::index:
-      return String_tid;
+      return Time_tid;
 
    case xsd_boolean::index:
       return Bool_tid;
@@ -50,6 +62,7 @@ inline detail::Internal_type_id internal_type_id(const Node_id nid) {
    case xsd_decimal::index:
    case xsd_float::index:
    case xsd_double::index:
+   case owl_real::index:
       return Double_tid;
 
    case xsd_hexBinary::index:

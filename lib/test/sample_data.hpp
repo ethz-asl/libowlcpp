@@ -130,6 +130,10 @@ inline std::vector<Sample_info> const& sample_files() {
             "err_distinctMembers.owl",
             "http://owl-cpp.sf.net/test/owl/err_distinctMembers.owl", ""
             )
+   /* 21 */(
+            "data_property_restriction.owl",
+            "http://owl-cpp.sf.net/test/owl/data_property_restriction.owl", ""
+            )
    ;
    return v;
 }

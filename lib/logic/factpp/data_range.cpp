@@ -56,12 +56,66 @@ Facet_restriction::generated_t Facet_restriction::get(ReasoningKernel& k ) const
 
 /*
 *******************************************************************************/
+Dr_standard::Dr_standard(Expression_args const& ea, Triple_store const& ts)
+: nid_(ea.handle)
+{
+   switch( internal_type_id(nid_) ) {
+   case detail::Top_tid:
+   case detail::Bool_tid:
+   case detail::Int_tid:
+   case detail::Unsigned_tid:
+   case detail::Double_tid:
+   case detail::Time_tid:
+   case detail::String_tid:
+      break;
+   default: BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("unknown standard datatype")
+            << Err::str1_t(ea.string(ts))
+   );
+   /* no break */
+   }
+
+}
+
+/*
+*******************************************************************************/
+Dr_standard::generated_t Dr_standard::get(ReasoningKernel& k ) const {
+   TExpressionManager& em = *k.getExpressionManager();
+   switch( internal_type_id(nid_) ) {
+   case detail::Top_tid: return em.DataTop();
+   case detail::Bool_tid: return em.getBoolDataType();
+   case detail::Int_tid:
+   case detail::Unsigned_tid: return em.getIntDataType();
+   case detail::Double_tid: return em.getRealDataType();
+   case detail::Time_tid: return em.getTimeDataType();
+   case detail::String_tid:
+   default: return em.getStrDataType();
+   }
+}
+
+/*
+*******************************************************************************/
 Dt_restriction::Dt_restriction(
          Expression_args const& ea, Triple_store const& ts
 ) : dt_(make_expression<Data_type>(ea.obj1, ts))
 {
-   BOOST_ASSERT(ea.pred1 == owl_onDatatype::id());
-   BOOST_ASSERT(ea.pred2 == owl_withRestrictions::id());
+   if(
+            ea.e_type != rdfs_Datatype::id() ||
+            ea.pred1 != owl_onDatatype::id() ||
+            ea.pred2 != owl_withRestrictions::id()
+   ) {
+      char const* msg =
+               "_:x rdf:type rdfs:Datatype; "
+               "_:x owl:onDatatype *:y; "
+               "_:x owl:withRestrictions "
+               "is expected";
+      BOOST_THROW_EXCEPTION(
+               Err()
+               << Err::msg_t(msg)
+               << Err::str1_t(ea.string(ts))
+   );
+   }
    BOOST_FOREACH(Node_id const nid, rdf_list(ea.obj2, ts)) {
       facets_.push_back(make_expression<Data_facet>(nid, ts));
    }
@@ -90,8 +144,8 @@ Dt_junction::Dt_junction(Expression_args const& ea, Triple_store const& ts)
 {
    if( ea.e_type != rdfs_Datatype::id() ) BOOST_THROW_EXCEPTION(
             Err()
-            << Err::msg_t("rdfs:Datatype is expected")
-            << Err::str1_t(to_string(ea.e_type, ts))
+            << Err::msg_t("rdf:type rdfs:Datatype is expected")
+            << Err::str1_t(ea.string(ts))
    );
 
    switch(nid_()) {
@@ -139,6 +193,11 @@ Dt_junction::generated_t Dt_junction::get(ReasoningKernel& k ) const {
 /*
 *******************************************************************************/
 Dt_oneof::Dt_oneof(Expression_args const& ea, Triple_store const& ts) {
+   if( ea.e_type != rdfs_Datatype::id() ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("rdf:type rdfs:Datatype is expected")
+            << Err::str1_t(ea.string(ts))
+   );
    BOOST_FOREACH(Node_id const nid, rdf_list(ea.obj1, ts)) {
       l_.push_back(make_expression<Data_inst>(nid, ts));
    }
@@ -162,7 +221,13 @@ Dt_oneof::generated_t Dt_oneof::get(ReasoningKernel& k ) const {
 *******************************************************************************/
 Dt_complement::Dt_complement(Expression_args const& ea, Triple_store const& ts)
 : de_(make_expression<Data_range>(ea.obj1, ts))
-{}
+{
+   if( ea.e_type != rdfs_Datatype::id() ) BOOST_THROW_EXCEPTION(
+            Err()
+            << Err::msg_t("rdf:type rdfs:Datatype is expected")
+            << Err::str1_t(ea.string(ts))
+   );
+}
 
 /*
 *******************************************************************************/

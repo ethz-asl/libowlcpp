@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE rdf:RDF [
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;data_property_restriction.owl" >
+]>
+<rdf:RDF 
+   xmlns="&base;#"
+   xml:base="&base;"
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
+>
+   <owl:Ontology rdf:about="" />
+
+   <owl:Class rdf:about="#Class1" />
+   
+   <owl:DatatypeProperty rdf:about="#dp1">
+      <rdf:type rdf:resource="&owl;FunctionalProperty" />
+      <rdfs:domain rdf:resource="#Class1" />
+      <rdfs:range rdf:resource="&xsd;int" />
+   </owl:DatatypeProperty>
+   
+   <:Class1 rdf:about="#ind1">
+      <rdf:type>
+         <owl:Restriction>
+            <owl:onProperty rdf:resource="#dp1" />
+            <owl:someValuesFrom>
+               <rdfs:Datatype>
+                  <owl:oneOf>
+                     <rdf:Description>
+                        <rdf:first rdf:datatype="&xsd;double">3.0</rdf:first>
+                        <rdf:rest>
+                           <rdf:Description>
+                                 <rdf:first rdf:datatype="&xsd;int">3</rdf:first>
+                                 <rdf:rest rdf:resource="&rdf;nil" />
+                           </rdf:Description>
+                        </rdf:rest>
+                     </rdf:Description>
+                  </owl:oneOf>
+               </rdfs:Datatype>
+            </owl:someValuesFrom>
+         </owl:Restriction>
+      </rdf:type>
+   </:Class1>
+
+</rdf:RDF>

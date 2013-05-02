@@ -19,6 +19,7 @@ struct Expression_args {
    struct Err : public Logic_err {};
 
    Expression_args(const Node_id h, Triple_store const& ts);
+   std::string string(Triple_store const& ts) const;
 
    Node_id handle, e_type, pred1, obj1, pred2, obj2, cardinality;
    unsigned num;
