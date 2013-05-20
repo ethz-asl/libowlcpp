@@ -17,7 +17,7 @@ rule build_version ( n ? ) {
 # return version based on a git tag
 rule git_describe ( git_path ? : default ) {
    git_path ?= git ;
-   local res = [ SHELL "\"$(git_path)\" describe --always --dirty=~" : exit-status ] ;
+   local res = [ SHELL "\"$(git_path)\" describe --always --dirty=*" : exit-status ] ;
    if $(res[2]) = "0" { return [ trim_whitespace $(res[1]) ] ; }
    else { return $(default) ; }
 }

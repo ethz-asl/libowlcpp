@@ -18,7 +18,7 @@ part of owlcpp project.
 #endif
 
 #ifndef OWLCPP_VERSION_STR
-#define OWLCPP_VERSION_STR unknown
+#define OWLCPP_VERSION_STR v0.0.0-???
 #endif
 
 #ifndef OWLCPP_VERSION_1
@@ -34,7 +34,7 @@ part of owlcpp project.
 #endif
 
 #ifndef OWLCPP_VERSION_EXTRA
-#define OWLCPP_VERSION_EXTRA
+#define OWLCPP_VERSION_EXTRA ???
 #endif
 
 #ifndef OWLCPP_BUILD
@@ -46,21 +46,21 @@ namespace owlcpp {
 /*
 *******************************************************************************/
 std::string const& Lib_info::name() {
-   static const std::string s(BOOST_PP_STRINGIZE(OWLCPP_NAME));
+   static const std::string s = std::string(BOOST_PP_STRINGIZE(OWLCPP_NAME));
    return s;
 }
 
 /*
 *******************************************************************************/
 std::string const& Lib_info::version() {
-   static const std::string s(BOOST_PP_STRINGIZE(OWLCPP_VERSION_STR));
+   static const std::string s = std::string(BOOST_PP_STRINGIZE(OWLCPP_VERSION_STR));
    return s;
 }
 
 /*
 *******************************************************************************/
 std::string const& Lib_info::description() {
-   static const std::string s(BOOST_PP_STRINGIZE(OWLCPP_DESCRIPTION));
+   static const std::string s = std::string(BOOST_PP_STRINGIZE(OWLCPP_DESCRIPTION));
    return s;
 }
 
@@ -79,7 +79,7 @@ int Lib_info::version_3() {return OWLCPP_VERSION_3;}
 /*
 *******************************************************************************/
 std::string const& Lib_info::version_e() {
-   static const std::string s(BOOST_PP_STRINGIZE(OWLCPP_VERSION_EXTRA));
+   static const std::string s = std::string(BOOST_PP_STRINGIZE(OWLCPP_VERSION_EXTRA));
    return s;
 }
 
