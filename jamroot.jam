@@ -17,7 +17,7 @@ path-constant GENERATED_LIB : $(OUT)/lib ;
 path-constant PYTHON_OUT : $(OUT)/binding/python ;
 
 constant OWLCPP_NAME : "owlcpp" ;
-constant OWLCPP_VERSION : [ git_describe $(GIT_PATH) : "v0.1.0" ] ;
+constant OWLCPP_VERSION : [ git_describe $(GIT_PATH) ] ;
 constant OWLCPP_DESCRIPTION : "C++ library for working with OWL ontologies" ;
 
 constant LIB_REQUIREMENTS :

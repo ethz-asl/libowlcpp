@@ -9,17 +9,17 @@ project lib
       <include>.
 ;
 
-local v = [ process_version_string $(OWLCPP_VERSION) : 0 0 0 unknown ] ;
+local v = [ process_version_string $(OWLCPP_VERSION) ] ;
 local bv = [ build_version 3 ] ;
 local defs = 
    "OWLCPP_BUILD=$(bv)"
    "OWLCPP_NAME=\"$(OWLCPP_NAME)\""
    "OWLCPP_DESCRIPTION=\"$(OWLCPP_DESCRIPTION)\""
-   "OWLCPP_VERSION_STR=\"$(OWLCPP_VERSION)\""
    "OWLCPP_VERSION_1=$(v[1])"
    "OWLCPP_VERSION_2=$(v[2])"
    "OWLCPP_VERSION_3=$(v[3])"
    "OWLCPP_VERSION_EXTRA=\"$(v[4])\""
+   "OWLCPP_VERSION_DIRTY=\"$(v[5])\""
 ; 
 
 obj lib_info 

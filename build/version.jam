@@ -15,25 +15,49 @@ rule build_version ( n ? ) {
 }
 
 # return version based on a git tag
-rule git_describe ( git_path ? : default ) {
+rule git_describe ( git_path ? ) {
    git_path ?= git ;
-   local res = [ SHELL "\"$(git_path)\" describe --always --dirty=*" : exit-status ] ;
+   # use '~' dirty marker, not '*', to be able to use version string as directory name
+   local res = [ SHELL "\"$(git_path)\" describe --always --dirty=~" : exit-status ] ;
    if $(res[2]) = "0" { return [ trim_whitespace $(res[1]) ] ; }
-   else { return $(default) ; }
-}
-
-# split tag "v1.2.5-8-gda17203~" into "1", "2", "5", "8-gda17203~"
-rule process_version_string ( v_str : v_def_1 v_def_2 v_def_3 v_def_e ) {
-   local re = "v?([0-9]*)[ \-\.]?([0-9]*)[ \-\.]?([0-9]*)-?(.*)" ;
-   local v = [ MATCH $(re) : $(v_str) ] ;
-   if $(v[1]) = "" || $(v[2]) = "" || $(v[3]) = "" {
-      echo "WARNING: Could not determine current code revision.  Using default." ;
-      echo "Undefined GIT_PATH variable in user-config.jam?" ;
-      return $(v_def_1) $(v_def_2) $(v_def_3) $(v_def_e) ;
-   } else {
-      return $(v) ;
+   else {
+      echo "" ;
+      echo "   WARNING: Error running git" ;
+      echo "   Please try setting GIT_PATH variable in user-config.jam" ;
+      echo "" ;
+      return "" ;
    }
 }
+
+# split tag "v1.2.5-8-gda17203~" into 1, 2, 5, "8-gda17203", 1
+rule process_version_string ( v_str : v_def * ) {
+   v_def ?= 0 0 0 "???" 0 ;
+   local re = "v([0-9]*)[ \-\.]([0-9]*)[ \-\.]([0-9]*)(-[0-9a-g\-]+)?([~]?)" ;
+   local v = [ MATCH $(re) : $(v_str) ] ;
+   if $(v[1]) = "" || $(v[2]) = "" || $(v[3]) = "" {
+      echo "   WARNING: Could not parse code revision string" \"$(v_str)\". ;
+      echo "            Using default values." ;
+      return $(v_def) ;
+   } else {
+      local v4 = "" ;
+      if $(v[4]) != "" { v4 = [ MATCH -(.*) : $(v[4]) ] ; }
+      local v5 = 0 ;
+      if $(v[5]) = "~" { v5 = 1 ; }
+      return $(v[1]) $(v[2]) $(v[3]) $(v4) $(v5) ;
+   }
+}
+
+rule __test__ {
+   import assert ;
+   assert.result 1 2 5 "" 0 : process_version_string "v1.2.5" ;
+   assert.result 1 2 5 "" 1 : process_version_string "v1.2.5~" ;
+   assert.result 0 0 0 "???" 1 : process_version_string "blah" ;
+   assert.result 0 0 0 "???" 1 : process_version_string "" ;
+   assert.result 1 2 5 8-gda17203 0 : process_version_string "v1.2.5-8-gda17203" ;
+   assert.result 1 2 5 8-gda17203 1 : process_version_string "v1.2.5-8-gda17203~" ;
+}
+
+# __test__ ;
 
 IMPORT $(__name__) #source module
    :  #source rules
