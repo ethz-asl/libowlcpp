@@ -8,6 +8,7 @@ namespace bp = boost::python;
 
 #include "factpp/Kernel.hpp"
 #include "owlcpp/logic/triple_to_fact.hpp"
+#include "owlcpp/rdf/triple_store.hpp"
 
 void export_factpp_kernel();
 void export_factpp_expression_manager();
