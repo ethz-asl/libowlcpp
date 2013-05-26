@@ -8,13 +8,13 @@ part of owlcpp project.
 #include "owlcpp/logic/config.hpp"
 #include "boost/foreach.hpp"
 #include "owlcpp/logic/exception.hpp"
+#include "owlcpp/rdf/triple.hpp"
 
 class ReasoningKernel;
 class TDLAxiom;
 
 namespace owlcpp{
 class Triple_store;
-class Triple;
 
 /** Convert a range of RDF triples to axioms and submit them to reasoning kernel
 @param r iterator range of triples

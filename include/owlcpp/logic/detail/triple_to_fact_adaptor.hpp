@@ -21,7 +21,7 @@ class TDLAxiom;
 
 namespace owlcpp{
 class Triple_store;
-class Triple;
+struct Triple;
 
 namespace logic{ namespace factpp{
 

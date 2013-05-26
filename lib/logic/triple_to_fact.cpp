@@ -26,7 +26,7 @@ TDLAxiom* submit(
    logic::factpp::Adaptor_triple at(ts, kernel, strict);
    try{
       return at.submit(t);
-   } catch(Logic_err const& e) {
+   } catch(Logic_err const&) {
       BOOST_THROW_EXCEPTION(
                Logic_err()
                << Logic_err::msg_t("error submitting triple")
@@ -49,7 +49,7 @@ TDLAxiom* submit_check(
    TDLAxiom* a = 0;
    try{
       a = at.submit(t);
-   } catch(Logic_err const& e) {
+   } catch(Logic_err const&) {
       BOOST_THROW_EXCEPTION(
                Logic_err()
                << Logic_err::msg_t("error submitting triple")
@@ -84,7 +84,7 @@ std::size_t submit(
    BOOST_FOREACH(Triple const& t, ts.map_triple()) {
       try{
          if( at.submit(t) ) ++n;
-      } catch(Logic_err const& e) {
+      } catch(Logic_err const&) {
          BOOST_THROW_EXCEPTION(
                   Logic_err()
                   << Logic_err::msg_t("error submitting triple")
@@ -110,7 +110,7 @@ std::size_t submit_check(
       TDLAxiom* a = 0;
       try{
          a = at.submit(t);
-      } catch(Logic_err const& e) {
+      } catch(Logic_err const&) {
          BOOST_THROW_EXCEPTION(
                   Logic_err()
                   << Logic_err::msg_t("error submitting triple")
