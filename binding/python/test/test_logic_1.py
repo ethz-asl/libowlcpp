@@ -11,6 +11,7 @@ class Test(unittest.TestCase):
     def setUp(self):
         unittest.TestCase.setUp(self)
         self.dir = 'sample_data'
+        self.ns = 'http://owl-cpp.sf.net/test/owl/'
 
     def test_1(self):
         ts = Triple_store();
@@ -28,22 +29,24 @@ class Test(unittest.TestCase):
 
     def test_3(self):
         ts = Triple_store();
-        load_file(os.path.join(self.dir, 'owl2-rl-rules-fp-differentFrom.owl'), ts)
+        fn = 'owl2-rl-rules-fp-differentFrom.owl'
+        load_file(os.path.join(self.dir, fn), ts)
         k = ReasoningKernel();
         submit(ts, k)
         em = k.getExpressionManager()
-        e1 = em.Individual("http://owl2.test/rules/X1")
-        e2 = em.Individual("http://owl2.test/rules/X2")
+        e1 = em.Individual(self.ns + fn + '#X1')
+        e2 = em.Individual(self.ns + fn + '#X2')
         self.assertFalse(k.isSameIndividuals(e1, e2))
 
     def test_4(self):
         ts = Triple_store();
-        load_file(os.path.join(self.dir, 'owl2-rl-rules-fp-sameAs.owl'), ts)
+        fn = 'owl2-rl-rules-fp-sameAs.owl'
+        load_file(os.path.join(self.dir, fn), ts)
         k = ReasoningKernel();
         submit(ts, k)
         em = k.getExpressionManager()
-        e1 = em.Individual("http://owl2.test/rules/X1")
-        e2 = em.Individual("http://owl2.test/rules/X2")
+        e1 = em.Individual(self.ns + fn + '#X1')
+        e2 = em.Individual(self.ns + fn + '#X2')
         self.assertTrue(k.isSameIndividuals(e1, e2))
 
 

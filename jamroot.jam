@@ -82,7 +82,6 @@ if [ modules.peek doxygen : .initialized ] {
       "PROJECT_BRIEF=\"$(OWLCPP_DESCRIPTION)\""
       "WARN_IF_UNDOCUMENTED=NO"
       "QUIET=YES"
-      "SHOW_DIRECTORIES=YES"
       "EXAMPLE_PATH=. apps"
       "BUILTIN_STL_SUPPORT=YES"
       "EXTRACT_STATIC=YES"

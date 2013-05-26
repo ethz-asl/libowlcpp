@@ -26,7 +26,7 @@ TDLAxiom* submit(
    logic::factpp::Adaptor_triple at(ts, kernel, strict);
    try{
       return at.submit(t);
-   } catch(Logic_err const& e) {
+   } catch(Logic_err const&) {
       BOOST_THROW_EXCEPTION(
                Logic_err()
                << Logic_err::msg_t("error submitting triple")
@@ -49,7 +49,7 @@ TDLAxiom* submit_check(
    TDLAxiom* a = 0;
    try{
       a = at.submit(t);
-   } catch(Logic_err const& e) {
+   } catch(Logic_err const&) {
       BOOST_THROW_EXCEPTION(
                Logic_err()
                << Logic_err::msg_t("error submitting triple")
@@ -60,12 +60,13 @@ TDLAxiom* submit_check(
    }
    if( a ) try{
       kernel.isKBConsistent();
-   }catch(...) {
+   }catch(EFaCTPlusPlus const& e) {
       BOOST_THROW_EXCEPTION(
                Logic_err()
                << Logic_err::msg_t("reasoning error after submitting triple")
-               << Logic_err::str1_t(to_string(t, ts))
-               << Logic_err::str2_t(ts[t.doc_].path)
+               << Logic_err::str1_t(e.what())
+               << Logic_err::str2_t(to_string(t, ts))
+               << Logic_err::str3_t(ts[t.doc_].path)
                << Logic_err::nested_t(boost::current_exception())
       );
    }
@@ -77,14 +78,16 @@ TDLAxiom* submit_check(
 std::size_t submit(
          Triple_store const& ts,
          ReasoningKernel& kernel,
-         const bool strict
+         const bool strict,
+         const bool diagnose
 ) {
+   if( diagnose ) return submit_check(ts, kernel, strict);
    std::size_t n = 0;
    logic::factpp::Adaptor_triple at(ts, kernel, strict);
    BOOST_FOREACH(Triple const& t, ts.map_triple()) {
       try{
          if( at.submit(t) ) ++n;
-      } catch(Logic_err const& e) {
+      } catch(Logic_err const&) {
          BOOST_THROW_EXCEPTION(
                   Logic_err()
                   << Logic_err::msg_t("error submitting triple")
@@ -110,7 +113,7 @@ std::size_t submit_check(
       TDLAxiom* a = 0;
       try{
          a = at.submit(t);
-      } catch(Logic_err const& e) {
+      } catch(Logic_err const&) {
          BOOST_THROW_EXCEPTION(
                   Logic_err()
                   << Logic_err::msg_t("error submitting triple")
@@ -122,13 +125,13 @@ std::size_t submit_check(
       if( a ) try{
          ++n;
          kernel.isKBConsistent();
-      }catch(...) {
+      }catch(EFaCTPlusPlus const& e) {
          BOOST_THROW_EXCEPTION(
                   Logic_err()
                   << Logic_err::msg_t("reasoning error after submitting triple")
-                  << Logic_err::str1_t(to_string(t, ts))
-                  << Logic_err::str2_t(ts[t.doc_].path)
-                  << Logic_err::int1_t(n)
+                  << Logic_err::str1_t(e.what())
+                  << Logic_err::str2_t(to_string(t, ts))
+                  << Logic_err::str3_t(ts[t.doc_].path)
                   << Logic_err::nested_t(boost::current_exception())
          );
       }
