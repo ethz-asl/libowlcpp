@@ -45,7 +45,6 @@ TDLAxiom* Adaptor_triple::submit(Triple const& t) {
    }
 }
 
-
 /*
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
@@ -101,6 +100,9 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
       const Node_property np =
             check_same_declaration<Node_property>(subj, obj, ts_);
       if( np.is_object() ) {
+         //FaCT++ throws during classification of
+         // x rdfs:subPropertyOf owl:topObjectProperty
+         if( obj == owl_topObjectProperty::id() ) return 0;
          return k_.impliesORoles(obj_property(subj), obj_property(obj));
       }
       if( np.is_data() ) {
