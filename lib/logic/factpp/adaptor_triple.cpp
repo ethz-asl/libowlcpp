@@ -29,9 +29,7 @@ using namespace owlcpp::terms;
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::submit(Triple const& t) {
    try{
-      TDLAxiom* const a = axiom(t);
-      if( a ) k_.isKBConsistent(); //check if axiom crashes reasoner
-      return a;
+      return axiom(t);
    } catch(...) {
       BOOST_THROW_EXCEPTION(
                Err()

@@ -31,6 +31,8 @@ int main(int argc, char* argv[]) {
    ("include,i",
             bpo::value<std::vector<std::string> >()->zero_tokens()->composing(),
             "search paths")
+   ("diagnose,d", bpo::bool_switch(),
+            "check for reasoning errors after each axiom ")
    ("lax", bpo::bool_switch(), "non-strict parsing")
    ("return-success,S", bpo::bool_switch(),
             "return 1 if ontology is not consistent")
@@ -70,7 +72,13 @@ int main(int argc, char* argv[]) {
       }
 
       ReasoningKernel kernel;
-      const std::size_t n = submit(store, kernel, vm["lax"].as<bool>());
+      const std::size_t n = submit(
+               store,
+               kernel,
+               vm["lax"].as<bool>(),
+               vm["diagnose"].as<bool>()
+      );
+
       std::cout << n << " axioms generated" << std::endl;
       const bool consistent = kernel.isKBConsistent();
       std::cout
