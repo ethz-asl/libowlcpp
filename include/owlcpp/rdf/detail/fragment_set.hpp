@@ -12,8 +12,10 @@ part of owlcpp2 project.
 #include "boost/fusion/sequence/comparison/less.hpp"
 #include "boost/fusion/sequence/comparison/equal_to.hpp"
 #include "boost/iterator/filter_iterator.hpp"
+#include "boost/mpl/assert.hpp"
 #include "boost/range.hpp"
 #include "boost/range/algorithm/equal_range.hpp"
+#include "boost/type_traits/has_operator.hpp"
 #include "owlcpp/rdf/any_triple_element.hpp"
 #include "owlcpp/rdf/exception.hpp"
 
@@ -150,6 +152,9 @@ public:
    template<class U0, class U1, class U2>
    typename Find<T0,T1,T2,U0,U1,U2>::range
    find(const U0 u0, const U1 u1, const U2 u2) const {
+      BOOST_MPL_ASSERT((boost::has_equal_to<T0,U0,bool>));
+      BOOST_MPL_ASSERT((boost::has_equal_to<T1,U1,bool>));
+      BOOST_MPL_ASSERT((boost::has_equal_to<T2,U2,bool>));
       return Find<T0,T1,T2,U0,U1,U2>::find(v_, u0, u1, u2);
    }
 

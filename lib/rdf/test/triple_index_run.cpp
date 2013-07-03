@@ -8,6 +8,7 @@ part of owlcpp2 project.
 #include "test/exception_fixture.hpp"
 
 #include "owlcpp/rdf/detail/fragment_set.hpp"
+#include "owlcpp/rdf/detail/triple_index_2.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/doc_id.hpp"
 #include "boost/fusion/container/generation/make_vector.hpp"
@@ -42,6 +43,19 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 
    fs_t::result<Doc_id,any,Node_id>::type r4 = fs.find(Doc_id(2), any(), Node_id(1));
    BOOST_CHECK_EQUAL(distance(r4), 2);
+}
+
+Triple triple(const unsigned subj, const unsigned pred, const unsigned obj, const unsigned doc) {
+   return Triple::make(Node_id(subj), Node_id(pred), Node_id(obj), Doc_id(doc));
+}
+
+/** Test fragment set
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case02 ) {
+   typedef m::Triple_index<m::Subj_tag, m::Pred_tag, m::Obj_tag, m::Doc_tag>
+   index_t;
+   index_t ind;
+   ind.insert(triple(0,0,0,0));
 }
 
 }//namespace test

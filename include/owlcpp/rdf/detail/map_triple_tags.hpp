@@ -6,6 +6,7 @@ part of owlcpp project.
 #ifndef MAP_TRIPLE_TAGS_HPP_
 #define MAP_TRIPLE_TAGS_HPP_
 #include "boost/fusion/adapted/struct/adapt_struct.hpp"
+#include "boost/mpl/vector.hpp"
 
 #include "owlcpp/rdf/triple.hpp"
 
@@ -31,6 +32,7 @@ struct Subj_tag : public mpl::size_t<0> {};
 struct Pred_tag : public mpl::size_t<1> {};
 struct Obj_tag  : public mpl::size_t<2> {};
 struct Doc_tag  : public mpl::size_t<3> {};
+typedef mpl::vector<Subj_tag, Pred_tag, Obj_tag, Doc_tag> triple_tags;
 
 struct Main_store_tag{};
 
