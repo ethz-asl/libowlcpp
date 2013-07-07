@@ -23,14 +23,14 @@ namespace owlcpp{ namespace map_triple_detail{
 
 template<
    class T0, class T1, class T2,
-   class U0, class U1, class U2
-> class Equal
+   class Q0, class Q1, class Q2
+> class Fragment_equal
          : public std::unary_function<boost::fusion::vector3<T0,T1,T2>, bool> {
-   typedef boost::fusion::vector3<U0,U1,U2> stor_t;
+   typedef boost::fusion::vector3<Q0,Q1,Q2> stor_t;
    typedef boost::fusion::vector3<T0,T1,T2> fragment;
 
 public:
-   explicit Equal(const U0 u0, const U1 u1, const U2 u2) : e_(u0,u1,u2) {}
+   explicit Fragment_equal(const Q0 u0, const Q1 u1, const Q2 u2) : e_(u0,u1,u2) {}
    bool operator()(fragment const& f) const {return f == e_;}
 
 private:
@@ -39,15 +39,15 @@ private:
 
 template<
    class T0, class T1, class T2,
-   class U0, class U1, class U2
-> class Find {
+   class Q0, class Q1, class Q2
+> class Fragment_find_dispatch {
    typedef boost::fusion::vector3<T0,T1,T2> fragment;
    typedef std::vector<fragment> vector;
-   typedef Equal<T0,T1,T2,U0,U1,U2> equal;
+   typedef Fragment_equal<T0,T1,T2,Q0,Q1,Q2> equal;
 public:
    typedef boost::filter_iterator<equal, typename vector::const_iterator> iterator;
    typedef boost::iterator_range<iterator> range;
-   static range find(vector const& v, const U0 u0, const U1 u1, const U2 u2) {
+   static range find(vector const& v, const Q0 u0, const Q1 u1, const Q2 u2) {
       const equal eq(u0,u1,u2);
       return range(
                iterator(eq, v.begin(), v.end()),
@@ -58,7 +58,7 @@ public:
 
 template<
    class T0, class T1, class T2
-> class Find<T0,T1,T2,T0,T1,T2> {
+> class Fragment_find_dispatch<T0,T1,T2,T0,T1,T2> {
    typedef boost::fusion::vector3<T0,T1,T2> fragment;
    typedef std::vector<fragment> vector;
 public:
@@ -71,7 +71,7 @@ public:
 
 template<
    class T0, class T1, class T2
-> class Find<T0,T1,T2,T0,T1,any> {
+> class Fragment_find_dispatch<T0,T1,T2,T0,T1,any> {
    typedef boost::fusion::vector3<T0,T1,T2> fragment;
    typedef std::vector<fragment> vector;
 public:
@@ -87,7 +87,7 @@ public:
 
 template<
    class T0, class T1, class T2
-> class Find<T0,T1,T2,T0,any,any> {
+> class Fragment_find_dispatch<T0,T1,T2,T0,any,any> {
    typedef boost::fusion::vector3<T0,T1,T2> fragment;
    typedef std::vector<fragment> vector;
 public:
@@ -103,7 +103,7 @@ public:
 
 template<
    class T0, class T1, class T2
-> class Find<T0,T1,T2,any,any,any> {
+> class Fragment_find_dispatch<T0,T1,T2,any,any,any> {
    typedef boost::fusion::vector3<T0,T1,T2> fragment;
    typedef std::vector<fragment> vector;
 public:
@@ -125,8 +125,8 @@ public:
    typedef typename stor_t::const_iterator const_iterator;
    typedef boost::iterator_range<const_iterator> const_range;
 
-   template<class U0, class U1, class U2> struct result {
-      typedef typename Find<T0,T1,T2,U0,U1,U2>::range type;
+   template<class Q0, class Q1, class Q2> struct result {
+      typedef typename Fragment_find_dispatch<T0,T1,T2,Q0,Q1,Q2>::range type;
    };
 
    const_iterator begin() const {return v_.begin();}
@@ -149,13 +149,13 @@ public:
       v_.erase(i);
    }
 
-   template<class U0, class U1, class U2>
-   typename Find<T0,T1,T2,U0,U1,U2>::range
-   find(const U0 u0, const U1 u1, const U2 u2) const {
-      BOOST_MPL_ASSERT((boost::has_equal_to<T0,U0,bool>));
-      BOOST_MPL_ASSERT((boost::has_equal_to<T1,U1,bool>));
-      BOOST_MPL_ASSERT((boost::has_equal_to<T2,U2,bool>));
-      return Find<T0,T1,T2,U0,U1,U2>::find(v_, u0, u1, u2);
+   template<class Q0, class Q1, class Q2>
+   typename Fragment_find_dispatch<T0,T1,T2,Q0,Q1,Q2>::range
+   find(const Q0 u0, const Q1 u1, const Q2 u2) const {
+      BOOST_MPL_ASSERT((boost::has_equal_to<T0,Q0,bool>));
+      BOOST_MPL_ASSERT((boost::has_equal_to<T1,Q1,bool>));
+      BOOST_MPL_ASSERT((boost::has_equal_to<T2,Q2,bool>));
+      return Fragment_find_dispatch<T0,T1,T2,Q0,Q1,Q2>::find(v_, u0, u1, u2);
    }
 
 private:

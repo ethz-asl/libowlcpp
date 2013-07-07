@@ -45,7 +45,10 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(distance(r4), 2);
 }
 
-Triple triple(const unsigned subj, const unsigned pred, const unsigned obj, const unsigned doc) {
+Triple triple(
+		const unsigned subj, const unsigned pred,
+		const unsigned obj, const unsigned doc
+) {
    return Triple::make(Node_id(subj), Node_id(pred), Node_id(obj), Doc_id(doc));
 }
 
@@ -56,6 +59,10 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    index_t;
    index_t ind;
    ind.insert(triple(0,0,0,0));
+   ind.insert(triple(0,0,0,0));
+   ind.insert(triple(0,1,0,0));
+   BOOST_CHECK_EQUAL(ind.size(), 2U);
+   ind.find(Node_id(0), any(), any(), any());
 }
 
 }//namespace test
