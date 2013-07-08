@@ -9,9 +9,10 @@ part of owlcpp2 project.
 
 #include "owlcpp/rdf/detail/fragment_set.hpp"
 #include "owlcpp/rdf/detail/triple_index_2.hpp"
+#include "owlcpp/rdf/detail/convert_fragment.hpp"
+#include "owlcpp/rdf/detail/fragment_map_vector.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/doc_id.hpp"
-#include "boost/fusion/container/generation/make_vector.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -52,17 +53,41 @@ Triple triple(
    return Triple::make(Node_id(subj), Node_id(pred), Node_id(obj), Doc_id(doc));
 }
 
-/** Test fragment set
+/** Test fragment converter
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   typedef m::Triple_index<m::Subj_tag, m::Pred_tag, m::Obj_tag, m::Doc_tag>
+   typedef m::Convert_fragment<m::Obj_tag,m::Doc_tag,m::Pred_tag, m::Subj_tag>
+   conv_t;
+   const Triple t1 = triple(1,2,3,4);
+   const Node_id i1 = conv_t::get_index(t1);
+   BOOST_CHECK(i1 == Node_id(3));
+   const conv_t::fragment f1 = conv_t::get_fragment(t1);
+   BOOST_CHECK( f1 == conv_t::fragment(Doc_id(4), Node_id(2), Node_id(1)) );
+   BOOST_CHECK( t1 == conv_t::get_triple(i1, f1) );
+}
+
+/** Test fragment map vector
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case03 ) {
+   typedef m::Fragment_set<Doc_id,Node_id,Node_id> fs_t;
+   typedef m::Fragment_map_vector<Node_id, fs_t> fmv_t;
+   fmv_t fmv;
+   fmv_t::const_iterator i = fmv.begin();
+}
+
+/** Test fragment set
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case04 ) {
+   typedef m::Triple_index<m::Fragment_map_vector, m::Subj_tag, m::Pred_tag, m::Obj_tag, m::Doc_tag>
    index_t;
    index_t ind;
    ind.insert(triple(0,0,0,0));
    ind.insert(triple(0,0,0,0));
    ind.insert(triple(0,1,0,0));
    BOOST_CHECK_EQUAL(ind.size(), 2U);
+/*
    ind.find(Node_id(0), any(), any(), any());
+*/
 }
 
 }//namespace test

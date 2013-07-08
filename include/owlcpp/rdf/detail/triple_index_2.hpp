@@ -6,7 +6,6 @@ part of owlcpp2 project.
 #ifndef TRIPLE_INDEX_2_HPP_
 #define TRIPLE_INDEX_2_HPP_
 #include "boost/foreach.hpp"
-#include "boost/fusion/sequence/intrinsic/at_c.hpp"
 #include "boost/iterator/iterator_facade.hpp"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/at.hpp"
@@ -15,12 +14,13 @@ part of owlcpp2 project.
 #include "boost/mpl/equal.hpp"
 #include "boost/mpl/sort.hpp"
 #include "owlcpp/rdf/exception.hpp"
-#include "owlcpp/rdf/detail/triple_index_config.hpp"
+#include "owlcpp/rdf/detail/convert_fragment.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
 
 /**@brief
 *******************************************************************************/
+/*
 template<
    class Tag0, class Tag1, class Tag2, class Tag3,
    class Iter
@@ -61,6 +61,7 @@ private:
       return t;
    }
 };
+*/
 
 /**@brief Invoke appropriate search algorithm
 @tparam Tag0 numerical tag indicating which triple element is indexed first
@@ -77,6 +78,7 @@ template<
    class Q0, class Q1, class Q2, class Q3
 > class Triple_find_dispatch;
 
+/*
 template<
    class Tag0, class Tag1, class Tag2, class Tag3,
    class Q1, class Q2, class Q3
@@ -106,7 +108,9 @@ public:
 
    }
 };
+*/
 
+/*
 template<class Tag0, class Tag1, class Tag2, class Tag3>
 class Triple_find_dispatch<
    Tag0,Tag1,Tag2,Tag3,typename boost::mpl::at<Triple, Tag0>::type,any,any,any
@@ -129,15 +133,16 @@ public:
             any const& = any(),
             any const& = any()
    ) {
-      v[q0()]
+//      v[q0()]
    }
 
 };
+*/
 
 /**@brief 
 *******************************************************************************/
 template<
-   template<class,class,class,class> class Map,
+   template<class,class> class Map,
    class Tag0,
    class Tag1,
    class Tag2,
@@ -147,14 +152,14 @@ template<
    BOOST_MPL_ASSERT((
             boost::mpl::equal<typename boost::mpl::sort<tags>::type, triple_tags>
    ));
-   typedef Triple_index_config<Tag0,Tag1,Tag2,Tag3> config;
-   typedef typename config::el0 el0;
-   typedef typename config::el1 el1;
-   typedef typename config::el2 el2;
-   typedef typename config::el3 el3;
-   typedef typename config::fragment fragment;
-   typedef typename config::fragment_set fragment_set;
-   typedef typename config::storage storage;
+   typedef Convert_fragment<Tag0,Tag1,Tag2,Tag3> converter;
+   typedef typename converter::el0 el0;
+   typedef typename converter::el1 el1;
+   typedef typename converter::el2 el2;
+   typedef typename converter::el3 el3;
+   typedef typename converter::fragment fragment;
+   typedef Fragment_set<el1, el2, el3> fragment_set;
+   typedef Map<el0, fragment_set> storage;
 
 public:
 /*
@@ -177,15 +182,7 @@ public:
 */
 
    void insert(Triple const& t) {
-      const std::size_t n = boost::fusion::at<Tag0>(t)();
-      if( n >= v_.size() ) v_.resize(n + 1);
-      v_[n].insert(
-               fragment(
-                        boost::fusion::at<Tag1>(t),
-                        boost::fusion::at<Tag2>(t),
-                        boost::fusion::at<Tag3>(t)
-               )
-      );
+      v_.insert(converter::get_index(t), converter::get_fragment(t));
    }
 
    std::size_t size() const {
