@@ -134,11 +134,13 @@ public:
    std::size_t size() const {return v_.size();}
    bool empty() const {return v_.empty();}
 
-   void insert(value_type const& t) {
+   bool insert(value_type const& t) {
       iterator i = std::lower_bound(v_.begin(), v_.end(), t);
       if( i == v_.end() || (t < *i) ) {
          v_.insert(i, t);
+         return true;
       }
+      return false;
    }
 
    void erase(value_type const& t) {

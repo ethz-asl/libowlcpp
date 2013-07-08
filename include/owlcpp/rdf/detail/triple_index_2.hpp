@@ -185,13 +185,7 @@ public:
       v_.insert(converter::get_index(t), converter::get_fragment(t));
    }
 
-   std::size_t size() const {
-      std::size_t n = 0;
-      BOOST_FOREACH(fragment_set const& fs, v_) {
-         n += fs.size();
-      }
-      return n;
-   }
+   std::size_t size() const {return v_.n_fragments();}
 
    bool empty() const {
       BOOST_FOREACH(fragment_set const& fs, v_) {

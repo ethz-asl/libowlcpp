@@ -78,8 +78,10 @@ BOOST_AUTO_TEST_CASE( case03 ) {
 /** Test fragment set
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case04 ) {
-   typedef m::Triple_index<m::Fragment_map_vector, m::Subj_tag, m::Pred_tag, m::Obj_tag, m::Doc_tag>
-   index_t;
+   typedef m::Triple_index<
+            m::Fragment_map_vector,
+            m::Subj_tag, m::Pred_tag, m::Obj_tag, m::Doc_tag
+            > index_t;
    index_t ind;
    ind.insert(triple(0,0,0,0));
    ind.insert(triple(0,0,0,0));

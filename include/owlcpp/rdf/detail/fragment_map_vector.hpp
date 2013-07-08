@@ -59,13 +59,16 @@ public:
 
    typedef iterator const_iterator;
 
+   Fragment_map_vector() : s_(), count_(0) {}
+
    const_iterator begin() const {return const_iterator(s_.begin());}
    const_iterator end() const {return const_iterator(s_.begin(), s_.end());}
 
+   std::size_t n_fragments() const {return count_;}
+
    void insert(const Id id, fragment const& v) {
       if( id() >= s_.size() ) s_.resize(id() + 1);
-      s_[id()].insert(v);
-      ++count_;
+      if( s_[id()].insert(v) ) ++count_;
    }
 
    Set const& operator[](const Id id) const {
