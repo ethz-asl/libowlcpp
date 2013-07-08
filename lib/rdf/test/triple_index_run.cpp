@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    range_t r3 = fs.find(Doc_id(1), Node_id(2), any());
    BOOST_CHECK_EQUAL(r3.size(), 1U);
 
-   fs_t::result<Doc_id,any,Node_id>::type r4 = fs.find(Doc_id(2), any(), Node_id(1));
+   fs_t::result<Doc_id,any,Node_id>::range r4 = fs.find(Doc_id(2), any(), Node_id(1));
    BOOST_CHECK_EQUAL(distance(r4), 2);
 }
 
@@ -83,13 +83,16 @@ BOOST_AUTO_TEST_CASE( case04 ) {
             m::Subj_tag, m::Pred_tag, m::Obj_tag, m::Doc_tag
             > index_t;
    index_t ind;
+   BOOST_CHECK( ind.empty() );
    ind.insert(triple(0,0,0,0));
    ind.insert(triple(0,0,0,0));
    ind.insert(triple(0,1,0,0));
+   BOOST_CHECK( ! ind.empty() );
    BOOST_CHECK_EQUAL(ind.size(), 2U);
-/*
-   ind.find(Node_id(0), any(), any(), any());
-*/
+   BOOST_CHECK_EQUAL(
+            ind.find(Node_id(0), any(), any(), any()).size(),
+            2
+   );
 }
 
 }//namespace test

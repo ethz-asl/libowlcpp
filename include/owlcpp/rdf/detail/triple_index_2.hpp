@@ -18,51 +18,6 @@ part of owlcpp2 project.
 
 namespace owlcpp{ namespace map_triple_detail{
 
-/**@brief
-*******************************************************************************/
-/*
-template<
-   class Tag0, class Tag1, class Tag2, class Tag3,
-   class Iter
-> class Triple_iterator
-         : public boost::iterator_facade<
-           Triple_iterator<Tag0,Tag1,Tag2,Tag3,Iter>,
-           Triple,
-           boost::use_default,
-           Triple
-           > {
-   typedef Triple_index_config<Tag0,Tag1,Tag2,Tag3> config;
-public:
-   typedef Iter base_iterator;
-
-   Triple_iterator(const typename config::el0 el0, const base_iterator i)
-   : el0_(el0), i_(i)
-   {}
-
-private:
-   typename config::el0 el0_;
-   base_iterator i_;
-
-   friend class boost::iterator_core_access;
-
-   void increment() {++i_;}
-
-   bool equal(Triple_iterator const& i) const {
-      return el0_ == i.el0_ && i_ == i.i_;
-   }
-
-   Triple dereference() const {
-      Triple t;
-      typename config::fragment const& f = *i_;
-      boost::fusion::at<Tag0>(t) = el0_;
-      boost::fusion::at<Tag1>(t) = boost::fusion::at_c<1>(f);
-      boost::fusion::at<Tag2>(t) = boost::fusion::at_c<2>(f);
-      boost::fusion::at<Tag3>(t) = boost::fusion::at_c<3>(f);
-      return t;
-   }
-};
-*/
-
 /**@brief Invoke appropriate search algorithm
 @tparam Tag0 numerical tag indicating which triple element is indexed first
 @tparam Tag1 numerical tag indicating which triple element is indexed second
@@ -74,70 +29,140 @@ private:
 @tparam Q3 type of fourth-indexed query element
 *******************************************************************************/
 template<
+   template<class,class> class Map,
    class Tag0, class Tag1, class Tag2, class Tag3,
    class Q0, class Q1, class Q2, class Q3
 > class Triple_find_dispatch;
 
-/*
+/**@brief
+*******************************************************************************/
 template<
+   class Converter,
+   class Iter,
+   class Q0, class Q1, class Q2, class Q3
+> class Triple_iterator
+         : public boost::iterator_facade<
+              Triple_iterator<Converter, Iter, Q0, Q1, Q2, Q3>,
+              Triple,
+              boost::forward_traversal_tag,
+              Triple
+           > {
+
+
+   Triple_iterator(const Iter begin, const Iter end,
+            Q0 const& q0, Q1 const& q1, Q2 const& q2, Q3 const& q3)
+   : begin_(begin),
+     end_(end)
+     {
+
+     }
+
+   Iter begin_;
+   Iter end_;
+
+   friend class boost::iterator_core_access;
+   template<
+      template<class,class> class Map,
+      class Tag0, class Tag1, class Tag2, class Tag3,
+      class Q0, class Q1, class Q2, class Q3
+   > friend class Triple_find_dispatch;
+
+   void increment() {
+      ++iter_;
+   }
+
+   bool equal(Triple_iterator const& i) const {
+      return fi_ == i.fi_ && si_ == i.si_;
+   }
+
+   Triple dereference() const {
+      return Converter::get_triple(fi_->first, *si_);
+   }
+};
+
+/**@brief
+*******************************************************************************/
+template<
+   class Converter,
+   class Iter
+> class Triple_set_iterator
+         : public boost::iterator_facade<
+              Triple_set_iterator<Converter, Iter>,
+              Triple,
+              typename boost::iterator_category<Iter>::type,
+              Triple,
+              std::ptrdiff_t
+           > {
+   typedef typename Converter::el0 index;
+
+   Triple_set_iterator(const index ind, const Iter iter)
+   : ind_(ind), iter_(iter)
+   {}
+
+   index ind_;
+   Iter iter_;
+
+   friend class boost::iterator_core_access;
+   friend class Triple_find_dispatch;
+
+   void increment() {++iter_;}
+   void decrement() {--iter_;}
+   void advance(const std::ptrdiff_t n) {iter_ + n;}
+
+   bool equal(Triple_set_iterator const& i) const {
+      return ind_ == i.ind_ && iter_ == i.iter_;
+   }
+
+   Triple dereference() const {
+      return Converter::get_triple(ind_, *iter_);
+   }
+
+   std::ptrdiff_t distance_to( Triple_set_iterator const& i) const {
+      return i.iter_ - iter_;
+   }
+};
+
+/**@brief Specialize to search within single set
+*******************************************************************************/
+template<
+   template<class,class> class Map,
    class Tag0, class Tag1, class Tag2, class Tag3,
    class Q1, class Q2, class Q3
 > class Triple_find_dispatch<
-   Tag0,Tag1,Tag2,Tag3,typename boost::mpl::at<Triple, Tag0>::type,Q1,Q2,Q3
+   Map,
+   Tag0,Tag1,Tag2,Tag3,
+   typename boost::mpl::at<Triple, Tag0>::type,Q1,Q2,Q3
 > {
-   typedef Triple_index_config<Tag0,Tag1,Tag2,Tag3> config;
-   typedef typename config::fragment_set fragment_set;
-   typedef typename config::storage storage;
-   typedef typename config::el1 el1;
-   typedef typename config::el2 el2;
-   typedef typename config::el3 el3;
-   typedef typename Fragment_find_dispatch<el1,el2,el3,Q1,Q2,Q3>::iterator
-            fragment_iter;
+   typedef typename boost::mpl::at<Triple, Tag0>::type Q0;
+   typedef Convert_fragment<Tag0,Tag1,Tag2,Tag3> convert;
+   typedef typename convert::el0 el0;
+   typedef typename convert::el1 el1;
+   typedef typename convert::el2 el2;
+   typedef typename convert::el3 el3;
+   typedef Fragment_set<el1, el2, el3> fragment_set;
+   typedef Map<el0, fragment_set> storage;
+   typedef typename fragment_set::template result<Q1,Q2,Q3> fs_result;
+   typedef typename fs_result::iterator fragment_iter;
+   typedef typename fs_result::range fragment_range;
 
 public:
-   typedef Triple_iterator<Tag0,Tag1,Tag2,Tag3,fragment_iter> iterator;
+   typedef Triple_set_iterator<convert,fragment_iter> iterator;
    typedef boost::iterator_range<iterator> range;
 
    static range find(
             storage const& v,
-            typename boost::mpl::at<Triple, Tag0>::type const q0,
+            Q0 const& q0,
             Q1 const& q1,
             Q2 const& q2,
             Q3 const& q3
    ) {
-
+      fragment_range fr = v[q0].find(q1,q2,q3);
+      return range(
+               iterator(q0, boost::begin(fr)),
+               iterator(q0, boost::end(fr))
+      );
    }
 };
-*/
-
-/*
-template<class Tag0, class Tag1, class Tag2, class Tag3>
-class Triple_find_dispatch<
-   Tag0,Tag1,Tag2,Tag3,typename boost::mpl::at<Triple, Tag0>::type,any,any,any
-> {
-   typedef Triple_index_config<Tag0,Tag1,Tag2,Tag3> config;
-   typedef typename config::fragment_set fragment_set;
-   typedef typename config::storage storage;
-   typedef typename config::el1 el1;
-   typedef typename config::el2 el2;
-   typedef typename config::el3 el3;
-   typedef typename fragment_set::const_iterator fragment_iter;
-public:
-   typedef Triple_iterator<Tag0,Tag1,Tag2,Tag3,fragment_iter> iterator;
-   typedef boost::iterator_range<iterator> range;
-
-   static range find(
-            storage const& v,
-            typename boost::mpl::at<Triple, Tag0>::type const q0,
-            any const& = any(),
-            any const& = any(),
-            any const& = any()
-   ) {
-//      v[q0()]
-   }
-
-};
-*/
 
 /**@brief 
 *******************************************************************************/
@@ -162,6 +187,13 @@ template<
    typedef Map<el0, fragment_set> storage;
 
 public:
+
+   template<class Q0, class Q1, class Q2, class Q3> struct result {
+      typedef typename
+               Triple_find_dispatch<Map,Tag0,Tag1,Tag2,Tag3,Q0,Q1,Q2,Q3>::range
+               range;
+   };
+
 /*
    typedef typename
          Triple_find_dispatch<Tag0,Tag1,Tag2,Tag3,any,any,any,any>::iterator
@@ -187,15 +219,10 @@ public:
 
    std::size_t size() const {return v_.n_fragments();}
 
-   bool empty() const {
-      BOOST_FOREACH(fragment_set const& fs, v_) {
-         if( ! fs.empty() ) return false;
-      }
-      return true;
-   }
+   bool empty() const {return ! v_.n_fragments();}
 
    template<class Q0, class Q1, class Q2, class Q3>
-   typename Triple_find_dispatch<Tag0,Tag1,Tag2,Tag3,Q0,Q1,Q2,Q3>::range
+   typename result<Q0,Q1,Q2,Q3>::range
    find(Q0 const& q0, Q1 const& q1, Q2 const& q2, Q3 const& q3) const {
       typedef boost::mpl::vector4<Q0,Q1,Q2,Q3> qt;
       typedef typename boost::mpl::at<qt, Tag0>::type qt0;
@@ -208,7 +235,7 @@ public:
       BOOST_MPL_ASSERT((boost::has_equal_to<el2,qt2,bool>));
       BOOST_MPL_ASSERT((boost::has_equal_to<el3,qt3,bool>));
       const boost::fusion::vector4<Q0,Q1,Q2,Q3> q(q0,q1,q2,q3);
-      return Triple_find_dispatch<Tag0,Tag1,Tag2,Tag3,qt0,qt1,qt2,qt3>::find(
+      return Triple_find_dispatch<Map,Tag0,Tag1,Tag2,Tag3,qt0,qt1,qt2,qt3>::find(
             v_,
             boost::fusion::at<Tag0>(q),
             boost::fusion::at<Tag1>(q),

@@ -57,6 +57,31 @@ public:
 };
 
 template<
+   class T0, class T1, class T2,
+   class Q1, class Q2
+> class Fragment_find_dispatch<T0,T1,T2,T0,Q1,Q2> {
+   typedef boost::fusion::vector3<T0,T1,T2> fragment;
+   typedef std::vector<fragment> vector;
+   typedef Fragment_equal<T0,T1,T2,any,Q1,Q2> equal;
+   typedef typename vector::const_iterator iter1;
+   typedef boost::iterator_range<iter1> range_1;
+public:
+   typedef boost::filter_iterator<equal, typename vector::const_iterator> iterator;
+   typedef boost::iterator_range<iterator> range;
+   static range find(vector const& v, const T0 t0, const Q1 t1, const Q2 t2) {
+      range_1 r = boost::equal_range(
+               v,
+               boost::fusion::vector3<T0,any,any>(t0, any(), any())
+      );
+      const equal eq(any(), t1, t2);
+      return range(
+               iterator(eq, boost::begin(r), boost::end(r)),
+               iterator(eq, boost::end(r), boost::end(r))
+      );
+   }
+};
+
+template<
    class T0, class T1, class T2
 > class Fragment_find_dispatch<T0,T1,T2,T0,T1,T2> {
    typedef boost::fusion::vector3<T0,T1,T2> fragment;
@@ -125,10 +150,6 @@ public:
    typedef typename stor_t::const_iterator const_iterator;
    typedef boost::iterator_range<const_iterator> const_range;
 
-   template<class Q0, class Q1, class Q2> struct result {
-      typedef typename Fragment_find_dispatch<T0,T1,T2,Q0,Q1,Q2>::range type;
-   };
-
    const_iterator begin() const {return v_.begin();}
    const_iterator end() const {return v_.end();}
    std::size_t size() const {return v_.size();}
@@ -151,8 +172,14 @@ public:
       v_.erase(i);
    }
 
+   template<class Q0, class Q1, class Q2> struct result {
+      typedef Fragment_find_dispatch<T0,T1,T2,Q0,Q1,Q2> dispatch;
+      typedef typename dispatch::iterator iterator;
+      typedef typename dispatch::range range;
+   };
+
    template<class Q0, class Q1, class Q2>
-   typename Fragment_find_dispatch<T0,T1,T2,Q0,Q1,Q2>::range
+   typename result<Q0,Q1,Q2>::range
    find(const Q0 u0, const Q1 u1, const Q2 u2) const {
       BOOST_MPL_ASSERT((boost::has_equal_to<T0,Q0,bool>));
       BOOST_MPL_ASSERT((boost::has_equal_to<T1,Q1,bool>));
