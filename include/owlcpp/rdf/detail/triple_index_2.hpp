@@ -5,8 +5,10 @@ part of owlcpp2 project.
 *******************************************************************************/
 #ifndef TRIPLE_INDEX_2_HPP_
 #define TRIPLE_INDEX_2_HPP_
+#include <functional>
 #include "boost/foreach.hpp"
 #include "boost/iterator/iterator_facade.hpp"
+#include "boost/iterator/filter_iterator.hpp"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/at.hpp"
 #include "boost/mpl/contains.hpp"
@@ -47,18 +49,37 @@ template<
               boost::forward_traversal_tag,
               Triple
            > {
+//   typedef typename Converter::el0 el0;
+   typedef typename Iter::value_type pair;
 
+   class Equal : public std::unary_function<pair, bool> {
+   public:
+      explicit Equal(const Q0 q0) : q0_(q0) {}
+      bool operator()(pair const& p) const {return p.first == q0_;}
+   private:
+      Q0 q0_;
+   };
+
+   typedef boost::filter_iterator<Equal, Iter> fs_iter;
+   typedef typename Converter::el1 el1;
+   typedef typename Converter::el2 el2;
+   typedef typename Converter::el3 el3;
+   typedef Fragment_set<el1, el2, el3> fragment_set;
+   typedef typename fragment_set::template result<Q1,Q2,Q3> fs_result;
+   typedef typename fs_result::range fs_range;
 
    Triple_iterator(const Iter begin, const Iter end,
             Q0 const& q0, Q1 const& q1, Q2 const& q2, Q3 const& q3)
-   : begin_(begin),
-     end_(end)
+   : begin_(Equal(q0), begin, end),
+     end_(Equal(q0), end, end),
+     fsr_()
      {
-
+      //todo:
      }
 
-   Iter begin_;
-   Iter end_;
+   fs_iter begin_;
+   fs_iter end_;
+   fs_range fsr_;
 
    friend class boost::iterator_core_access;
    template<
@@ -77,6 +98,10 @@ template<
 
    Triple dereference() const {
       return Converter::get_triple(fi_->first, *si_);
+   }
+
+   void find_element() {
+
    }
 };
 

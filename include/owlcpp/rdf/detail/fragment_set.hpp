@@ -21,6 +21,8 @@ part of owlcpp2 project.
 
 namespace owlcpp{ namespace map_triple_detail{
 
+/**@brief Filter iterator predicate
+*******************************************************************************/
 template<
    class T0, class T1, class T2,
    class Q0, class Q1, class Q2
@@ -37,6 +39,13 @@ private:
    stor_t e_;
 };
 
+/**@brief Find fragments in a vector that satisfy predicates
+
+Although the vector is sorted, the general-case search is done sequentially
+because some predicates may require different type of sorting.
+The template is further specialized for the predicates that can take advantage
+of sorting.
+*******************************************************************************/
 template<
    class T0, class T1, class T2,
    class Q0, class Q1, class Q2
@@ -56,6 +65,8 @@ public:
    }
 };
 
+/**@brief
+*******************************************************************************/
 template<
    class T0, class T1, class T2,
    class Q1, class Q2
@@ -81,6 +92,8 @@ public:
    }
 };
 
+/**@brief
+*******************************************************************************/
 template<
    class T0, class T1, class T2
 > class Fragment_find_dispatch<T0,T1,T2,T0,T1,T2> {
@@ -94,6 +107,8 @@ public:
    }
 };
 
+/**@brief
+*******************************************************************************/
 template<
    class T0, class T1, class T2
 > class Fragment_find_dispatch<T0,T1,T2,T0,T1,any> {
@@ -110,6 +125,8 @@ public:
    }
 };
 
+/**@brief
+*******************************************************************************/
 template<
    class T0, class T1, class T2
 > class Fragment_find_dispatch<T0,T1,T2,T0,any,any> {
@@ -126,6 +143,8 @@ public:
    }
 };
 
+/**@brief
+*******************************************************************************/
 template<
    class T0, class T1, class T2
 > class Fragment_find_dispatch<T0,T1,T2,any,any,any> {
