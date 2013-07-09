@@ -40,18 +40,19 @@ template<
 *******************************************************************************/
 template<
    class Converter,
-   class Iter,
-   class Q0, class Q1, class Q2, class Q3
+   class Fs_Iter,
+   class Q1, class Q2, class Q3
 > class Triple_iterator
          : public boost::iterator_facade<
-              Triple_iterator<Converter, Iter, Q0, Q1, Q2, Q3>,
+              Triple_iterator<Converter, Fs_Iter, Q1, Q2, Q3>,
               Triple,
               boost::forward_traversal_tag,
               Triple
            > {
 //   typedef typename Converter::el0 el0;
-   typedef typename Iter::value_type pair;
+   typedef typename Fs_Iter::value_type pair;
 
+/*
    class Equal : public std::unary_function<pair, bool> {
    public:
       explicit Equal(const Q0 q0) : q0_(q0) {}
@@ -59,54 +60,70 @@ template<
    private:
       Q0 q0_;
    };
+*/
 
-   typedef boost::filter_iterator<Equal, Iter> fs_iter;
    typedef typename Converter::el1 el1;
    typedef typename Converter::el2 el2;
    typedef typename Converter::el3 el3;
    typedef Fragment_set<el1, el2, el3> fragment_set;
-   typedef typename fragment_set::template result<Q1,Q2,Q3> fs_result;
-   typedef typename fs_result::range fs_range;
+   typedef typename fragment_set::template result<Q1,Q2,Q3> fragment_search;
+   typedef typename fragment_search::iterator f_iter;
+   typedef typename fragment_search::range f_range;
 
-   Triple_iterator(const Iter begin, const Iter end,
-            Q0 const& q0, Q1 const& q1, Q2 const& q2, Q3 const& q3)
-   : begin_(Equal(q0), begin, end),
-     end_(Equal(q0), end, end),
-     fsr_()
+   Triple_iterator(const Fs_Iter begin, const Fs_Iter end,
+            Q1 const& q1, Q2 const& q2, Q3 const& q3)
+   : begin_(begin),
+     end_(end),
+     q1_(q1),
+     q2_(q2),
+     q3_(q3),
+     fsr_(get_fragment_range())
      {
-      //todo:
+      ensure_end_or_match();
      }
 
-   fs_iter begin_;
-   fs_iter end_;
-   fs_range fsr_;
+   Fs_Iter begin_;
+   Fs_Iter end_;
+   Q1 q1_;
+   Q2 q2_;
+   Q3 q3_;
+   f_range fsr_;
 
    friend class boost::iterator_core_access;
    template<
-      template<class,class> class Map,
-      class Tag0, class Tag1, class Tag2, class Tag3,
-      class Q0, class Q1, class Q2, class Q3
+      template<class,class> class,
+      class, class, class, class,
+      class, class, class, class
    > friend class Triple_find_dispatch;
 
    void increment() {
-      ++iter_;
+      fsr_.advance_begin(1);
+      ensure_end_or_match();
    }
 
    bool equal(Triple_iterator const& i) const {
-      return fi_ == i.fi_ && si_ == i.si_;
+      return begin_ == i.begin_ && fsr_.begin() == i.fsr_.begin();
    }
 
    Triple dereference() const {
-      return Converter::get_triple(fi_->first, *si_);
+      return Converter::get_triple(begin_->first, fsr_.front());
    }
 
-   void find_element() {
+   void ensure_end_or_match() {
+      while( ! fsr_ && (begin_ != end_) ) {
+         ++begin_;
+         fsr_ = get_fragment_range();
+      }
+   }
 
+   f_range get_fragment_range() {
+      return begin_ == end_ ? f_range() : begin_->second.find(q1_,q2_,q3_);
    }
 };
 
 /**@brief
 *******************************************************************************/
+/*
 template<
    class Converter,
    class Iter
@@ -146,6 +163,7 @@ template<
       return i.iter_ - iter_;
    }
 };
+*/
 
 /**@brief Specialize to search within single set
 *******************************************************************************/
@@ -171,7 +189,7 @@ template<
    typedef typename fs_result::range fragment_range;
 
 public:
-   typedef Triple_set_iterator<convert,fragment_iter> iterator;
+   typedef Triple_iterator<convert,fragment_iter> iterator;
    typedef boost::iterator_range<iterator> range;
 
    static range find(
