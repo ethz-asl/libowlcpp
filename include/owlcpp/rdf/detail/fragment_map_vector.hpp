@@ -7,15 +7,126 @@ part of owlcpp project.
 #define FRAGMENT_MAP_VECTOR_HPP_
 #include <vector>
 #include <utility>
+#include <functional>
+#include "boost/iterator/filter_iterator.hpp"
 #include "boost/assert.hpp"
 #include "boost/iterator/iterator_facade.hpp"
+#include "boost/range.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
 
 /**@brief 
 *******************************************************************************/
-template<class Id, class Set> class Fragment_map_vector {
+template<class Id, class Iter> class Fvm_iterator
+         : public boost::iterator_facade<
+              Fvm_iterator<Id,Iter>,
+              std::pair<Id, typename Iter::value_type const&>,
+              boost::random_access_traversal_tag,
+              std::pair<Id, typename Iter::value_type const&>
+> {
+public:
+   explicit Fvm_iterator(const Iter begin) : begin_(begin), i_(begin) {}
+   Fvm_iterator(const Iter begin, const Iter i)
+   : begin_(begin), i_(i) {}
+
+private:
+   Iter begin_;
+   Iter i_;
+
+   friend class boost::iterator_core_access;
+
+   void increment() {++i_;}
+
+   bool equal(Fvm_iterator const& i) const {
+      return begin_ == i.begin_ && i_ == i.i_;
+   }
+
+   std::pair<Id, typename Iter::value_type const&> dereference() const {
+      BOOST_ASSERT(begin_ <= i_);
+      const Id id(static_cast<unsigned>(i_ - begin_));
+      return value_type(id, *i_);
+   }
+};
+
+/**@brief Fragment map vector configuration
+*******************************************************************************/
+template<class Id, class Set> struct Fmv_config {
+   typedef typename Set::value_type fragment;
+   typedef std::pair<Id, Set const&> value_type;
    typedef std::vector<Set> storage;
+   typedef Fvm_iterator<Id, typename storage::const_iterator> iterator;
+
+};
+
+/**@brief
+*******************************************************************************/
+template<class Id, class Set, class Q> class Fmv_search_dispatch {
+   typedef Fmv_config<Id,Set> config;
+   typedef typename config::storage storage;
+   typedef typename config::value_type value_type;
+
+   class Equal : public std::unary_function<value_type, bool> {
+   public:
+      explicit Equal(const Q q) : q_(q) {}
+      bool operator()(value_type const& p) const {return p.first == q_;}
+   private:
+      Q q_;
+   };
+
+public:
+   typedef boost::filter_iterator<Equal, typename config::iterator> iterator;
+   typedef boost::iterator_range<iterator> range;
+
+   static range find(storage const& s, const Q q) {
+      const Equal eq(q);
+      return range(
+               iterator(eq, s.begin(), s.end()),
+               iterator(eq, s.end(), s.end())
+      );
+   }
+};
+
+template<class Id, class Set> class Fmv_search_dispatch<Id,Set,Id> {
+   typedef Fmv_config<Id,Set> config;
+   typedef typename config::storage storage;
+public:
+   typedef typename config::iterator iterator;
+   typedef boost::iterator_range<iterator> range;
+
+   static range find(storage const& s, const Id id) {
+      if( id() >= s.size() ) {
+         return range(iterator(s.end()), iterator(s.end()));
+      }
+      return range(
+               iterator(s.begin() + id()),
+               iterator(s.begin() + id() + 1)
+      );
+   }
+};
+
+template<class Id, class Set> class Fmv_search_dispatch<Id,Set,any> {
+   typedef Fmv_config<Id,Set> config;
+   typedef typename config::storage storage;
+public:
+   typedef typename config::iterator iterator;
+   typedef boost::iterator_range<iterator> range;
+
+   static range find(storage const& s, any const&) {
+      return range(iterator(s.begin()), iterator(s.end()));
+   }
+};
+
+
+/**@brief
+*******************************************************************************/
+template<class Id, class Set> class Fragment_map_vector {
+   typedef Fmv_config<Id,Set> config;
+public:
+   typedef typename config::fragment fragment;
+   typedef typename config::value_type value_type;
+
+private:
+   typedef typename config::storage storage;
 
    static Set const& empty_set() {
       static const Set s;
@@ -23,41 +134,9 @@ template<class Id, class Set> class Fragment_map_vector {
    }
 
 public:
-   typedef typename Set::value_type fragment;
-   typedef std::pair<Id, Set const&> value_type;
-
-   class iterator : public boost::iterator_facade<
-      iterator,
-      value_type,
-      boost::random_access_traversal_tag,
-      value_type
-   > {
-      typedef typename storage::const_iterator base_iter;
-
-      explicit iterator(const base_iter begin) : begin_(begin), i_(begin) {}
-      iterator(const base_iter begin, const base_iter i)
-      : begin_(begin), i_(i) {}
-
-      base_iter begin_;
-      base_iter i_;
-
-      friend class boost::iterator_core_access;
-      friend class Fragment_map_vector;
-
-      void increment() {++i_;}
-
-      bool equal(iterator const& i) const {
-         return begin_ == i.begin_ && i_ == i.i_;
-      }
-
-      value_type dereference() const {
-         BOOST_ASSERT(begin_ <= i_);
-         const Id id(static_cast<unsigned>(i_ - begin_));
-         return value_type(id, *i_);
-      }
-   };
-
+   typedef typename config::iterator iterator;
    typedef iterator const_iterator;
+   typedef boost::iterator_range<iterator> range;
 
    Fragment_map_vector() : s_(), count_(0) {}
 
@@ -74,6 +153,16 @@ public:
    Set const& operator[](const Id id) const {
       if( id() >= s_.size() ) return empty_set();
       return s_[id()];
+   }
+
+   template<class Q> struct result {
+      typedef typename Fmv_search_dispatch<Id,Set,Q>::iterator iterator;
+      typedef typename Fmv_search_dispatch<Id,Set,Q>::range range;
+   };
+
+   template<class Q> typename result<Q>::range
+   find(Q const& q) const {
+      return Fmv_search_dispatch<Id,Set,Q>::find(s_, q);
    }
 
 private:
