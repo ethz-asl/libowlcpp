@@ -49,19 +49,6 @@ template<
               boost::forward_traversal_tag,
               Triple
            > {
-//   typedef typename Converter::el0 el0;
-   typedef typename Fs_Iter::value_type pair;
-
-/*
-   class Equal : public std::unary_function<pair, bool> {
-   public:
-      explicit Equal(const Q0 q0) : q0_(q0) {}
-      bool operator()(pair const& p) const {return p.first == q0_;}
-   private:
-      Q0 q0_;
-   };
-*/
-
    typedef typename Converter::el1 el1;
    typedef typename Converter::el2 el2;
    typedef typename Converter::el3 el3;
@@ -164,6 +151,45 @@ template<
    }
 };
 */
+
+/**@brief
+*******************************************************************************/
+template<
+   template<class,class> class Map,
+   class Tag0, class Tag1, class Tag2, class Tag3,
+   class Q0, class Q1, class Q2, class Q3
+> class Triple_find_dispatch {
+   typedef Convert_fragment<Tag0,Tag1,Tag2,Tag3> convert;
+   typedef typename convert::el0 el0;
+   typedef typename convert::el1 el1;
+   typedef typename convert::el2 el2;
+   typedef typename convert::el3 el3;
+   typedef Fragment_set<el1, el2, el3> fragment_set;
+   typedef Map<el0, fragment_set> storage;
+   typedef typename storage::iterator fs_iter;
+   typedef typename fs_iter::value_type fs_value;
+
+   typedef boost::filter_iterator<Equal, fs_iter> fsf_iter;
+
+public:
+   typedef Triple_iterator<convert, fsf_iter, Q1, Q2, Q3> iterator;
+   typedef boost::iterator_range<iterator> range;
+
+   static range find(
+            storage const& v,
+            Q0 const& q0,
+            Q1 const& q1,
+            Q2 const& q2,
+            Q3 const& q3
+   ) {
+      fragment_range fr = v[q0].find(q1,q2,q3);
+      return range(
+               iterator(q0, boost::begin(fr)),
+               iterator(q0, boost::end(fr))
+      );
+   }
+
+};
 
 /**@brief Specialize to search within single set
 *******************************************************************************/
