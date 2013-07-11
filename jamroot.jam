@@ -28,8 +28,7 @@ constant LIB_REQUIREMENTS :
 if ! $(BOOST) {
    EXIT "
    ERROR:
-   Please set variable BOOST to location and version of Boost library.
-   See doc/user-config.jam
+   Please set variable BOOST in user-config.jam to location and version of Boost library.
    " ; 
 }
 use-project /boost : $(BOOST[1]) ;

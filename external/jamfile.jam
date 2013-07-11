@@ -1,15 +1,17 @@
 # owlcpp/external/jamfile.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2010-2
+# Copyright Mikhail K Levin 2010-3
 
 project external ;
+import path ;
+import sequence ;
+import numbers ;
 
 if ! $(RAPTOR) { 
    EXIT "
    ERROR:
-   Please set variable RAPTOR to location and version of expat library.
-   See doc/user-config.jam
+   Please set variable RAPTOR in user-config.jam to location and version of Raptor library.
    " ;
 }
 using ext/raptor : $(RAPTOR[2]) : $(RAPTOR[1]) ;
@@ -19,14 +21,26 @@ alias raptor : /ext/raptor//raptor ;
 if ! $(FACTPP) { 
    EXIT "
    ERROR:
-   Please set variable FACTPP to location and version of FaCT++ library.
-   See doc/user-config.jam
+   Please set variable FACTPP in user-config.jam to location and version of FaCT++ library.
    " ;
 }
+
+if [ numbers.less 
+      [ sequence.length 
+         [ path.glob [ path.join $(FACTPP[1]) src Kernel ] : *.h *.cpp  ] 
+      ]
+      100
+   ] {
+   echo "
+   WARNING:
+   Some FaCT++ source files are missing.
+   Please check variable FACTPP in user-config.jam.
+   " ;
+}
+
 using ext/factpp : $(FACTPP[2]) : $(FACTPP[1]) ;
 alias factpp_kernel 
    : /ext/factpp//factpp_kernel 
-   : #<link>static 
 ;
 
 # libxml2 (not Expat) is used with Raptor because it better handles encodings.
@@ -37,8 +51,7 @@ alias factpp_kernel
 if ! $(LIBXML2) { 
    EXIT "
    ERROR:
-   Please set variable LIBXML2 to location of libxml2 library source.
-   See doc/user-config.jam
+   Please set variable LIBXML2 in user-config.jam to location of libxml2 library source.
    " ;
 }
 
