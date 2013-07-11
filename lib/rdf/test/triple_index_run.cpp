@@ -6,6 +6,7 @@ part of owlcpp2 project.
 #define BOOST_TEST_MODULE triple_index_run
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
+#include "boost/foreach.hpp"
 
 #include "owlcpp/rdf/detail/fragment_set.hpp"
 #include "owlcpp/rdf/detail/triple_index_2.hpp"
@@ -75,7 +76,7 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    fmv_t::const_iterator i = fmv.begin();
 }
 
-/** Test fragment set
+/** Test triple index Subj, Pred, Obj, Doc
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case04 ) {
    typedef m::Triple_index<
@@ -93,6 +94,35 @@ BOOST_AUTO_TEST_CASE( case04 ) {
             ind.find(Node_id(0), any(), any(), any()).size(),
             2
    );
+
+   BOOST_FOREACH(const Triple t, ind) {
+      std::cout << t << std::endl;
+   }
+}
+
+/** Test triple index Obj, Doc, Subj, Pred
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case05 ) {
+   typedef m::Triple_index<
+            m::Fragment_map_vector,
+            m::Obj_tag, m::Doc_tag, m::Subj_tag, m::Pred_tag
+            > index_t;
+   index_t ind;
+   BOOST_CHECK( ind.empty() );
+   ind.insert(triple(0,0,0,0));
+   ind.insert(triple(0,0,0,0));
+   ind.insert(triple(0,1,0,0));
+   BOOST_CHECK( ! ind.empty() );
+   BOOST_CHECK_EQUAL(ind.size(), 2U);
+   BOOST_CHECK_EQUAL(
+            ind.find(any(), any(), Node_id(0), any()).size(),
+            2
+   );
+
+   BOOST_FOREACH(const Triple t, ind) {
+      std::cout << t << std::endl;
+   }
+   BOOST_ERROR("");
 }
 
 }//namespace test

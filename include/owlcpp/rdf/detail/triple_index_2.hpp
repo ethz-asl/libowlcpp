@@ -9,6 +9,7 @@ part of owlcpp2 project.
 #include "boost/foreach.hpp"
 #include "boost/iterator/iterator_facade.hpp"
 #include "boost/iterator/filter_iterator.hpp"
+#include "boost/iterator/transform_iterator.hpp"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/at.hpp"
 #include "boost/mpl/contains.hpp"
@@ -39,6 +40,39 @@ template<
 /**@brief
 *******************************************************************************/
 template<
+   class Conv, /**< convert fragment to triple */
+   class Iter /**< iterator over fragments */
+> class Triple_from_fragment_iterator {
+   typedef typename Conv::el0 el0;
+
+   class Convert : public std::unary_function<typename Conv::fragment, Triple> {
+   public:
+      Convert() {}
+      explicit Convert(const el0 id) : id_(id) {}
+      Triple operator()(typename Conv::fragment const& f) const {
+         return Conv::get_triple(id_, f);
+      }
+   private:
+      el0 id_;
+   };
+
+   struct Iterator
+            : public boost::transform_iterator<Convert,Iter,Triple,Triple> {
+
+      Iterator() {}
+
+      Iterator(Iter const& i, const el0 id)
+      : boost::transform_iterator<Convert,Iter,Triple,Triple>(i, Convert(id))
+        {}
+   };
+
+public:
+   typedef Iterator type;
+};
+
+/**@brief
+*******************************************************************************/
+template<
    class Converter,
    class Fs_Iter,
    class Q1, class Q2, class Q3
@@ -49,6 +83,7 @@ template<
               boost::forward_traversal_tag,
               Triple
            > {
+   typedef typename Converter::el0 el0;
    typedef typename Converter::el1 el1;
    typedef typename Converter::el2 el2;
    typedef typename Converter::el3 el3;
@@ -56,7 +91,10 @@ template<
    typedef typename fragment_set::template result<Q1,Q2,Q3> fragment_search;
    typedef typename fragment_search::iterator f_iter;
    typedef typename fragment_search::range f_range;
+   typedef typename Triple_from_fragment_iterator<Converter,f_iter>::type t_iter;
+   typedef boost::iterator_range<t_iter> t_range;
 
+public:
    Triple_merge_iterator(const Fs_Iter begin, const Fs_Iter end,
             Q1 const& q1, Q2 const& q2, Q3 const& q3)
    : begin_(begin),
@@ -64,89 +102,49 @@ template<
      q1_(q1),
      q2_(q2),
      q3_(q3),
-     fsr_(get_fragment_range())
+     tr_(get_fragment_range())
      {
       ensure_end_or_match();
      }
 
+private:
    Fs_Iter begin_;
    Fs_Iter end_;
    Q1 q1_;
    Q2 q2_;
    Q3 q3_;
-   f_range fsr_;
+   t_range tr_;
 
    friend class boost::iterator_core_access;
-   template<
-      template<class,class> class,
-      class, class, class, class,
-      class, class, class, class
-   > friend class Triple_find_dispatch;
 
    void increment() {
-      fsr_.advance_begin(1);
+      tr_.advance_begin(1);
       ensure_end_or_match();
    }
 
    bool equal(Triple_merge_iterator const& i) const {
-      return begin_ == i.begin_ && fsr_.begin() == i.fsr_.begin();
+      return begin_ == i.begin_ && tr_.begin() == i.tr_.begin();
    }
 
    Triple dereference() const {
-      return Converter::get_triple(begin_->first, fsr_.front());
+      return tr_.front();
    }
 
    void ensure_end_or_match() {
-      while( ! fsr_ && (begin_ != end_) ) {
+      while( ! tr_ && (begin_ != end_) ) {
          ++begin_;
-         fsr_ = get_fragment_range();
+         tr_ = get_fragment_range();
       }
    }
 
-   f_range get_fragment_range() {
-      return begin_ == end_ ? f_range() : begin_->second.find(q1_,q2_,q3_);
-   }
-};
-
-/**@brief
-*******************************************************************************/
-template<
-   class Converter,
-   class Iter
-> class Triple_set_iterator
-         : public boost::iterator_facade<
-              Triple_set_iterator<Converter, Iter>,
-              Triple,
-              typename boost::iterator_category<Iter>::type,
-              Triple,
-              std::ptrdiff_t
-           > {
-   typedef typename Converter::el0 index;
-
-   Triple_set_iterator(const index ind, const Iter iter)
-   : ind_(ind), iter_(iter)
-   {}
-
-   index ind_;
-   Iter iter_;
-
-   friend class boost::iterator_core_access;
-   friend class Triple_find_dispatch;
-
-   void increment() {++iter_;}
-   void decrement() {--iter_;}
-   void advance(const std::ptrdiff_t n) {iter_ + n;}
-
-   bool equal(Triple_set_iterator const& i) const {
-      return ind_ == i.ind_ && iter_ == i.iter_;
-   }
-
-   Triple dereference() const {
-      return Converter::get_triple(ind_, *iter_);
-   }
-
-   std::ptrdiff_t distance_to( Triple_set_iterator const& i) const {
-      return i.iter_ - iter_;
+   t_range get_fragment_range() {
+      if( begin_ == end_ ) return t_range();
+      const f_range r = begin_->second.find(q1_,q2_,q3_);
+      const el0 id = begin_->first;
+      return t_range(
+               t_iter(r.begin(), id),
+               t_iter(r.end(), id)
+      );
    }
 };
 
@@ -184,12 +182,10 @@ public:
                iterator(r.end(), r.end(), q1,q2,q3)
       );
    }
-
 };
 
 /**@brief Specialize to search within single set
 *******************************************************************************/
-/*
 template<
    template<class,class> class Map,
    class Tag0, class Tag1, class Tag2, class Tag3,
@@ -212,7 +208,7 @@ template<
    typedef typename fs_result::range fragment_range;
 
 public:
-   typedef Triple_iterator<convert,fragment_iter> iterator;
+   typedef typename Triple_from_fragment_iterator<convert,fragment_iter>::type iterator;
    typedef boost::iterator_range<iterator> range;
 
    static range find(
@@ -224,12 +220,11 @@ public:
    ) {
       fragment_range fr = v[q0].find(q1,q2,q3);
       return range(
-               iterator(q0, boost::begin(fr)),
-               iterator(q0, boost::end(fr))
+               iterator(boost::begin(fr), q0),
+               iterator(boost::end(fr), q0)
       );
    }
 };
-*/
 
 /**@brief 
 *******************************************************************************/
@@ -259,26 +254,21 @@ public:
       typedef typename
                Triple_find_dispatch<Map,Tag0,Tag1,Tag2,Tag3,Q0,Q1,Q2,Q3>::range
                range;
+      typedef typename
+               Triple_find_dispatch<Map,Tag0,Tag1,Tag2,Tag3,Q0,Q1,Q2,Q3>::iterator
+               iterator;
    };
 
-/*
-   typedef typename
-         Triple_find_dispatch<Tag0,Tag1,Tag2,Tag3,any,any,any,any>::iterator
-         iterator;
+   typedef typename result<any,any,any,any>::iterator iterator;
    typedef iterator const_iterator;
 
    const_iterator begin() const {
-      return Triple_find_dispatch<
-                  Tag0,Tag1,Tag2,Tag3,any,any,any,any
-            >::begin(v_);
+      return const_iterator(v_.begin(), v_.end(), any(),any(),any());
    }
 
    const_iterator end() const {
-      return Triple_find_dispatch<
-                  Tag0,Tag1,Tag2,Tag3,any,any,any,any
-            >::end(v_);
+      return const_iterator(v_.end(), v_.end(), any(),any(),any());
    }
-*/
 
    void insert(Triple const& t) {
       v_.insert(converter::get_index(t), converter::get_fragment(t));

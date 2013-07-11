@@ -57,7 +57,6 @@ template<class Id, class Set> struct Fmv_config {
    typedef std::pair<Id, Set const&> value_type;
    typedef std::vector<Set> storage;
    typedef Fvm_iterator<Id, typename storage::const_iterator> iterator;
-
 };
 
 /**@brief
