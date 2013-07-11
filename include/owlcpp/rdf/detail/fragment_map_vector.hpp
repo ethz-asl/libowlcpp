@@ -25,6 +25,8 @@ template<class Id, class Iter> class Fvm_iterator
               std::pair<Id, typename Iter::value_type const&>
 > {
 public:
+   typedef std::pair<Id, typename Iter::value_type const&> value_type;
+
    explicit Fvm_iterator(const Iter begin) : begin_(begin), i_(begin) {}
    Fvm_iterator(const Iter begin, const Iter i)
    : begin_(begin), i_(i) {}
@@ -41,7 +43,7 @@ private:
       return begin_ == i.begin_ && i_ == i.i_;
    }
 
-   std::pair<Id, typename Iter::value_type const&> dereference() const {
+   value_type dereference() const {
       BOOST_ASSERT(begin_ <= i_);
       const Id id(static_cast<unsigned>(i_ - begin_));
       return value_type(id, *i_);

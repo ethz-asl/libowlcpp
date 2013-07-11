@@ -42,9 +42,9 @@ template<
    class Converter,
    class Fs_Iter,
    class Q1, class Q2, class Q3
-> class Triple_iterator
+> class Triple_merge_iterator
          : public boost::iterator_facade<
-              Triple_iterator<Converter, Fs_Iter, Q1, Q2, Q3>,
+              Triple_merge_iterator<Converter, Fs_Iter, Q1, Q2, Q3>,
               Triple,
               boost::forward_traversal_tag,
               Triple
@@ -57,7 +57,7 @@ template<
    typedef typename fragment_search::iterator f_iter;
    typedef typename fragment_search::range f_range;
 
-   Triple_iterator(const Fs_Iter begin, const Fs_Iter end,
+   Triple_merge_iterator(const Fs_Iter begin, const Fs_Iter end,
             Q1 const& q1, Q2 const& q2, Q3 const& q3)
    : begin_(begin),
      end_(end),
@@ -88,7 +88,7 @@ template<
       ensure_end_or_match();
    }
 
-   bool equal(Triple_iterator const& i) const {
+   bool equal(Triple_merge_iterator const& i) const {
       return begin_ == i.begin_ && fsr_.begin() == i.fsr_.begin();
    }
 
@@ -110,7 +110,6 @@ template<
 
 /**@brief
 *******************************************************************************/
-/*
 template<
    class Converter,
    class Iter
@@ -150,7 +149,6 @@ template<
       return i.iter_ - iter_;
    }
 };
-*/
 
 /**@brief
 *******************************************************************************/
@@ -166,13 +164,11 @@ template<
    typedef typename convert::el3 el3;
    typedef Fragment_set<el1, el2, el3> fragment_set;
    typedef Map<el0, fragment_set> storage;
-   typedef typename storage::iterator fs_iter;
-   typedef typename fs_iter::value_type fs_value;
-
-   typedef boost::filter_iterator<Equal, fs_iter> fsf_iter;
+   typedef typename storage::template result<Q0>::iterator fs_iter;
+   typedef typename storage::template result<Q0>::range fs_range;
 
 public:
-   typedef Triple_iterator<convert, fsf_iter, Q1, Q2, Q3> iterator;
+   typedef Triple_merge_iterator<convert, fs_iter, Q1, Q2, Q3> iterator;
    typedef boost::iterator_range<iterator> range;
 
    static range find(
@@ -182,10 +178,10 @@ public:
             Q2 const& q2,
             Q3 const& q3
    ) {
-      fragment_range fr = v[q0].find(q1,q2,q3);
+      const fs_range r = v.find(q0);
       return range(
-               iterator(q0, boost::begin(fr)),
-               iterator(q0, boost::end(fr))
+               iterator(r.begin(), r.end(), q1,q2,q3),
+               iterator(r.end(), r.end(), q1,q2,q3)
       );
    }
 
@@ -193,6 +189,7 @@ public:
 
 /**@brief Specialize to search within single set
 *******************************************************************************/
+/*
 template<
    template<class,class> class Map,
    class Tag0, class Tag1, class Tag2, class Tag3,
@@ -232,6 +229,7 @@ public:
       );
    }
 };
+*/
 
 /**@brief 
 *******************************************************************************/
