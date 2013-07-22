@@ -6,7 +6,8 @@
 import path ;
 local smpl_dir = [ path.native $(SMPL_DATA) ] ;
 local tmp_dir = [ path.native $(TEMP_DIR) ] ;
-project
+
+project owlcpp/lib/logic/test
    : 
    : requirements
       <include>../

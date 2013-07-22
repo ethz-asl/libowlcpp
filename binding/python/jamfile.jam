@@ -3,7 +3,7 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011-3
 
-project binding/python
+project owlcpp/binding/python
     : build-dir $(PYTHON_OUT)
     : requirements 
       <library>/boost/python//boost_python 

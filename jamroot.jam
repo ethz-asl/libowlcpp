@@ -59,7 +59,6 @@ alias test-py
 ;
 explicit test test-py ;
 
-build-project lib ;
 use-project /owlcpp : . ;
 alias rdf : lib/rdf ;
 alias io : lib/io ;
