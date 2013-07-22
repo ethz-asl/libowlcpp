@@ -250,7 +250,9 @@ template<
 
 public:
 
-   template<class Q0, class Q1, class Q2, class Q3> struct result {
+   template<class Subj, class Pred, class Obj, class Doc> class result {
+      typedef boost::fusion::vector4<Subj,Pred,Obj,Doc> vector1;
+   public:
       typedef typename
                Triple_find_dispatch<Map,Tag0,Tag1,Tag2,Tag3,Q0,Q1,Q2,Q3>::range
                range;
@@ -278,10 +280,10 @@ public:
 
    bool empty() const {return ! v_.n_fragments();}
 
-   template<class Q0, class Q1, class Q2, class Q3>
-   typename result<Q0,Q1,Q2,Q3>::range
-   find(Q0 const& q0, Q1 const& q1, Q2 const& q2, Q3 const& q3) const {
-      typedef boost::mpl::vector4<Q0,Q1,Q2,Q3> qt;
+   template<class Subj, class Pred, class Obj, class Doc>
+   typename result<Subj,Pred,Obj,Doc>::range
+   find(Subj const& subj, Pred const& pred, Obj const& obj, Doc const& doc) const {
+      typedef boost::mpl::vector4<Subj,Pred,Obj,Doc> qt;
       typedef typename boost::mpl::at<qt, Tag0>::type qt0;
       typedef typename boost::mpl::at<qt, Tag1>::type qt1;
       typedef typename boost::mpl::at<qt, Tag2>::type qt2;
@@ -291,7 +293,7 @@ public:
       BOOST_MPL_ASSERT((boost::has_equal_to<el1,qt1,bool>));
       BOOST_MPL_ASSERT((boost::has_equal_to<el2,qt2,bool>));
       BOOST_MPL_ASSERT((boost::has_equal_to<el3,qt3,bool>));
-      const boost::fusion::vector4<Q0,Q1,Q2,Q3> q(q0,q1,q2,q3);
+      const boost::fusion::vector4<Subj,Pred,Obj,Doc> q(subj,pred,obj,doc);
       return Triple_find_dispatch<Map,Tag0,Tag1,Tag2,Tag3,qt0,qt1,qt2,qt3>::find(
             v_,
             boost::fusion::at<Tag0>(q),
