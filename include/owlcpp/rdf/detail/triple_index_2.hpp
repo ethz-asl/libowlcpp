@@ -7,6 +7,7 @@ part of owlcpp2 project.
 #define TRIPLE_INDEX_2_HPP_
 #include <functional>
 #include "boost/foreach.hpp"
+#include "boost/fusion/view/nview.hpp"
 #include "boost/iterator/iterator_facade.hpp"
 #include "boost/iterator/filter_iterator.hpp"
 #include "boost/iterator/transform_iterator.hpp"
@@ -251,14 +252,36 @@ template<
 public:
 
    template<class Subj, class Pred, class Obj, class Doc> class result {
-      typedef boost::fusion::vector4<Subj,Pred,Obj,Doc> vector1;
+      typedef boost::fusion::vector4<Subj,Pred,Obj,Doc> vector;
+      typedef typename boost::mpl::at<vector, Tag0>::type qt0;
+      typedef typename boost::mpl::at<vector, Tag1>::type qt1;
+      typedef typename boost::mpl::at<vector, Tag2>::type qt2;
+      typedef typename boost::mpl::at<vector, Tag3>::type qt3;
    public:
-      typedef typename
-               Triple_find_dispatch<Map,Tag0,Tag1,Tag2,Tag3,Q0,Q1,Q2,Q3>::range
-               range;
-      typedef typename
-               Triple_find_dispatch<Map,Tag0,Tag1,Tag2,Tag3,Q0,Q1,Q2,Q3>::iterator
-               iterator;
+      typedef Triple_find_dispatch<
+                  Map,Tag0,Tag1,Tag2,Tag3, qt0, qt1, qt2, qt3
+               > dispatch;
+      typedef typename dispatch::range range;
+      typedef typename dispatch::iterator iterator;
+
+      static range find(
+               storage const& v,
+               Subj const& subj, Pred const& pred,
+               Obj const& obj, Doc const& doc
+      ) {
+         BOOST_MPL_ASSERT((boost::has_equal_to<el0,qt0,bool>));
+         BOOST_MPL_ASSERT((boost::has_equal_to<el1,qt1,bool>));
+         BOOST_MPL_ASSERT((boost::has_equal_to<el2,qt2,bool>));
+         BOOST_MPL_ASSERT((boost::has_equal_to<el3,qt3,bool>));
+         const vector q(subj, pred, obj, doc);
+         return dispatch::find(
+                  v,
+                  boost::fusion::at<Tag0>(q),
+                  boost::fusion::at<Tag1>(q),
+                  boost::fusion::at<Tag2>(q),
+                  boost::fusion::at<Tag3>(q)
+         );
+      }
    };
 
    typedef typename result<any,any,any,any>::iterator iterator;
@@ -283,24 +306,7 @@ public:
    template<class Subj, class Pred, class Obj, class Doc>
    typename result<Subj,Pred,Obj,Doc>::range
    find(Subj const& subj, Pred const& pred, Obj const& obj, Doc const& doc) const {
-      typedef boost::mpl::vector4<Subj,Pred,Obj,Doc> qt;
-      typedef typename boost::mpl::at<qt, Tag0>::type qt0;
-      typedef typename boost::mpl::at<qt, Tag1>::type qt1;
-      typedef typename boost::mpl::at<qt, Tag2>::type qt2;
-      typedef typename boost::mpl::at<qt, Tag3>::type qt3;
-
-      BOOST_MPL_ASSERT((boost::has_equal_to<el0,qt0,bool>));
-      BOOST_MPL_ASSERT((boost::has_equal_to<el1,qt1,bool>));
-      BOOST_MPL_ASSERT((boost::has_equal_to<el2,qt2,bool>));
-      BOOST_MPL_ASSERT((boost::has_equal_to<el3,qt3,bool>));
-      const boost::fusion::vector4<Subj,Pred,Obj,Doc> q(subj,pred,obj,doc);
-      return Triple_find_dispatch<Map,Tag0,Tag1,Tag2,Tag3,qt0,qt1,qt2,qt3>::find(
-            v_,
-            boost::fusion::at<Tag0>(q),
-            boost::fusion::at<Tag1>(q),
-            boost::fusion::at<Tag2>(q),
-            boost::fusion::at<Tag3>(q)
-      );
+      return result<Subj,Pred,Obj,Doc>::find(v_, subj, pred, obj, doc);
    }
 
 private:
