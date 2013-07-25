@@ -27,7 +27,6 @@ template<class Id, class Iter> class Fvm_iterator
 public:
    typedef std::pair<Id, typename Iter::value_type const&> value_type;
 
-   explicit Fvm_iterator(const Iter begin) : begin_(begin), i_(begin) {}
    Fvm_iterator(const Iter begin, const Iter i)
    : begin_(begin), i_(i) {}
 
@@ -40,7 +39,8 @@ private:
    void increment() {++i_;}
 
    bool equal(Fvm_iterator const& i) const {
-      return begin_ == i.begin_ && i_ == i.i_;
+      BOOST_ASSERT(begin_ == i.begin_ && "only compare iterators for same container");
+      return  i_ == i.i_;
    }
 
    value_type dereference() const {
@@ -113,7 +113,10 @@ public:
    typedef boost::iterator_range<iterator> range;
 
    static range find(storage const& s, any const&) {
-      return range(iterator(s.begin()), iterator(s.end()));
+      return range(
+               iterator(s.begin(), s.begin()),
+               iterator(s.begin(), s.end())
+      );
    }
 };
 
@@ -141,7 +144,7 @@ public:
 
    Fragment_map_vector() : s_(), count_(0) {}
 
-   const_iterator begin() const {return const_iterator(s_.begin());}
+   const_iterator begin() const {return const_iterator(s_.begin(), s_.begin());}
    const_iterator end() const {return const_iterator(s_.begin(), s_.end());}
 
    std::size_t n_fragments() const {return count_;}
