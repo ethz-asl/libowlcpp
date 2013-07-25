@@ -53,5 +53,3 @@ exe satisfiable
       <library>/owlcpp//logic
       <library>/boost/program_options
 ;
-explicit satisfiable ;
-

@@ -17,12 +17,9 @@ part of owlcpp project.
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/logic/triple_to_fact.hpp"
-#include "owlcpp/logic/query_fact.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
 namespace bpo = boost::program_options;
-namespace bfs = boost::filesystem;
-namespace ot = owlcpp::terms;
 
 /**
 Parse OWL ontology file and its imports located in the same folder.
@@ -61,12 +58,13 @@ int main(int argc, char* argv[]) {
    //create a triple store
    owlcpp::Triple_store store;
 
-   const bfs::path in = vm["input-file"].as<std::string>();
+   const boost::filesystem::path in = vm["input-file"].as<std::string>();
 
    try {
       if( vm.count("include") ) { //load input-file and its includes
          owlcpp::Catalog cat;
-         std::vector<std::string> const& vin = vm["include"].as<std::vector<std::string> >();
+         std::vector<std::string> const& vin =
+                  vm["include"].as<std::vector<std::string> >();
          if( vin.empty() ) {
             add(cat, in.parent_path(), true);
          } else {
@@ -85,6 +83,7 @@ int main(int argc, char* argv[]) {
          return 1;
       }
 
+      TExpressionManager& em = *kernel.getExpressionManager();
       bool all_satisfiable = true;
       //iterate over nodes
       BOOST_FOREACH( const owlcpp::Node_id nid, store.map_node() ) {
@@ -92,12 +91,13 @@ int main(int argc, char* argv[]) {
          if(
                   store.find_triple(
                            nid,
-                           ot::rdf_type::id(),
-                           ot::owl_Class::id(),
+                           owlcpp::terms::rdf_type::id(),
+                           owlcpp::terms::owl_Class::id(),
                            owlcpp::any()
                   )
          ) {
-            const TDLConceptExpression* ce = owlcpp::concept(nid, store, kernel);
+            const TDLConceptExpression* ce =
+                     em.Concept(to_string_full(nid, store));
             if( ! kernel.isSatisfiable(ce) ) {
                std::cout
                << to_string(nid, store) << '\t'
