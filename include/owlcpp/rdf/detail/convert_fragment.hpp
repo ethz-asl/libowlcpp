@@ -8,6 +8,8 @@ part of owlcpp project.
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/sequence/intrinsic/at.hpp"
 #include "boost/fusion/sequence/intrinsic/at_c.hpp"
+//#include "boost/fusion/view/nview.hpp"
+#include "boost/mpl/at.hpp"
 #include "owlcpp/rdf/detail/map_triple_tags.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
@@ -29,6 +31,8 @@ template<
    static el0 get_index(Triple const& t) {return boost::fusion::at<Tag0>(t);}
 
    static fragment get_fragment(Triple const& t) {
+//      typedef boost::fusion::vector3<Tag1,Tag2,Tag3> indices;
+//      return boost::fusion::nview<Triple,indices>(t);
       return fragment(
                boost::fusion::at<Tag1>(t),
                boost::fusion::at<Tag2>(t),

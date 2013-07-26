@@ -7,7 +7,6 @@ part of owlcpp2 project.
 #define TRIPLE_INDEX_2_HPP_
 #include <functional>
 #include "boost/foreach.hpp"
-#include "boost/fusion/view/nview.hpp"
 #include "boost/iterator/iterator_facade.hpp"
 #include "boost/iterator/filter_iterator.hpp"
 #include "boost/iterator/transform_iterator.hpp"
@@ -236,9 +235,11 @@ template<
    class Tag2,
    class Tag3
 > class Triple_index {
-   typedef boost::mpl::vector4<Tag0,Tag1,Tag2,Tag3> tags;
+public:
+   typedef boost::mpl::vector4<Tag0,Tag1,Tag2,Tag3> sort_order;
+private:
    BOOST_MPL_ASSERT((
-            boost::mpl::equal<typename boost::mpl::sort<tags>::type, triple_tags>
+            boost::mpl::equal<typename boost::mpl::sort<sort_order>::type, triple_tags>
    ));
    typedef Convert_fragment<Tag0,Tag1,Tag2,Tag3> converter;
    typedef typename converter::el0 el0;

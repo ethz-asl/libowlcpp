@@ -7,6 +7,8 @@ part of owlcpp2 project.
 #include "boost/test/unit_test.hpp"
 #include "test/exception_fixture.hpp"
 #include "boost/foreach.hpp"
+#include "boost/mpl/assert.hpp"
+#include "boost/mpl/equal.hpp"
 
 #include "owlcpp/rdf/detail/fragment_set.hpp"
 #include "owlcpp/rdf/detail/triple_index_2.hpp"
@@ -14,6 +16,7 @@ part of owlcpp2 project.
 #include "owlcpp/rdf/detail/fragment_map_vector.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/doc_id.hpp"
+#include "owlcpp/rdf/detail/triple_index_selector.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -76,14 +79,15 @@ BOOST_AUTO_TEST_CASE( case03 ) {
    fmv_t::const_iterator i = fmv.begin();
 }
 
+typedef m::Triple_index<
+         m::Fragment_map_vector,
+         m::Subj_tag, m::Pred_tag, m::Obj_tag, m::Doc_tag
+         > index1;
+
 /** Test triple index Subj, Pred, Obj, Doc
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case04 ) {
-   typedef m::Triple_index<
-            m::Fragment_map_vector,
-            m::Subj_tag, m::Pred_tag, m::Obj_tag, m::Doc_tag
-            > index_t;
-   index_t ind;
+   index1 ind;
    BOOST_CHECK( ind.empty() );
    ind.insert(triple(0,0,0,0));
    ind.insert(triple(0,0,0,0));
@@ -99,29 +103,39 @@ BOOST_AUTO_TEST_CASE( case04 ) {
             ind.find(Node_id(1), any(), any(), any()).size(),
             0
    );
-//   BOOST_CHECK(
-//            boost::distance(ind.find(any(), any(), any(), any())) == 3
-//   );
+   BOOST_CHECK(
+            boost::distance(ind.find(any(), any(), any(), any())) == 3
+   );
    BOOST_CHECK_EQUAL(
             boost::distance(ind.find(any(), Node_id(1), any(), any())),
             1
    );
 
-/*
    BOOST_FOREACH(const Triple t, ind) {
       std::cout << t << std::endl;
    }
-*/
+   std::cout << std::endl;
+
+   index1::result<any,any,any,any>::range r = ind.find(any(), any(), any(), any());
+   for(index1::const_iterator i = r.begin(), end = r.end(); i != end; ++i) {
+      std::cout << *i << std::endl;
+   }
+   std::cout << std::endl;
+
+   BOOST_FOREACH(const Triple t, ind.find(any(), any(), any(), any())) {
+      std::cout << t << std::endl;
+   }
 }
+
+typedef m::Triple_index<
+         m::Fragment_map_vector,
+         m::Obj_tag, m::Doc_tag, m::Subj_tag, m::Pred_tag
+         > index2;
 
 /** Test triple index Obj, Doc, Subj, Pred
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case05 ) {
-   typedef m::Triple_index<
-            m::Fragment_map_vector,
-            m::Obj_tag, m::Doc_tag, m::Subj_tag, m::Pred_tag
-            > index_t;
-   index_t ind;
+   index2 ind;
    BOOST_CHECK( ind.empty() );
    ind.insert(triple(0,0,0,0));
    ind.insert(triple(0,0,0,0));
@@ -138,6 +152,75 @@ BOOST_AUTO_TEST_CASE( case05 ) {
       std::cout << t << std::endl;
    }
 //   BOOST_ERROR("");
+}
+
+/** Test optimality
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case06 ) {
+   typedef m::Search_efficiency<
+            boost::mpl::vector4<m::Obj_tag, m::Doc_tag, m::Subj_tag, m::Pred_tag>,
+            boost::mpl::vector4<any, any, Node_id, any>
+            > optim1;
+   BOOST_MPL_ASSERT_RELATION( optim1::value, ==, 300 );
+
+   typedef m::Search_efficiency<
+            boost::mpl::vector4<m::Subj_tag, m::Obj_tag, m::Doc_tag, m::Pred_tag>,
+            boost::mpl::vector4<any, Node_id, Node_id, any>
+            > optim2;
+   BOOST_MPL_ASSERT_RELATION( optim2::value, ==, 30 );
+
+   typedef m::Search_efficiency<
+            boost::mpl::vector4<m::Subj_tag, m::Obj_tag, m::Doc_tag, m::Pred_tag>,
+            boost::mpl::vector4<any, any, Node_id, Doc_id>
+            > optim3;
+   BOOST_MPL_ASSERT_RELATION( optim3::value, ==, 31 );
+
+   typedef m::Search_efficiency<
+            boost::mpl::vector4<m::Subj_tag, m::Doc_tag, m::Obj_tag, m::Pred_tag>,
+            boost::mpl::vector4<any, any, Node_id, Doc_id>
+            > optim4;
+   BOOST_MPL_ASSERT_RELATION( optim4::value, ==, 13 );
+
+   typedef m::Search_efficiency<
+            boost::mpl::vector4<m::Pred_tag, m::Doc_tag, m::Obj_tag, m::Subj_tag>,
+            boost::mpl::vector4<any, any, Node_id, Doc_id>
+            > optim5;
+   BOOST_MPL_ASSERT_RELATION( optim5::value, ==, 13 );
+}
+
+typedef m::Triple_index<
+         m::Fragment_map_vector,
+         m::Pred_tag, m::Obj_tag, m::Doc_tag, m::Subj_tag
+         > index3;
+
+typedef m::Triple_index<
+         m::Fragment_map_vector,
+         m::Pred_tag, m::Doc_tag, m::Obj_tag, m::Subj_tag
+         > index4;
+
+/** Test index selector
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case07 ) {
+   typedef boost::mpl::vector4<index1,index2,index3,index4> indices;
+
+   typedef m::Index_selector<
+      indices,
+      boost::mpl::vector4<any, any, Node_id, any>
+   > selector1;
+   BOOST_MPL_ASSERT_RELATION( selector1::index::value, ==, 1 );
+
+   typedef m::Index_selector<
+      indices,
+      boost::mpl::vector4<Node_id, any, Node_id, any>
+   > selector2;
+   BOOST_MPL_ASSERT_RELATION( selector2::index::value, ==, 0 );
+
+   typedef m::Index_selector<
+      indices,
+      boost::mpl::vector4<any, Node_id, any, Doc_id>
+   > selector3;
+   BOOST_MPL_ASSERT_RELATION( selector3::index::value, ==, 3 );
+
 }
 
 }//namespace test
