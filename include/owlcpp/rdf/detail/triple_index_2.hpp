@@ -18,6 +18,7 @@ part of owlcpp2 project.
 #include "boost/mpl/sort.hpp"
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/rdf/detail/convert_fragment.hpp"
+#include "owlcpp/rdf/detail/fragment_set.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
 
