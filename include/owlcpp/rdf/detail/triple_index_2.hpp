@@ -17,6 +17,7 @@ part of owlcpp2 project.
 #include "boost/mpl/equal.hpp"
 #include "boost/mpl/sort.hpp"
 #include "owlcpp/rdf/exception.hpp"
+#include "owlcpp/rdf/print_triple.hpp"
 #include "owlcpp/rdf/detail/convert_fragment.hpp"
 #include "owlcpp/rdf/detail/fragment_set.hpp"
 
@@ -227,7 +228,12 @@ public:
    }
 };
 
-/**@brief 
+/**@brief Store RDF triples in a searchable fashion
+@tparam Map a map between Tag0 elements and <Tag1,Tag2,Tag3> triple fragments
+@tparam Tag0 numerical tag indicating which triple element is indexed first
+@tparam Tag1 numerical tag indicating which triple element is indexed second
+@tparam Tag2 numerical tag indicating which triple element is indexed third
+@tparam Tag3 numerical tag indicating which triple element is indexed fourth
 *******************************************************************************/
 template<
    template<class,class> class Map,
@@ -288,6 +294,8 @@ public:
 
    typedef typename result<any,any,any,any>::iterator iterator;
    typedef iterator const_iterator;
+   std::size_t size() const {return v_.n_fragments();}
+   bool empty() const {return ! v_.n_fragments();}
 
    const_iterator begin() const {
       return const_iterator(v_.begin(), v_.end(), any(),any(),any());
@@ -297,22 +305,51 @@ public:
       return const_iterator(v_.end(), v_.end(), any(),any(),any());
    }
 
-   void insert(Triple const& t) {
-      v_.insert(converter::get_index(t), converter::get_fragment(t));
-   }
-
-   std::size_t size() const {return v_.n_fragments();}
-
-   bool empty() const {return ! v_.n_fragments();}
-
    template<class Subj, class Pred, class Obj, class Doc>
    typename result<Subj,Pred,Obj,Doc>::range
    find(Subj const& subj, Pred const& pred, Obj const& obj, Doc const& doc) const {
       return result<Subj,Pred,Obj,Doc>::find(v_, subj, pred, obj, doc);
    }
 
+   bool insert(Triple const& t) {
+      return v_.insert(converter::get_index(t), converter::get_fragment(t));
+   }
+
+   void erase(Triple const& t) {
+      try{
+         v_.erase(converter::get_index(t), converter::get_fragment(t));
+      } catch(Rdf_err const&) {
+         BOOST_THROW_EXCEPTION(
+                  Rdf_err()
+                  << Rdf_err::msg_t("triple not found")
+                  << Rdf_err::str1_t(to_string(t))
+         );
+      }
+   }
+
 private:
    storage v_;
+};
+
+/**@brief Insert triple into index
+*******************************************************************************/
+class Insert {
+public:
+   Insert(Triple const& t, bool& inserted) : t_(t), inserted_(inserted) {}
+   template<class Index> void operator()(Index& i) const {inserted_ = i.insert(t_);}
+private:
+   Triple const& t_;
+   bool& inserted_;
+};
+
+/**@brief Erase triple from index
+*******************************************************************************/
+class Erase {
+public:
+   Erase(Triple const& t) : t_(t) {}
+   template<class Index> void operator()(Index& i) const {i.erase(t_);}
+private:
+   Triple const& t_;
 };
 
 }//namespace map_triple_detail

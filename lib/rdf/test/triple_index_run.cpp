@@ -5,11 +5,12 @@ part of owlcpp2 project.
 *******************************************************************************/
 #define BOOST_TEST_MODULE triple_index_run
 #include "boost/test/unit_test.hpp"
-#include "test/exception_fixture.hpp"
 #include "boost/foreach.hpp"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/equal.hpp"
 
+#include "test/exception_fixture.hpp"
+#include "test/test_utils.hpp"
 #include "owlcpp/rdf/detail/fragment_set.hpp"
 #include "owlcpp/rdf/detail/triple_index_2.hpp"
 #include "owlcpp/rdf/detail/convert_fragment.hpp"
@@ -48,13 +49,6 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 
    fs_t::result<Doc_id,any,Node_id>::range r4 = fs.find(Doc_id(2), any(), Node_id(1));
    BOOST_CHECK_EQUAL(distance(r4), 2);
-}
-
-Triple triple(
-		const unsigned subj, const unsigned pred,
-		const unsigned obj, const unsigned doc
-) {
-   return Triple::make(Node_id(subj), Node_id(pred), Node_id(obj), Doc_id(doc));
 }
 
 /** Test fragment converter

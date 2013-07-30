@@ -12,6 +12,7 @@ part of owlcpp project.
 #include "boost/assert.hpp"
 #include "boost/iterator/iterator_facade.hpp"
 #include "boost/range.hpp"
+#include "owlcpp/rdf/exception.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
 
@@ -142,17 +143,32 @@ public:
    typedef iterator const_iterator;
    typedef boost::iterator_range<iterator> range;
 
-   Fragment_map_vector() : s_(), count_(0) {}
-
    const_iterator begin() const {return const_iterator(s_.begin(), s_.begin());}
    const_iterator end() const {return const_iterator(s_.begin(), s_.end());}
 
-   std::size_t n_fragments() const {return count_;}
-
-   void insert(const Id id, fragment const& v) {
-      if( id() >= s_.size() ) s_.resize(id() + 1);
-      if( s_[id()].insert(v) ) ++count_;
+   std::size_t n_fragments() const {
+      std::size_t n = 0;
+      BOOST_FOREACH(Set const& s, s_) {
+         n += s_.size();
+      }
+      return n;
    }
+
+   bool insert(const Id id, fragment const& f) {
+      if( id() >= s_.size() ) s_.resize(id() + 1);
+      return s_[id()].insert(f);
+   }
+
+   void erase(const Id id, fragment const& f) {
+      if( id() >= s_.size() ) BOOST_THROW_EXCEPTION(
+               Rdf_err()
+               << Rdf_err::msg_t("element not found")
+               << Rdf_err::int1_t(id())
+      );
+      s_[id()].erase(f);
+   }
+
+   void clear() {s_.clear();}
 
    Set const& operator[](const Id id) const {
       if( id() >= s_.size() ) return empty_set();
@@ -171,7 +187,6 @@ public:
 
 private:
    storage s_;
-   std::size_t count_;
 };
 
 }//namespace map_triple_detail

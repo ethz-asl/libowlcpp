@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef MAP_TRIPLE2_HPP_
 #define MAP_TRIPLE2_HPP_
+#include "boost/fusion/algorithm/iteration/for_each.hpp"
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/include/mpl.hpp"
 #include "boost/fusion/sequence/intrinsic/front.hpp"
@@ -38,17 +39,29 @@ public:
    typedef typename index1::const_iterator const_iterator;
    typedef typename index1::iterator iterator;
 
-   std::size_t size() const {return front(store_).size();}
-   bool empty() const {return front(store_).empty();}
+   Map_triple() : store_(), size_(0) {}
+
+   std::size_t size() const {return size_;}
+   bool empty() const {return ! size_;}
    const_iterator begin() const {return front(store_).begin();}
    const_iterator end() const {return front(store_).end();}
 
    void insert(Triple const& t) {
-      //todo:
+      bool inserted;
+      map_triple_detail::Insert insert(t, inserted);
+      boost::fusion::for_each(store_, insert);
+      if( inserted ) ++size_;
+   }
+
+   void erase(Triple const& t) {
+      map_triple_detail::Erase erase(t);
+      boost::fusion::for_each(store_, erase);
+      --size_;
    }
 
 private:
    store store_;
+   std::size_t size_;
 };
 
 }//namespace owlcpp

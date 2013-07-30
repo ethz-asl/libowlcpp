@@ -45,6 +45,5 @@ template<class ChT, class Tr> inline std::basic_ostream<ChT,Tr>& operator<<(
    return os << t.subj_ << ',' << t.pred_ << ',' << t.obj_ << ',' << t.doc_;
 }
 
-
 }//namespace owlcpp
 #endif /* TRIPLE_HPP_ */
