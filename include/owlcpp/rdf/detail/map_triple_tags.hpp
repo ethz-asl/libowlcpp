@@ -7,6 +7,7 @@ part of owlcpp project.
 #define MAP_TRIPLE_TAGS_HPP_
 #include "boost/fusion/adapted/struct/adapt_struct.hpp"
 #include "boost/mpl/vector.hpp"
+#include "boost/mpl/int.hpp"
 
 #include "owlcpp/rdf/triple.hpp"
 
@@ -22,10 +23,10 @@ namespace owlcpp{ namespace map_triple_detail{
 
 /* Tags for query elements
 *******************************************************************************/
-struct Subj_tag : public boost::mpl::size_t<0> {};
-struct Pred_tag : public boost::mpl::size_t<1> {};
-struct Obj_tag  : public boost::mpl::size_t<2> {};
-struct Doc_tag  : public boost::mpl::size_t<3> {};
+struct Subj_tag : public boost::mpl::int_<0> {};
+struct Pred_tag : public boost::mpl::int_<1> {};
+struct Obj_tag  : public boost::mpl::int_<2> {};
+struct Doc_tag  : public boost::mpl::int_<3> {};
 
 typedef boost::mpl::vector4<Subj_tag, Pred_tag, Obj_tag, Doc_tag> triple_tags;
 

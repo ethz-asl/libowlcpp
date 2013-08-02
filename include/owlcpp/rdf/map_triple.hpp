@@ -10,22 +10,20 @@ part of owlcpp project.
 #include "boost/fusion/include/mpl.hpp"
 #include "boost/fusion/sequence/intrinsic/front.hpp"
 #include "boost/fusion/sequence/intrinsic/at.hpp"
+#include "boost/fusion/sequence/intrinsic/value_at.hpp"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/fold.hpp"
 #include "boost/mpl/front.hpp"
 #include "boost/mpl/push_back.hpp"
 #include "owlcpp/rdf/detail/triple_index.hpp"
 #include "owlcpp/rdf/detail/triple_index_selector.hpp"
-#include "owlcpp/rdf/map_triple_config.hpp"
+#include "owlcpp/rdf/map_triple_fwd.hpp"
 
 namespace owlcpp{
 
 /**@brief Store, index, and search RDF triples
 *******************************************************************************/
-template<
-   class Config = map_triple_detail::index_config_default
->
-class Map_triple {
+template<class Config> class Map_triple {
    typedef typename boost::mpl::fold<
             Config,
             boost::fusion::vector<>,
@@ -74,12 +72,41 @@ public:
       typedef typename map_triple_detail::Boolean_signature<Subj,Pred,Obj,Doc>::type
                boolean_signature;
       typedef typename
-               map_triple_detail::Index_selector<store, boolean_signature>::type
+               map_triple_detail::Index_selector<store, boolean_signature>::index
                index_pos;
-      typedef typename boost::fusion::result_of::at<store, index_pos>::type
+      typedef typename boost::fusion::result_of::value_at<store, index_pos>::type
                index;
-      typedef typename index::template result<Subj,Pred,Obj,Doc>::iterator iterator;
-      typedef typename index::template result<Subj,Pred,Obj,Doc>::range range;
+      typedef typename index::template query<Subj,Pred,Obj,Doc>::iterator iterator;
+      typedef typename index::template query<Subj,Pred,Obj,Doc>::range range;
+   };
+
+   template<bool Subj, bool Pred, bool Obj, bool Doc> struct query_b {
+      typedef boost::mpl::vector4_c<bool,Subj,Pred,Obj,Doc> boolean_signature;
+
+      typedef typename
+               map_triple_detail::Index_selector<store, boolean_signature>::index
+               index_pos;
+
+      typedef typename boost::fusion::result_of::value_at<store, index_pos>::type
+               index;
+
+      typedef typename
+               map_triple_detail::Deduce_query_signature<Subj,Pred,Obj,Doc>::type
+               signature;
+
+      typedef typename index::template query<
+               typename boost::mpl::at_c<signature,0>::type,
+               typename boost::mpl::at_c<signature,1>::type,
+               typename boost::mpl::at_c<signature,2>::type,
+               typename boost::mpl::at_c<signature,3>::type
+               >::iterator iterator;
+
+      typedef typename index::template query<
+               typename boost::mpl::at_c<signature,0>::type,
+               typename boost::mpl::at_c<signature,1>::type,
+               typename boost::mpl::at_c<signature,2>::type,
+               typename boost::mpl::at_c<signature,3>::type
+               >::range range;
    };
 
    /**@brief Search triples by subject, predicate, object, or document IDs.

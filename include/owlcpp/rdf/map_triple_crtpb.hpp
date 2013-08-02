@@ -29,11 +29,11 @@ template<class Super> class Map_triple_crtpb {
 
 public:
 
-   template<class Subj, class Pred, class Obj, class Doc> struct result
-   : public map_triple_type::template result<Subj,Pred,Obj,Doc>{};
+   template<class Subj, class Pred, class Obj, class Doc> struct query
+   : public map_triple_type::template query<Subj,Pred,Obj,Doc>{};
 
-   template<bool Subj, bool Pred, bool Obj, bool Doc>struct result_b
-   : public map_triple_type::template result_b<Subj,Pred,Obj,Doc>{};
+   template<bool Subj, bool Pred, bool Obj, bool Doc>struct query_b
+   : public map_triple_type::template query_b<Subj,Pred,Obj,Doc>{};
 
    /**@brief Search triples by subject, predicate, object, or document IDs.
     @details Polymorphically search stored triples to find ones that match
@@ -53,18 +53,18 @@ public:
     @return iterator range of triples matching the query.
     @details
     The type of the range can be obtained from
-    @code template<class Subj, class Pred, class Obj, class Doc> class result;
+    @code template<class Subj, class Pred, class Obj, class Doc> class query;
     @endcode
     or from
-    @code template<bool Subj, bool Pred, bool Obj, bool Doc> class result_b;
+    @code template<bool Subj, bool Pred, bool Obj, bool Doc> class query_b;
     @endcode
     For example,
-    @code Triple_map<>::result_b<1,0,0,1>::type range =
+    @code Triple_map<>::query_b<1,0,0,1>::type range =
        triple_map.find(subj, any(), any(), doc);
     @endcode
    */
    template<class Subj, class Pred, class Obj, class Doc>
-   typename result<Subj,Pred,Obj,Doc>::type
+   typename query<Subj,Pred,Obj,Doc>::range
    find_triple(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
       return _map_triple().find(subj, pred, obj, doc);
    }

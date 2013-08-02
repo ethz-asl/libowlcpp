@@ -47,12 +47,12 @@ BOOST_AUTO_TEST_CASE( test_index_subject_search ) {
    BOOST_CHECK_EQUAL(mt.size(), 0U);
    insert_seq(mt, t);
    BOOST_CHECK_EQUAL(mt.size(), 7U);
-   map_triple::result_b<1,1,0,0>::type r1 = mt.find(Node_id(2), Node_id(3), any(), any());
+   map_triple::query_b<1,1,0,0>::type r1 = mt.find(Node_id(2), Node_id(3), any(), any());
    BOOST_CHECK(!r1);
-   map_triple::result_b<1,1,0,0>::type r2 = mt.find(Node_id(0), Node_id(1), any(), any());
+   map_triple::query_b<1,1,0,0>::type r2 = mt.find(Node_id(0), Node_id(1), any(), any());
    BOOST_CHECK(r2);
    BOOST_CHECK_EQUAL(boost::distance(r2), 1);
-   map_triple::result_b<0,1,0,0>::type r3 = mt.find(any(), Node_id(3), any(), any());
+   map_triple::query_b<0,1,0,0>::type r3 = mt.find(any(), Node_id(3), any(), any());
    BOOST_CHECK_EQUAL(boost::distance(r3), 4);
 
    BOOST_CHECK_THROW( mt.erase(triple(0,13,0,1)), Rdf_err );
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE( test_index_predicate_search ) {
    typedef Map_triple<0,1,0,0> map_triple;
    map_triple mt;
    insert_seq(mt, t);
-   typedef map_triple::result_b<0,1,0,0>::type range_t;
+   typedef map_triple::query_b<0,1,0,0>::type range_t;
    range_t r = mt.find(any(), Node_id(3), any(), any());
    BOOST_CHECK(r);
    BOOST_CHECK_EQUAL(distance(r), 4U);

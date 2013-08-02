@@ -10,8 +10,7 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/detail/map_triple_tags.hpp"
 #include "owlcpp/rdf/detail/map_triple_config_macro.hpp"
-#include "owlcpp/rdf/detail/triple_index.hpp"
-#include "owlcpp/rdf/detail/fragment_map_vector.hpp"
+#include "owlcpp/rdf/detail/triple_index_fwd.hpp"
 
 #ifndef OWLCPP_TRIPLE_INDICES
 #define OWLCPP_TRIPLE_INDICES \
@@ -22,6 +21,10 @@ part of owlcpp project.
 #endif
 
 namespace owlcpp{ namespace map_triple_detail{
+
+/**@brief
+*******************************************************************************/
+template<class Id, class Set> class Fragment_map_vector;
 
 typedef OWLCPP_TRIPLE_INDEX_CONFIG(OWLCPP_TRIPLE_INDICES)
 index_config_default;
