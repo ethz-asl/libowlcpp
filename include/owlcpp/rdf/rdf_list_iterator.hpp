@@ -41,7 +41,7 @@ private:
    friend class boost::iterator_core_access;
 
    void increment() {
-      const Triple_store::result_b<1,1,0,0>::type r = ts_->find_triple(
+      const Triple_store::query_b<1,1,0,0>::type r = ts_->find_triple(
                nid_,
                terms::rdf_rest::id(),
                any(),
@@ -62,7 +62,7 @@ private:
    }
 
    Node_id const& dereference() const {
-      const Triple_store::result_b<1,1,0,0>::type r = ts_->find_triple(
+      const Triple_store::query_b<1,1,0,0>::type r = ts_->find_triple(
                nid_,
                terms::rdf_first::id(),
                any(),
