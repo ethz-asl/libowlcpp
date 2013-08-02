@@ -9,11 +9,13 @@ part of owlcpp project.
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/include/mpl.hpp"
 #include "boost/fusion/sequence/intrinsic/front.hpp"
+#include "boost/fusion/sequence/intrinsic/at.hpp"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/fold.hpp"
 #include "boost/mpl/front.hpp"
 #include "boost/mpl/push_back.hpp"
 #include "owlcpp/rdf/detail/triple_index_2.hpp"
+#include "owlcpp/rdf/detail/triple_index_selector.hpp"
 #include "owlcpp/rdf/map_triple_config.hpp"
 
 namespace owlcpp{
@@ -57,6 +59,60 @@ public:
       map_triple_detail::Erase erase(t);
       boost::fusion::for_each(store_, erase);
       --size_;
+   }
+
+   void clear() {
+      map_triple_detail::Clear clear;
+      boost::fusion::for_each(store_, clear);
+      size_ = 0;
+   }
+
+   /**
+
+   */
+   template<class Subj, class Pred, class Obj, class Doc> struct query {
+      typedef typename map_triple_detail::Boolean_signature<Subj,Pred,Obj,Doc>::type
+               boolean_signature;
+      typedef typename
+               map_triple_detail::Index_selector<store, boolean_signature>::type
+               index_pos;
+      typedef typename boost::fusion::result_of::at<store, index_pos>::type
+               index;
+      typedef typename index::template result<Subj,Pred,Obj,Doc>::iterator iterator;
+      typedef typename index::template result<Subj,Pred,Obj,Doc>::range range;
+   };
+
+   /**@brief Search triples by subject, predicate, object, or document IDs.
+    @details Polymorphically search stored triples to find ones that match
+    specified node IDs for subject, predicate, or object nodes or document ID.
+    An instance of \b any matches all values for the corresponding triple
+    element.
+    If none of the nodes are specified, i.e., <tt>find(any(), any(), any(), any())</tt>,
+    the search returns a range of all stored triples, [begin(), end()).
+    @param subj predicate for first element of triple (subject node),
+    e.g., \b Node_id, \b any
+    @param pred predicate for second element of triple (predicate node),
+    e.g., \b Node_id, \b any
+    @param obj predicate for third element of triple (object node),
+    e.g., \b Node_id, \b any
+    @param doc predicate for fourth element of triple (document ID),
+    e.g., \b Doc_id, \b any
+    @return iterator range of triples matching the query.
+    @details
+    The type of the range can be obtained from
+    @code template<class Subj, class Pred, class Obj, class Doc> class query; @endcode
+    or from
+    @code template<bool Subj, bool Pred, bool Obj, bool Doc> class query_b; @endcode
+    For example,
+    @code Map_triple<>::query_b<1,0,0,1>::range range =
+          map_triple.find(subj, any(), any(), doc);
+    @endcode
+   */
+   template<class Subj, class Pred, class Obj, class Doc>
+   typename query<Subj,Pred,Obj,Doc>::range
+   find(const Subj subj, const Pred pred, const Obj obj, const Doc doc) const {
+      typedef typename query<Subj,Pred,Obj,Doc>::index_pos index_pos;
+      return boost::fusion::at<index_pos>(store_).find(subj, pred, obj, doc);
    }
 
 private:

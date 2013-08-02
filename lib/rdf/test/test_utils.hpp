@@ -16,8 +16,10 @@ Triple triple(const unsigned t0, const unsigned t1, const unsigned t2, const uns
    return Triple::make(Node_id(t0), Node_id(t1), Node_id(t2), Doc_id(t3));
 }
 
+Triple triple(unsigned const s[4]) {return triple(s[0], s[1], s[2], s[3]);}
+
 template<class Tm, class Seq> void insert_triple(Tm& tm, Seq const& s) {
-   tm.insert(Node_id(s[0]), Node_id(s[1]), Node_id(s[2]), Doc_id(s[3]));
+   tm.insert(triple(s));
 }
 
 template<class Tm, class Seq> void insert_seq(Tm& tm, Seq const& s) {

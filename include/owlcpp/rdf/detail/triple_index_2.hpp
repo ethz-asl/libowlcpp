@@ -6,16 +6,20 @@ part of owlcpp2 project.
 #ifndef TRIPLE_INDEX_2_HPP_
 #define TRIPLE_INDEX_2_HPP_
 #include <functional>
-#include "boost/foreach.hpp"
 #include "boost/iterator/iterator_facade.hpp"
 #include "boost/iterator/filter_iterator.hpp"
 #include "boost/iterator/transform_iterator.hpp"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/at.hpp"
 #include "boost/mpl/contains.hpp"
+#include "boost/mpl/fold.hpp"
+#include "boost/mpl/transform.hpp"
 #include "boost/mpl/remove.hpp"
 #include "boost/mpl/equal.hpp"
 #include "boost/mpl/sort.hpp"
+#include "boost/mpl/vector.hpp"
+#include "boost/type_traits/is_same.hpp"
+
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/rdf/print_triple.hpp"
 #include "owlcpp/rdf/detail/convert_fragment.hpp"
@@ -90,7 +94,7 @@ template<
    typedef typename Converter::el2 el2;
    typedef typename Converter::el3 el3;
    typedef Fragment_set<el1, el2, el3> fragment_set;
-   typedef typename fragment_set::template result<Q1,Q2,Q3> fragment_search;
+   typedef typename fragment_set::template query<Q1,Q2,Q3> fragment_search;
    typedef typename fragment_search::iterator f_iter;
    typedef typename fragment_search::range f_range;
    typedef typename Triple_from_fragment_iterator<Converter,f_iter>::type t_iter;
@@ -164,8 +168,8 @@ template<
    typedef typename convert::el3 el3;
    typedef Fragment_set<el1, el2, el3> fragment_set;
    typedef Map<el0, fragment_set> storage;
-   typedef typename storage::template result<Q0>::iterator fs_iter;
-   typedef typename storage::template result<Q0>::range fs_range;
+   typedef typename storage::template query<Q0>::iterator fs_iter;
+   typedef typename storage::template query<Q0>::range fs_range;
 
 public:
    typedef Triple_merge_iterator<convert, fs_iter, Q1, Q2, Q3> iterator;
@@ -205,7 +209,7 @@ template<
    typedef typename convert::el3 el3;
    typedef Fragment_set<el1, el2, el3> fragment_set;
    typedef Map<el0, fragment_set> storage;
-   typedef typename fragment_set::template result<Q1,Q2,Q3> fs_result;
+   typedef typename fragment_set::template query<Q1,Q2,Q3> fs_result;
    typedef typename fs_result::iterator fragment_iter;
    typedef typename fs_result::range fragment_range;
 
@@ -259,7 +263,7 @@ private:
 
 public:
 
-   template<class Subj, class Pred, class Obj, class Doc> class result {
+   template<class Subj, class Pred, class Obj, class Doc> class query {
       typedef boost::fusion::vector4<Subj,Pred,Obj,Doc> vector;
       typedef typename boost::mpl::at<vector, Tag0>::type qt0;
       typedef typename boost::mpl::at<vector, Tag1>::type qt1;
@@ -292,7 +296,7 @@ public:
       }
    };
 
-   typedef typename result<any,any,any,any>::iterator iterator;
+   typedef typename query<any,any,any,any>::iterator iterator;
    typedef iterator const_iterator;
    std::size_t size() const {return v_.n_fragments();}
    bool empty() const {return ! v_.n_fragments();}
@@ -306,9 +310,9 @@ public:
    }
 
    template<class Subj, class Pred, class Obj, class Doc>
-   typename result<Subj,Pred,Obj,Doc>::range
+   typename query<Subj,Pred,Obj,Doc>::range
    find(Subj const& subj, Pred const& pred, Obj const& obj, Doc const& doc) const {
-      return result<Subj,Pred,Obj,Doc>::find(v_, subj, pred, obj, doc);
+      return query<Subj,Pred,Obj,Doc>::find(v_, subj, pred, obj, doc);
    }
 
    bool insert(Triple const& t) {
@@ -327,9 +331,25 @@ public:
       }
    }
 
+   void clear() {v_.clear();}
+
 private:
    storage v_;
 };
+
+/**@brief Metafunction for a boolean signature of a query
+@details Generate boolean signature of a query, a sequence of 4 booleans
+indicating, for each triple element, whether explicit match was requested,
+e.g., for a query @code any, any, Node_id, Doc_id @endcode
+boolean signature is @code mpl::vector4_c<bool,0,0,1,1>@endcode
+*******************************************************************************/
+template<class Subj, class Pred, class Obj, class Doc> struct Boolean_signature
+         : public boost::mpl::transform<
+              boost::mpl::vector4<Subj,Pred,Obj,Doc>,
+              Triple,
+              boost::is_same<boost::mpl::_1, boost::mpl::_2>
+         >
+         {};
 
 /**@brief Insert triple into index
 *******************************************************************************/
@@ -350,6 +370,12 @@ public:
    template<class Index> void operator()(Index& i) const {i.erase(t_);}
 private:
    Triple const& t_;
+};
+
+/**@brief Clear index
+*******************************************************************************/
+struct Clear {
+   template<class Index> void operator()(Index& i) const {i.clear();}
 };
 
 }//namespace map_triple_detail

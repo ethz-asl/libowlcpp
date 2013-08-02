@@ -8,6 +8,7 @@ part of owlcpp2 project.
 #include "boost/foreach.hpp"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/equal.hpp"
+#include "boost/mpl/vector_c.hpp"
 
 #include "test/exception_fixture.hpp"
 #include "test/test_utils.hpp"
@@ -47,7 +48,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    range_t r3 = fs.find(Doc_id(1), Node_id(2), any());
    BOOST_CHECK_EQUAL(r3.size(), 1U);
 
-   fs_t::result<Doc_id,any,Node_id>::range r4 = fs.find(Doc_id(2), any(), Node_id(1));
+   fs_t::query<Doc_id,any,Node_id>::range r4 = fs.find(Doc_id(2), any(), Node_id(1));
    BOOST_CHECK_EQUAL(distance(r4), 2);
 }
 
@@ -110,7 +111,7 @@ BOOST_AUTO_TEST_CASE( case04 ) {
    }
    std::cout << std::endl;
 
-   index1::result<any,any,any,any>::range r = ind.find(any(), any(), any(), any());
+   index1::query<any,any,any,any>::range r = ind.find(any(), any(), any(), any());
    for(index1::const_iterator i = r.begin(), end = r.end(); i != end; ++i) {
       std::cout << *i << std::endl;
    }
@@ -153,33 +154,33 @@ BOOST_AUTO_TEST_CASE( case05 ) {
 BOOST_AUTO_TEST_CASE( case06 ) {
    typedef m::Search_efficiency<
             boost::mpl::vector4<m::Obj_tag, m::Doc_tag, m::Subj_tag, m::Pred_tag>,
-            boost::mpl::vector4<any, any, Node_id, any>
+            boost::mpl::vector4_c<bool, 0, 0, 1, 0>
             > optim1;
-   BOOST_MPL_ASSERT_RELATION( optim1::value, ==, 300 );
+   BOOST_MPL_ASSERT_RELATION( optim1::value, ==, 100*3 );
 
    typedef m::Search_efficiency<
             boost::mpl::vector4<m::Subj_tag, m::Obj_tag, m::Doc_tag, m::Pred_tag>,
-            boost::mpl::vector4<any, Node_id, Node_id, any>
+            boost::mpl::vector4_c<bool, 0, 1, 1, 0>
             > optim2;
-   BOOST_MPL_ASSERT_RELATION( optim2::value, ==, 30 );
+   BOOST_MPL_ASSERT_RELATION( optim2::value, ==, -4 + 10 );
 
    typedef m::Search_efficiency<
             boost::mpl::vector4<m::Subj_tag, m::Obj_tag, m::Doc_tag, m::Pred_tag>,
-            boost::mpl::vector4<any, any, Node_id, Doc_id>
+            boost::mpl::vector4_c<bool, 0, 0, 1, 1>
             > optim3;
-   BOOST_MPL_ASSERT_RELATION( optim3::value, ==, 31 );
+   BOOST_MPL_ASSERT_RELATION( optim3::value, ==, -4 + 10 + 1 );
 
    typedef m::Search_efficiency<
             boost::mpl::vector4<m::Subj_tag, m::Doc_tag, m::Obj_tag, m::Pred_tag>,
-            boost::mpl::vector4<any, any, Node_id, Doc_id>
+            boost::mpl::vector4_c<bool, 0, 0, 1, 1>
             > optim4;
-   BOOST_MPL_ASSERT_RELATION( optim4::value, ==, 13 );
+   BOOST_MPL_ASSERT_RELATION( optim4::value, ==, -4 + 10 + 1 );
 
    typedef m::Search_efficiency<
             boost::mpl::vector4<m::Pred_tag, m::Doc_tag, m::Obj_tag, m::Subj_tag>,
-            boost::mpl::vector4<any, any, Node_id, Doc_id>
+            m::Boolean_signature<any, any, Node_id, Doc_id>::type
             > optim5;
-   BOOST_MPL_ASSERT_RELATION( optim5::value, ==, 13 );
+   BOOST_MPL_ASSERT_RELATION( optim5::value, ==, 9 );
 }
 
 typedef m::Triple_index<
@@ -199,19 +200,19 @@ BOOST_AUTO_TEST_CASE( case07 ) {
 
    typedef m::Index_selector<
       indices,
-      boost::mpl::vector4<any, any, Node_id, any>
+      boost::mpl::vector4_c<bool, 0, 0, 1, 0>
    > selector1;
    BOOST_MPL_ASSERT_RELATION( selector1::index::value, ==, 1 );
 
    typedef m::Index_selector<
       indices,
-      boost::mpl::vector4<Node_id, any, Node_id, any>
+      boost::mpl::vector4_c<bool, 1, 0, 1, 0>
    > selector2;
    BOOST_MPL_ASSERT_RELATION( selector2::index::value, ==, 0 );
 
    typedef m::Index_selector<
       indices,
-      boost::mpl::vector4<any, Node_id, any, Doc_id>
+      m::Boolean_signature<any, Node_id, any, Doc_id>::type
    > selector3;
    BOOST_MPL_ASSERT_RELATION( selector3::index::value, ==, 3 );
 

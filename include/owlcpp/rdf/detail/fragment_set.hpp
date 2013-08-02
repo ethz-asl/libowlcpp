@@ -191,14 +191,14 @@ public:
       v_.erase(i);
    }
 
-   template<class Q0, class Q1, class Q2> struct result {
+   template<class Q0, class Q1, class Q2> struct query {
       typedef Fragment_search_dispatch<T0,T1,T2,Q0,Q1,Q2> dispatch;
       typedef typename dispatch::iterator iterator;
       typedef typename dispatch::range range;
    };
 
    template<class Q0, class Q1, class Q2>
-   typename result<Q0,Q1,Q2>::range
+   typename query<Q0,Q1,Q2>::range
    find(const Q0 u0, const Q1 u1, const Q2 u2) const {
       BOOST_MPL_ASSERT((boost::has_equal_to<T0,Q0,bool>));
       BOOST_MPL_ASSERT((boost::has_equal_to<T1,Q1,bool>));
