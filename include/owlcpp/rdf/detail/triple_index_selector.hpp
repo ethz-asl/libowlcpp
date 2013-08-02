@@ -5,17 +5,17 @@ part of owlcpp2 project.
 *******************************************************************************/
 #ifndef TRIPLE_INDEX_SELECTOR_HPP_
 #define TRIPLE_INDEX_SELECTOR_HPP_
-#include "boost/mpl/fold.hpp"
-#include "boost/mpl/front.hpp"
 #include "boost/mpl/at.hpp"
+#include "boost/mpl/distance.hpp"
+#include "boost/mpl/front.hpp"
 #include "boost/mpl/if.hpp"
+#include "boost/mpl/int.hpp"
 #include "boost/mpl/less.hpp"
 #include "boost/mpl/max_element.hpp"
+#include "boost/mpl/negate.hpp"
 #include "boost/mpl/plus.hpp"
-#include "boost/mpl/push_back.hpp"
-#include "boost/mpl/vector.hpp"
+#include "boost/mpl/times.hpp"
 #include "boost/mpl/vector_c.hpp"
-#include "boost/type_traits/is_same.hpp"
 
 #include "owlcpp/rdf/detail/map_triple_tags.hpp"
 

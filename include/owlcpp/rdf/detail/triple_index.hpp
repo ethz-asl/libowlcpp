@@ -1,208 +1,393 @@
-/** @file "/owlcpp/include/owlcpp/rdf/detail/triple_index.hpp" 
-part of owlcpp project.
+/** @file "/owlcpp/include/owlcpp/rdf/detail/triple_index.hpp"
+part of owlcpp2 project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-@n Copyright Mikhail K Levin 2012
+@n Copyright Mikhail K Levin 2013
 *******************************************************************************/
 #ifndef TRIPLE_INDEX_HPP_
 #define TRIPLE_INDEX_HPP_
-#include <map>
-#include <vector>
+#include <functional>
+#include "boost/fusion/container/vector.hpp"
+#include "boost/fusion/sequence/intrinsic/at.hpp"
+#include "boost/iterator/iterator_facade.hpp"
+#include "boost/iterator/filter_iterator.hpp"
+#include "boost/iterator/transform_iterator.hpp"
+#include "boost/mpl/assert.hpp"
+#include "boost/mpl/at.hpp"
+#include "boost/mpl/equal.hpp"
+#include "boost/mpl/sort.hpp"
+#include "boost/mpl/transform.hpp"
+#include "boost/mpl/vector_c.hpp"
+#include "boost/type_traits/is_same.hpp"
 
-#include "boost/fusion/include/at.hpp"
-#include "boost/fusion/include/value_at.hpp"
-#include "boost/range.hpp"
-#include "boost/range/algorithm/find.hpp"
-
-#include "owlcpp/rdf/detail/map_triple_tags.hpp"
 #include "owlcpp/rdf/exception.hpp"
+#include "owlcpp/rdf/print_triple.hpp"
+#include "owlcpp/rdf/detail/convert_fragment.hpp"
+#include "owlcpp/rdf/detail/fragment_set.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
-namespace fusion = boost::fusion;
-namespace fusion_rof = boost::fusion::result_of;
 
-/**
-@decision Store and index triples by value in std::vector<Triple>.\n
-Alternatives and RAM/time performance for adding many triples:
-- boost::multi_index 2GB/150s
-- ptr_vector tracks ownership; ptr_vector<const Triple> does not work
-- boost::ptr_vector<Triple> 1.1GB/98s
-- std::vector<Triple> 0.921GB/91s
-- std::vector<Triple> + subj. index 1.2GB/97s
-
-@decision Indexing triples.
-Options and RAM/time performance:
-- boost::multi_index 2GB/150s
-- std::vector<Triple>, no index 0.921GB/91s
-- boost::ptr_vector<Triple>, no index 1.1GB/98s
-- boost::ptr_vector<Triple>, vector<vector> empty 1.4GB/98s
-- boost::ptr_vector<Triple>, vector<vector> 1.7GB/110s
+/**@brief Invoke appropriate search algorithm
+@tparam Tag0 numerical tag indicating which triple element is indexed first
+@tparam Tag1 numerical tag indicating which triple element is indexed second
+@tparam Tag2 numerical tag indicating which triple element is indexed third
+@tparam Tag3 numerical tag indicating which triple element is indexed fourth
+@tparam Q0 type of first-indexed query element
+@tparam Q1 type of second-indexed query element
+@tparam Q2 type of third-indexed query element
+@tparam Q3 type of fourth-indexed query element
 *******************************************************************************/
-class Element_index {
-protected:
-   typedef std::vector<Triple> e_index;
+template<
+   template<class,class> class Map,
+   class Tag0, class Tag1, class Tag2, class Tag3,
+   class Q0, class Q1, class Q2, class Q3
+> class Triple_find_dispatch;
+
+/**@brief
+*******************************************************************************/
+template<
+   class Conv, /**< convert fragment to triple */
+   class Iter /**< iterator over fragments */
+> class Triple_from_fragment_iterator {
+   typedef typename Conv::el0 el0;
+
+   class Convert : public std::unary_function<typename Conv::fragment, Triple> {
+   public:
+      Convert() {}
+      explicit Convert(const el0 id) : id_(id) {}
+      Triple operator()(typename Conv::fragment const& f) const {
+         return Conv::get_triple(id_, f);
+      }
+   private:
+      el0 id_;
+   };
+
+   struct Iterator
+            : public boost::transform_iterator<Convert,Iter,Triple,Triple> {
+
+      Iterator() {}
+
+      Iterator(Iter const& i, const el0 id)
+      : boost::transform_iterator<Convert,Iter,Triple,Triple>(i, Convert(id))
+        {}
+   };
+
 public:
-   typedef e_index::iterator iterator;
-   typedef e_index::const_iterator const_iterator;
+   typedef Iterator type;
+};
+
+/**@brief
+*******************************************************************************/
+template<
+   class Converter,
+   class Fs_Iter,
+   class Q1, class Q2, class Q3
+> class Triple_merge_iterator
+         : public boost::iterator_facade<
+              Triple_merge_iterator<Converter, Fs_Iter, Q1, Q2, Q3>,
+              Triple,
+              boost::forward_traversal_tag,
+              Triple
+           > {
+   typedef typename Converter::el0 el0;
+   typedef typename Converter::el1 el1;
+   typedef typename Converter::el2 el2;
+   typedef typename Converter::el3 el3;
+   typedef Fragment_set<el1, el2, el3> fragment_set;
+   typedef typename fragment_set::template query<Q1,Q2,Q3> fragment_search;
+   typedef typename fragment_search::iterator f_iter;
+   typedef typename fragment_search::range f_range;
+   typedef typename Triple_from_fragment_iterator<Converter,f_iter>::type t_iter;
+   typedef boost::iterator_range<t_iter> t_range;
+
+public:
+   Triple_merge_iterator(const Fs_Iter begin, const Fs_Iter end,
+            Q1 const& q1, Q2 const& q2, Q3 const& q3)
+   : begin_(begin),
+     end_(end),
+     q1_(q1),
+     q2_(q2),
+     q3_(q3),
+     tr_(get_fragment_range())
+     {
+      ensure_end_or_match();
+     }
+
+private:
+   Fs_Iter begin_;
+   Fs_Iter end_;
+   Q1 q1_;
+   Q2 q2_;
+   Q3 q3_;
+   t_range tr_;
+
+   friend class boost::iterator_core_access;
+
+   void increment() {
+      tr_.advance_begin(1);
+      ensure_end_or_match();
+   }
+
+   bool equal(Triple_merge_iterator const& i) const {
+      return begin_ == i.begin_ && tr_.begin() == i.tr_.begin();
+   }
+
+   Triple dereference() const {
+      return tr_.front();
+   }
+
+   void ensure_end_or_match() {
+      while( ! tr_ && (begin_ != end_) ) {
+         ++begin_;
+         tr_ = get_fragment_range();
+      }
+   }
+
+   t_range get_fragment_range() {
+      if( begin_ == end_ ) return t_range();
+      const f_range r = begin_->second.find(q1_,q2_,q3_);
+      const el0 id = begin_->first;
+      return t_range(
+               t_iter(r.begin(), id),
+               t_iter(r.end(), id)
+      );
+   }
+};
+
+/**@brief
+*******************************************************************************/
+template<
+   template<class,class> class Map,
+   class Tag0, class Tag1, class Tag2, class Tag3,
+   class Q0, class Q1, class Q2, class Q3
+> class Triple_find_dispatch {
+   typedef Convert_fragment<Tag0,Tag1,Tag2,Tag3> convert;
+   typedef typename convert::el0 el0;
+   typedef typename convert::el1 el1;
+   typedef typename convert::el2 el2;
+   typedef typename convert::el3 el3;
+   typedef Fragment_set<el1, el2, el3> fragment_set;
+   typedef Map<el0, fragment_set> storage;
+   typedef typename storage::template query<Q0>::iterator fs_iter;
+   typedef typename storage::template query<Q0>::range fs_range;
+
+public:
+   typedef Triple_merge_iterator<convert, fs_iter, Q1, Q2, Q3> iterator;
    typedef boost::iterator_range<iterator> range;
-   typedef boost::iterator_range<const_iterator> const_range;
-   struct Err : public Rdf_err {};
-protected:
-   static const_iterator null_iter() {
-      static e_index v;
-      return v.end();
+
+   static range find(
+            storage const& v,
+            Q0 const& q0,
+            Q1 const& q1,
+            Q2 const& q2,
+            Q3 const& q3
+   ) {
+      const fs_range r = v.find(q0);
+      return range(
+               iterator(r.begin(), r.end(), q1,q2,q3),
+               iterator(r.end(), r.end(), q1,q2,q3)
+      );
    }
 };
 
-/**
+/**@brief Specialize to search within single set
 *******************************************************************************/
-template<class Id> class Vector_index : public Element_index {
-   typedef std::vector<e_index> stor_t;
+template<
+   template<class,class> class Map,
+   class Tag0, class Tag1, class Tag2, class Tag3,
+   class Q1, class Q2, class Q3
+> class Triple_find_dispatch<
+   Map,
+   Tag0,Tag1,Tag2,Tag3,
+   typename boost::mpl::at<Triple, Tag0>::type,Q1,Q2,Q3
+> {
+   typedef typename boost::mpl::at<Triple, Tag0>::type Q0;
+   typedef Convert_fragment<Tag0,Tag1,Tag2,Tag3> convert;
+   typedef typename convert::el0 el0;
+   typedef typename convert::el1 el1;
+   typedef typename convert::el2 el2;
+   typedef typename convert::el3 el3;
+   typedef Fragment_set<el1, el2, el3> fragment_set;
+   typedef Map<el0, fragment_set> storage;
+   typedef typename fragment_set::template query<Q1,Q2,Q3> fs_result;
+   typedef typename fs_result::iterator fragment_iter;
+   typedef typename fs_result::range fragment_range;
 
 public:
-   const_range find(const Id id) const {
-      if( stor_.size() > id() ) return stor_[id()];
-      return const_range(null_iter(),null_iter());
+   typedef typename Triple_from_fragment_iterator<convert,fragment_iter>::type iterator;
+   typedef boost::iterator_range<iterator> range;
+
+   static range find(
+            storage const& v,
+            Q0 const& q0,
+            Q1 const& q1,
+            Q2 const& q2,
+            Q3 const& q3
+   ) {
+      fragment_range fr = v[q0].find(q1,q2,q3);
+      return range(
+               iterator(boost::begin(fr), q0),
+               iterator(boost::end(fr), q0)
+      );
    }
+};
 
-   void clear() {stor_.clear();}
-
-protected:
-   void add(const Id id, Triple const& t) {
-      if( id() >= stor_.size() ) stor_.resize(id() + 1);
-      stor_[id()].push_back(t);
-   }
-
-   void erase(const Id id, Triple const& t) {
-      BOOST_ASSERT(stor_.size() > id());
-      e_index& ind = stor_[id()];
-      ind.erase(boost::find(ind, t));
-   }
-
+/**@brief Store RDF triples in a searchable fashion
+@tparam Map a map between Tag0 elements and <Tag1,Tag2,Tag3> triple fragments
+@tparam Tag0 numerical tag indicating which triple element is indexed first
+@tparam Tag1 numerical tag indicating which triple element is indexed second
+@tparam Tag2 numerical tag indicating which triple element is indexed third
+@tparam Tag3 numerical tag indicating which triple element is indexed fourth
+*******************************************************************************/
+template<
+   template<class,class> class Map,
+   class Tag0,
+   class Tag1,
+   class Tag2,
+   class Tag3
+> class Triple_index {
+public:
+   typedef boost::mpl::vector4<Tag0,Tag1,Tag2,Tag3> sort_order;
 private:
-   stor_t stor_;
-};
-
-/**
-*******************************************************************************/
-template<class Id> class Map_index : public Element_index {
-   typedef std::map<Id, e_index> stor_t;
-public:
-   const_range find(const Id id) const {
-      const typename stor_t::const_iterator i = stor_.find(id);
-      if( i != stor_.end() ) return i->second;
-     return const_range(null_iter(),null_iter());
-   }
-
-   void clear() {stor_.clear();}
-
-protected:
-   void add(const Id id, Triple const& t) {
-      stor_[id].push_back(t);
-   }
-
-   void erase(const Id id, Triple const& t) {
-      const typename stor_t::iterator i = stor_.find(id);
-      BOOST_ASSERT(i != stor_.end());
-      e_index& ind = i->second;
-      ind.erase(boost::find(ind, t));
-   }
-
-private:
-   stor_t stor_;
-};
-
-/**
-*******************************************************************************/
-template<class Tag> class Index
-: public Vector_index<typename fusion_rof::value_at<Triple,Tag>::type> {
-
-   typedef Vector_index<typename fusion_rof::value_at<Triple,Tag>::type> base;
+   BOOST_MPL_ASSERT((
+            boost::mpl::equal<typename boost::mpl::sort<sort_order>::type, triple_tags>
+   ));
+   typedef Convert_fragment<Tag0,Tag1,Tag2,Tag3> converter;
+   typedef typename converter::el0 el0;
+   typedef typename converter::el1 el1;
+   typedef typename converter::el2 el2;
+   typedef typename converter::el3 el3;
+   typedef typename converter::fragment fragment;
+   typedef Fragment_set<el1, el2, el3> fragment_set;
+   typedef Map<el0, fragment_set> storage;
 
 public:
-   typedef Tag tag;
 
-   void add(Triple const& t) { base::add(fusion::at<tag>(t), t); }
-   void erase(Triple const& t) { base::erase(fusion::at<tag>(t), t); }
-};
+   template<class Subj, class Pred, class Obj, class Doc> class query {
+      typedef boost::fusion::vector4<Subj,Pred,Obj,Doc> vector;
+      typedef typename boost::mpl::at<vector, Tag0>::type qt0;
+      typedef typename boost::mpl::at<vector, Tag1>::type qt1;
+      typedef typename boost::mpl::at<vector, Tag2>::type qt2;
+      typedef typename boost::mpl::at<vector, Tag3>::type qt3;
+   public:
+      typedef Triple_find_dispatch<
+                  Map,Tag0,Tag1,Tag2,Tag3, qt0, qt1, qt2, qt3
+               > dispatch;
+      typedef typename dispatch::range range;
+      typedef typename dispatch::iterator iterator;
 
-/**
-*******************************************************************************/
-template<> struct Index<Pred_tag>
-: public Map_index<fusion_rof::value_at<Triple,Pred_tag>::type> {
-   typedef Pred_tag tag;
-   typedef Map_index<fusion_rof::value_at<Triple,tag>::type> base;
+      static range find(
+               storage const& v,
+               Subj const& subj, Pred const& pred,
+               Obj const& obj, Doc const& doc
+      ) {
+         BOOST_MPL_ASSERT((boost::has_equal_to<el0,qt0,bool>));
+         BOOST_MPL_ASSERT((boost::has_equal_to<el1,qt1,bool>));
+         BOOST_MPL_ASSERT((boost::has_equal_to<el2,qt2,bool>));
+         BOOST_MPL_ASSERT((boost::has_equal_to<el3,qt3,bool>));
+         const vector q(subj, pred, obj, doc);
+         return dispatch::find(
+                  v,
+                  boost::fusion::at<Tag0>(q),
+                  boost::fusion::at<Tag1>(q),
+                  boost::fusion::at<Tag2>(q),
+                  boost::fusion::at<Tag3>(q)
+         );
+      }
+   };
 
-   void add(Triple const& t) { base::add(fusion::at<tag>(t), t); }
-   void erase(Triple const& t) { base::erase(fusion::at<tag>(t), t); }
-};
+   typedef typename query<any,any,any,any>::iterator iterator;
+   typedef iterator const_iterator;
+   std::size_t size() const {return v_.n_fragments();}
+   bool empty() const {return ! v_.n_fragments();}
 
-
-/** Main contiguous storage of all triples
-@decision Store all triples by value in std::vector.\n
-Alternatives:
-- store triples only in one or many indices:
-   order is not preserved,
-   iterating over all triples is slower
-- track order of triples in vector<pair<uint,uint>>,
-where pair<uint,uint> gives position of the triple in the subject index
-*******************************************************************************/
-template<> struct Index<Main_store_tag> : public Element_index {
-public:
-   typedef Main_store_tag tag;
-
-   void add(Triple const& t) {
-      stor_.push_back(t);
+   const_iterator begin() const {
+      return const_iterator(v_.begin(), v_.end(), any(),any(),any());
    }
 
-   void clear() {stor_.clear();}
+   const_iterator end() const {
+      return const_iterator(v_.end(), v_.end(), any(),any(),any());
+   }
+
+   template<class Subj, class Pred, class Obj, class Doc>
+   typename query<Subj,Pred,Obj,Doc>::range
+   find(Subj const& subj, Pred const& pred, Obj const& obj, Doc const& doc) const {
+      return query<Subj,Pred,Obj,Doc>::find(v_, subj, pred, obj, doc);
+   }
+
+   bool insert(Triple const& t) {
+      return v_.insert(converter::get_index(t), converter::get_fragment(t));
+   }
 
    void erase(Triple const& t) {
-      const iterator i = boost::find(stor_, t);
-      if( i == stor_.end()) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("triple not found")
-      );
-      stor_.erase(i);
+      try{
+         v_.erase(converter::get_index(t), converter::get_fragment(t));
+      } catch(Rdf_err const&) {
+         BOOST_THROW_EXCEPTION(
+                  Rdf_err()
+                  << Rdf_err::msg_t("triple not found")
+                  << Rdf_err::str1_t(to_string(t))
+         );
+      }
    }
 
-   const_range get_range() const { return stor_; }
+   void clear() {v_.clear();}
 
 private:
-   e_index stor_;
+   storage v_;
 };
 
-namespace mpl = boost::mpl;
-
-/**
-Store triples that have same one of the nodes
-@tparam T1 numeric tag indicating triple element by which to order first
+/**@brief Metafunction for a boolean signature of a query
+@details Generate boolean signature of a query, a sequence of 4 booleans
+indicating, for each triple element, whether explicit match was requested,
+e.g., for a query @code any, any, Node_id, Doc_id @endcode
+boolean signature is @code mpl::vector4_c<bool,0,0,1,1>@endcode
 *******************************************************************************/
-template<class T1, class T2, class T3> class Ordered_vector{
-   typedef typename mpl::at<Triple, T1>::type n1_t;
-   typedef typename mpl::at<Triple, T2>::type n2_t;
-   typedef typename mpl::at<Triple, T3>::type n3_t;
-   typedef fusion::vector<n1_t,n2_t,n3_t>::type element_t;
-   typedef std::vector<element_t> stor_t;
+template<class Subj, class Pred, class Obj, class Doc> struct Boolean_signature
+         : public boost::mpl::transform<
+              boost::mpl::vector4<Subj,Pred,Obj,Doc>,
+              Triple,
+              boost::is_same<boost::mpl::_1, boost::mpl::_2>
+         >
+         {};
+
+template<bool Subj, bool Pred, bool Obj, bool Doc> struct Deduce_query_signature
+         : public boost::mpl::transform<
+              boost::mpl::vector4_c<bool,Subj,Pred,Obj,Doc>,
+              Triple,
+              boost::mpl::if_<
+                 boost::mpl::_2,
+                 boost::mpl::_1,
+                 any
+              >
+         >
+         {};
+
+/**@brief Insert triple into index
+*******************************************************************************/
+class Insert {
 public:
-
-   void insert(const n1_t n1, const n2_t n2, const n3_t n3) {
-      //TODO: maintain the order
-   }
-
-   template<class P1, class P2, class P3> range_t find(
-            const P1 p1, const P2 p2, const P3 p3
-            ) const {
-      //todo:
-   }
-
-   void erase(iterator i) {
-
-   }
-
+   Insert(Triple const& t, bool& inserted) : t_(t), inserted_(inserted) {}
+   template<class Index> void operator()(Index& i) const {inserted_ = i.insert(t_);}
 private:
-   stor_t v_;
+   Triple const& t_;
+   bool& inserted_;
 };
 
+/**@brief Erase triple from index
+*******************************************************************************/
+class Erase {
+public:
+   Erase(Triple const& t) : t_(t) {}
+   template<class Index> void operator()(Index& i) const {i.erase(t_);}
+private:
+   Triple const& t_;
+};
+
+/**@brief Clear index
+*******************************************************************************/
+struct Clear {
+   template<class Index> void operator()(Index& i) const {i.clear();}
+};
 
 }//namespace map_triple_detail
 }//namespace owlcpp

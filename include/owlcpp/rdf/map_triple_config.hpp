@@ -10,7 +10,7 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/detail/map_triple_tags.hpp"
 #include "owlcpp/rdf/detail/map_triple_config_macro.hpp"
-#include "owlcpp/rdf/detail/triple_index_2.hpp"
+#include "owlcpp/rdf/detail/triple_index.hpp"
 #include "owlcpp/rdf/detail/fragment_map_vector.hpp"
 
 #ifndef OWLCPP_TRIPLE_INDICES

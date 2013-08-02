@@ -9,7 +9,7 @@ part of owlcpp project.
 
 #include "test/exception_fixture.hpp"
 #include "test/test_utils.hpp"
-#include "owlcpp/rdf/map_triple2.hpp"
+#include "owlcpp/rdf/map_triple.hpp"
 
 namespace owlcpp{ namespace test{
 

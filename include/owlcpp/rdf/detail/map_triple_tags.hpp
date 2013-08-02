@@ -26,6 +26,7 @@ struct Subj_tag : public boost::mpl::size_t<0> {};
 struct Pred_tag : public boost::mpl::size_t<1> {};
 struct Obj_tag  : public boost::mpl::size_t<2> {};
 struct Doc_tag  : public boost::mpl::size_t<3> {};
+
 typedef boost::mpl::vector4<Subj_tag, Pred_tag, Obj_tag, Doc_tag> triple_tags;
 
 }//namespace map_triple_detail
