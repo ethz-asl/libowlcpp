@@ -8,8 +8,9 @@ part of owlcpp project.
 #include <vector>
 #include <utility>
 #include <functional>
-#include "boost/iterator/filter_iterator.hpp"
 #include "boost/assert.hpp"
+#include "boost/foreach.hpp"
+#include "boost/iterator/filter_iterator.hpp"
 #include "boost/iterator/iterator_facade.hpp"
 #include "boost/range.hpp"
 #include "owlcpp/rdf/exception.hpp"
@@ -148,8 +149,8 @@ public:
 
    std::size_t n_fragments() const {
       std::size_t n = 0;
-      BOOST_FOREACH(Set const& s, s_) {
-         n += s_.size();
+      BOOST_FOREACH(Set const& set, s_) {
+         n += set.size();
       }
       return n;
    }
@@ -175,12 +176,12 @@ public:
       return s_[id()];
    }
 
-   template<class Q> struct result {
+   template<class Q> struct query {
       typedef typename Fmv_search_dispatch<Id,Set,Q>::iterator iterator;
       typedef typename Fmv_search_dispatch<Id,Set,Q>::range range;
    };
 
-   template<class Q> typename result<Q>::range
+   template<class Q> typename query<Q>::range
    find(Q const& q) const {
       return Fmv_search_dispatch<Id,Set,Q>::find(s_, q);
    }
