@@ -11,6 +11,7 @@ part of owlcpp project.
 
 #include "owlcpp/rdf/map_triple.hpp"
 #include "rdf/test/test_utils.hpp"
+namespace mpl = boost::mpl;
 
 namespace owlcpp{ namespace test{
 
@@ -29,69 +30,40 @@ const unsigned t[][4] = {
 /**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_map_triple_01 ) {
-   typedef Map_triple<1,0,0,0> triple_map;
-   triple_map tm;
-   BOOST_REQUIRE_EQUAL(tm.size(), 0U);
-   insert_seq(tm, t);
-   BOOST_REQUIRE_EQUAL(tm.size(), 7U);
-   typedef triple_map::query_b<1,1,0,0>::type range_t;
-   range_t r = tm.find(Node_id(0), Node_id(3), any(), any());
-   range_t::iterator qi = r.begin();
-   triple_map::const_iterator i = tm.begin();
-
-   std::cout << *i << std::endl;
-   //qi.predicate() returns predicate object from boost::filter_iterator
-   BOOST_CHECK( ! qi.predicate()(*i++) );
-
-   std::cout << *i << std::endl;
-   BOOST_CHECK( ! qi.predicate()(*i++) );
-
-   std::cout << *i << std::endl;
-   BOOST_CHECK(   qi.predicate()(*i++) );
-
-   std::cout << *i << std::endl;
-   BOOST_CHECK(   qi.predicate()(*i++) ); //subject is not checked
-
-   std::cout << *i << std::endl;
-   BOOST_CHECK(   qi.predicate()(*i++) );
-
-   std::cout << *i << std::endl;
-   BOOST_CHECK(   qi.predicate()(*i++) );
-
-   std::cout << *i << std::endl;
-   BOOST_CHECK( ! qi.predicate()(*i++) );
-}
-
-/**@test
-*******************************************************************************/
-BOOST_AUTO_TEST_CASE( test_map_triple_02 ) {
-   typedef Map_triple<1,1,1,1> triple_map;
-   triple_map tm;
+   typedef Map_triple<
+            mpl::vector4<
+               mpl::vector4<Subj_tag, Pred_tag, Obj_tag, Doc_tag>,
+               mpl::vector4<Pred_tag, Subj_tag, Obj_tag, Doc_tag>,
+               mpl::vector4<Obj_tag, Subj_tag, Pred_tag, Doc_tag>,
+               mpl::vector4<Doc_tag, Pred_tag, Subj_tag, Obj_tag>
+            >
+   > map_triple;
+   map_triple tm;
    insert_seq(tm, t);
 
-   triple_map::query_b<0,0,0,0>::type r1 = tm.find(any(), any(), any(), any());
-   BOOST_CHECK_EQUAL( boost::distance(r1), 7 );
+   map_triple::query_b<0,0,0,0>::range r1 = tm.find(any(), any(), any(), any());
+   BOOST_CHECK_EQUAL( boost::distance(r1), 7 ); //cannot use size
 
-   triple_map::query_b<1,0,0,0>::type r2 = tm.find(Node_id(0), any(), any(), any());
-   BOOST_CHECK_EQUAL( boost::distance(r2), 6 );
+   map_triple::query_b<1,0,0,0>::range r2 = tm.find(Node_id(0), any(), any(), any());
+   BOOST_CHECK_EQUAL( r2.size(), 6 );
 
-   triple_map::query_b<1,0,1,0>::type r3 = tm.find(Node_id(0), any(), Node_id(0), any());
-   BOOST_CHECK_EQUAL( boost::distance(r3), 5 );
+   map_triple::query_b<1,0,1,0>::range r3 = tm.find(Node_id(0), any(), Node_id(0), any());
+   BOOST_CHECK_EQUAL( r3.size(), 5 );
 
-   triple_map::query_b<0,0,0,1>::type r4 = tm.find(any(), any(), any(), Doc_id(1));
-   BOOST_CHECK_EQUAL( boost::distance(r4), 1 );
+   map_triple::query_b<0,0,0,1>::range r4 = tm.find(any(), any(), any(), Doc_id(1));
+   BOOST_CHECK_EQUAL( r4.size(), 1 );
 
-   triple_map::query_b<1,1,1,1>::type r5 = tm.find(Node_id(0), Node_id(2), Node_id(0), Doc_id(0));
-   BOOST_CHECK_EQUAL( boost::distance(r5), 1 );
+   map_triple::query_b<1,1,1,1>::range r5 = tm.find(Node_id(0), Node_id(2), Node_id(0), Doc_id(0));
+   BOOST_CHECK_EQUAL( r5.size(), 1 );
 
-   triple_map::query_b<1,0,1,0>::type r6 = tm.find(Node_id(0), any(), Node_id(2), any());
-   BOOST_CHECK_EQUAL( boost::distance(r6), 0 );
+   map_triple::query_b<1,0,1,0>::range r6 = tm.find(Node_id(0), any(), Node_id(2), any());
+   BOOST_CHECK_EQUAL( r6.size(), 0 );
 
-   triple_map::query_b<0,0,1,0>::type r7 = tm.find(any(), any(), Node_id(0), any());
-   BOOST_CHECK_EQUAL( boost::distance(r7), 6 );
+   map_triple::query_b<0,0,1,0>::range r7 = tm.find(any(), any(), Node_id(0), any());
+   BOOST_CHECK_EQUAL( r7.size(), 6 );
 
-   triple_map::query_b<1,1,0,0>::type r8 = tm.find(Node_id(0), Node_id(3), any(), any());
-   BOOST_CHECK_EQUAL( boost::distance(r8), 3 );
+   map_triple::query_b<1,1,0,0>::range r8 = tm.find(Node_id(0), Node_id(3), any(), any());
+   BOOST_CHECK_EQUAL( r8.size(), 3 );
 }
 
 }//namespace test

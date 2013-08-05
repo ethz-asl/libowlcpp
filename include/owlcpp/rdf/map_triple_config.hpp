@@ -8,9 +8,9 @@ part of owlcpp project.
 #include "boost/mpl/vector.hpp"
 #include "boost/mpl/at.hpp"
 
-#include "owlcpp/rdf/detail/map_triple_tags.hpp"
 #include "owlcpp/rdf/detail/map_triple_config_macro.hpp"
 #include "owlcpp/rdf/detail/triple_index_fwd.hpp"
+#include "owlcpp/rdf/triple_tags.hpp"
 
 #ifndef OWLCPP_TRIPLE_INDICES
 #define OWLCPP_TRIPLE_INDICES \

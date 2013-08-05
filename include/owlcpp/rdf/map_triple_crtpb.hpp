@@ -70,30 +70,36 @@ public:
    }
 
    /**@brief Insert a new triple
-   */
-   void insert_triple(
+   void insert(
             const Node_id subj,
             const Node_id pred,
             const Node_id obj,
             const Doc_id doc
    ) {
+      insert(Triple::make(subj, pred, obj, doc));
+   }
+   */
+
+   /**@brief Insert a new triple
+   */
+   void insert(Triple const& t) {
       BOOST_CONCEPT_ASSERT((Node_store<Super>));
       BOOST_ASSERT(
-            static_cast<Super const&>(*this).find(subj) &&
+            static_cast<Super const&>(*this).find(t.subj_) &&
             "invalid subject ID"
       );
       BOOST_ASSERT(
-            static_cast<Super const&>(*this).find(pred) &&
+            static_cast<Super const&>(*this).find(t.pred_) &&
             "invalid predicate ID"
       );
       BOOST_ASSERT(
-            static_cast<Super const&>(*this).find(obj) &&
+            static_cast<Super const&>(*this).find(t.obj_) &&
             "invalid object ID"
       );
-      BOOST_ASSERT( static_cast<Super const&>(*this).find(doc) &&
+      BOOST_ASSERT( static_cast<Super const&>(*this).find(t.doc_) &&
             "invalid document ID"
       );
-      _map_triple().insert(subj, pred, obj, doc);
+      _map_triple().insert(t);
    }
 
 };

@@ -401,7 +401,7 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
 
    case owl_AllDisjointClasses::index:
    case owl_AllDisjointProperties::index: {
-      Triple_store::query_b<1,1,0,0>::type r =
+      Triple_store::query_b<1,1,0,0>::range r =
                ts_.find_triple(subj, owl_members::id(), any(), any());
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
@@ -415,7 +415,7 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
    }
 
    case owl_AllDifferent::index: {
-      Triple_store::query_b<1,1,0,0>::type r =
+      Triple_store::query_b<1,1,0,0>::range r =
                ts_.find_triple(subj, owl_members::id(), any(), any());
       if( ! r ) {
          r = ts_.find_triple(subj, owl_distinctMembers::id(), any(), any());
@@ -624,7 +624,7 @@ TExpressionManager& Adaptor_triple::e_m() {
 /*
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
-   Triple_store::query_b<1,1,0,0>::type r1 =
+   Triple_store::query_b<1,1,0,0>::range r1 =
             ts_.find_triple(nid, owl_sourceIndividual::id(), any(), any());
    if( ! r1 ) BOOST_THROW_EXCEPTION(
             Err()
@@ -633,7 +633,7 @@ TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
    );
    const Node_id src_ind = r1.front().obj_;
 
-   Triple_store::query_b<1,1,0,0>::type r2 =
+   Triple_store::query_b<1,1,0,0>::range r2 =
             ts_.find_triple(nid, owl_assertionProperty::id(), any(), any());
    if( ! r2 ) BOOST_THROW_EXCEPTION(
             Err()
@@ -651,7 +651,7 @@ TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
    const Node_id tiv = nt.is_object() ?
             owl_targetIndividual::id() :
             owl_targetValue::id();
-   Triple_store::query_b<1,1,0,0>::type r3 =
+   Triple_store::query_b<1,1,0,0>::range r3 =
             ts_.find_triple(nid, tiv, any(), any());
    if( ! r3 ) BOOST_THROW_EXCEPTION(
             Err()

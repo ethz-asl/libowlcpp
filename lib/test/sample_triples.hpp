@@ -47,13 +47,13 @@ Triple_store& sample_triples_01(Triple_store& ts) {
    const Node_id nid8 = ts.insert_blank(4, did1);
    const Node_id nid9 = ts.insert_blank(5, did1);
 
-   ts.insert_triple(nid1, nid2, nid3, did1);
-   ts.insert_triple(nid4, nid2, nid3, did1);
-   ts.insert_triple(nid5, nid2, nid3, did1);
-   ts.insert_triple(nid6, nid2, nid3, did1);
-   ts.insert_triple(nid7, nid2, nid3, did1);
-   ts.insert_triple(nid8, nid2, nid3, did1);
-   ts.insert_triple(nid9, nid2, nid3, did1);
+   ts.insert(Triple::make(nid1, nid2, nid3, did1));
+   ts.insert(Triple::make(nid4, nid2, nid3, did1));
+   ts.insert(Triple::make(nid5, nid2, nid3, did1));
+   ts.insert(Triple::make(nid6, nid2, nid3, did1));
+   ts.insert(Triple::make(nid7, nid2, nid3, did1));
+   ts.insert(Triple::make(nid8, nid2, nid3, did1));
+   ts.insert(Triple::make(nid9, nid2, nid3, did1));
 
    return ts;
 }
@@ -77,13 +77,13 @@ Triple_store& sample_triples_02(Triple_store& ts) {
    const Node_id nid3 = ts.insert_node_iri(iri23);
    const Node_id nid4 = ts.insert_node_iri(iri14);
 
-   ts.insert_triple(nid1, nid2, nid3, did1);
-   ts.insert_triple(nid4, nid2, nid3, did1);
-   ts.insert_triple(nid5, nid2, nid3, did1);
-   ts.insert_triple(nid6, nid2, nid3, did1);
-   ts.insert_triple(nid7, nid2, nid3, did1);
-   ts.insert_triple(nid8, nid2, nid3, did1);
-   ts.insert_triple(nid9, nid2, nid3, did1);
+   ts.insert(Triple::make(nid1, nid2, nid3, did1));
+   ts.insert(Triple::make(nid4, nid2, nid3, did1));
+   ts.insert(Triple::make(nid5, nid2, nid3, did1));
+   ts.insert(Triple::make(nid6, nid2, nid3, did1));
+   ts.insert(Triple::make(nid7, nid2, nid3, did1));
+   ts.insert(Triple::make(nid8, nid2, nid3, did1));
+   ts.insert(Triple::make(nid9, nid2, nid3, did1));
 
    return ts;
 }

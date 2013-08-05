@@ -37,7 +37,7 @@ public:
       const Node_id pred = cp(t.pred_);
       const Node_id obj  = cp(t.obj_);
       const  Doc_id doc  = cp(t.doc_);
-      dest_.insert_triple(subj, pred, obj, doc);
+      dest_.insert(Triple::make(subj, pred, obj, doc));
    }
 
    Node_id cp(const Node_id nid0) {

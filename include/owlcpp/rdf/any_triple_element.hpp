@@ -17,14 +17,14 @@ ignored.
 *******************************************************************************/
 struct any{};
 
-bool operator==(any const&, Node_id const&) {return true;}
-bool operator==(Node_id const&, any const&) {return true;}
-bool operator==(any const&, Doc_id const&) {return true;}
-bool operator==(Doc_id const&, any const&) {return true;}
-bool operator<(any const&, Node_id const&) {return false;}
-bool operator<(Node_id const&, any const&) {return false;}
-bool operator<(any const&, Doc_id const&) {return false;}
-bool operator<(Doc_id const&, any const&) {return false;}
+inline bool operator==(any const&, Node_id const&) {return true;}
+inline bool operator==(Node_id const&, any const&) {return true;}
+inline bool operator==(any const&, Doc_id const&) {return true;}
+inline bool operator==(Doc_id const&, any const&) {return true;}
+inline bool operator<(any const&, Node_id const&) {return false;}
+inline bool operator<(Node_id const&, any const&) {return false;}
+inline bool operator<(any const&, Doc_id const&) {return false;}
+inline bool operator<(Doc_id const&, any const&) {return false;}
 
 }//namespace owlcpp
 #endif /* ANY_TRIPLE_ELEMENT_HPP_ */

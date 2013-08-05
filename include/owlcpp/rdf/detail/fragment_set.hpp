@@ -8,6 +8,7 @@ part of owlcpp2 project.
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include "boost/assert.hpp"
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/sequence/comparison/less.hpp"
 #include "boost/fusion/sequence/comparison/equal_to.hpp"
@@ -32,7 +33,8 @@ template<
    typedef boost::fusion::vector3<T0,T1,T2> fragment;
 
 public:
-   explicit Fragment_equal(const Q0 u0, const Q1 u1, const Q2 u2) : e_(u0,u1,u2) {}
+   Fragment_equal() {BOOST_ASSERT(false && "should not be used");}
+   Fragment_equal(const Q0 u0, const Q1 u1, const Q2 u2) : e_(u0,u1,u2) {}
    bool operator()(fragment const& f) const {return f == e_;}
 
 private:

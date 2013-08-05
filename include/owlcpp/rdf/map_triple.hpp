@@ -80,34 +80,14 @@ public:
       typedef typename index::template query<Subj,Pred,Obj,Doc>::range range;
    };
 
-   template<bool Subj, bool Pred, bool Obj, bool Doc> struct query_b {
-      typedef boost::mpl::vector4_c<bool,Subj,Pred,Obj,Doc> boolean_signature;
-
-      typedef typename
-               map_triple_detail::Index_selector<store, boolean_signature>::index
-               index_pos;
-
-      typedef typename boost::fusion::result_of::value_at<store, index_pos>::type
-               index;
-
-      typedef typename
-               map_triple_detail::Deduce_query_signature<Subj,Pred,Obj,Doc>::type
-               signature;
-
-      typedef typename index::template query<
-               typename boost::mpl::at_c<signature,0>::type,
-               typename boost::mpl::at_c<signature,1>::type,
-               typename boost::mpl::at_c<signature,2>::type,
-               typename boost::mpl::at_c<signature,3>::type
-               >::iterator iterator;
-
-      typedef typename index::template query<
-               typename boost::mpl::at_c<signature,0>::type,
-               typename boost::mpl::at_c<signature,1>::type,
-               typename boost::mpl::at_c<signature,2>::type,
-               typename boost::mpl::at_c<signature,3>::type
-               >::range range;
-   };
+   template<bool Subj, bool Pred, bool Obj, bool Doc> struct query_b
+   : public query<
+        typename boost::mpl::if_c<Subj,Node_id,any>::type,
+        typename boost::mpl::if_c<Pred,Node_id,any>::type,
+        typename boost::mpl::if_c<Obj, Node_id,any>::type,
+        typename boost::mpl::if_c<Doc, Doc_id, any>::type
+     >
+   {};
 
    /**@brief Search triples by subject, predicate, object, or document IDs.
     @details Polymorphically search stored triples to find ones that match

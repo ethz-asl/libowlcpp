@@ -14,14 +14,13 @@ part of owlcpp2 project.
 #include "boost/mpl/max_element.hpp"
 #include "boost/mpl/negate.hpp"
 #include "boost/mpl/plus.hpp"
-#include "boost/mpl/times.hpp"
 #include "boost/mpl/vector_c.hpp"
-
-#include "owlcpp/rdf/detail/map_triple_tags.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
 
 /**@brief Estimate of how well a given triple index would perform a search
+@details
+
 @tparam Tags sequence of integer types showing how triples are sorted by index
 ,e.g., for index that sorts triples by object, by docID, by subject, and then
 by predicate, the sequence is
@@ -30,13 +29,6 @@ by predicate, the sequence is
 for each triple element, whether explicit match was requested,
 e.g., for a query @code any, any, Node_id, Doc_id @endcode
 boolean signature is @code mpl::vector4_c<bool,0,0,1,1>@endcode
-@tparam Prefs sequence of relative search efficiencies for each triple element,
-e.g., query<any, any, Node_id, Doc_id> is expected to be faster using
-index<Obj_tag, Doc_tag, Subj_tag, Pred_tag> than using
-index<Doc_tag, Obj_tag, Subj_tag, Pred_tag>,
-because in an ontology there are usually more different object nodes than
-different documents and grouping triples by object creates smaller groups
-and results in a more efficient search.
 *******************************************************************************/
 template<
    class Tags,
@@ -56,7 +48,7 @@ template<
                QBSig,
                typename boost::mpl::front<Tags>::type
             >::type,
-            boost::mpl::times<
+            boost::mpl::plus<
                key1_value,
                typename boost::mpl::at<
                   diversity,

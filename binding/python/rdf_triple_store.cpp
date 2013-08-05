@@ -43,7 +43,8 @@ void export_triple_store() {
 
    .def(
             "insert_triple",
-            &Triple_store::insert_triple,
+            static_cast<void (Triple_store::*)(owlcpp::Triple const&)>
+               (&Triple_store::insert),
             "insert new triple"
    )
 
@@ -61,8 +62,8 @@ void export_triple_store() {
    )
    ;
 
-bp::class_<owlcpp::triple_any_range_t>("Triple_range", bp::no_init)
-   .def("__iter__", bp::iterator<owlcpp::triple_any_range_t>())
+bp::class_<owlcpp::triple_any_range>("Triple_range", bp::no_init)
+   .def("__iter__", bp::iterator<owlcpp::triple_any_range>())
    ;
 }
 

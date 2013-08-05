@@ -5,14 +5,23 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef CONVERT_FRAGMENT_HPP_
 #define CONVERT_FRAGMENT_HPP_
+#include <functional>
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/sequence/intrinsic/at.hpp"
 #include "boost/fusion/sequence/intrinsic/at_c.hpp"
 //#include "boost/fusion/view/nview.hpp"
 #include "boost/mpl/at.hpp"
-#include "owlcpp/rdf/detail/map_triple_tags.hpp"
+#include "owlcpp/rdf/detail/adapt_triple.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
+
+template<class Tag1, class Tag2, class Tag3> struct Fragment
+: public boost::fusion::vector3<
+     typename boost::mpl::at<Triple, Tag1>::type,
+     typename boost::mpl::at<Triple, Tag2>::type,
+     typename boost::mpl::at<Triple, Tag3>::type
+  >
+{};
 
 /**@brief Convert triple to fragment and v.v.
 *******************************************************************************/
@@ -49,7 +58,6 @@ template<
       return t;
    }
 };
-
 
 }//namespace map_triple_detail
 }//namespace owlcpp

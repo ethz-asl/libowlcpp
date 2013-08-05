@@ -5,7 +5,6 @@ part of owlcpp2 project.
 *******************************************************************************/
 #ifndef TRIPLE_INDEX_HPP_
 #define TRIPLE_INDEX_HPP_
-#include <functional>
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/sequence/intrinsic/at.hpp"
 #include "boost/iterator/iterator_facade.hpp"
@@ -20,60 +19,44 @@ part of owlcpp2 project.
 #include "boost/type_traits/is_same.hpp"
 
 #include "owlcpp/rdf/exception.hpp"
+#include "owlcpp/rdf/triple_tags.hpp"
 #include "owlcpp/rdf/print_triple.hpp"
 #include "owlcpp/rdf/detail/convert_fragment.hpp"
 #include "owlcpp/rdf/detail/fragment_set.hpp"
 #include "owlcpp/rdf/detail/fragment_map_vector.hpp"
+#include "owlcpp/rdf/detail/adapt_triple.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
 
-/**@brief Invoke appropriate search algorithm
-@tparam Tag0 numerical tag indicating which triple element is indexed first
-@tparam Tag1 numerical tag indicating which triple element is indexed second
-@tparam Tag2 numerical tag indicating which triple element is indexed third
-@tparam Tag3 numerical tag indicating which triple element is indexed fourth
-@tparam Q0 type of first-indexed query element
-@tparam Q1 type of second-indexed query element
-@tparam Q2 type of third-indexed query element
-@tparam Q3 type of fourth-indexed query element
-*******************************************************************************/
-template<
-   template<class,class> class Map,
-   class Tag0, class Tag1, class Tag2, class Tag3,
-   class Q0, class Q1, class Q2, class Q3
-> class Triple_find_dispatch;
-
 /**@brief
 *******************************************************************************/
-template<
-   class Conv, /**< convert fragment to triple */
-   class Iter /**< iterator over fragments */
-> class Triple_from_fragment_iterator {
-   typedef typename Conv::el0 el0;
-
-   class Convert : public std::unary_function<typename Conv::fragment, Triple> {
-   public:
-      Convert() {}
-      explicit Convert(const el0 id) : id_(id) {}
-      Triple operator()(typename Conv::fragment const& f) const {
-         return Conv::get_triple(id_, f);
-      }
-   private:
-      el0 id_;
-   };
-
-   struct Iterator
-            : public boost::transform_iterator<Convert,Iter,Triple,Triple> {
-
-      Iterator() {}
-
-      Iterator(Iter const& i, const el0 id)
-      : boost::transform_iterator<Convert,Iter,Triple,Triple>(i, Convert(id))
-        {}
-   };
-
+template<class Convert, class Iter>
+class Convert_to_triple_iterator
+         : public boost::iterator_facade<
+              Convert_to_triple_iterator<Convert, Iter>,
+              Triple,
+              typename boost::iterator_traversal<Iter>::type,
+              Triple
+           > {
+   friend class boost::iterator_core_access;
 public:
-   typedef Iterator type;
+   Convert_to_triple_iterator() {}
+   Convert_to_triple_iterator(Iter const& i, typename Convert::el0 const id)
+   : iter_(i), id_(id) {}
+
+
+private:
+   Iter iter_;
+   typename Convert::el0 id_;
+
+   Triple dereference() const {return Convert::get_triple(id_, *iter_);}
+   bool equal(Convert_to_triple_iterator const& i) const {return iter_ == i.iter_;}
+   void increment() {++iter_;}
+   void decrement() {--iter_;}
+   void advance(const std::ptrdiff_t n) {iter_ += n;}
+   std::ptrdiff_t distance_to(Convert_to_triple_iterator const& i) const {
+      return i.iter_ - iter_;
+   }
 };
 
 /**@brief
@@ -97,7 +80,7 @@ template<
    typedef typename fragment_set::template query<Q1,Q2,Q3> fragment_search;
    typedef typename fragment_search::iterator f_iter;
    typedef typename fragment_search::range f_range;
-   typedef typename Triple_from_fragment_iterator<Converter,f_iter>::type t_iter;
+   typedef Convert_to_triple_iterator<Converter,f_iter> t_iter;
    typedef boost::iterator_range<t_iter> t_range;
 
 public:
@@ -154,7 +137,15 @@ private:
    }
 };
 
-/**@brief
+/**@brief Invoke appropriate search algorithm
+@tparam Tag0 numerical tag indicating which triple element is indexed first
+@tparam Tag1 numerical tag indicating which triple element is indexed second
+@tparam Tag2 numerical tag indicating which triple element is indexed third
+@tparam Tag3 numerical tag indicating which triple element is indexed fourth
+@tparam Q0 type of first-indexed query element
+@tparam Q1 type of second-indexed query element
+@tparam Q2 type of third-indexed query element
+@tparam Q3 type of fourth-indexed query element
 *******************************************************************************/
 template<
    template<class,class> class Map,
@@ -214,7 +205,7 @@ template<
    typedef typename fs_result::range fragment_range;
 
 public:
-   typedef typename Triple_from_fragment_iterator<convert,fragment_iter>::type iterator;
+   typedef Convert_to_triple_iterator<convert,fragment_iter> iterator;
    typedef boost::iterator_range<iterator> range;
 
    static range find(
@@ -250,7 +241,10 @@ public:
    typedef boost::mpl::vector4<Tag0,Tag1,Tag2,Tag3> sort_order;
 private:
    BOOST_MPL_ASSERT((
-            boost::mpl::equal<typename boost::mpl::sort<sort_order>::type, triple_tags>
+            boost::mpl::equal<
+               typename boost::mpl::sort<sort_order>::type,
+               boost::mpl::vector4<Subj_tag, Pred_tag, Obj_tag, Doc_tag>
+            >
    ));
    typedef Convert_fragment<Tag0,Tag1,Tag2,Tag3> converter;
    typedef typename converter::el0 el0;
@@ -356,8 +350,8 @@ template<bool Subj, bool Pred, bool Obj, bool Doc> struct Deduce_query_signature
               boost::mpl::vector4_c<bool,Subj,Pred,Obj,Doc>,
               Triple,
               boost::mpl::if_<
-                 boost::mpl::_2,
                  boost::mpl::_1,
+                 boost::mpl::_2,
                  any
               >
          >

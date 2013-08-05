@@ -8,6 +8,7 @@ part of owlcpp project.
 #include <iostream>
 #include "boost/filesystem.hpp"
 #include "boost/filesystem/fstream.hpp"
+#include "boost/foreach.hpp"
 #include "test/exception_fixture.hpp"
 #include "test/sample_data.hpp"
 #include "owlcpp/io/catalog.hpp"
@@ -15,6 +16,7 @@ part of owlcpp project.
 #include "owlcpp/io/exception.hpp"
 #include "owlcpp/io/raptor_wrapper.hpp"
 #include "owlcpp/rdf/triple_store.hpp"
+#include "owlcpp/rdf/print_triple.hpp"
 #include "raptor_to_store.hpp"
 
 namespace owlcpp{ namespace test{
@@ -48,7 +50,11 @@ BOOST_AUTO_TEST_CASE( test_triple_store_01 ) {
    const Node_id nid2 = ts[did].version_iri;
    BOOST_CHECK_EQUAL( to_string(nid2, ts), ver1 );
    BOOST_CHECK_EQUAL( to_string_full(nid1, ts), iri1 );
-   BOOST_CHECK_EQUAL( ts.map_triple().size(), 16u );
+   BOOST_FOREACH(const Triple t, ts.map_triple()) {
+      std::cout << to_string(t, ts) << '\n';
+   }
+   std::cout << std::endl;
+   BOOST_CHECK_EQUAL( ts.map_triple().size(), 14u );
    BOOST_CHECK( ts.find_doc_iri(iri1) );
 }
 
@@ -58,7 +64,7 @@ BOOST_AUTO_TEST_CASE( test_triple_store_02 ) {
    Triple_store ts;
    boost::filesystem::ifstream ifs(path1);
    load(ifs, ts);
-   BOOST_CHECK_EQUAL( ts.map_triple().size(), 16u );
+   BOOST_CHECK_EQUAL( ts.map_triple().size(), 14u );
 }
 
 /**@test
@@ -90,8 +96,12 @@ BOOST_AUTO_TEST_CASE( test_triple_store_04 ) {
    Catalog cat;
    add(cat, sample_file_path());
    load_file(path2, ts, cat);
+   BOOST_FOREACH(const Triple t, ts.map_triple()) {
+      std::cout << to_string(t, ts) << '\n';
+   }
+   std::cout << std::endl;
 
-   BOOST_CHECK_EQUAL( ts.map_triple().size(), 19u );
+   BOOST_CHECK_EQUAL( ts.map_triple().size(), 17u );
 }
 
 /**@test

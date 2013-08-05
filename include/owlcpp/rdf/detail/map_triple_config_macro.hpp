@@ -15,12 +15,12 @@ part of owlcpp project.
 #include "boost/preprocessor/seq/transform.hpp"
 
 #define OWLCPP_TRIPLE_INDEX_ELEMENT_MACRO_(s, data, elem) \
-   owlcpp::map_triple_detail::BOOST_PP_CAT(elem, _tag) \
+   ::owlcpp::BOOST_PP_CAT(elem, _tag) \
 /*
 */
 
 #define OWLCPP_TRIPLE_INDEX_CONFIG_MACRO_(r, data, i, elem) BOOST_PP_COMMA_IF(i) \
-   boost::mpl::vector4<BOOST_PP_SEQ_ENUM( \
+   ::boost::mpl::vector4<BOOST_PP_SEQ_ENUM( \
             BOOST_PP_SEQ_TRANSFORM( \
                      OWLCPP_TRIPLE_INDEX_ELEMENT_MACRO_, \
                      , \
@@ -31,7 +31,7 @@ part of owlcpp project.
 */
 
 #define OWLCPP_TRIPLE_INDEX_CONFIG(tuple_seq) \
-   boost::mpl::BOOST_PP_CAT(vector, BOOST_PP_SEQ_SIZE(tuple_seq))< \
+   ::boost::mpl::BOOST_PP_CAT(vector, BOOST_PP_SEQ_SIZE(tuple_seq))< \
    BOOST_PP_SEQ_FOR_EACH_I(OWLCPP_TRIPLE_INDEX_CONFIG_MACRO_, ,tuple_seq) \
    >
 /*

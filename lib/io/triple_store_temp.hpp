@@ -67,7 +67,7 @@ public:
             const Node_id pred,
             const Node_id obj
    ) {
-      map_triple_.insert(subj, pred, obj, did_);
+      map_triple_.insert(Triple::make(subj, pred, obj, did_));
    }
 
    doc_type const& operator[](const Doc_id) const {return doc_;}
@@ -98,6 +98,9 @@ public:
 
    using Map_std_ns_crtpb<Triple_store_temp>::find;
    using Map_std_node_crtpb<Triple_store_temp>::find;
+
+   using Map_std_ns_crtpb<Triple_store_temp>::insert;
+   using Map_triple_crtpb<Triple_store_temp>::insert;
 
 private:
    map_std_type const& map_std_;

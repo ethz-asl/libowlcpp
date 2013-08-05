@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 /** Test fragment converter
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case02 ) {
-   typedef m::Convert_fragment<m::Obj_tag,m::Doc_tag,m::Pred_tag, m::Subj_tag>
+   typedef m::Convert_fragment<Obj_tag,Doc_tag,Pred_tag, Subj_tag>
    conv_t;
    const Triple t1 = triple(1,2,3,4);
    const Node_id i1 = conv_t::get_index(t1);
@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE( case03 ) {
 
 typedef m::Triple_index<
          m::Fragment_map_vector,
-         m::Subj_tag, m::Pred_tag, m::Obj_tag, m::Doc_tag
+         Subj_tag, Pred_tag, Obj_tag, Doc_tag
          > index1;
 
 /** Test triple index Subj, Pred, Obj, Doc
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE( case04 ) {
 
 typedef m::Triple_index<
          m::Fragment_map_vector,
-         m::Obj_tag, m::Doc_tag, m::Subj_tag, m::Pred_tag
+         Obj_tag, Doc_tag, Subj_tag, Pred_tag
          > index2;
 
 /** Test triple index Obj, Doc, Subj, Pred
@@ -153,44 +153,56 @@ BOOST_AUTO_TEST_CASE( case05 ) {
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case06 ) {
    typedef m::Search_efficiency<
-            boost::mpl::vector4<m::Obj_tag, m::Doc_tag, m::Subj_tag, m::Pred_tag>,
+            boost::mpl::vector4<Obj_tag, Doc_tag, Subj_tag, Pred_tag>,
             boost::mpl::vector4_c<bool, 0, 0, 1, 0>
             > optim1;
-   BOOST_MPL_ASSERT_RELATION( optim1::value, ==, 100*3 );
+   BOOST_MPL_ASSERT_RELATION( optim1::value, ==, 100 + 3 );
 
    typedef m::Search_efficiency<
-            boost::mpl::vector4<m::Subj_tag, m::Obj_tag, m::Doc_tag, m::Pred_tag>,
+            boost::mpl::vector4<Subj_tag, Obj_tag, Doc_tag, Pred_tag>,
             boost::mpl::vector4_c<bool, 0, 1, 1, 0>
             > optim2;
    BOOST_MPL_ASSERT_RELATION( optim2::value, ==, -4 + 10 );
 
    typedef m::Search_efficiency<
-            boost::mpl::vector4<m::Subj_tag, m::Obj_tag, m::Doc_tag, m::Pred_tag>,
+            boost::mpl::vector4<Subj_tag, Obj_tag, Doc_tag, Pred_tag>,
             boost::mpl::vector4_c<bool, 0, 0, 1, 1>
             > optim3;
    BOOST_MPL_ASSERT_RELATION( optim3::value, ==, -4 + 10 + 1 );
 
    typedef m::Search_efficiency<
-            boost::mpl::vector4<m::Subj_tag, m::Doc_tag, m::Obj_tag, m::Pred_tag>,
+            boost::mpl::vector4<Subj_tag, Doc_tag, Obj_tag, Pred_tag>,
             boost::mpl::vector4_c<bool, 0, 0, 1, 1>
             > optim4;
    BOOST_MPL_ASSERT_RELATION( optim4::value, ==, -4 + 10 + 1 );
 
    typedef m::Search_efficiency<
-            boost::mpl::vector4<m::Pred_tag, m::Doc_tag, m::Obj_tag, m::Subj_tag>,
+            boost::mpl::vector4<Pred_tag, Doc_tag, Obj_tag, Subj_tag>,
             m::Boolean_signature<any, any, Node_id, Doc_id>::type
             > optim5;
    BOOST_MPL_ASSERT_RELATION( optim5::value, ==, 9 );
+
+   typedef m::Search_efficiency<
+            boost::mpl::vector4<Subj_tag, Pred_tag, Obj_tag, Doc_tag>,
+            boost::mpl::vector4_c<bool, 1, 0, 1, 0>
+            > optim6;
+   BOOST_MPL_ASSERT_RELATION( optim6::value, ==, 100 + 4 );
+
+   typedef m::Search_efficiency<
+            boost::mpl::vector4<Obj_tag, Subj_tag, Pred_tag, Doc_tag>,
+            boost::mpl::vector4_c<bool, 1, 0, 1, 0>
+            > optim7;
+   BOOST_MPL_ASSERT_RELATION( optim7::value, ==, 100 + 3 + 10 );
 }
 
 typedef m::Triple_index<
          m::Fragment_map_vector,
-         m::Pred_tag, m::Obj_tag, m::Doc_tag, m::Subj_tag
+         Pred_tag, Obj_tag, Doc_tag, Subj_tag
          > index3;
 
 typedef m::Triple_index<
          m::Fragment_map_vector,
-         m::Pred_tag, m::Doc_tag, m::Obj_tag, m::Subj_tag
+         Pred_tag, Doc_tag, Obj_tag, Subj_tag
          > index4;
 
 /** Test index selector
