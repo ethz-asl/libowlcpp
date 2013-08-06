@@ -20,6 +20,7 @@ part of owlcpp project.
 #include "owlcpp/rdf/doc_meta.hpp"
 #include "owlcpp/detail/member_iterator.hpp"
 #include "owlcpp/terms/node_tags_system.hpp"
+#include "owlcpp/exception.hpp"
 
 
 namespace owlcpp{
