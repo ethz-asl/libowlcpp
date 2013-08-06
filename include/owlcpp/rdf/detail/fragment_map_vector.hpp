@@ -14,6 +14,7 @@ part of owlcpp project.
 #include "boost/iterator/iterator_facade.hpp"
 #include "boost/range.hpp"
 #include "owlcpp/rdf/exception.hpp"
+#include "owlcpp/rdf/any_triple_element.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
 
@@ -122,24 +123,16 @@ public:
    }
 };
 
-
-/**@brief
+/**@brief Container of @b Set -s mapped against @b ID -s
+@details
 *******************************************************************************/
 template<class Id, class Set> class Fragment_map_vector {
    typedef Fmv_config<Id,Set> config;
+   typedef typename config::storage storage;
+
 public:
    typedef typename config::fragment fragment;
    typedef typename config::value_type value_type;
-
-private:
-   typedef typename config::storage storage;
-
-   static Set const& empty_set() {
-      static const Set s;
-      return s;
-   }
-
-public:
    typedef typename config::iterator iterator;
    typedef iterator const_iterator;
    typedef boost::iterator_range<iterator> range;
@@ -172,7 +165,7 @@ public:
    void clear() {s_.clear();}
 
    Set const& operator[](const Id id) const {
-      if( id() >= s_.size() ) return empty_set();
+      if( id() >= s_.size() ) return Set::empty_set();
       return s_[id()];
    }
 

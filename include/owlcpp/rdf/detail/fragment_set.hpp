@@ -171,6 +171,11 @@ public:
    typedef typename stor_t::const_iterator const_iterator;
    typedef boost::iterator_range<const_iterator> const_range;
 
+   static Fragment_set const& empty_set() {
+      static const Fragment_set s;
+      return s;
+   }
+
    const_iterator begin() const {return v_.begin();}
    const_iterator end() const {return v_.end();}
    std::size_t size() const {return v_.size();}

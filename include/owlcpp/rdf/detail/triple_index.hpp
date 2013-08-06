@@ -23,7 +23,6 @@ part of owlcpp2 project.
 #include "owlcpp/rdf/print_triple.hpp"
 #include "owlcpp/rdf/detail/convert_fragment.hpp"
 #include "owlcpp/rdf/detail/fragment_set.hpp"
-#include "owlcpp/rdf/detail/fragment_map_vector.hpp"
 #include "owlcpp/rdf/detail/adapt_triple.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{

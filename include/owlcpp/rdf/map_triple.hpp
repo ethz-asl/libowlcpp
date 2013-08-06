@@ -15,6 +15,8 @@ part of owlcpp project.
 #include "boost/mpl/fold.hpp"
 #include "boost/mpl/front.hpp"
 #include "boost/mpl/push_back.hpp"
+#include "owlcpp/rdf/detail/fragment_map_vector.hpp"
+#include "owlcpp/rdf/detail/fragment_map_ordered.hpp"
 #include "owlcpp/rdf/detail/triple_index.hpp"
 #include "owlcpp/rdf/detail/triple_index_selector.hpp"
 #include "owlcpp/rdf/map_triple_fwd.hpp"

@@ -25,6 +25,7 @@ namespace owlcpp{ namespace map_triple_detail{
 /**@brief
 *******************************************************************************/
 template<class Id, class Set> class Fragment_map_vector;
+template<class Id, class Set> class Fragment_map_ordered;
 
 typedef OWLCPP_TRIPLE_INDEX_CONFIG(OWLCPP_TRIPLE_INDICES)
 index_config_default;
@@ -39,16 +40,24 @@ struct Triple_index_selector2 {
             > type;
 };
 
+template<class Tag1, class Tag2, class Tag3>
+struct Triple_index_selector2<Pred_tag,Tag1,Tag2,Tag3> {
+   typedef Triple_index<
+            Fragment_map_ordered,
+            Pred_tag,Tag1,Tag2,Tag3
+            > type;
+};
+
 /**@brief
 *******************************************************************************/
-template<class Config> struct Triple_index_selector {
-   typedef typename Triple_index_selector2<
-            typename boost::mpl::at_c<Config,0>::type,
-            typename boost::mpl::at_c<Config,1>::type,
-            typename boost::mpl::at_c<Config,2>::type,
-            typename boost::mpl::at_c<Config,3>::type
-            >::type type;
-};
+template<class Config> struct Triple_index_selector
+         : public Triple_index_selector2<
+              typename boost::mpl::at_c<Config,0>::type,
+              typename boost::mpl::at_c<Config,1>::type,
+              typename boost::mpl::at_c<Config,2>::type,
+              typename boost::mpl::at_c<Config,3>::type
+           >
+{};
 
 }//namespace map_triple_detail
 }//namespace owlcpp
