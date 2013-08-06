@@ -42,7 +42,7 @@ void export_triple_store() {
    )
 
    .def(
-            "insert_triple",
+            "insert",
             static_cast<void (Triple_store::*)(owlcpp::Triple const&)>
                (&Triple_store::insert),
             "insert new triple"

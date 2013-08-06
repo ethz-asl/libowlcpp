@@ -32,7 +32,7 @@ class Test(unittest.TestCase):
     def test_load_file(self):
         ts = Triple_store()
         load_file(self.path1, ts)
-        self.assertEqual(len(ts.map_triple()), 15)
+        self.assertEqual(len(ts.map_triple()), 13)
 
     def test_load_includes(self):
         ts1 = Triple_store()
@@ -43,6 +43,6 @@ class Test(unittest.TestCase):
         add(cat, self.dir1)
         ts2 = Triple_store()
         load_file(self.path2, ts2, cat)
-        self.assertEqual(len(ts2.map_triple()), 19)
+        self.assertEqual(len(ts2.map_triple()), 17)
 
 if __name__ == '__main__': unittest.main()
