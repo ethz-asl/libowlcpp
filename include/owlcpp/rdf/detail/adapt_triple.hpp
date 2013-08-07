@@ -7,9 +7,6 @@ part of owlcpp project.
 #define ADAPT_TRIPLE_HPP_
 
 #include "boost/fusion/adapted/struct/adapt_struct.hpp"
-#include "boost/mpl/vector.hpp"
-#include "boost/mpl/int.hpp"
-
 #include "owlcpp/rdf/triple.hpp"
 
 BOOST_FUSION_ADAPT_STRUCT(
