@@ -12,13 +12,14 @@ part of owlcpp2 project.
 
 #include "test/exception_fixture.hpp"
 #include "test/test_utils.hpp"
-#include "owlcpp/rdf/detail/fragment_set.hpp"
+#include "owlcpp/rdf/detail/triple_set.hpp"
 #include "owlcpp/rdf/detail/triple_index.hpp"
 #include "owlcpp/rdf/detail/convert_fragment.hpp"
 #include "owlcpp/rdf/detail/fragment_map_vector.hpp"
 #include "owlcpp/node_id.hpp"
 #include "owlcpp/doc_id.hpp"
 #include "owlcpp/rdf/detail/triple_index_selector.hpp"
+#include "owlcpp/rdf/triple_tags.hpp"
 
 namespace owlcpp{ namespace test{
 
@@ -26,12 +27,26 @@ BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 namespace m = map_triple_detail;
 
-/** Test fragment set
+/** Test triple set 1
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {
-   typedef m::Fragment_set<Doc_id,Node_id,Node_id> fs_t;
-   fs_t fs;
-   typedef fs_t::value_type val_t;
+   typedef m::Triple_set<Subj_tag, Obj_tag, Pred_tag> ts_t;
+   ts_t ts;
+   BOOST_CHECK(ts.empty());
+   ts.insert( triple(1, 1, 2, 0) );
+   insert_seq(ts, random_triples1);
+   BOOST_CHECK_EQUAL(ts.size(), 21U);
+   ts.erase(triple(1, 1, 2, 0));
+   BOOST_CHECK_EQUAL(ts.size(), 20U);
+   BOOST_CHECK_THROW(
+            ts.erase(triple(1, 1, 2, 0)),
+            Rdf_err
+   );
+
+   BOOST_CHECK_EQUAL(ts[0], triple(0,5,3,1));
+   BOOST_CHECK_EQUAL(ts[10], triple(5,0,2,7));
+
+/*
    fs.insert( val_t(Doc_id(1), Node_id(1), Node_id(2)) );
    fs.insert( val_t(Doc_id(2), Node_id(1), Node_id(1)) );
    fs.insert( val_t(Doc_id(2), Node_id(2), Node_id(1)) );
@@ -50,11 +65,32 @@ BOOST_AUTO_TEST_CASE( case01 ) {
 
    fs_t::query<Doc_id,any,Node_id>::range r4 = fs.find(Doc_id(2), any(), Node_id(1));
    BOOST_CHECK_EQUAL(distance(r4), 2);
+*/
+}
+
+/** Test triple set 2
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( case02 ) {
+   typedef m::Triple_set<Pred_tag, Subj_tag, Obj_tag> ts_t;
+   ts_t ts;
+   BOOST_CHECK(ts.empty());
+   ts.insert( triple(1, 1, 2, 0) );
+   insert_seq(ts, random_triples1);
+   BOOST_CHECK_EQUAL(ts.size(), 21U);
+   ts.erase(triple(1, 1, 2, 0));
+   BOOST_CHECK_EQUAL(ts.size(), 20U);
+   BOOST_CHECK_THROW(
+            ts.erase(triple(1, 1, 2, 0)),
+            Rdf_err
+   );
+
+   BOOST_CHECK_EQUAL(ts[0], triple(1,0,6,4));
+   BOOST_CHECK_EQUAL(ts[10], triple(0,4,8,2));
 }
 
 /** Test fragment converter
 *******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02 ) {
+BOOST_AUTO_TEST_CASE( case02a ) {
    typedef m::Convert_fragment<Obj_tag,Doc_tag,Pred_tag, Subj_tag>
    conv_t;
    const Triple t1 = triple(1,2,3,4);
