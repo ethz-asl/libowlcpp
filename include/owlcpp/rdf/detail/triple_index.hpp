@@ -21,42 +21,10 @@ part of owlcpp2 project.
 #include "owlcpp/rdf/exception.hpp"
 #include "owlcpp/rdf/triple_tags.hpp"
 #include "owlcpp/rdf/print_triple.hpp"
-#include "owlcpp/rdf/detail/convert_fragment.hpp"
-#include "owlcpp/rdf/detail/fragment_set.hpp"
+#include "owlcpp/rdf/detail/triple_set.hpp"
 #include "owlcpp/rdf/detail/adapt_triple.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
-
-/**@brief
-*******************************************************************************/
-template<class Convert, class Iter>
-class Convert_to_triple_iterator
-         : public boost::iterator_facade<
-              Convert_to_triple_iterator<Convert, Iter>,
-              Triple,
-              typename boost::iterator_traversal<Iter>::type,
-              Triple
-           > {
-   friend class boost::iterator_core_access;
-public:
-   Convert_to_triple_iterator() {}
-   Convert_to_triple_iterator(Iter const& i, typename Convert::el0 const id)
-   : iter_(i), id_(id) {}
-
-
-private:
-   Iter iter_;
-   typename Convert::el0 id_;
-
-   Triple dereference() const {return Convert::get_triple(id_, *iter_);}
-   bool equal(Convert_to_triple_iterator const& i) const {return iter_ == i.iter_;}
-   void increment() {++iter_;}
-   void decrement() {--iter_;}
-   void advance(const std::ptrdiff_t n) {iter_ += n;}
-   std::ptrdiff_t distance_to(Convert_to_triple_iterator const& i) const {
-      return i.iter_ - iter_;
-   }
-};
 
 /**@brief
 *******************************************************************************/
@@ -150,7 +118,7 @@ template<
    template<class,class> class Map,
    class Tag0, class Tag1, class Tag2, class Tag3,
    class Q0, class Q1, class Q2, class Q3
-> class Triple_find_dispatch {
+> class Query_dispatch {
    typedef Convert_fragment<Tag0,Tag1,Tag2,Tag3> convert;
    typedef typename convert::el0 el0;
    typedef typename convert::el1 el1;
@@ -186,7 +154,7 @@ template<
    template<class,class> class Map,
    class Tag0, class Tag1, class Tag2, class Tag3,
    class Q1, class Q2, class Q3
-> class Triple_find_dispatch<
+> class Query_dispatch<
    Map,
    Tag0,Tag1,Tag2,Tag3,
    typename boost::mpl::at<Triple, Tag0>::type,Q1,Q2,Q3
@@ -245,13 +213,11 @@ private:
                boost::mpl::vector4<Subj_tag, Pred_tag, Obj_tag, Doc_tag>
             >
    ));
-   typedef Convert_fragment<Tag0,Tag1,Tag2,Tag3> converter;
-   typedef typename converter::el0 el0;
-   typedef typename converter::el1 el1;
-   typedef typename converter::el2 el2;
-   typedef typename converter::el3 el3;
-   typedef typename converter::fragment fragment;
-   typedef Fragment_set<el1, el2, el3> fragment_set;
+   typedef typename boost::mpl::at<Triple,Tag0> el0;
+   typedef typename boost::mpl::at<Triple,Tag1> el1;
+   typedef typename boost::mpl::at<Triple,Tag2> el2;
+   typedef typename boost::mpl::at<Triple,Tag3> el3;
+   typedef Triple_set<el1, el2, el3> fragment_set;
    typedef Map<el0, fragment_set> storage;
 
 public:
@@ -263,7 +229,7 @@ public:
       typedef typename boost::mpl::at<vector, Tag2>::type qt2;
       typedef typename boost::mpl::at<vector, Tag3>::type qt3;
    public:
-      typedef Triple_find_dispatch<
+      typedef Query_dispatch<
                   Map,Tag0,Tag1,Tag2,Tag3, qt0, qt1, qt2, qt3
                > dispatch;
       typedef typename dispatch::range range;

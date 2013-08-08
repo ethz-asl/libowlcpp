@@ -333,6 +333,7 @@ public:
       typedef Ts_query_dispatch<Tag1,Tag2,Tag3,Q1,Q2,Q3> dispatch;
       typedef typename dispatch::iterator iterator;
       typedef typename dispatch::range range;
+      static const int efficiency = dispatch::efficiency;
    };
 
    template<class Q1, class Q2, class Q3>
