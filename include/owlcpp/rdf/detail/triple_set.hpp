@@ -79,7 +79,6 @@ private:
    Q3 q3_;
 };
 
-
 /**@brief Define elements of Triple_set used by other classes
 *******************************************************************************/
 template<class Tag1, class Tag2, class Tag3> struct Triple_set_config {
