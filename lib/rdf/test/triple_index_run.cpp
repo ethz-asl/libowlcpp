@@ -15,8 +15,6 @@ part of owlcpp2 project.
 #include "owlcpp/rdf/detail/triple_set.hpp"
 #include "owlcpp/rdf/detail/triple_index.hpp"
 #include "owlcpp/rdf/detail/fragment_map_vector.hpp"
-#include "owlcpp/node_id.hpp"
-#include "owlcpp/doc_id.hpp"
 #include "owlcpp/rdf/detail/triple_index_selector.hpp"
 #include "owlcpp/rdf/triple_tags.hpp"
 
@@ -73,27 +71,6 @@ BOOST_AUTO_TEST_CASE( case01 ) {
             ).size(),
             2
    );
-
-/*
-   fs.insert( val_t(Doc_id(1), Node_id(1), Node_id(2)) );
-   fs.insert( val_t(Doc_id(2), Node_id(1), Node_id(1)) );
-   fs.insert( val_t(Doc_id(2), Node_id(2), Node_id(1)) );
-   fs.insert( val_t(Doc_id(2), Node_id(1), Node_id(2)) );
-   fs.insert( val_t(Doc_id(1), Node_id(1), Node_id(1)) );
-   fs.insert( val_t(Doc_id(1), Node_id(1), Node_id(1)) );
-   fs.insert( val_t(Doc_id(1), Node_id(2), Node_id(1)) );
-   BOOST_CHECK_EQUAL(fs.size(), 6U);
-   typedef fs_t::const_range range_t;
-   range_t r1 = fs.find(any(), any(), any());
-   BOOST_CHECK_EQUAL(r1.size(), 6U);
-   range_t r2 = fs.find(Doc_id(1), any(), any());
-   BOOST_CHECK_EQUAL(r2.size(), 3U);
-   range_t r3 = fs.find(Doc_id(1), Node_id(2), any());
-   BOOST_CHECK_EQUAL(r3.size(), 1U);
-
-   fs_t::query<Doc_id,any,Node_id>::range r4 = fs.find(Doc_id(2), any(), Node_id(1));
-   BOOST_CHECK_EQUAL(distance(r4), 2);
-*/
 }
 
 /** Test triple set 2
@@ -145,24 +122,10 @@ BOOST_AUTO_TEST_CASE( case02 ) {
    );
 }
 
-/** Test fragment converter
-*******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02a ) {
-   typedef m::Convert_fragment<Obj_tag,Doc_tag,Pred_tag, Subj_tag>
-   conv_t;
-   const Triple t1 = triple(1,2,3,4);
-   const Node_id i1 = conv_t::get_index(t1);
-   BOOST_CHECK(i1 == Node_id(3));
-   const conv_t::fragment f1 = conv_t::get_fragment(t1);
-   BOOST_CHECK( f1 == conv_t::fragment(Doc_id(4), Node_id(2), Node_id(1)) );
-   BOOST_CHECK( t1 == conv_t::get_triple(i1, f1) );
-}
-
 /** Test fragment map vector
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case03 ) {
-   typedef m::Fragment_set<Doc_id,Node_id,Node_id> fs_t;
-   typedef m::Fragment_map_vector<Node_id, fs_t> fmv_t;
+   typedef m::Fragment_map_vector<Pred_tag, Subj_tag, Obj_tag, Doc_tag> fmv_t;
    fmv_t fmv;
    fmv_t::const_iterator i = fmv.begin();
 }
@@ -172,34 +135,56 @@ typedef m::Triple_index<
          Subj_tag, Pred_tag, Obj_tag, Doc_tag
          > index1;
 
+typedef m::Triple_index<
+         m::Fragment_map_vector,
+         Obj_tag, Doc_tag, Subj_tag, Pred_tag
+         > index2;
+
+typedef m::Triple_index<
+         m::Fragment_map_vector,
+         Pred_tag, Obj_tag, Doc_tag, Subj_tag
+         > index3;
+
+typedef m::Triple_index<
+         m::Fragment_map_vector,
+         Pred_tag, Doc_tag, Obj_tag, Subj_tag
+         > index4;
+
+typedef m::Triple_index<
+         m::Fragment_map_vector,
+         Subj_tag, Obj_tag, Doc_tag, Pred_tag
+         > index5;
+
+typedef m::Triple_index<
+         m::Fragment_map_vector,
+         Obj_tag, Subj_tag, Pred_tag, Doc_tag
+         > index6;
+
 /** Test triple index Subj, Pred, Obj, Doc
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case04 ) {
    index1 ind;
    BOOST_CHECK( ind.empty() );
-   ind.insert(triple(0,0,0,0));
-   ind.insert(triple(0,0,0,0));
-   ind.insert(triple(0,1,0,0));
-   ind.insert(triple(0,0,1,0));
+   insert_seq(ind, random_triples1);
    BOOST_CHECK( ! ind.empty() );
-   BOOST_CHECK_EQUAL(ind.size(), 3U);
+   BOOST_CHECK_EQUAL(ind.size(), 20U);
    BOOST_CHECK_EQUAL(
             ind.find(Node_id(0), any(), any(), any()).size(),
-            3
+            2
    );
    BOOST_CHECK_EQUAL(
-            ind.find(Node_id(1), any(), any(), any()).size(),
-            0
+            ind.find(Node_id(1), Node_id(1), any(), any()).size(),
+            1
    );
    BOOST_CHECK(
-            boost::distance(ind.find(any(), any(), any(), any())) == 3
+            boost::distance(ind.find(any(), any(), any(), any())) == 20
    );
    BOOST_CHECK_EQUAL(
             boost::distance(ind.find(any(), Node_id(1), any(), any())),
-            1
+            3
    );
 
-   BOOST_FOREACH(const Triple t, ind) {
+   BOOST_FOREACH(Triple const& t, ind) {
       std::cout << t << std::endl;
    }
    std::cout << std::endl;
@@ -210,15 +195,10 @@ BOOST_AUTO_TEST_CASE( case04 ) {
    }
    std::cout << std::endl;
 
-   BOOST_FOREACH(const Triple t, ind.find(any(), any(), any(), any())) {
+   BOOST_FOREACH(Triple const& t, ind.find(any(), any(), any(), any())) {
       std::cout << t << std::endl;
    }
 }
-
-typedef m::Triple_index<
-         m::Fragment_map_vector,
-         Obj_tag, Doc_tag, Subj_tag, Pred_tag
-         > index2;
 
 /** Test triple index Obj, Doc, Subj, Pred
 *******************************************************************************/
@@ -236,7 +216,7 @@ BOOST_AUTO_TEST_CASE( case05 ) {
             2
    );
 
-   BOOST_FOREACH(const Triple t, ind) {
+   BOOST_FOREACH(Triple const& t, ind) {
       std::cout << t << std::endl;
    }
 //   BOOST_ERROR("");
@@ -245,58 +225,24 @@ BOOST_AUTO_TEST_CASE( case05 ) {
 /** Test optimality
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case06 ) {
-   typedef m::Search_efficiency<
-            boost::mpl::vector4<Obj_tag, Doc_tag, Subj_tag, Pred_tag>,
-            boost::mpl::vector4_c<bool, 0, 0, 1, 0>
-            > optim1;
-   BOOST_MPL_ASSERT_RELATION( optim1::value, ==, 100 + 3 );
+   int e = index2::query<any,any,Node_id,any>::efficiency;
+   BOOST_CHECK_EQUAL( e, 100 + 3 );
 
-   typedef m::Search_efficiency<
-            boost::mpl::vector4<Subj_tag, Obj_tag, Doc_tag, Pred_tag>,
-            boost::mpl::vector4_c<bool, 0, 1, 1, 0>
-            > optim2;
-   BOOST_MPL_ASSERT_RELATION( optim2::value, ==, -4 + 10 );
+   e = index5::query<any,Node_id,Node_id,any>::efficiency;
+   BOOST_CHECK_EQUAL( e, 10 - 4 );
 
-   typedef m::Search_efficiency<
-            boost::mpl::vector4<Subj_tag, Obj_tag, Doc_tag, Pred_tag>,
-            boost::mpl::vector4_c<bool, 0, 0, 1, 1>
-            > optim3;
-   BOOST_MPL_ASSERT_RELATION( optim3::value, ==, -4 + 10 + 1 );
+   e = index5::query<any,any,Node_id,Doc_id>::efficiency;
+   BOOST_CHECK_EQUAL( e, 15 - 4 );
 
-   typedef m::Search_efficiency<
-            boost::mpl::vector4<Subj_tag, Doc_tag, Obj_tag, Pred_tag>,
-            boost::mpl::vector4_c<bool, 0, 0, 1, 1>
-            > optim4;
-   BOOST_MPL_ASSERT_RELATION( optim4::value, ==, -4 + 10 + 1 );
+   e = index4::query<any,any,Node_id,Doc_id>::efficiency;
+   BOOST_CHECK_EQUAL( e, 15 - 2 );
 
-   typedef m::Search_efficiency<
-            boost::mpl::vector4<Pred_tag, Doc_tag, Obj_tag, Subj_tag>,
-            m::Boolean_signature<any, any, Node_id, Doc_id>::type
-            > optim5;
-   BOOST_MPL_ASSERT_RELATION( optim5::value, ==, 9 );
+   e = index1::query<Node_id,any,Node_id,any>::efficiency;
+   BOOST_CHECK_EQUAL( e, 100 + 4 );
 
-   typedef m::Search_efficiency<
-            boost::mpl::vector4<Subj_tag, Pred_tag, Obj_tag, Doc_tag>,
-            boost::mpl::vector4_c<bool, 1, 0, 1, 0>
-            > optim6;
-   BOOST_MPL_ASSERT_RELATION( optim6::value, ==, 100 + 4 );
-
-   typedef m::Search_efficiency<
-            boost::mpl::vector4<Obj_tag, Subj_tag, Pred_tag, Doc_tag>,
-            boost::mpl::vector4_c<bool, 1, 0, 1, 0>
-            > optim7;
-   BOOST_MPL_ASSERT_RELATION( optim7::value, ==, 100 + 3 + 10 );
+   e = index6::query<Node_id,any,Node_id,any>::efficiency;
+   BOOST_CHECK_EQUAL( e, 100 + 3 + 10 );
 }
-
-typedef m::Triple_index<
-         m::Fragment_map_vector,
-         Pred_tag, Obj_tag, Doc_tag, Subj_tag
-         > index3;
-
-typedef m::Triple_index<
-         m::Fragment_map_vector,
-         Pred_tag, Doc_tag, Obj_tag, Subj_tag
-         > index4;
 
 /** Test index selector
 *******************************************************************************/
@@ -305,19 +251,19 @@ BOOST_AUTO_TEST_CASE( case07 ) {
 
    typedef m::Index_selector<
       indices,
-      boost::mpl::vector4_c<bool, 0, 0, 1, 0>
+      any, any, Node_id, any
    > selector1;
    BOOST_MPL_ASSERT_RELATION( selector1::index::value, ==, 1 );
 
    typedef m::Index_selector<
       indices,
-      boost::mpl::vector4_c<bool, 1, 0, 1, 0>
+      Node_id, any, Node_id, any
    > selector2;
    BOOST_MPL_ASSERT_RELATION( selector2::index::value, ==, 0 );
 
    typedef m::Index_selector<
       indices,
-      m::Boolean_signature<any, Node_id, any, Doc_id>::type
+      any, Node_id, any, Doc_id
    > selector3;
    BOOST_MPL_ASSERT_RELATION( selector3::index::value, ==, 3 );
 

@@ -10,11 +10,16 @@ part of owlcpp project.
 #include <functional>
 #include "boost/assert.hpp"
 #include "boost/foreach.hpp"
+#include "boost/fusion/sequence/intrinsic/at.hpp"
 #include "boost/iterator/filter_iterator.hpp"
 #include "boost/iterator/iterator_facade.hpp"
+#include "boost/mpl/at.hpp"
+#include "boost/mpl/vector_c.hpp"
 #include "boost/range.hpp"
 #include "owlcpp/rdf/exception.hpp"
+#include "owlcpp/rdf/triple.hpp"
 #include "owlcpp/rdf/any_triple_element.hpp"
+#include "owlcpp/rdf/detail/triple_set.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
 
@@ -29,6 +34,8 @@ template<class Id, class Iter> class Fvm_iterator
 > {
 public:
    typedef std::pair<Id, typename Iter::value_type const&> value_type;
+
+//   Fvm_iterator() {}
 
    Fvm_iterator(const Iter begin, const Iter i)
    : begin_(begin), i_(i) {}
@@ -55,34 +62,39 @@ private:
 
 /**@brief Fragment map vector configuration
 *******************************************************************************/
-template<class Id, class Set> struct Fmv_config {
-   typedef typename Set::value_type fragment;
-   typedef std::pair<Id, Set const&> value_type;
-   typedef std::vector<Set> storage;
-   typedef Fvm_iterator<Id, typename storage::const_iterator> iterator;
+template<class Tag0,class Tag1, class Tag2, class Tag3> struct Fmv_config {
+   typedef typename boost::mpl::at<Triple, Tag0>::type id_type;
+   typedef Triple_set<Tag1,Tag2,Tag3> set_type;
+   typedef std::pair<id_type, set_type const&> value_type;
+   typedef std::vector<set_type> storage;
+   typedef Fvm_iterator<id_type, typename storage::const_iterator> iterator;
 };
 
 /**@brief
 *******************************************************************************/
-template<class Id, class Set, class Q> class Fmv_search_dispatch {
-   typedef Fmv_config<Id,Set> config;
+template<class Tag0,class Tag1, class Tag2, class Tag3, class Q0>
+class Fmv_query_dispatch {
+   typedef Fmv_config<Tag0,Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
+   typedef typename config::set_type set_type;
+   typedef typename config::id_type id_type;
    typedef typename config::value_type value_type;
 
    class Equal : public std::unary_function<value_type, bool> {
    public:
-      explicit Equal(const Q q) : q_(q) {}
+//      Equal() {}
+      explicit Equal(const Q0 q) : q_(q) {}
       bool operator()(value_type const& p) const {return p.first == q_;}
    private:
-      Q q_;
+      Q0 q_;
    };
 
 public:
    typedef boost::filter_iterator<Equal, typename config::iterator> iterator;
    typedef boost::iterator_range<iterator> range;
 
-   static range find(storage const& s, const Q q) {
-      const Equal eq(q);
+   static range find(storage const& s, const Q0 q0) {
+      const Equal eq(q0);
       return range(
                iterator(eq, s.begin(), s.end()),
                iterator(eq, s.end(), s.end())
@@ -90,26 +102,9 @@ public:
    }
 };
 
-template<class Id, class Set> class Fmv_search_dispatch<Id,Set,Id> {
-   typedef Fmv_config<Id,Set> config;
-   typedef typename config::storage storage;
-public:
-   typedef typename config::iterator iterator;
-   typedef boost::iterator_range<iterator> range;
-
-   static range find(storage const& s, const Id id) {
-      if( id() >= s.size() ) {
-         return range(iterator(s.end()), iterator(s.end()));
-      }
-      return range(
-               iterator(s.begin() + id()),
-               iterator(s.begin() + id() + 1)
-      );
-   }
-};
-
-template<class Id, class Set> class Fmv_search_dispatch<Id,Set,any> {
-   typedef Fmv_config<Id,Set> config;
+template<class Tag0,class Tag1, class Tag2, class Tag3>
+class Fmv_query_dispatch<Tag0,Tag1,Tag2,Tag3,any> {
+   typedef Fmv_config<Tag0,Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
 public:
    typedef typename config::iterator iterator;
@@ -126,12 +121,13 @@ public:
 /**@brief Container of @b Set -s mapped against @b ID -s
 @details
 *******************************************************************************/
-template<class Id, class Set> class Fragment_map_vector {
-   typedef Fmv_config<Id,Set> config;
+template<class Tag0,class Tag1, class Tag2, class Tag3> class Fragment_map_vector {
+   typedef Fmv_config<Tag0,Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
 
 public:
-   typedef typename config::fragment fragment;
+   typedef typename config::set_type set_type;
+   typedef typename config::id_type id_type;
    typedef typename config::value_type value_type;
    typedef typename config::iterator iterator;
    typedef iterator const_iterator;
@@ -142,41 +138,41 @@ public:
 
    std::size_t n_fragments() const {
       std::size_t n = 0;
-      BOOST_FOREACH(Set const& set, s_) {
-         n += set.size();
-      }
+      BOOST_FOREACH(set_type const& set, s_) {n += set.size();}
       return n;
    }
 
-   bool insert(const Id id, fragment const& f) {
+   bool insert(Triple const& t) {
+      const id_type id = boost::fusion::at<Tag0>(t);
       if( id() >= s_.size() ) s_.resize(id() + 1);
-      return s_[id()].insert(f);
+      return s_[id()].insert(t);
    }
 
-   void erase(const Id id, fragment const& f) {
+   void erase(Triple const& t) {
+      const id_type id = boost::fusion::at<Tag0>(t);
       if( id() >= s_.size() ) BOOST_THROW_EXCEPTION(
                Rdf_err()
                << Rdf_err::msg_t("element not found")
                << Rdf_err::int1_t(id())
       );
-      s_[id()].erase(f);
+      s_[id()].erase(t);
    }
 
    void clear() {s_.clear();}
 
-   Set const& operator[](const Id id) const {
-      if( id() >= s_.size() ) return Set::empty_set();
+   set_type const& operator[](const id_type id) const {
+      if( id() >= s_.size() ) return set_type::empty_set();
       return s_[id()];
    }
 
-   template<class Q> struct query {
-      typedef typename Fmv_search_dispatch<Id,Set,Q>::iterator iterator;
-      typedef typename Fmv_search_dispatch<Id,Set,Q>::range range;
+   template<class Q0> struct query {
+      typedef typename Fmv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::iterator iterator;
+      typedef typename Fmv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::range range;
    };
 
-   template<class Q> typename query<Q>::range
-   find(Q const& q) const {
-      return Fmv_search_dispatch<Id,Set,Q>::find(s_, q);
+   template<class Q0> typename query<Q0>::range
+   find(Q0 const& q) const {
+      return Fmv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::find(s_, q);
    }
 
 private:

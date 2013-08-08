@@ -18,86 +18,18 @@ part of owlcpp2 project.
 
 namespace owlcpp{ namespace map_triple_detail{
 
-/**@brief Estimate of how well a given triple index would perform a search
-@details
-
-@tparam Tags sequence of integer types showing how triples are sorted by index
-,e.g., for index that sorts triples by object, by docID, by subject, and then
-by predicate, the sequence is
-@code mpl::vector4<Obj_tag, Doc_tag, Subj_tag, Pred_tag> @endcode
-@tparam QBSig boolean signature of a query, a sequence of 4 booleans indicating,
-for each triple element, whether explicit match was requested,
-e.g., for a query @code any, any, Node_id, Doc_id @endcode
-boolean signature is @code mpl::vector4_c<bool,0,0,1,1>@endcode
+/**@brief find best index for the query
 *******************************************************************************/
 template<
-   class Tags,
-   class QBSig
-> class Search_efficiency {
-
-   typedef boost::mpl::int_<100> key1_value;
-   typedef boost::mpl::int_<10>  key2_value;
-   typedef boost::mpl::int_<1>   key3_value;
-
-   /** relative diversity of elements in each triple position */
-   typedef boost::mpl::vector4_c<int,4, 2, 3, 1> diversity;
-
-   /**  */
-   typedef typename boost::mpl::if_<
-            typename boost::mpl::at<
-               QBSig,
-               typename boost::mpl::front<Tags>::type
-            >::type,
-            boost::mpl::plus<
-               key1_value,
-               typename boost::mpl::at<
-                  diversity,
-                  typename boost::mpl::front<Tags>::type
-               >::type
-            >,
-            boost::mpl::negate<
-               typename boost::mpl::at<
-                  diversity,
-                  typename boost::mpl::front<Tags>::type
-               >::type
-            >
-   >::type main_key_score;
-
-   typedef typename boost::mpl::if_<
-            typename boost::mpl::at<
-               QBSig,
-               typename boost::mpl::at_c<Tags,1>::type
-            >::type,
-            boost::mpl::plus<
-               key2_value,
-               typename boost::mpl::if_<
-                  typename boost::mpl::at<
-                     QBSig,
-                     typename boost::mpl::at_c<Tags,2>::type
-                  >::type,
-                  key3_value,
-                  boost::mpl::int_<0>
-               >::type
-            >,
-            boost::mpl::int_<0>
-   >::type sec_keys_score;
-
-
-public:
-   typedef typename boost::mpl::plus<main_key_score, sec_keys_score>::type type;
-   static const int value = type::value;
-};
-
-template<
    class Indexes,
-   class QBSig
+   class QSubj, class QPred, class QObj, class QDoc
 > struct Index_selector {
 
-   template<class I1, class I2> struct less
-            : boost::mpl::less<
-              typename Search_efficiency<typename I1::sort_order, QBSig>::type,
-              typename Search_efficiency<typename I2::sort_order, QBSig>::type
-              >
+   template<class Index1, class Index2> struct less
+            : boost::mpl::bool_<(
+                     Index1::template query<QSubj,QPred,QObj,QDoc>::efficiency <
+                     Index2::template query<QSubj,QPred,QObj,QDoc>::efficiency
+            )>
             {};
 
    typedef typename boost::mpl::max_element<
