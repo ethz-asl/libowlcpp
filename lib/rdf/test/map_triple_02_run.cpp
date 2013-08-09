@@ -66,5 +66,16 @@ BOOST_AUTO_TEST_CASE( test_map_triple_01 ) {
    BOOST_CHECK_EQUAL( r8.size(), 3 );
 }
 
+/**@test
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_map_triple_02 ) {
+   typedef Map_triple<> map_triple;
+   map_triple mt;
+   insert_seq(mt, random_triples1);
+   BOOST_CHECK_EQUAL(mt.size(), 20U);
+
+   BOOST_CHECK_EQUAL(mt.find(Node_id(6), Node_id(3), any(), any()).size(), 2);
+}
+
 }//namespace test
 }//namespace owlcpp

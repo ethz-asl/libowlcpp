@@ -14,8 +14,8 @@ part of owlcpp project.
 
 #ifndef OWLCPP_TRIPLE_INDICES
 #define OWLCPP_TRIPLE_INDICES \
-         ((Subj, Obj, Pred, Doc)) \
-         ((Pred, Subj, Obj, Doc))
+         ((Subj, Pred, Obj, Doc)) \
+         ((Obj, Pred, Subj, Doc))
 /*
 */
 #endif
@@ -24,8 +24,8 @@ namespace owlcpp{ namespace map_triple_detail{
 
 /**@brief
 *******************************************************************************/
-template<class Id, class Set> class Fragment_map_vector;
-template<class Id, class Set> class Fragment_map_ordered;
+template<class,class,class,class> class Triple_index_vector_impl;
+template<class,class,class,class> class Triple_index_map_impl;
 
 typedef OWLCPP_TRIPLE_INDEX_CONFIG(OWLCPP_TRIPLE_INDICES)
 index_config_default;
@@ -35,7 +35,7 @@ index_config_default;
 template<class Tag0, class Tag1, class Tag2, class Tag3>
 struct Triple_index_selector2 {
    typedef Triple_index<
-            Fragment_map_vector,
+            Triple_index_vector_impl,
             Tag0,Tag1,Tag2,Tag3
             > type;
 };
@@ -43,7 +43,7 @@ struct Triple_index_selector2 {
 template<class Tag1, class Tag2, class Tag3>
 struct Triple_index_selector2<Pred_tag,Tag1,Tag2,Tag3> {
    typedef Triple_index<
-            Fragment_map_ordered,
+            Triple_index_map_impl,
             Pred_tag,Tag1,Tag2,Tag3
             > type;
 };

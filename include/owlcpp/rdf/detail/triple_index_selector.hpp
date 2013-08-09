@@ -5,16 +5,9 @@ part of owlcpp2 project.
 *******************************************************************************/
 #ifndef TRIPLE_INDEX_SELECTOR_HPP_
 #define TRIPLE_INDEX_SELECTOR_HPP_
-#include "boost/mpl/at.hpp"
 #include "boost/mpl/distance.hpp"
-#include "boost/mpl/front.hpp"
-#include "boost/mpl/if.hpp"
-#include "boost/mpl/int.hpp"
-#include "boost/mpl/less.hpp"
+#include "boost/mpl/bool.hpp"
 #include "boost/mpl/max_element.hpp"
-#include "boost/mpl/negate.hpp"
-#include "boost/mpl/plus.hpp"
-#include "boost/mpl/vector_c.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
 
@@ -36,8 +29,6 @@ template<
             Indexes,
             less<boost::mpl::_1, boost::mpl::_2>
    >::type iter;
-
-//   typedef typename boost::mpl::deref<iter>::type index;
 
    typedef typename boost::mpl::distance<
             typename boost::mpl::begin<Indexes>::type,

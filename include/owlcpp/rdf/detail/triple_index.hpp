@@ -7,24 +7,22 @@ part of owlcpp2 project.
 #define TRIPLE_INDEX_HPP_
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/sequence/intrinsic/at.hpp"
-#include "boost/iterator/iterator_facade.hpp"
 #include "boost/iterator/filter_iterator.hpp"
-#include "boost/iterator/transform_iterator.hpp"
+#include "boost/iterator/iterator_facade.hpp"
 #include "boost/mpl/assert.hpp"
 #include "boost/mpl/at.hpp"
 #include "boost/mpl/equal.hpp"
 #include "boost/mpl/sort.hpp"
 #include "boost/mpl/transform.hpp"
 #include "boost/mpl/vector_c.hpp"
-#include "boost/type_traits/is_same.hpp"
 #include "boost/type_traits/has_equal_to.hpp"
 #include "boost/type_traits/remove_reference.hpp"
 
-#include "owlcpp/rdf/exception.hpp"
-#include "owlcpp/rdf/triple_tags.hpp"
-#include "owlcpp/rdf/print_triple.hpp"
-#include "owlcpp/rdf/detail/triple_set.hpp"
+#include "owlcpp/rdf/any_triple_element.hpp"
 #include "owlcpp/rdf/detail/adapt_triple.hpp"
+#include "owlcpp/rdf/exception.hpp"
+#include "owlcpp/rdf/print_triple.hpp"
+#include "owlcpp/rdf/triple_tags.hpp"
 
 namespace owlcpp{ namespace map_triple_detail{
 
@@ -201,7 +199,6 @@ template<
    typedef typename boost::mpl::at<Triple,Tag1>::type el1;
    typedef typename boost::mpl::at<Triple,Tag2>::type el2;
    typedef typename boost::mpl::at<Triple,Tag3>::type el3;
-   typedef Triple_set<el1, el2, el3> fragment_set;
    typedef Map<Tag0,Tag1,Tag2,Tag3> storage;
 
 public:
@@ -276,32 +273,6 @@ public:
 private:
    storage v_;
 };
-
-/**@brief Metafunction for a boolean signature of a query
-@details Generate boolean signature of a query, a sequence of 4 booleans
-indicating, for each triple element, whether explicit match was requested,
-e.g., for a query @code any, any, Node_id, Doc_id @endcode
-boolean signature is @code mpl::vector4_c<bool,0,0,1,1>@endcode
-*******************************************************************************/
-template<class Subj, class Pred, class Obj, class Doc> struct Boolean_signature
-         : public boost::mpl::transform<
-              boost::mpl::vector4<Subj,Pred,Obj,Doc>,
-              Triple,
-              boost::is_same<boost::mpl::_1, boost::mpl::_2>
-         >
-         {};
-
-template<bool Subj, bool Pred, bool Obj, bool Doc> struct Deduce_query_signature
-         : public boost::mpl::transform<
-              boost::mpl::vector4_c<bool,Subj,Pred,Obj,Doc>,
-              Triple,
-              boost::mpl::if_<
-                 boost::mpl::_1,
-                 boost::mpl::_2,
-                 any
-              >
-         >
-         {};
 
 /**@brief Insert triple into index
 *******************************************************************************/

@@ -11,12 +11,12 @@ part of owlcpp project.
 #include "boost/fusion/sequence/intrinsic/front.hpp"
 #include "boost/fusion/sequence/intrinsic/at.hpp"
 #include "boost/fusion/sequence/intrinsic/value_at.hpp"
-#include "boost/mpl/assert.hpp"
 #include "boost/mpl/fold.hpp"
 #include "boost/mpl/front.hpp"
 #include "boost/mpl/push_back.hpp"
-#include "owlcpp/rdf/detail/fragment_map_vector.hpp"
-#include "owlcpp/rdf/detail/fragment_map_ordered.hpp"
+
+#include "owlcpp/rdf/detail/triple_index_map_impl.hpp"
+#include "owlcpp/rdf/detail/triple_index_vector_impl.hpp"
 #include "owlcpp/rdf/detail/triple_index.hpp"
 #include "owlcpp/rdf/detail/triple_index_selector.hpp"
 #include "owlcpp/rdf/map_triple_fwd.hpp"
@@ -71,10 +71,8 @@ public:
 
    */
    template<class Subj, class Pred, class Obj, class Doc> struct query {
-      typedef typename map_triple_detail::Boolean_signature<Subj,Pred,Obj,Doc>::type
-               boolean_signature;
       typedef typename
-               map_triple_detail::Index_selector<store, boolean_signature>::index
+               map_triple_detail::Index_selector<store,Subj,Pred,Obj,Doc>::index
                index_pos;
       typedef typename boost::fusion::result_of::value_at<store, index_pos>::type
                index;

@@ -16,7 +16,7 @@ namespace owlcpp{ namespace map_triple_detail{
 @tparam Tag3 numerical tag indicating which triple element is indexed fourth
 *******************************************************************************/
 template<
-   template<class,class> class Map,
+   template<class,class,class,class> class Map,
    class Tag0,
    class Tag1,
    class Tag2,

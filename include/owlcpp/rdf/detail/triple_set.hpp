@@ -32,6 +32,8 @@ template<
    class Q3 = typename boost::mpl::at<Triple, Tag3>::type
 > struct Value_predicate : public std::unary_function<Triple, bool> {
 public:
+   Value_predicate() {}
+
    Value_predicate(const Q1 q1, const Q2 q2, const Q3 q3)
    : q1_(q1), q2_(q2), q3_(q3)
    {}

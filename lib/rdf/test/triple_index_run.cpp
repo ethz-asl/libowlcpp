@@ -14,7 +14,7 @@ part of owlcpp2 project.
 #include "test/test_utils.hpp"
 #include "owlcpp/rdf/detail/triple_set.hpp"
 #include "owlcpp/rdf/detail/triple_index.hpp"
-#include "owlcpp/rdf/detail/fragment_map_vector.hpp"
+#include "owlcpp/rdf/detail/triple_index_vector_impl.hpp"
 #include "owlcpp/rdf/detail/triple_index_selector.hpp"
 #include "owlcpp/rdf/triple_tags.hpp"
 
@@ -125,38 +125,38 @@ BOOST_AUTO_TEST_CASE( case02 ) {
 /** Test fragment map vector
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case03 ) {
-   typedef m::Fragment_map_vector<Pred_tag, Subj_tag, Obj_tag, Doc_tag> fmv_t;
+   typedef m::Triple_index_vector_impl<Pred_tag, Subj_tag, Obj_tag, Doc_tag> fmv_t;
    fmv_t fmv;
    fmv_t::const_iterator i = fmv.begin();
 }
 
 typedef m::Triple_index<
-         m::Fragment_map_vector,
+         m::Triple_index_vector_impl,
          Subj_tag, Pred_tag, Obj_tag, Doc_tag
          > index1;
 
 typedef m::Triple_index<
-         m::Fragment_map_vector,
+         m::Triple_index_vector_impl,
          Obj_tag, Doc_tag, Subj_tag, Pred_tag
          > index2;
 
 typedef m::Triple_index<
-         m::Fragment_map_vector,
+         m::Triple_index_vector_impl,
          Pred_tag, Obj_tag, Doc_tag, Subj_tag
          > index3;
 
 typedef m::Triple_index<
-         m::Fragment_map_vector,
+         m::Triple_index_vector_impl,
          Pred_tag, Doc_tag, Obj_tag, Subj_tag
          > index4;
 
 typedef m::Triple_index<
-         m::Fragment_map_vector,
+         m::Triple_index_vector_impl,
          Subj_tag, Obj_tag, Doc_tag, Pred_tag
          > index5;
 
 typedef m::Triple_index<
-         m::Fragment_map_vector,
+         m::Triple_index_vector_impl,
          Obj_tag, Subj_tag, Pred_tag, Doc_tag
          > index6;
 
