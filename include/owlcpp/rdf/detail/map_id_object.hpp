@@ -100,6 +100,7 @@ public:
    }
 
    void insert(const id_type id, obj_type const& obj) {
+      //todo: check erased IDs
       if( id < id0_ ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("invalid ID")
@@ -129,8 +130,8 @@ public:
       if( n < vid_.size() ) {
          vid_[n] = &ip.first->first;
       } else {
-         vid_.resize(n,0);
-         vid_.push_back(&ip.first->first);
+         vid_.resize(n + 1, 0);
+         vid_.back() = &ip.first->first;
       }
    }
 
