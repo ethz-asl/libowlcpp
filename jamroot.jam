@@ -75,7 +75,7 @@ alias owlcpp-py : binding/python//install ;
 explicit owlcpp-py ;
 
 if [ modules.peek doxygen : .initialized ] {
-   
+
    local params = 
       "PROJECT_NAME=$(OWLCPP_NAME)"
       "PROJECT_NUMBER=$(OWLCPP_VERSION)"
@@ -87,7 +87,7 @@ if [ modules.peek doxygen : .initialized ] {
       "EXTRACT_STATIC=YES"
       "ALIASES=\"decision=\\xrefitem decision \\\"Decision\\\" \\\"Decisions\\\" \""
    ;
-    
+
    local params_complete = 
       "EXTRACT_ALL=YES"
       "EXTRACT_PRIVATE=YES"
@@ -98,18 +98,19 @@ if [ modules.peek doxygen : .initialized ] {
    import path ;
    doxygen complete.html
       :
-         [ path.glob-tree include apps lib : *.?pp ]
+         [ path.glob-tree $(PROJ_ROOT)/include $(PROJ_ROOT)/apps $(PROJ_ROOT)/lib : *.?pp ]
       :
          <doxygen:param>$(params)
          <doxygen:param>$(params_complete)
    ;
+   explicit complete.html ;
    
    local params_api = 
       "EXTRACT_ALL=NO"
       "EXTRACT_PRIVATE=NO"
       "EXTRACT_ANON_NSPACES=NO"
    ;
-   
+
    doxygen api.html
       :
          [ glob 
@@ -124,9 +125,8 @@ if [ modules.peek doxygen : .initialized ] {
          <doxygen:param>$(params)
          <doxygen:param>$(params_api)
    ;
-   
+   explicit api.html ;
    alias autodoc : complete.html api.html ;
-   explicit complete.html api.html ;
 } else {
    import message ;
    alias autodoc : [ message msg : "
