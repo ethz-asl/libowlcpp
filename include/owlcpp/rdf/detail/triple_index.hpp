@@ -75,7 +75,7 @@ protected:
    void erase(const Id id, Triple const& t) {
       BOOST_ASSERT(stor_.size() > id());
       e_index& ind = stor_[id()];
-      ind.erase(boost::find(ind, t));
+      ind.erase(std::find(ind.begin(), ind.end(), t));
    }
 
 private:
@@ -104,7 +104,7 @@ protected:
       const typename stor_t::iterator i = stor_.find(id);
       BOOST_ASSERT(i != stor_.end());
       e_index& ind = i->second;
-      ind.erase(boost::find(ind, t));
+      ind.erase(std::find(ind.begin(), ind.end(), t));
    }
 
 private:
