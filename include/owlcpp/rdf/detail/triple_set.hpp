@@ -303,6 +303,8 @@ public:
       return s;
    }
 
+   Triple_set() {}
+
    const_iterator begin() const {return v_.begin();}
    const_iterator end() const {return v_.end();}
    std::size_t size() const {return v_.size();}

@@ -32,7 +32,8 @@ struct empty_ {
 }; @endcode
 
 *******************************************************************************/
-OWLCPP_GENERATE_NODE_TAGS(OWLCPP_NODE_LIST_SYSTEM, 0)
+//OWLCPP_GENERATE_NODE_TAGS(OWLCPP_NODE_LIST_SYSTEM, 0)
+OWLCPP_NODE_TAG_TYPE(empty_, empty, "", 0); //avoid msvc pp warnings
 
 }//namespace terms
 

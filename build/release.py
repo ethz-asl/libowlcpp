@@ -39,10 +39,14 @@ def convert_tree_crlf(src, dst, target_os):
             convert_crlf(src_file, dst_file, target_os)
 
 def get_version():
+    # use '~' dirty marker, not '*', to be able to use version string as directory name
     v_str = subprocess.check_output(
-        args=['git', 'describe', '--always', '--dirty=~']
+        args=['git', 'describe', '--always', '--dirty=~']  # use ~, not *
     )
-    t = re.match('v(\d+)\.(\d+).(\d+)((?:-\d+-g[\dabcdef]+)?\~?)\s*', v_str).groups()
+    t = re.match(
+                 'v(\d+)\.(\d+).(\d+)((?:-\d+-g[\dabcdef]+)?\~?)\s*',
+                 v_str
+                 ).groups()
     return t
 
 def src_compress(out_path, rel_name, target_os):
@@ -96,8 +100,8 @@ if __name__ == '__main__':
     out_path = os.path.join(root_path, 'out', 'release')
     if os.path.exists(out_path): shutil.rmtree(out_path)
     v = get_version()
-    rel_version = '%s.%s.%s%s' % v
+    rel_version = 'v%s.%s.%s%s' % v
     rel_name = 'owlcpp'
-    print 'release ' + rel_name + ' v' + rel_version
+    print 'release ' + rel_name + ' ' + rel_version
     src_release(root_path, out_path, rel_name, rel_version, 'dos')
     src_release(root_path, out_path, rel_name, rel_version, 'unix')

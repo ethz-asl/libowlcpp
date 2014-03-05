@@ -3,7 +3,7 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011
 
-project lib/io
+project owlcpp/lib/io
    : requirements
 ;
 
@@ -17,6 +17,7 @@ lib owlcpp_io
       <library>/boost//filesystem
       <library>/owlcpp//raptor
       <link>shared:<define>OWLCPP_IO_DYN_LINK
+	  <toolset>msvc:<threading>multi #fix linking with libboost_filesystem-vc110-mt-XXX
    :  #default build options
    :  #usage requirements
       <link>shared:<define>OWLCPP_IO_DYN_LINK

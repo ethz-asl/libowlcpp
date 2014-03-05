@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE rdf:RDF [
-  <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
-  <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
-  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
-  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
-  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
-  <!ENTITY OG "http://www.sample.com/owl/sample.owl#" >
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+   <!ENTITY OG "http://www.sample.com/owl/sample.owl#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;og_01.owl" >
 ]>
-<rdf:RDF xmlns="http://www.sample.com/owl/sample.owl#"
-  xml:base="og_01.owl#"
-  xmlns:xsd="&xsd;"
-  xmlns:dc="&dc;"
-  xmlns:rdfs="&rdfs;"
-  xmlns:rdf="&rdf;"
-  xmlns:owl="&owl;"
-  >
+<rdf:RDF 
+   xmlns="&base;#"
+   xml:base="&base;"
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
+   xmlns:dc="&dc;"
+>
 
 <owl:Ontology rdf:about="">
-	<owl:imports><owl:Ontology rdf:about="og_02.owl"/></owl:imports>
-	<dc:date>October 10, 2000</dc:date>
-	<dc:title>title</dc:title>
+   <owl:imports><owl:Ontology rdf:about="og_02.owl"/></owl:imports>
+   <dc:date>October 10, 2000</dc:date>
+   <dc:title>title</dc:title>
 </owl:Ontology>
 
 <owl:AnnotationProperty rdf:about="&dc;date"/>
@@ -31,38 +35,42 @@
 <owl:AnnotationProperty rdf:about="&dc;subject"/>
 <owl:AnnotationProperty rdf:about="&dc;type"/>
 <owl:AnnotationProperty rdf:about="&dc;contributor"/>
+
 <owl:Class rdf:about="&owl;Thing"/>
+
 <owl:Class rdf:about="&OG;TopCategory">
-  <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+   <rdfs:subClassOf rdf:resource="&owl;Thing" />
 </owl:Class>
+
 <owl:ObjectProperty rdf:about="&OG;Attribute">
-        <rdfs:label>Attribute</rdfs:label>
-        <owl:inverseOf rdf:resource="&OG;InverseAttribute"/>
-    </owl:ObjectProperty>
-    <owl:ObjectProperty rdf:about="&OG;InverseAttribute">
-        <rdfs:label>InverseAttribute</rdfs:label>
-    </owl:ObjectProperty>
+   <rdfs:label>Attribute</rdfs:label>
+   <owl:inverseOf rdf:resource="&OG;InverseAttribute"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&OG;InverseAttribute">
+   <rdfs:label>InverseAttribute</rdfs:label>
+</owl:ObjectProperty>
 
 <owl:Class rdf:about="&OG;DateValueType">
-	<rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
+   <rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
 </owl:Class>
 
 <owl:Class rdf:about="&OG;MagnitudeValueType" />
 <owl:Class rdf:about="&OG;BNFBookChapter" />
 <owl:Class rdf:about="&OG;InformationSource" />
 
-<owl:Class rdf:about="&OG;GeneralisedStructurewhichIsDivisionOfBNFBookChaptercontainsInformation">
-	<owl:equivalentClass>
-		<owl:Class>
-			<owl:intersectionOf rdf:parseType="Collection">
-				<rdf:Description rdf:about="&OG;InformationSource"/>
-				<owl:Restriction>
-					<owl:onProperty rdf:resource="&OG;IsDivisionOf"/>
-					<owl:someValuesFrom rdf:resource="&OG;BNFBookChapter"/>
-				</owl:Restriction>
-			</owl:intersectionOf>
-		</owl:Class>
-	</owl:equivalentClass>
+<owl:Class rdf:about="&OG;Class">
+   <owl:equivalentClass>
+      <owl:Class>
+         <owl:intersectionOf rdf:parseType="Collection">
+            <rdf:Description rdf:about="&OG;InformationSource"/>
+            <owl:Restriction>
+               <owl:onProperty rdf:resource="&OG;IsDivisionOf"/>
+               <owl:someValuesFrom rdf:resource="&OG;BNFBookChapter"/>
+            </owl:Restriction>
+         </owl:intersectionOf>
+      </owl:Class>
+   </owl:equivalentClass>
 </owl:Class>
 
 <owl:ObjectProperty rdf:about="&OG;IsDivisionOf">
@@ -71,7 +79,3 @@
 
 </rdf:RDF>
 
-
-<!-- comment
-
-END -->

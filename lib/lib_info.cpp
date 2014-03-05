@@ -6,6 +6,7 @@ part of owlcpp project.
 #ifndef OWLCPP_SOURCE
 #define OWLCPP_SOURCE
 #endif
+#include <sstream>
 #include "owlcpp/lib_info.hpp"
 #include "boost/preprocessor/stringize.hpp"
 
@@ -15,10 +16,6 @@ part of owlcpp project.
 
 #ifndef OWLCPP_DESCRIPTION
 #define OWLCPP_DESCRIPTION
-#endif
-
-#ifndef OWLCPP_VERSION_STR
-#define OWLCPP_VERSION_STR unknown
 #endif
 
 #ifndef OWLCPP_VERSION_1
@@ -34,33 +31,49 @@ part of owlcpp project.
 #endif
 
 #ifndef OWLCPP_VERSION_EXTRA
-#define OWLCPP_VERSION_EXTRA
+#define OWLCPP_VERSION_EXTRA ???
+#endif
+
+#ifndef OWLCPP_VERSION_DIRTY
+#define OWLCPP_VERSION_DIRTY 0
 #endif
 
 #ifndef OWLCPP_BUILD
 #define OWLCPP_BUILD 0
 #endif
 
-namespace owlcpp {
+namespace owlcpp { namespace{
+std::string make_version_str() {
+   std::ostringstream str;
+   str
+   << 'v' << OWLCPP_VERSION_1 << '.'
+   << OWLCPP_VERSION_2 << '.' << OWLCPP_VERSION_3
+   ;
+   const std::string e = std::string(BOOST_PP_STRINGIZE(OWLCPP_VERSION_EXTRA));
+   if( ! e.empty() ) str << '-' << e;
+   if( OWLCPP_VERSION_DIRTY ) str << '~';
+   return str.str();
+}
+}//namespace anonymous
 
 /*
 *******************************************************************************/
 std::string const& Lib_info::name() {
-   static const std::string s(BOOST_PP_STRINGIZE(OWLCPP_NAME));
+   static const std::string s = std::string(BOOST_PP_STRINGIZE(OWLCPP_NAME));
    return s;
 }
 
 /*
 *******************************************************************************/
 std::string const& Lib_info::version() {
-   static const std::string s(BOOST_PP_STRINGIZE(OWLCPP_VERSION_STR));
+   static const std::string s = make_version_str();
    return s;
 }
 
 /*
 *******************************************************************************/
 std::string const& Lib_info::description() {
-   static const std::string s(BOOST_PP_STRINGIZE(OWLCPP_DESCRIPTION));
+   static const std::string s = std::string(BOOST_PP_STRINGIZE(OWLCPP_DESCRIPTION));
    return s;
 }
 
@@ -79,7 +92,7 @@ int Lib_info::version_3() {return OWLCPP_VERSION_3;}
 /*
 *******************************************************************************/
 std::string const& Lib_info::version_e() {
-   static const std::string s(BOOST_PP_STRINGIZE(OWLCPP_VERSION_EXTRA));
+   static const std::string s = std::string(BOOST_PP_STRINGIZE(OWLCPP_VERSION_EXTRA));
    return s;
 }
 

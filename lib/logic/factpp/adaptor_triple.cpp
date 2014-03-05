@@ -29,9 +29,7 @@ using namespace owlcpp::terms;
 *******************************************************************************/
 TDLAxiom* Adaptor_triple::submit(Triple const& t) {
    try{
-      TDLAxiom* const a = axiom(t);
-      //if( a ) k_.isKBConsistent(); //check if axiom crashes reasoner
-      return a;
+      return axiom(t);
    } catch(...) {
       BOOST_THROW_EXCEPTION(
                Err()
@@ -46,7 +44,6 @@ TDLAxiom* Adaptor_triple::submit(Triple const& t) {
       );
    }
 }
-
 
 /*
 *******************************************************************************/
@@ -103,6 +100,9 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
       const Node_property np =
             check_same_declaration<Node_property>(subj, obj, ts_);
       if( np.is_object() ) {
+         //FaCT++ throws during classification of
+         // x rdfs:subPropertyOf owl:topObjectProperty
+         if( obj == owl_topObjectProperty::id() ) return 0;
          return k_.impliesORoles(obj_property(subj), obj_property(obj));
       }
       if( np.is_data() ) {
@@ -115,7 +115,8 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
       return axiom_from_seq(pred, obj, 2, subj);
 
    case owl_equivalentProperty::index: {
-      const Node_property np = check_same_declaration<Node_property>(subj, obj, ts_);
+      const Node_property np =
+               check_same_declaration<Node_property>(subj, obj, ts_);
       if( np.is_object() ) {
          e_m().newArgList();
          e_m().addArg(obj_property(subj));
@@ -131,7 +132,8 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    }
 
    case owl_propertyDisjointWith::index:{
-      const Node_property np = check_same_declaration<Node_property>(subj, obj, ts_);
+      const Node_property np =
+               check_same_declaration<Node_property>(subj, obj, ts_);
       if( np.is_object() ) {
          e_m().newArgList();
          e_m().addArg(obj_property(subj));
@@ -161,7 +163,7 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
       }
       if( np.is_data() ) {
          check_declaration(obj, Node_type::data(), ts_);
-         return k_.setDRange(data_property(subj), data_type(obj));
+         return k_.setDRange(data_property(subj), data_range(obj));
       }
    }
 
@@ -208,8 +210,8 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    //ignored triples:
    case owl_onProperty::index:
    case owl_datatypeComplementOf::index:
-   case owl_onDatatype::index: //TODO
-   case owl_withRestrictions::index: //TODO
+   case owl_onDatatype::index:
+   case owl_withRestrictions::index:
    case owl_allValuesFrom::index:
    case owl_hasValue::index:
    case owl_hasSelf::index:
@@ -223,6 +225,10 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    case owl_onProperties::index: //TODO
    case owl_onDataRange::index: //TODO
    case owl_someValuesFrom::index: //class expression, not axiom
+   case xsd_maxExclusive::index:
+   case xsd_maxInclusive::index:
+   case xsd_minExclusive::index:
+   case xsd_minInclusive::index:
       if( ! is_blank(ts_[subj].ns_id()) ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("blank node subject is expected")
@@ -260,12 +266,18 @@ TDLAxiom* Adaptor_triple::axiom_type(Triple const& t) {
    const Node_id subj = t.subj_;
    const Node_id obj = t.obj_;
    Node const& subj_node = ts_[subj];
-   switch (obj()) {
 
+   switch (obj()) {
    case owl_FunctionalProperty::index: {
       const Node_property np = declaration<Node_property>(subj, ts_);
       if( np.is_object() ) return k_.setOFunctional(obj_property(subj));
       if( np.is_data() ) return k_.setDFunctional(data_property(subj));
+      if( np.is_annotation() ) return 0;
+      BOOST_THROW_EXCEPTION(
+                     Err()
+                     << Err::msg_t("property type not declared")
+                     << Err::str1_t(to_string(subj, ts_))
+            );
    }
 
    case owl_InverseFunctionalProperty::index:
@@ -361,12 +373,7 @@ TDLAxiom* Adaptor_triple::axiom_iri_node_type(Triple const& t) {
 
    case rdfs_Datatype::index:
       if( subj == rdfs_Literal::id() || subj == owl_Nothing::id() ) return 0;
-      if( ts_.is_standard(subj) ) BOOST_THROW_EXCEPTION(
-               Err()
-               << Err::msg_t("re-definition of a standard term")
-               << Err::str1_t(to_string(subj, ts_))
-      );
-      return k_.declare( e_m().DataType(to_string(subj, ts_)) );
+      return k_.declare(data_type(subj));
 
    case owl_ObjectProperty::index:
       return k_.declare( e_m().ObjectRole(to_string(subj, ts_)) );
@@ -411,7 +418,7 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
                )
                << Err::str1_t(to_string(subj, ts_))
       );
-      return axiom_from_seq(obj, r.front().obj_, 2);
+      return axiom_from_seq(obj, r.front().obj_, 2, empty_::id());
    }
 
    case owl_AllDifferent::index: {
@@ -428,7 +435,7 @@ TDLAxiom* Adaptor_triple::axiom_blank_node_type(Triple const& t) {
                )
                << Err::str1_t(to_string(subj, ts_))
       );
-      return axiom_from_seq(obj, r.front().obj_, 2);
+      return axiom_from_seq(obj, r.front().obj_, 2, empty_::id());
    }
 
    case owl_NegativePropertyAssertion::index:
@@ -604,6 +611,12 @@ TDLDataTypeExpression* Adaptor_triple::data_type(const Node_id nid) {
 
 /*
 *******************************************************************************/
+TDLDataExpression* Adaptor_triple::data_range(const Node_id nid) {
+   return make_expression<Data_range>( nid, ts_ )->get(k_);
+}
+
+/*
+*******************************************************************************/
 TDLDataValue const* Adaptor_triple::data_value(const Node_id nid) {
    Node_literal const& node = to_literal(ts_[nid]);
    if( node.ns_id() != empty::id() ) BOOST_THROW_EXCEPTION(
@@ -663,9 +676,19 @@ TDLAxiom* Adaptor_triple::negative_property_assertion(const Node_id nid) {
    const Node_id target = r3.front().obj_;
 
    if( nt.is_object() ) {
-      return k_.relatedToNot(obj_value(src_ind), obj_property(prop), obj_value(target));
+      return
+               k_.relatedToNot(
+                        obj_value(src_ind),
+                        obj_property(prop),
+                        obj_value(target)
+               );
    } else {
-      return k_.valueOfNot(obj_value(src_ind), data_property(prop), data_value(target));
+      return
+               k_.valueOfNot(
+                        obj_value(src_ind),
+                        data_property(prop),
+                        data_value(target)
+               );
    }
 }
 

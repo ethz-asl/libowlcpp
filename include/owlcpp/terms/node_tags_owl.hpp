@@ -63,6 +63,7 @@ OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_RDFS, OWLCPP_TERMS_RDFS_N0_)
       ((rdf)(PlainLiteral)) \
       ((rdf)(Property)) \
       ((rdf)(first)) \
+      ((rdf)(langRange)) \
       ((rdf)(nil)) \
       ((rdf)(rest)) \
       ((rdf)(type)) \
@@ -187,50 +188,54 @@ OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_OWL2, OWLCPP_TERMS_OWL2_N0_)
 #define OWLCPP_TERMS_XSD_N0_ \
    BOOST_PP_ADD(OWLCPP_TERMS_OWL2_N0_, BOOST_PP_SEQ_SIZE(OWLCPP_TERMS_OWL2))
 #define OWLCPP_TERMS_XSD \
-         ((xsd)(anyURI)) \
-         ((xsd)(base64Binary)) \
-         ((xsd)(boolean)) \
-         ((xsd)(byte)) \
-         ((xsd)(date)) \
-         ((xsd)(dateTime)) \
-         ((xsd)(dateTimeStamp)) \
-         ((xsd)(decimal)) \
-         ((xsd)(double)) \
-         ((xsd)(duration)) \
-         ((xsd)(ENTITIES)) \
-         ((xsd)(ENTITY)) \
-         ((xsd)(float)) \
-         ((xsd)(gMonthDay)) \
-         ((xsd)(gYear)) \
-         ((xsd)(gYearMonth)) \
-         ((xsd)(gDay)) \
-         ((xsd)(gMonth)) \
-         ((xsd)(hexBinary)) \
-         ((xsd)(ID)) \
-         ((xsd)(IDREF)) \
-         ((xsd)(IDREFS)) \
-         ((xsd)(int)) \
-         ((xsd)(integer)) \
-         ((xsd)(language)) \
-         ((xsd)(long)) \
-         ((xsd)(Name)) \
-         ((xsd)(NCName)) \
-         ((xsd)(negativeInteger)) \
-         ((xsd)(NMTOKEN)) \
-         ((xsd)(nonNegativeInteger)) \
-         ((xsd)(nonPositiveInteger)) \
-         ((xsd)(normalizedString)) \
-         ((xsd)(NOTATION)) \
-         ((xsd)(positiveInteger)) \
-         ((xsd)(QName)) \
-         ((xsd)(short)) \
-         ((xsd)(string)) \
-         ((xsd)(time)) \
-         ((xsd)(token)) \
-         ((xsd)(unsignedByte)) \
-         ((xsd)(unsignedInt)) \
-         ((xsd)(unsignedLong)) \
-         ((xsd)(unsignedShort)) \
+      ((xsd)(anyURI)) \
+      ((xsd)(base64Binary)) \
+      ((xsd)(boolean)) \
+      ((xsd)(byte)) \
+      ((xsd)(date)) \
+      ((xsd)(dateTime)) \
+      ((xsd)(dateTimeStamp)) \
+      ((xsd)(decimal)) \
+      ((xsd)(double)) \
+      ((xsd)(duration)) \
+      ((xsd)(ENTITIES)) \
+      ((xsd)(ENTITY)) \
+      ((xsd)(float)) \
+      ((xsd)(gMonthDay)) \
+      ((xsd)(gYear)) \
+      ((xsd)(gYearMonth)) \
+      ((xsd)(gDay)) \
+      ((xsd)(gMonth)) \
+      ((xsd)(hexBinary)) \
+      ((xsd)(ID)) \
+      ((xsd)(IDREF)) \
+      ((xsd)(IDREFS)) \
+      ((xsd)(int)) \
+      ((xsd)(integer)) \
+      ((xsd)(language)) \
+      ((xsd)(long)) \
+      ((xsd)(maxExclusive)) \
+      ((xsd)(maxInclusive)) \
+      ((xsd)(minExclusive)) \
+      ((xsd)(minInclusive)) \
+      ((xsd)(Name)) \
+      ((xsd)(NCName)) \
+      ((xsd)(negativeInteger)) \
+      ((xsd)(NMTOKEN)) \
+      ((xsd)(nonNegativeInteger)) \
+      ((xsd)(nonPositiveInteger)) \
+      ((xsd)(normalizedString)) \
+      ((xsd)(NOTATION)) \
+      ((xsd)(positiveInteger)) \
+      ((xsd)(QName)) \
+      ((xsd)(short)) \
+      ((xsd)(string)) \
+      ((xsd)(time)) \
+      ((xsd)(token)) \
+      ((xsd)(unsignedByte)) \
+      ((xsd)(unsignedInt)) \
+      ((xsd)(unsignedLong)) \
+      ((xsd)(unsignedShort)) \
 /* */
 namespace owlcpp{ namespace terms{
 OWLCPP_GENERATE_NODE_TAGS(OWLCPP_TERMS_XSD, OWLCPP_TERMS_XSD_N0_)

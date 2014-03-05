@@ -183,6 +183,8 @@ const char* getVersion();" ;
          str_in = [ export_class $(str_in) : TNamedEntry : $(file_in) ] ;
       case tRole :
          str_in = [ export_class $(str_in) : TRole : $(file_in) ] ;
+      case tConcept :
+         str_in = [ export_class $(str_in) : TConcept : $(file_in) ] ;
    }
 
    STR on $(<) = $(header) "" $(str_in) ;

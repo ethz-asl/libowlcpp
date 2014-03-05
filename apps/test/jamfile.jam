@@ -3,7 +3,7 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2011-2
 
-project apps/test
+project owlcpp/apps/test
    :  build-dir $(OUT)/apps
    : requirements
 ;
@@ -74,7 +74,7 @@ run-fail
       print_triples_invalid_02
 ;
 
-alias invalid_03 : $(SMPL_DATA)/invalid_03.owl ;
+alias invalid_03 : $(SMPL_DATA)/err_spell_owl.owl ;
 run-fail
       ../print_triples.cpp
    : #args

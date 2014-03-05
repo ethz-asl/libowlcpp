@@ -190,10 +190,12 @@ public:
       if( iri == terms::empty_::id() ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("empty ontologyIRI is not allowed")
+               << Err::str1_t(path)
       );
       if( iri == vers ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("ontologyIRI and versionIRI are same")
+               << Err::str1_t(path)
       );
 
       Doc_id const* did = check_existing(iri, vers, path);

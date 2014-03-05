@@ -17,7 +17,7 @@ struct owl_allValuesFrom {
    typedef ::owlcpp::Node_id id_type;
    static const unsigned index = 4;
    static std::string const & name() {
-      static const std::string str = "allValuesFrom";
+      static const std::string str = std::string("allValuesFrom");
       return str;
    }
    static ns_type id() {return ::owlcpp::Node_id(index);}
@@ -28,7 +28,7 @@ struct owl_allValuesFrom {
          typedef ::owlcpp::Node_id id_type; \
          static const id_type::value_type index = i; \
          static std::string const& fragment() { \
-            static const std::string str = frag_id; \
+            static const std::string str = std::string(frag_id); \
             return str; \
          } \
          static id_type id() {return id_type(index);} \

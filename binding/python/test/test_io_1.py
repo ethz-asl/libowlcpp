@@ -10,8 +10,8 @@ from owlcpp import *
 class Test(unittest.TestCase):
     def setUp(self):
         unittest.TestCase.setUp(self)
-        self.iri1 = 'http://purl.obolibrary.org/obo/ido/dev/test_01.owl'
-        self.ver1 = 'http://purl.obolibrary.org/obo/ido/dev/test_01a.owl'
+        self.iri1 = 'http://owl-cpp.sf.net/test/owl/test_01.owl'
+        self.ver1 = 'http://owl-cpp.sf.net/test/owl/test_01a.owl'
         self.dir1 = 'sample_data'
         self.path1 = os.path.abspath(os.path.join(self.dir1, 'test_01.owl'))
         self.path2 = os.path.abspath(os.path.join(self.dir1, 'imports_test_01.owl'))

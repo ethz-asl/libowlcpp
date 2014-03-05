@@ -5,13 +5,8 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_TO_FACT_ADAPTOR_HPP_
 #define TRIPLE_TO_FACT_ADAPTOR_HPP_
-#include "boost/foreach.hpp"
-#include "boost/range.hpp"
-#include "owlcpp/rdf/triple_store.hpp"
-#include "owlcpp/rdf/print_node.hpp"
 #include "owlcpp/logic/exception.hpp"
 #include "owlcpp/logic/config.hpp"
-#include "owlcpp/terms/node_tags_owl.hpp"
 
 class ReasoningKernel;
 class TExpressionManager;
@@ -20,10 +15,15 @@ class TDLIndividualExpression;
 class TDLObjectRoleExpression;
 class TDLDataRoleExpression;
 class TDLDataTypeExpression;
+class TDLDataExpression;
 class TDLDataValue;
 class TDLAxiom;
 
-namespace owlcpp{ namespace logic{ namespace factpp{
+namespace owlcpp{
+class Triple_store;
+struct Triple;
+
+namespace logic{ namespace factpp{
 
 /**@brief 
 *******************************************************************************/
@@ -36,14 +36,6 @@ public:
    {}
 
    TDLAxiom* submit(Triple const&);
-
-   template<class Range> std::size_t submit(Range const& r) {
-      std::size_t n = 0;
-      BOOST_FOREACH(Triple const& t, r) {
-         if( submit(t) ) ++n;
-      }
-      return n;
-   }
 
 private:
    bool strict_;
@@ -65,6 +57,8 @@ private:
 
    TDLDataTypeExpression* data_type(const Node_id nid);
 
+   TDLDataExpression* data_range(const Node_id nid);
+
    TDLDataValue const* data_value(const Node_id nid);
 
    TDLAxiom* negative_property_assertion(const Node_id nid);
@@ -85,7 +79,7 @@ private:
             const Node_id op,
             const Node_id seq_nid,
             const std::size_t min_len,
-            const Node_id subj = owlcpp::terms::empty_::id()
+            const Node_id subj
    );
 
    TExpressionManager& e_m();

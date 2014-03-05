@@ -42,22 +42,98 @@ struct Sample_info {
 
 inline std::vector<Sample_info> const& sample_files() {
    static const std::vector<Sample_info> v = boost::assign::list_of<Sample_info>
-   /* 0 */("imports_test_01.owl", "http://purl.obolibrary.org/obo/ido/dev/imports_test_01.owl", "")
-   /* 1 */("negative_property_assertion_01.owl", "http://owl.semanticweb.org/page/New-Feature-NegativeObjectPropertyAssertion-001", "")
-   /* 2 */("og_01.owl", "og_01.owl", "")
-   /* 3 */("og_02.owl", "og_02.owl", "")
-   /* 4 */("one_eq_two_01.owl", "http://example.com/one_eq_two_01.owl", "")
-   /* 5 */("owl2-rl-rules-fp-differentFrom.owl", "http://owl.semanticweb.org/page/Owl2-rl-rules-fp-differentFrom", "")
-   /* 6 */("owl2-rl-rules-fp-sameAs.owl", "http://owl.semanticweb.org/page/Owl2-rl-rules-fp-sameAs", "")
-   /* 7 */("owl2-rl-rules-ifp-differentFrom.owl", "http://owl.semanticweb.org/page/Owl2-rl-rules-ifp-differentFrom", "")
-   /* 8 */("owl2-rl-rules-ifp-sameAs.owl", "http://owl2.test/rules/owl2-rl-rules-ifp-sameAs", "")
-   /* 9 */("propertyChain_01.owl", "http://owl.semanticweb.org/page/New-Feature-ObjectPropertyChain-001", "")
-   /* 10 */("test_01.owl", "http://purl.obolibrary.org/obo/ido/dev/test_01.owl", "http://purl.obolibrary.org/obo/ido/dev/test_01a.owl")
-   /* 11 */("transitive_property.owl", "http://purl.org/obo/owl/transitive_property", "")
-   /* 12 */("union_01.owl", "http://www.ifomis.org/bfo/union", "")
-   /* 13 */("version_test_b.owl", "http://purl.obolibrary.org/obo/ido/dev/version_test.owl", "http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl")
-   /* 14 */("data_value_clash.owl", "http://owl.semanticweb.org/page/Functionality-clash", "")
-   /* 15 */("data_property_assertion_01.owl", "http://owl-cpp.sourceforge.net/owl/data_property_assertion_01.owl", "")
+   /* 0 */(
+            "imports_test_01.owl",
+            "http://owl-cpp.sf.net/test/owl/imports_test_01.owl", ""
+            )
+   /* 1 */(
+            "negative_property_assertion_01.owl",
+            "http://owl-cpp.sf.net/test/owl/negative_property_assertion_01.owl",
+            ""
+            )
+   /* 2 */(
+            "og_01.owl",
+            "http://owl-cpp.sf.net/test/owl/og_01.owl", ""
+            )
+   /* 3 */(
+            "og_02.owl",
+            "http://owl-cpp.sf.net/test/owl/og_02.owl", ""
+            )
+   /* 4 */(
+            "one_eq_two_01.owl",
+            "http://owl-cpp.sf.net/test/owl/one_eq_two_01.owl", ""
+            )
+   /* 5 */(
+            "owl2-rl-rules-fp-differentFrom.owl",
+            "http://owl-cpp.sf.net/test/owl/owl2-rl-rules-fp-differentFrom.owl",
+            ""
+            )
+   /* 6 */(
+            "owl2-rl-rules-fp-sameAs.owl",
+            "http://owl-cpp.sf.net/test/owl/owl2-rl-rules-fp-sameAs.owl", ""
+            )
+   /* 7 */(
+            "owl2-rl-rules-ifp-differentFrom.owl",
+            "http://owl-cpp.sf.net/test/owl/owl2-rl-rules-ifp-differentFrom.owl",
+            ""
+            )
+   /* 8 */(
+            "owl2-rl-rules-ifp-sameAs.owl",
+            "http://owl-cpp.sf.net/test/owl/owl2-rl-rules-ifp-sameAs.owl", ""
+            )
+   /* 9 */(
+            "propertyChain_01.owl",
+            "http://owl-cpp.sf.net/test/owl/propertyChain_01.owl", ""
+            )
+   /* 10 */("test_01.owl",
+            "http://owl-cpp.sf.net/test/owl/test_01.owl",
+            "http://owl-cpp.sf.net/test/owl/test_01a.owl"
+            )
+   /* 11 */(
+            "transitive_property.owl",
+            "http://owl-cpp.sf.net/test/owl/transitive_property.owl", ""
+            )
+   /* 12 */(
+            "union_01.owl",
+            "http://owl-cpp.sf.net/test/owl/union_01.owl", ""
+            )
+   /* 13 */(
+            "version_test_b.owl",
+            "http://owl-cpp.sf.net/test/owl/version_test.owl",
+            "http://owl-cpp.sf.net/test/owl/version_test_b.owl"
+            )
+   /* 14 */(
+            "data_value_clash.owl",
+            "http://owl-cpp.sf.net/test/owl/data_value_clash.owl", ""
+            )
+   /* 15 */(
+            "data_property_assertion_01.owl",
+            "http://owl-cpp.sf.net/test/owl/data_property_assertion_01.owl", ""
+            )
+   /* 16 */(
+            "datatype-min-max.owl",
+            "http://owl-cpp.sf.net/test/owl/datatype-min-max.owl", ""
+            )
+   /* 17 */(
+            "err_missing_def01.owl",
+            "http://owl-cpp.sf.net/test/owl/err_missing_def01.owl", ""
+            )
+   /* 18 */(
+            "err_missing_def02.owl",
+            "http://owl-cpp.sf.net/test/owl/err_missing_def02.owl", ""
+            )
+   /* 19 */(
+            "err_missing_def03.owl",
+            "http://owl-cpp.sf.net/test/owl/err_missing_def03.owl", ""
+            )
+   /* 20 */(
+            "err_distinctMembers.owl",
+            "http://owl-cpp.sf.net/test/owl/err_distinctMembers.owl", ""
+            )
+   /* 21 */(
+            "data_property_restriction.owl",
+            "http://owl-cpp.sf.net/test/owl/data_property_restriction.owl", ""
+            )
    ;
    return v;
 }

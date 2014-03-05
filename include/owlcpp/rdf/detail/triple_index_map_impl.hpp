@@ -76,8 +76,8 @@ class Triple_index_map_impl {
    typedef Tim_config<Tag0,Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
    typedef typename config::id_type id_type;
-   typedef typename config::set_type set_type;
 public:
+   typedef typename config::set_type set_type;
    typedef typename config::value_type value_type;
    typedef typename config::iterator iterator;
    typedef iterator const_iterator;

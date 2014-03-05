@@ -8,6 +8,7 @@ part of owlcpp project.
 #include "boost/preprocessor/arithmetic/add.hpp"
 #include "boost/preprocessor/seq/elem.hpp"
 #include "boost/preprocessor/facilities/empty.hpp"
+#include "boost/preprocessor/stringize.hpp"
 #include "boost/preprocessor/seq/for_each_i.hpp"
 #include "boost/preprocessor/seq/reverse.hpp"
 

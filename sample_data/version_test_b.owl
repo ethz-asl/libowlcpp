@@ -1,39 +1,38 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE rdf:RDF [
-<!ENTITY base "http://purl.obolibrary.org/obo/ido/dev/version_test.owl">
-<!ENTITY test "&base;#">
-<!ENTITY w3 "http://www.w3.org">
-<!ENTITY owl "&w3;/2002/07/owl#">
-<!ENTITY rdf "&w3;/1999/02/22-rdf-syntax-ns#">
-<!ENTITY rdfs "&w3;/2000/01/rdf-schema#">
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;version_test.owl" >
 ]>
-
 <rdf:RDF 
-   xmlns="&test;" 
-   xmlns:test="&test;" 
+   xmlns="&base;#"
    xml:base="&base;"
-   xmlns:rdfs="&rdfs;" 
-   xmlns:rdf="&rdf;" 
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
    xmlns:owl="&owl;"
 >
       
    <owl:Ontology rdf:about="">
-      <owl:versionIRI rdf:resource="http://purl.obolibrary.org/obo/ido/dev/version_test_b.owl"/>
-      <owl:priorVersion rdf:resource="http://purl.obolibrary.org/obo/ido/dev/version_test_a.owl"/>
+      <owl:versionIRI rdf:resource="version_test_b.owl"/>
+      <owl:priorVersion rdf:resource="version_test_a.owl"/>
    </owl:Ontology>
 
-   <owl:Class rdf:about="&test;C1" />
-   <owl:Class rdf:about="&test;C2" >
-     <rdfs:subClassOf rdf:resource="&test;C1" />
+   <owl:Class rdf:about="#C1" />
+   <owl:Class rdf:about="#C2" >
+     <rdfs:subClassOf rdf:resource="#C1" />
    </owl:Class>
-   <owl:Class rdf:about="&test;C3" >
-     <rdfs:subClassOf rdf:resource="&test;C1" />
+   <owl:Class rdf:about="#C3" >
+     <rdfs:subClassOf rdf:resource="#C1" />
    </owl:Class>
    <owl:AllDisjointClasses>
       <owl:members rdf:parseType="Collection">
-         <owl:Class rdf:about="&test;C2" />
-         <owl:Class rdf:about="&test;C3" />
+         <owl:Class rdf:about="#C2" />
+         <owl:Class rdf:about="#C3" />
       </owl:members>
    </owl:AllDisjointClasses>
 

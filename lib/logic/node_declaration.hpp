@@ -22,6 +22,7 @@ public:
    bool is_data() const {return ref_ == Data;}
    bool is_annotation() const {return ref_ == Annotation;}
    std::string to_string() const {return to_string_impl(ref_);}
+   virtual ~Node_declaration() {}
 
 protected:
    Node_declaration(const Refers_to ref) : ref_(ref) {}
