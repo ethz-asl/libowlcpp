@@ -6,6 +6,7 @@ part of owlcpp project.
 #ifndef LIB_IO_MAP_TRAITS_HPP_
 #define LIB_IO_MAP_TRAITS_HPP_
 #include "owlcpp/detail/map_traits.hpp"
+#include "owlcpp/rdf/map_triple_fwd.hpp"
 
 namespace owlcpp{
 class Map_ns;
@@ -16,7 +17,6 @@ struct Doc_meta;
 class Ns_id;
 class Node_id;
 class Doc_id;
-template<bool,bool,bool,bool> class Map_triple;
 
 namespace detail{
 class Triple_store_temp;
@@ -33,7 +33,7 @@ template<> struct Map_traits<Triple_store_temp> {
    typedef Ns_id ns_id_type;
    typedef Node_id node_id_type;
    typedef Doc_id doc_id_type;
-   typedef Map_triple<0,0,0,0> map_triple_type;
+   typedef Map_triple<> map_triple_type;
 };
 
 }//namespace detail

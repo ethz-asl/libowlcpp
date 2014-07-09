@@ -44,46 +44,46 @@
 </owl:ObjectProperty>
 
 <owl:Class rdf:about="&OG;DateValueType">
-	<rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
+   <rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
 </owl:Class>
 
 <owl:Class rdf:about="&OG;MagnitudeValueType">
-	<rdfs:subClassOf rdf:resource="&OG;PrimitiveValueType"/>
+   <rdfs:subClassOf rdf:resource="&OG;PrimitiveValueType"/>
 </owl:Class>
 
 <owl:Class rdf:about="&OG;PrimitiveValueType" />
 <owl:Class rdf:about="&OG;ApplicationCategory" />
 
 <owl:Class rdf:about="&OG;NumberValueType">
-	<rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
+   <rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
 </owl:Class>
 
 <owl:Class rdf:about="&OG;Unit">
-	<rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
+   <rdfs:subClassOf rdf:resource="&OG;MagnitudeValueType"/>
 </owl:Class>
 
 <owl:Class rdf:about="&OG;ValueType">
-	<rdfs:subClassOf rdf:resource="&OG;TopCategory"/>
+   <rdfs:subClassOf rdf:resource="&OG;TopCategory"/>
 </owl:Class>
 
 
 <owl:Class rdf:about="&OG;DissectionCategory">
-	<rdfs:subClassOf rdf:resource="&OG;ApplicationCategory"/>
+   <rdfs:subClassOf rdf:resource="&OG;ApplicationCategory"/>
 </owl:Class>
 
 <owl:Class rdf:about="&OG;CodingArtefact">
-	<rdfs:subClassOf rdf:resource="&OG;DissectionCategory"/>
+   <rdfs:subClassOf rdf:resource="&OG;DissectionCategory"/>
 </owl:Class>
 
 <owl:ObjectProperty rdf:about="&OG;hasLanguageAnnotation">
-	<rdfs:label>hasLanguageAnnotation</rdfs:label>
-	<owl:inverseOf rdf:resource="&OG;isLanguageAnnotationOf"/>
-	<rdfs:subPropertyOf rdf:resource="&OG;DissectionDetailsAttribute"/>
+   <rdfs:label>hasLanguageAnnotation</rdfs:label>
+   <owl:inverseOf rdf:resource="&OG;isLanguageAnnotationOf"/>
+   <rdfs:subPropertyOf rdf:resource="&OG;DissectionDetailsAttribute"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:about="&OG;isLanguageAnnotationOf">
-	<rdfs:label>isLanguageAnnotationOf</rdfs:label>
-	<rdfs:subPropertyOf rdf:resource="&OG;InverseDissectionDetailsAttribute"/>
+   <rdfs:label>isLanguageAnnotationOf</rdfs:label>
+   <rdfs:subPropertyOf rdf:resource="&OG;InverseDissectionDetailsAttribute"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:about="&OG;DissectionDetailsAttribute">

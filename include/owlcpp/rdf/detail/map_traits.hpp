@@ -7,6 +7,7 @@ part of owlcpp project.
 #define RDF_MAP_TRAITS_HPP_
 
 #include "owlcpp/detail/map_traits.hpp"
+#include "owlcpp/rdf/map_triple_fwd.hpp"
 
 namespace owlcpp{
 class Map_ns;
@@ -19,7 +20,6 @@ struct Doc_meta;
 class Ns_id;
 class Node_id;
 class Doc_id;
-template<bool,bool,bool,bool> class Map_triple;
 
 namespace detail{
 
@@ -36,33 +36,7 @@ template<> struct Map_traits<Triple_store> {
    typedef Ns_id ns_id_type;
    typedef Node_id node_id_type;
    typedef Doc_id doc_id_type;
-
-   typedef Map_triple<
-#ifdef OWLCPP_RDF_INDEX_SUBJECT
-            OWLCPP_RDF_INDEX_SUBJECT
-#else
-            1
-#endif
-            ,
-#ifdef OWLCPP_RDF_INDEX_PREDICATE
-            OWLCPP_RDF_INDEX_PREDICATE
-#else
-            1
-#endif
-            ,
-#ifdef OWLCPP_RDF_INDEX_OBJECT
-            OWLCPP_RDF_INDEX_OBJECT
-#else
-            0
-#endif
-            ,
-#ifdef OWLCPP_RDF_INDEX_DOCUMENT
-            OWLCPP_RDF_INDEX_DOCUMENT
-#else
-            0
-#endif
-   > map_triple_type;
-
+   typedef Map_triple<> map_triple_type;
 };
 
 }//namespace detail

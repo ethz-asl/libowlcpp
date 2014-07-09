@@ -9,6 +9,7 @@ part of owlcpp project.
 
 #include "owlcpp/detail/map_traits.hpp"
 #include "owlcpp/rdf/store_concepts.hpp"
+#include "owlcpp/exception.hpp"
 
 namespace owlcpp{
 
@@ -20,6 +21,7 @@ template<class Super> class Map_doc_crtpb {
    typedef detail::Map_traits<Super> traits;
    typedef typename traits::map_node_type map_node_t;
    typedef typename traits::map_doc_type map_doc_type;
+   typedef typename map_doc_type::Err Err;
    typedef typename traits::doc_type doc_type;
 
    map_doc_type const& _map_doc() const {
@@ -95,7 +97,18 @@ public:
       BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
       const Node_id iri_id = static_cast<Super&>(*this).insert_node_iri(iri);
       const Node_id vers_id = static_cast<Super&>(*this).insert_node_iri(vers);
-      return insert_doc(iri_id, path, vers_id);
+      try{
+         return insert_doc(iri_id, path, vers_id);
+      } catch(Err const& ) {
+         BOOST_THROW_EXCEPTION(
+                  Err()
+                  << typename Err::msg_t("error adding document")
+                  << typename Err::str1_t(iri)
+                  << typename Err::str2_t(path)
+                  << typename Err::str3_t(vers)
+                  << typename Err::nested_t(boost::current_exception())
+         );
+      }
    }
 
    doc_iri_range find_doc_iri(std::string const& iri) const {

@@ -90,6 +90,9 @@ public:
    using Map_std_node_crtpb<Triple_store>::find;
    using Map_doc_crtpb<Triple_store>::find;
 
+   using Map_std_ns_crtpb<Triple_store>::insert;
+   using Map_triple_crtpb<Triple_store>::insert;
+
 private:
    map_std_type const& map_std_;
    map_ns_type map_ns_;

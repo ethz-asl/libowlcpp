@@ -10,7 +10,7 @@ part of owlcpp project.
 #include <boost/utility/enable_if.hpp>
 #include "boost/range/any_range.hpp"
 
-#include "boost/range/adaptor/type_erased.hpp"
+//#include "boost/range/adaptor/type_erased.hpp"
 #include "owlcpp/rdf/config.hpp"
 
 namespace owlcpp{
@@ -20,12 +20,12 @@ class Node_id;
 class Doc_id;
 
 typedef boost::any_range<
-         Triple, boost::single_pass_traversal_tag, Triple const&, std::ptrdiff_t
-         > triple_any_range_t;
+         Triple, boost::single_pass_traversal_tag, Triple, std::ptrdiff_t
+         > triple_any_range;
 
 /**@brief search triples without using templates
 *******************************************************************************/
-OWLCPP_RDF_DECL triple_any_range_t find_triple(
+OWLCPP_RDF_DECL triple_any_range find_triple(
          Triple_store const& ts,
          Node_id const* subj = 0,
          Node_id const* pred = 0,

@@ -13,6 +13,18 @@ namespace owlcpp{
 
 /**@brief 
 *******************************************************************************/
+inline std::string to_string(Triple const& t) {
+   std::ostringstream str;
+   str
+   << to_string(t.subj_) << ' '
+   << to_string(t.pred_) << ' '
+   << to_string(t.obj_)
+   ;
+   return str.str();
+}
+
+/**@brief
+*******************************************************************************/
 inline std::string to_string(Triple const& t, Triple_store const& ts) {
    std::ostringstream str;
    str

@@ -24,7 +24,7 @@ template<class T> inline std::string to_string_pref(const T&) {
    return ns_t::prefix() + ":" + T::fragment();
 }
 
-/** compare strings with standard terms
+/** compare string with standard terms
 *******************************************************************************/
 template<class T> inline bool
 comparison(char const* str, const std::size_t len, T const&) {
@@ -49,6 +49,8 @@ comparison(char const* str, const std::size_t len, T const&) {
    ) == 0;
 }
 
+/** compare string with standard terms
+*******************************************************************************/
 template<class T> inline bool comparison(std::string const& str, T const&) {
    typedef typename T::ns_type ns_t;
    if( str.size() != ns_t::iri().size() + T::fragment().size() + 1 ) return false;
@@ -71,6 +73,8 @@ template<class T> inline bool comparison(std::string const& str, T const&) {
    ) == 0;
 }
 
+/** compare string with standard terms
+*******************************************************************************/
 template<class T> inline bool comparison(char const* str, T const&) {
    return comparison(str, std::strlen(str), T());
 }

@@ -14,7 +14,7 @@ namespace owlcpp {
 
 /*
 *******************************************************************************/
-triple_any_range_t find_triple(
+triple_any_range find_triple(
          Triple_store const& ts,
          Node_id const* subj,
          Node_id const* pred,

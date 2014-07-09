@@ -3,9 +3,10 @@
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 # Copyright Mikhail K Levin 2010-1
 
-project apps
+project owlcpp/apps
    :  build-dir $(OUT)/apps
    :  requirements
+	<toolset>msvc:<threading>multi #fix linking with libboost_program_options-vc110-mt-XXX
 ;
 
 exe find_owl
@@ -53,5 +54,3 @@ exe satisfiable
       <library>/owlcpp//logic
       <library>/boost/program_options
 ;
-explicit satisfiable ;
-

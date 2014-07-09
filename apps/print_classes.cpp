@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
          load_file(in, store);
       }
 
-      owlcpp::Triple_store::result_b<0,1,1,0>::type r = store.find_triple(
+      owlcpp::Triple_store::query_b<0,1,1,0>::range r = store.find_triple(
                owlcpp::any(),
                owlcpp::terms::rdf_type::id(),
                owlcpp::terms::owl_Class::id(),

@@ -17,11 +17,12 @@ namespace owlcpp{
 @details Triple store provides additional information for troubleshooting.
 *******************************************************************************/
 class Rdf_list_iter_s
-: public boost::iterator_facade<
-  Rdf_list_iter_s,
-  Node_id const,
-  boost::forward_traversal_tag
-  >
+         : public boost::iterator_facade<
+              Rdf_list_iter_s,
+              Node_id,
+              boost::forward_traversal_tag,
+              Node_id
+           >
 {
 public:
    struct Err : public Rdf_err {};
@@ -41,7 +42,7 @@ private:
    friend class boost::iterator_core_access;
 
    void increment() {
-      const Triple_store::result_b<1,1,0,0>::type r = ts_->find_triple(
+      const Triple_store::query_b<1,1,0,0>::range r = ts_->find_triple(
                nid_,
                terms::rdf_rest::id(),
                any(),
@@ -52,8 +53,8 @@ private:
                << Err::msg_t("rdf:rest triple not found")
                << Err::str1_t(to_string(nid_, *ts_))
       );
-      Triple const& t = r.front();
-      if( boost::distance(r) != 1U ) BOOST_THROW_EXCEPTION(
+      const Triple t = r.front();
+      if( boost::distance(r) > 1 ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("multiple rdf:rest triples")
                << Err::str1_t(to_string(nid_, *ts_))
@@ -61,8 +62,8 @@ private:
       nid_ = t.obj_;
    }
 
-   Node_id const& dereference() const {
-      const Triple_store::result_b<1,1,0,0>::type r = ts_->find_triple(
+   Node_id dereference() const {
+      const Triple_store::query_b<1,1,0,0>::range r = ts_->find_triple(
                nid_,
                terms::rdf_first::id(),
                any(),
@@ -73,8 +74,8 @@ private:
                << Err::msg_t("rdf:first triple not found")
                << Err::str1_t(to_string(nid_, *ts_))
       );
-      Triple const& t = r.front();
-      if( boost::distance(r) != 1U ) BOOST_THROW_EXCEPTION(
+      const Triple t = r.front();
+      if( boost::distance(r) > 1 ) BOOST_THROW_EXCEPTION(
                Err()
                << Err::msg_t("multiple rdf:first triples")
                << Err::str1_t(to_string(nid_, *ts_))

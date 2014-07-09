@@ -6,7 +6,7 @@
 import path ;
 local smpl_dir = [ path.native $(SMPL_DATA) ] ;
 local tmp_dir = [ path.native $(TEMP_DIR) ] ;
-project
+project owlcpp/lib/rdf/test
    : 
    : requirements
       <include>../
@@ -25,7 +25,9 @@ rule run-all ( sources * : requirements * )
 
 test-suite simple_tests 
    :
-      [ run-all [ glob *run.cpp ] : <library>/owlcpp//rdf ]
+      [ run-all [ glob *run.cpp ] : 
+      <library>/owlcpp//rdf
+      ]
 ;
 
 test-suite other_tests

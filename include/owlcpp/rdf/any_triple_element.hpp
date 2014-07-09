@@ -15,10 +15,16 @@ class Doc_id;
 Use for searching triples to indicate the elements of a triple that should be
 ignored.
 *******************************************************************************/
-struct any{
-   bool operator==(Node_id const&) const {return true;}
-   bool operator==(Doc_id const&) const {return true;}
-};
+struct any{};
+
+inline bool operator==(any const&, Node_id const&) {return true;}
+inline bool operator==(Node_id const&, any const&) {return true;}
+inline bool operator==(any const&, Doc_id const&) {return true;}
+inline bool operator==(Doc_id const&, any const&) {return true;}
+inline bool operator<(any const&, Node_id const&) {return false;}
+inline bool operator<(Node_id const&, any const&) {return false;}
+inline bool operator<(any const&, Doc_id const&) {return false;}
+inline bool operator<(Doc_id const&, any const&) {return false;}
 
 }//namespace owlcpp
 #endif /* ANY_TRIPLE_ELEMENT_HPP_ */

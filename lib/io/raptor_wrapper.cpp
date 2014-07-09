@@ -144,15 +144,15 @@ void Raptor_wrapper::parse(std::istream& stream) {
          //exceptions should originate from Raptor log handler
          if( i != 0 && ! abort_requested_ ) BOOST_THROW_EXCEPTION(
                   Err()
-                  << Err::msg_t("unknown error")
+                  << Err::msg_t("unknown parsing error")
+                  << Err::int1_t(ln)
          );
-      } catch(Err& e) {
+      } catch(std::exception const&) {
          BOOST_THROW_EXCEPTION(
                Err()
-               << Err::msg_t("RDF error")
+               << Err::msg_t("RDF parsing error")
                << Err::int1_t(ln)
-               //<< Err::str1_t(str)
-               << Err::nested_t(boost::copy_exception(e))
+               << Err::nested_t(boost::current_exception())
          );
       }
    }
