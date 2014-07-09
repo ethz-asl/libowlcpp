@@ -124,15 +124,15 @@ if [ modules.peek doxygen : .initialized ] {
          <doxygen:param>$(params_api)
    ;
    explicit api.html ;
-   alias autodoc : complete.html api.html ;
+   alias doc : complete.html api.html ;
 } else {
    import message ;
-   alias autodoc : [ message msg : "
-      To generate documentation with rule \"autodoc\","
+   alias doc : [ message msg : "
+      To generate documentation with rule \"doc\","
       "please configure Doxygen in user-config.jam file
 " ] ;
 }
-explicit autodoc ;
+explicit doc ;
 
 import feature : feature ;
 import toolset ;
