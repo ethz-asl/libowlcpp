@@ -33,6 +33,16 @@ struct Triple {
       return subj_==t.subj_ && pred_==t.pred_ && obj_==t.obj_ && doc_==t.doc_;
    }
 
+   bool operator<(Triple const& t) const {
+      if( subj_ < t.subj_ ) return true;
+      if( t.subj_ < subj_ ) return false;
+      if( pred_ < t.pred_ ) return true;
+      if( t.pred_ < pred_ ) return false;
+      if( obj_ < t.obj_ ) return true;
+      if( t.obj_ < obj_ ) return false;
+	  return doc_ < t.doc_;
+   }
+
    bool operator!=(Triple const& t) const {return !(*this == t);}
 };
 

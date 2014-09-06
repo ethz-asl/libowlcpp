@@ -22,6 +22,8 @@ constant OWLCPP_DESCRIPTION : "C++ library for working with OWL ontologies" ;
 
 constant LIB_REQUIREMENTS :
    <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
+   <toolset>gcc:<cflags>"-Wno-unused-local-typedefs" #disable warnings in Boost 1.55.0
+   <toolset>clang,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
    <toolset>msvc:<cxxflags>/Gy
 ;
 

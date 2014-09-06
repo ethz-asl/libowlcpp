@@ -58,11 +58,11 @@ local utils = "c:/utils" ;
 
 ## Boost library source
 ## http://www.boost.org/
-# constant BOOST : "$(utils)/boost_1_53_0/" 1.53.0 ;
+# constant BOOST : "$(utils)/boost_1_56_0/" 1.56.0 ;
 
 ## libxml2 library source
 ## http://xmlsoft.org/
-# constant LIBXML2 : "$(utils)/libxml2-2.9.0" 2.9.0 ;
+# constant LIBXML2 : "$(utils)/libxml2-2.9.1" 2.9.1 ;
 
 ## pre-built iconv library (required under MS Windows)
 ## http://www.zlatkovic.com/libxml.en.html
@@ -70,11 +70,11 @@ local utils = "c:/utils" ;
 
 ## Raptor library source
 ## http://librdf.org/raptor/
-# constant RAPTOR : "$(utils)/raptor2-2.0.8" 2.0.8 ;
+# constant RAPTOR : "$(utils)/raptor2-2.0.14" 2.0.14 ;
 
 ## FaCT++ library source
 ## http://code.google.com/p/factplusplus/
-# constant FACTPP : "$(utils)/FaCT++-1.6.1" 1.6.1 ;
+# constant FACTPP : "$(utils)/FaCT++-src-1.6.3" 1.6.3 ;
 
 ## owlcpp library source
 ## http://sourceforge.net/projects/owl-cpp/
