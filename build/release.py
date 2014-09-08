@@ -99,8 +99,11 @@ if __name__ == '__main__':
     root_path = sys.argv[1]
     out_path = os.path.join(root_path, 'out', 'release')
     if os.path.exists(out_path): shutil.rmtree(out_path)
-    v = get_version()
-    rel_version = 'v%s.%s.%s%s' % v
+    rel_version = ''
+    if len(sys.argv) > 2: rel_version = sys.argv[2]
+    else:
+        v = get_version()
+        rel_version = 'v%s.%s.%s%s' % v
     rel_name = 'owlcpp'
     print 'release ' + rel_name + ' ' + rel_version
     src_release(root_path, out_path, rel_name, rel_version, 'dos')
