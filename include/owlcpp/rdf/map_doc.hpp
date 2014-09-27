@@ -114,6 +114,8 @@ public:
    std::size_t size() const {return m_.size();}
    const_iterator begin() const {return m_.begin();}
    const_iterator end() const {return m_.end();}
+   iri_iterator end_iri() const {return m_.get<iri_tag>().end();}
+   version_iterator end_version() const {return m_.get<version_tag>().end();}
 
    Doc_meta const& operator[](const Doc_id did) const {
       id_index_t const& index = m_.get<id_tag>();
