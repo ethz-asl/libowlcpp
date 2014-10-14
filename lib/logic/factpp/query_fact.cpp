@@ -28,6 +28,7 @@ public:
    Accumulate_names() : v_(new vector()) {}
 
    pvector result() {return v_;}
+   void clear() {v_->clear();}
 
    bool apply(TaxonomyVertex const& tv ) {
       store(tv.getPrimer());
@@ -60,6 +61,7 @@ public:
    : v_(new vector()), ts_(ts) {}
 
    pvector result() {return v_;}
+   void clear() {v_->clear();}
 
    bool apply(TaxonomyVertex const& tv ) {
       store(tv.getPrimer());
