@@ -1,5 +1,5 @@
 /** @file "/owlcpp/include/owlcpp/rdf/detail/triple_index_selector.hpp"
-part of owlcpp2 project.
+part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2013
 *******************************************************************************/

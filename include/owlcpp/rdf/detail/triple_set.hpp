@@ -9,11 +9,12 @@ part of owlcpp project.
 #include <algorithm>
 #include <functional>
 #include "boost/assert.hpp"
-//#include "boost/fusion/container/vector.hpp"
+#include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/sequence/intrinsic/at.hpp"
 #include "boost/iterator/filter_iterator.hpp"
 #include "boost/mpl/at.hpp"
 #include "boost/range.hpp"
+#include "boost/range/algorithm_ext/is_sorted.hpp"
 #include "boost/range/algorithm/equal_range.hpp"
 #include "boost/range/algorithm/lower_bound.hpp"
 #include "boost/range/algorithm/upper_bound.hpp"
@@ -46,14 +47,22 @@ public:
 
    bool operator() (Triple const& t) const {return t == *this;}
 
+   bool operator() (Triple const& t1, Triple const& t2) const {
+      using boost::fusion::at;
+      if( at<Tag1>(t1)  < at<Tag1>(t2)       ) return true;
+      if( vp.q1_        < at<Tag1>(t) ) return false;
+      if( at<Tag2>(t)  < vp.q2_       ) return true;
+      if( vp.q2_        < at<Tag2>(t) ) return false;
+      return at<Tag3>(t) < vp.q3_;
+   }
+
    friend bool operator<(Triple const& t, Value_predicate const& vp) {
       using boost::fusion::at;
       if( at<Tag1>(t)  < vp.q1_       ) return true;
       if( vp.q1_        < at<Tag1>(t) ) return false;
       if( at<Tag2>(t)  < vp.q2_       ) return true;
       if( vp.q2_        < at<Tag2>(t) ) return false;
-      return
-               at<Tag3>(t) < vp.q3_;
+      return at<Tag3>(t) < vp.q3_;
    }
 
    friend bool operator<(Value_predicate const& vp, Triple const& t) {
@@ -62,8 +71,7 @@ public:
       if( at<Tag1>(t)   < vp.q1_       ) return false;
       if( vp.q2_        < at<Tag2>(t)  ) return true;
       if( at<Tag2>(t)   < vp.q2_       ) return false;
-      return
-                 vp.q3_ < at<Tag3>(t);
+      return vp.q3_ < at<Tag3>(t);
    }
 
    friend bool operator==(Triple const& t1, Value_predicate const& vp) {
@@ -189,6 +197,9 @@ public:
    typedef boost::iterator_range<iterator> range;
 
    static range find(storage const& v, const Q1 q1, const any, const any) {
+      BOOST_ASSERT(
+               boost::is_sorted(v, pred(q1, any(), any()))
+      );
       return boost::equal_range(v, pred(q1, any(), any()));
    }
 

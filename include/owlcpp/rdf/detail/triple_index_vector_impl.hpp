@@ -165,8 +165,11 @@ public:
    }
 
    template<class Q0> struct query {
-      typedef typename Tiv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::iterator iterator;
-      typedef typename Tiv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::range range;
+      typedef typename Tiv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::iterator
+               iterator;
+
+      typedef typename Tiv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::range
+               range;
    };
 
    template<class Q0> typename query<Q0>::range
