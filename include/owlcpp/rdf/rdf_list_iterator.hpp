@@ -45,8 +45,8 @@ private:
       const Triple_store::query_b<1,1,0,0>::range r = ts_->find_triple(
                nid_,
                terms::rdf_rest::id(),
-               any(),
-               any()
+               any,
+               any
       );
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()
@@ -66,8 +66,8 @@ private:
       const Triple_store::query_b<1,1,0,0>::range r = ts_->find_triple(
                nid_,
                terms::rdf_first::id(),
-               any(),
-               any()
+               any,
+               any
       );
       if( ! r ) BOOST_THROW_EXCEPTION(
                Err()

@@ -33,7 +33,7 @@ boost::iterator_range<Rdf_list_iter_s> inline rdf_list(
 *******************************************************************************/
 inline std::string find_label(const Node_id nid, Triple_store const& store) {
    Triple_store::query_b<1,1,0,0>::range r =
-            store.find_triple(nid, owlcpp::terms::rdfs_label::id(), any(), any());
+            store.find_triple(nid, owlcpp::terms::rdfs_label::id(), any, any);
    if( ! r ) return "";
    return to_string(r.front().obj_, store);
 }

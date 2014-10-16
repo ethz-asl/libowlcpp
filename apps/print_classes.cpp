@@ -67,10 +67,10 @@ int main(int argc, char* argv[]) {
       }
 
       owlcpp::Triple_store::query_b<0,1,1,0>::range r = store.find_triple(
-               owlcpp::any(),
+               owlcpp::any,
                owlcpp::terms::rdf_type::id(),
                owlcpp::terms::owl_Class::id(),
-               owlcpp::any()
+               owlcpp::any
       );
 
       if( vm.count("count") ) {

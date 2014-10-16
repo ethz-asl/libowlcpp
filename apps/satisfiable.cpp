@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
                            nid,
                            owlcpp::terms::rdf_type::id(),
                            owlcpp::terms::owl_Class::id(),
-                           owlcpp::any()
+                           owlcpp::any
                   )
          ) {
             const TDLConceptExpression* ce =
