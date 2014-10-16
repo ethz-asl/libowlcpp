@@ -49,11 +49,11 @@ public:
 
    bool operator() (Triple const& t1, Triple const& t2) const {
       using boost::fusion::at;
-      if( at<Tag1>(t1)  < at<Tag1>(t2)       ) return true;
-      if( vp.q1_        < at<Tag1>(t) ) return false;
-      if( at<Tag2>(t)  < vp.q2_       ) return true;
-      if( vp.q2_        < at<Tag2>(t) ) return false;
-      return at<Tag3>(t) < vp.q3_;
+      if( at<Tag1>(t1) < at<Tag1>(t2) ) return true;
+      if( at<Tag1>(t2) < at<Tag1>(t1) ) return false;
+      if( at<Tag2>(t1) < at<Tag2>(t2) ) return true;
+      if( at<Tag2>(t2) < at<Tag2>(t1) ) return false;
+      return at<Tag3>(t1) < at<Tag3>(t2);
    }
 
    friend bool operator<(Triple const& t, Value_predicate const& vp) {
@@ -115,7 +115,7 @@ public:
    typedef boost::iterator_range<iterator> range;
 
    static range find(storage const& v, const Q1 q1, const Q2 q2, const Q3 q3) {
-      predicate p(q1,q2,q3);
+      const predicate p(q1,q2,q3);
       return range(
                iterator(p, v.begin(), v.end()),
                iterator(p, v.end(), v.end())
@@ -129,7 +129,7 @@ public:
 @details Return the whole range
 *******************************************************************************/
 template<class Tag1, class Tag2, class Tag3>
-class Ts_query_dispatch<Tag1,Tag2,Tag3,any,any,any> {
+class Ts_query_dispatch<Tag1,Tag2,Tag3,Any,Any,Any> {
    typedef Triple_set_config<Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
 
@@ -137,7 +137,7 @@ public:
    typedef typename config::const_iterator iterator;
    typedef boost::iterator_range<iterator> range;
 
-   static range find(storage const& v, const any, const any, const any) {
+   static range find(storage const& v, const Any, const Any, const Any) {
       return range(v);
    }
 
@@ -156,8 +156,8 @@ template<
    Q2, Q3
 > {
    typedef typename boost::mpl::at<Triple, Tag1>::type Q1;
-   typedef Value_predicate<Tag1,Tag2,Tag3,Q1,any,any> pred1;
-   typedef Value_predicate<Tag1,Tag2,Tag3,any,Q2,Q3> pred2;
+   typedef Value_predicate<Tag1,Tag2,Tag3,Q1,Any,Any> pred1;
+   typedef Value_predicate<Tag1,Tag2,Tag3,Any,Q2,Q3> pred2;
    typedef Triple_set_config<Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
    typedef typename config::const_iterator iter1;
@@ -167,8 +167,10 @@ public:
    typedef boost::iterator_range<iterator> range;
 
    static range find(storage const& v, const Q1 q1, const Q2 q2, const Q3 q3) {
-      range1 r = boost::equal_range(v, pred1(q1, any(), any()));
-      pred2 p2(any(),q2,q3);
+      const pred1 p1(q1, any, any);
+      BOOST_ASSERT(boost::is_sorted(v, p1));
+      range1 r = boost::equal_range(v, p1);
+      const pred2 p2(any,q2,q3);
       return range(
                iterator(p2, r.begin(), r.end()),
                iterator(p2, r.end(),   r.end())
@@ -186,21 +188,20 @@ template<
 > class Ts_query_dispatch<
    Tag1,Tag2,Tag3,
    typename boost::mpl::at<Triple, Tag1>::type,
-   any, any
+   Any, Any
 > {
    typedef typename boost::mpl::at<Triple, Tag1>::type Q1;
-   typedef Value_predicate<Tag1,Tag2,Tag3,Q1,any,any> pred;
+   typedef Value_predicate<Tag1,Tag2,Tag3,Q1,Any,Any> pred;
    typedef Triple_set_config<Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
 public:
    typedef typename config::const_iterator iterator;
    typedef boost::iterator_range<iterator> range;
 
-   static range find(storage const& v, const Q1 q1, const any, const any) {
-      BOOST_ASSERT(
-               boost::is_sorted(v, pred(q1, any(), any()))
-      );
-      return boost::equal_range(v, pred(q1, any(), any()));
+   static range find(storage const& v, const Q1 q1, const Any, const Any) {
+      const pred p(q1, any, any);
+      BOOST_ASSERT(boost::is_sorted(v, p));
+      return boost::equal_range(v, p);
    }
 
    static const int efficiency = 10;
@@ -220,8 +221,8 @@ template<
 > {
    typedef typename boost::mpl::at<Triple, Tag1>::type Q1;
    typedef typename boost::mpl::at<Triple, Tag2>::type Q2;
-   typedef Value_predicate<Tag1,Tag2,Tag3,Q1,Q2,any> pred1;
-   typedef Value_predicate<Tag1,Tag2,Tag3,any,any,Q3> pred2;
+   typedef Value_predicate<Tag1,Tag2,Tag3,Q1,Q2,Any> pred1;
+   typedef Value_predicate<Tag1,Tag2,Tag3,Any,Any,Q3> pred2;
    typedef Triple_set_config<Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
    typedef typename config::const_iterator iter1;
@@ -231,8 +232,10 @@ public:
    typedef boost::iterator_range<iterator> range;
 
    static range find(storage const& v, const Q1 q1, const Q2 q2, const Q3 q3) {
-      range1 r = boost::equal_range(v, pred1(q1, q2, any()));
-      pred2 p2((any(),any(),q3));
+      const pred1 p1(q1, q2, any);
+      BOOST_ASSERT(boost::is_sorted(v, p1));
+      range1 r = boost::equal_range(v, p1);
+      pred2 p2((any,any,q3));
       return range(
                iterator(p2, r.begin(), r.end()),
                iterator(p2, r.end(),   r.end())
@@ -251,19 +254,21 @@ template<
    Tag1,Tag2,Tag3,
    typename boost::mpl::at<Triple, Tag1>::type,
    typename boost::mpl::at<Triple, Tag2>::type,
-   any
+   Any
 > {
    typedef typename boost::mpl::at<Triple, Tag1>::type Q1;
    typedef typename boost::mpl::at<Triple, Tag2>::type Q2;
-   typedef Value_predicate<Tag1,Tag2,Tag3,Q1,Q2,any> pred1;
+   typedef Value_predicate<Tag1,Tag2,Tag3,Q1,Q2,Any> pred1;
    typedef Triple_set_config<Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
 public:
    typedef typename config::const_iterator iterator;
    typedef boost::iterator_range<iterator> range;
 
-   static range find(storage const& v, const Q1 q1, const Q2 q2, const any) {
-      return boost::equal_range(v, pred1(q1, q2, any()));
+   static range find(storage const& v, const Q1 q1, const Q2 q2, const Any) {
+      const pred1 p1(q1, q2, any);
+      BOOST_ASSERT(boost::is_sorted(v, p1));
+      return boost::equal_range(v, p1);
    }
 
    static const int efficiency = 15;
@@ -291,7 +296,9 @@ public:
    typedef boost::iterator_range<iterator> range;
 
    static range find(storage const& v, const Q1 q1, const Q2 q2, const Q3 q3) {
-      return boost::equal_range(v, pred1(q1, q2, q3));
+      const pred1 p1(q1, q2, q3);
+      BOOST_ASSERT(boost::is_sorted(v, p1));
+      return boost::equal_range(v, p1);
    }
 
    static const int efficiency = 20;
