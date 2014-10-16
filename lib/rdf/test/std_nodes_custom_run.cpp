@@ -80,8 +80,6 @@ struct Custom_nodes {
 
 namespace t = owlcpp::terms;
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 /** Standard map with OWL nodes plus 200 user-defined ones
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case01 ) {

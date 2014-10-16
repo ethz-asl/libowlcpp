@@ -15,8 +15,6 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 template<class Tag> Node_iri make_iri(Tag const&) {
    return Node_iri(Tag::ns_type::id(), Tag::fragment());
 }

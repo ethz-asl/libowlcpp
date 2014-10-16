@@ -12,8 +12,6 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 /**@test Literal bool nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_bool_node ) {

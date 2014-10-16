@@ -26,6 +26,8 @@ struct Exception_fixture {
    }
 };
 
+BOOST_GLOBAL_FIXTURE( Exception_fixture );
+
 }//namespace test
 }//namespace owlcpp
 #endif /* EXCEPTION_FIXTURE_HPP_ */

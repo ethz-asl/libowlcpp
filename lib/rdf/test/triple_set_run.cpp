@@ -13,8 +13,6 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 namespace m = map_triple_detail;
 
 /** Test triple set
@@ -39,8 +37,8 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(
             ts.find(
                      Node_id(5), //pred
-                     any(), //subj
-                     any() //obj
+                     any, //subj
+                     any //obj
             ).size(),
             4
    );
@@ -49,7 +47,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
             distance(
                      ts.find(
                               Node_id(1), //pred
-                              any(), //subj
+                              any, //subj
                               Node_id(0) //obj
                      )
             ),
@@ -60,7 +58,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
             ts.find(
                      Node_id(3), //pred
                      Node_id(6), //subj
-                     any() //obj
+                     any //obj
             ).size(),
             2
    );
