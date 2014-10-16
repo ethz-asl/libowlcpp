@@ -13,51 +13,62 @@ namespace bp = boost::python;
 void export_factpp_expressions() {
 
    bp::class_<
-   TDLExpression, boost::noncopyable
+      TDLExpression, boost::noncopyable
    >("TDLExpression", bp::no_init);
 
    bp::class_<
-   TDLConceptExpression, bp::bases<TDLExpression>, boost::noncopyable
+      TDLConceptExpression, bp::bases<TDLExpression>, boost::noncopyable
    >("TDLConceptExpression", bp::no_init);
 
    bp::class_<
-   TDLRoleExpression, bp::bases<TDLExpression>, boost::noncopyable
+      TDLRoleExpression, bp::bases<TDLExpression>, boost::noncopyable
    >("TDLRoleExpression", bp::no_init);
 
    bp::class_<
-   TDLObjectRoleComplexExpression, bp::bases<TDLRoleExpression>, boost::noncopyable
+      TDLObjectRoleComplexExpression,
+      bp::bases<TDLRoleExpression>,
+      boost::noncopyable
    >("TDLObjectRoleComplexExpression", bp::no_init);
 
    bp::class_<
-   TDLObjectRoleExpression, bp::bases<TDLObjectRoleComplexExpression>, boost::noncopyable
+      TDLObjectRoleExpression,
+      bp::bases<TDLObjectRoleComplexExpression>,
+      boost::noncopyable
    >("TDLObjectRoleExpression", bp::no_init);
 
    bp::class_<
-   TDLDataRoleExpression, bp::bases<TDLRoleExpression>, boost::noncopyable
+      TDLDataRoleExpression, bp::bases<TDLRoleExpression>, boost::noncopyable
    >("TDLDataRoleExpression", bp::no_init);
 
    bp::class_<
-   TDLIndividualExpression, bp::bases<TDLExpression>, boost::noncopyable
+      TDLIndividualExpression, bp::bases<TDLExpression>, boost::noncopyable
    >("TDLIndividualExpression", bp::no_init);
 
    bp::class_<
-   TDLDataExpression, bp::bases<TDLExpression>, boost::noncopyable
+      TDLIndividualName,
+      bp::bases<TDLIndividualExpression>,
+      bp::bases<TNamedEntity>,
+      boost::noncopyable
+   >("TDLIndividualExpression", bp::no_init);
+
+   bp::class_<
+      TDLDataExpression, bp::bases<TDLExpression>, boost::noncopyable
    >("TDLDataExpression", bp::no_init);
 
    bp::class_<
-   TDLDataTypeExpression, bp::bases<TDLDataExpression>, boost::noncopyable
+      TDLDataTypeExpression, bp::bases<TDLDataExpression>, boost::noncopyable
    >("TDLDataTypeExpression", bp::no_init);
 
    bp::class_<
-   TDLDataValue, bp::bases<TDLDataExpression>, boost::noncopyable
+      TDLDataValue, bp::bases<TDLDataExpression>, boost::noncopyable
    >("TDLDataValue", bp::no_init);
 
    bp::class_<
-   TDLFacetExpression, bp::bases<TDLDataExpression>, boost::noncopyable
+      TDLFacetExpression, bp::bases<TDLDataExpression>, boost::noncopyable
    >("TDLFacetExpression", bp::no_init);
 
    bp::class_<
-   TDLDataTypeName, bp::bases<TDLDataTypeExpression>, boost::noncopyable
+      TDLDataTypeName, bp::bases<TDLDataTypeExpression>, boost::noncopyable
    >("TDLDataTypeName", bp::no_init);
 
 
