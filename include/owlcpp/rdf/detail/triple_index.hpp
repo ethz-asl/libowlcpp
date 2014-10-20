@@ -1,5 +1,5 @@
 /** @file "/owlcpp/include/owlcpp/rdf/detail/triple_index.hpp"
-part of owlcpp2 project.
+part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2013
 *******************************************************************************/
@@ -237,17 +237,17 @@ public:
       }
    };
 
-   typedef typename query<any,any,any,any>::iterator iterator;
+   typedef typename query<Any,Any,Any,Any>::iterator iterator;
    typedef iterator const_iterator;
    std::size_t size() const {return v_.n_fragments();}
    bool empty() const {return ! v_.n_fragments();}
 
    const_iterator begin() const {
-      return const_iterator(v_.begin(), v_.end(), any(),any(),any());
+      return const_iterator(v_.begin(), v_.end(), any,any,any);
    }
 
    const_iterator end() const {
-      return const_iterator(v_.end(), v_.end(), any(),any(),any());
+      return const_iterator(v_.end(), v_.end(), any,any,any);
    }
 
    template<class Subj, class Pred, class Obj, class Doc>

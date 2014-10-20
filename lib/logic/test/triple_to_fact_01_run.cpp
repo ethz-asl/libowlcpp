@@ -16,8 +16,6 @@ namespace owlcpp{ namespace test{
 
 TExpressionManager& em(ReasoningKernel& k) {return *k.getExpressionManager();}
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 /**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_triple_to_fact_01 ) {

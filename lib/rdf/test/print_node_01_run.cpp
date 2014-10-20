@@ -15,8 +15,6 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 namespace t = owlcpp::terms;
 
 /**@test Print nodes without triple store

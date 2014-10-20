@@ -57,14 +57,14 @@ public:
 };
 
 template<class Tag0,class Tag1, class Tag2, class Tag3>
-class Tim_query_dispatch<Tag0,Tag1,Tag2,Tag3,any> {
+class Tim_query_dispatch<Tag0,Tag1,Tag2,Tag3,Any> {
    typedef Tim_config<Tag0,Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
 public:
    typedef typename config::iterator iterator;
    typedef boost::iterator_range<iterator> range;
 
-   static range find(storage const& s, any const&) {
+   static range find(storage const& s, Any const&) {
       return s;
    }
 };

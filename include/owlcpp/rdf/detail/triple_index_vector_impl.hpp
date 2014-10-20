@@ -101,14 +101,14 @@ public:
 };
 
 template<class Tag0,class Tag1, class Tag2, class Tag3>
-class Tiv_query_dispatch<Tag0,Tag1,Tag2,Tag3,any> {
+class Tiv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Any> {
    typedef Tiv_config<Tag0,Tag1,Tag2,Tag3> config;
    typedef typename config::storage storage;
 public:
    typedef typename config::iterator iterator;
    typedef boost::iterator_range<iterator> range;
 
-   static range find(storage const& s, any const&) {
+   static range find(storage const& s, Any const&) {
       return range(
                iterator(s.begin(), s.begin()),
                iterator(s.begin(), s.end())
@@ -165,8 +165,11 @@ public:
    }
 
    template<class Q0> struct query {
-      typedef typename Tiv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::iterator iterator;
-      typedef typename Tiv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::range range;
+      typedef typename Tiv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::iterator
+               iterator;
+
+      typedef typename Tiv_query_dispatch<Tag0,Tag1,Tag2,Tag3,Q0>::range
+               range;
    };
 
    template<class Q0> typename query<Q0>::range

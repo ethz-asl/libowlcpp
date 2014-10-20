@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef ANY_TRIPLE_ELEMENT_HPP_
 #define ANY_TRIPLE_ELEMENT_HPP_
+#include "owlcpp/rdf/config.hpp"
 
 namespace owlcpp{
 
@@ -15,16 +16,18 @@ class Doc_id;
 Use for searching triples to indicate the elements of a triple that should be
 ignored.
 *******************************************************************************/
-struct any{};
+struct Any{};
 
-inline bool operator==(any const&, Node_id const&) {return true;}
-inline bool operator==(Node_id const&, any const&) {return true;}
-inline bool operator==(any const&, Doc_id const&) {return true;}
-inline bool operator==(Doc_id const&, any const&) {return true;}
-inline bool operator<(any const&, Node_id const&) {return false;}
-inline bool operator<(Node_id const&, any const&) {return false;}
-inline bool operator<(any const&, Doc_id const&) {return false;}
-inline bool operator<(Doc_id const&, any const&) {return false;}
+inline bool operator==(Any const&, Node_id const&) {return true;}
+inline bool operator==(Node_id const&, Any const&) {return true;}
+inline bool operator==(Any const&, Doc_id const&) {return true;}
+inline bool operator==(Doc_id const&, Any const&) {return true;}
+inline bool operator<(Any const&, Node_id const&) {return false;}
+inline bool operator<(Node_id const&, Any const&) {return false;}
+inline bool operator<(Any const&, Doc_id const&) {return false;}
+inline bool operator<(Doc_id const&, Any const&) {return false;}
+
+OWLCPP_RDF_DECL extern const Any any;
 
 }//namespace owlcpp
 #endif /* ANY_TRIPLE_ELEMENT_HPP_ */

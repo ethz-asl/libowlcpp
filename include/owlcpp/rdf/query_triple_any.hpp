@@ -10,7 +10,6 @@ part of owlcpp project.
 #include <boost/utility/enable_if.hpp>
 #include "boost/range/any_range.hpp"
 
-//#include "boost/range/adaptor/type_erased.hpp"
 #include "owlcpp/rdf/config.hpp"
 
 namespace owlcpp{

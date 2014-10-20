@@ -12,8 +12,6 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 /**@test Literal bool nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_literal_bool_node ) {
@@ -62,6 +60,15 @@ BOOST_AUTO_TEST_CASE( test_literal_real_node ) {
    BOOST_CHECK_EQUAL(Node_double("-0.9").value(), -0.9);
    BOOST_CHECK_EQUAL(Node_double(1e10).value(), 1e10);
    BOOST_CHECK_EQUAL(Node_double("1e10").value(), 1e10);
+}
+
+
+/**@test white space collapsing for booleans and decimals
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_whitespace_collapsing ) {
+   BOOST_CHECK(  Node_bool("true\r\r").value() );
+   BOOST_CHECK_EQUAL(Node_int("   42").value(), 42);
+   BOOST_CHECK_EQUAL(Node_double("\t   42\n\r").value(), 42.0);
 }
 
 }//namespace test

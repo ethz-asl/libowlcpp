@@ -13,8 +13,6 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 const std::string path1 = sample_file_path("version_test_b.owl");
 const std::string iri1 = "http://owl-cpp.sf.net/test/owl/version_test.owl";
 const std::string ver1 = "http://owl-cpp.sf.net/test/owl/version_test_b.owl";

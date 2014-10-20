@@ -18,8 +18,6 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 const std::vector<std::string> logic_error_files =
          boost::assign::list_of<std::string>
 ("err_missing_def01.owl")

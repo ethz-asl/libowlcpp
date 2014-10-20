@@ -15,8 +15,6 @@ namespace mpl = boost::mpl;
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 const unsigned t[][4] = {
          {0,1,0,0},
          {0,2,0,0},
@@ -56,12 +54,12 @@ BOOST_AUTO_TEST_CASE( test_index_subject_search ) {
    BOOST_CHECK_EQUAL(mt.size(), 0U);
    insert_seq(mt, t);
    BOOST_CHECK_EQUAL(mt.size(), 7U);
-   map_triple::query_b<1,1,0,0>::range r1 = mt.find(Node_id(2), Node_id(3), any(), any());
+   map_triple::query_b<1,1,0,0>::range r1 = mt.find(Node_id(2), Node_id(3), any, any);
    BOOST_CHECK(!r1);
-   map_triple::query_b<1,1,0,0>::range r2 = mt.find(Node_id(0), Node_id(1), any(), any());
+   map_triple::query_b<1,1,0,0>::range r2 = mt.find(Node_id(0), Node_id(1), any, any);
    BOOST_CHECK(r2);
    BOOST_CHECK_EQUAL(boost::distance(r2), 1);
-   map_triple::query_b<0,1,0,0>::range r3 = mt.find(any(), Node_id(3), any(), any());
+   map_triple::query_b<0,1,0,0>::range r3 = mt.find(any, Node_id(3), any, any);
    BOOST_CHECK_EQUAL(boost::distance(r3), 4);
 
    BOOST_CHECK_THROW( mt.erase(triple(0,13,0,1)), Rdf_err );
@@ -83,7 +81,7 @@ BOOST_AUTO_TEST_CASE( test_index_predicate_search ) {
    map_triple mt;
    insert_seq(mt, t);
    typedef map_triple::query_b<0,1,0,0>::range range_t;
-   range_t r = mt.find(any(), Node_id(3), any(), any());
+   range_t r = mt.find(any, Node_id(3), any, any);
    BOOST_CHECK(r);
    BOOST_CHECK_EQUAL(distance(r), 4U);
 }

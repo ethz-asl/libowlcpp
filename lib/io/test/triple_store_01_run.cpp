@@ -21,8 +21,6 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 const std::string path1 = sample_files()[13].path;
 const std::string iri1 = sample_files()[13].iri;
 const std::string ver1 = sample_files()[13].version;

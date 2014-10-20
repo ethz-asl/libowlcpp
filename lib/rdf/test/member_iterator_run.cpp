@@ -16,8 +16,6 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 /**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_pair_iter ) {

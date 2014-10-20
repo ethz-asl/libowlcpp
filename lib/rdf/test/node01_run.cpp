@@ -21,8 +21,6 @@ Distributed under GNU General Public License; see doc/license.txt.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 /**@test IRI nodes
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_iri_node ) {

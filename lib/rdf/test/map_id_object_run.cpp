@@ -15,8 +15,6 @@ part of owlcpp project.
 namespace owlcpp{ namespace test{
 namespace d = owlcpp::detail;
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 const Ns_id nsid1(42);
 const Ns_id nsid2(43);
 const Node_id nid0(13);

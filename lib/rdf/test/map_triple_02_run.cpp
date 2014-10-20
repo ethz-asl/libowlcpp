@@ -15,8 +15,6 @@ namespace mpl = boost::mpl;
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 const unsigned t[][4] = {
          {0,1,0,0},
          {0,2,0,0},
@@ -41,28 +39,28 @@ BOOST_AUTO_TEST_CASE( test_map_triple_01 ) {
    map_triple tm;
    insert_seq(tm, t);
 
-   map_triple::query_b<0,0,0,0>::range r1 = tm.find(any(), any(), any(), any());
+   map_triple::query_b<0,0,0,0>::range r1 = tm.find(any, any, any, any);
    BOOST_CHECK_EQUAL( boost::distance(r1), 7 ); //cannot use size
 
-   map_triple::query_b<1,0,0,0>::range r2 = tm.find(Node_id(0), any(), any(), any());
+   map_triple::query_b<1,0,0,0>::range r2 = tm.find(Node_id(0), any, any, any);
    BOOST_CHECK_EQUAL( r2.size(), 6 );
 
-   map_triple::query_b<1,0,1,0>::range r3 = tm.find(Node_id(0), any(), Node_id(0), any());
+   map_triple::query_b<1,0,1,0>::range r3 = tm.find(Node_id(0), any, Node_id(0), any);
    BOOST_CHECK_EQUAL( r3.size(), 5 );
 
-   map_triple::query_b<0,0,0,1>::range r4 = tm.find(any(), any(), any(), Doc_id(1));
+   map_triple::query_b<0,0,0,1>::range r4 = tm.find(any, any, any, Doc_id(1));
    BOOST_CHECK_EQUAL( r4.size(), 1 );
 
    map_triple::query_b<1,1,1,1>::range r5 = tm.find(Node_id(0), Node_id(2), Node_id(0), Doc_id(0));
    BOOST_CHECK_EQUAL( r5.size(), 1 );
 
-   map_triple::query_b<1,0,1,0>::range r6 = tm.find(Node_id(0), any(), Node_id(2), any());
+   map_triple::query_b<1,0,1,0>::range r6 = tm.find(Node_id(0), any, Node_id(2), any);
    BOOST_CHECK_EQUAL( r6.size(), 0 );
 
-   map_triple::query_b<0,0,1,0>::range r7 = tm.find(any(), any(), Node_id(0), any());
+   map_triple::query_b<0,0,1,0>::range r7 = tm.find(any, any, Node_id(0), any);
    BOOST_CHECK_EQUAL( r7.size(), 6 );
 
-   map_triple::query_b<1,1,0,0>::range r8 = tm.find(Node_id(0), Node_id(3), any(), any());
+   map_triple::query_b<1,1,0,0>::range r8 = tm.find(Node_id(0), Node_id(3), any, any);
    BOOST_CHECK_EQUAL( r8.size(), 3 );
 }
 
@@ -74,7 +72,7 @@ BOOST_AUTO_TEST_CASE( test_map_triple_02 ) {
    insert_seq(mt, random_triples1);
    BOOST_CHECK_EQUAL(mt.size(), 20U);
 
-   BOOST_CHECK_EQUAL(mt.find(Node_id(6), Node_id(3), any(), any()).size(), 2);
+   BOOST_CHECK_EQUAL(mt.find(Node_id(6), Node_id(3), any, any).size(), 2);
 }
 
 }//namespace test

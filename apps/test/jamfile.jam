@@ -6,6 +6,7 @@
 project owlcpp/apps/test
    :  build-dir $(OUT)/apps
    : requirements
+      $(LIB_REQUIREMENTS)
 ;
 
 run

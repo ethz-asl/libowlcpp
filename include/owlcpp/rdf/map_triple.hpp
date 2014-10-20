@@ -82,10 +82,10 @@ public:
 
    template<bool Subj, bool Pred, bool Obj, bool Doc> struct query_b
    : public query<
-        typename boost::mpl::if_c<Subj,Node_id,any>::type,
-        typename boost::mpl::if_c<Pred,Node_id,any>::type,
-        typename boost::mpl::if_c<Obj, Node_id,any>::type,
-        typename boost::mpl::if_c<Doc, Doc_id, any>::type
+        typename boost::mpl::if_c<Subj,Node_id,Any>::type,
+        typename boost::mpl::if_c<Pred,Node_id,Any>::type,
+        typename boost::mpl::if_c<Obj, Node_id,Any>::type,
+        typename boost::mpl::if_c<Doc, Doc_id, Any>::type
      >
    {};
 
@@ -94,7 +94,7 @@ public:
     specified node IDs for subject, predicate, or object nodes or document ID.
     An instance of \b any matches all values for the corresponding triple
     element.
-    If none of the nodes are specified, i.e., <tt>find(any(), any(), any(), any())</tt>,
+    If none of the nodes are specified, i.e., <tt>find(any, any, any, any)</tt>,
     the search returns a range of all stored triples, [begin(), end()).
     @param subj predicate for first element of triple (subject node),
     e.g., \b Node_id, \b any
@@ -112,7 +112,7 @@ public:
     @code template<bool Subj, bool Pred, bool Obj, bool Doc> class query_b; @endcode
     For example,
     @code Map_triple<>::query_b<1,0,0,1>::range range =
-          map_triple.find(subj, any(), any(), doc);
+          map_triple.find(subj, any, any, doc);
     @endcode
    */
    template<class Subj, class Pred, class Obj, class Doc>

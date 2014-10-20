@@ -11,6 +11,7 @@ project owlcpp/lib/rdf/test
    : requirements
       <include>../
       <library>/boost//unit_test_framework
+	  <toolset>msvc:<threading>multi
 ;
 
 import testing ;

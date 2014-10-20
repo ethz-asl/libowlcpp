@@ -12,8 +12,6 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
-
 /**@test Check that every ontology IRI and version is read correctly
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_ontology_id ) {

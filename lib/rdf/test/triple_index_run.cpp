@@ -1,5 +1,5 @@
 /** @file "/owlcpp/lib/rdf/test/triple_index_run.cpp"
-part of owlcpp2 project.
+part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
 @n Copyright Mikhail K Levin 2013
 *******************************************************************************/
@@ -19,8 +19,6 @@ part of owlcpp2 project.
 #include "owlcpp/rdf/triple_tags.hpp"
 
 namespace owlcpp{ namespace test{
-
-BOOST_GLOBAL_FIXTURE( Exception_fixture );
 
 namespace m = map_triple_detail;
 
@@ -46,8 +44,8 @@ BOOST_AUTO_TEST_CASE( case01 ) {
    BOOST_CHECK_EQUAL(
             ts.find(
                      Node_id(5), //subj
-                     any(), //obj
-                     any() //pred
+                     any, //obj
+                     any //pred
             ).size(),
             3
    );
@@ -56,7 +54,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
             distance(
                      ts.find(
                               Node_id(6), //subj
-                              any(), //obj
+                              any, //obj
                               Node_id(3) //pred
                      )
             ),
@@ -67,56 +65,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
             ts.find(
                      Node_id(2), //subj
                      Node_id(0), //obj
-                     any()
-            ).size(),
-            2
-   );
-}
-
-/** Test triple set 2
-*******************************************************************************/
-BOOST_AUTO_TEST_CASE( case02 ) {
-   typedef m::Triple_set<Pred_tag, Subj_tag, Obj_tag> ts_t;
-   ts_t ts;
-   BOOST_CHECK(ts.empty());
-   ts.insert( triple(1, 1, 2, 0) );
-   insert_seq(ts, random_triples1);
-   BOOST_CHECK_EQUAL(ts.size(), 21U);
-   ts.erase(triple(1, 1, 2, 0));
-   BOOST_CHECK_EQUAL(ts.size(), 20U);
-   BOOST_CHECK_THROW(
-            ts.erase(triple(1, 1, 2, 0)),
-            Rdf_err
-   );
-
-   BOOST_CHECK_EQUAL(ts[0], triple(1,0,6,4));
-   BOOST_CHECK_EQUAL(ts[10], triple(0,4,8,2));
-
-   BOOST_CHECK_EQUAL(
-            ts.find(
-                     Node_id(5), //pred
-                     any(), //subj
-                     any() //obj
-            ).size(),
-            4
-   );
-
-   BOOST_CHECK_EQUAL(
-            distance(
-                     ts.find(
-                              Node_id(1), //pred
-                              any(), //subj
-                              Node_id(0) //obj
-                     )
-            ),
-            2
-   );
-
-   BOOST_CHECK_EQUAL(
-            ts.find(
-                     Node_id(3), //pred
-                     Node_id(6), //subj
-                     any() //obj
+                     any
             ).size(),
             2
    );
@@ -169,18 +118,18 @@ BOOST_AUTO_TEST_CASE( case04 ) {
    BOOST_CHECK( ! ind.empty() );
    BOOST_CHECK_EQUAL(ind.size(), 20U);
    BOOST_CHECK_EQUAL(
-            ind.find(Node_id(0), any(), any(), any()).size(),
+            ind.find(Node_id(0), any, any, any).size(),
             2
    );
    BOOST_CHECK_EQUAL(
-            ind.find(Node_id(1), Node_id(1), any(), any()).size(),
+            ind.find(Node_id(1), Node_id(1), any, any).size(),
             1
    );
    BOOST_CHECK(
-            boost::distance(ind.find(any(), any(), any(), any())) == 20
+            boost::distance(ind.find(any, any, any, any)) == 20
    );
    BOOST_CHECK_EQUAL(
-            boost::distance(ind.find(any(), Node_id(1), any(), any())),
+            boost::distance(ind.find(any, Node_id(1), any, any)),
             3
    );
 
@@ -189,13 +138,13 @@ BOOST_AUTO_TEST_CASE( case04 ) {
    }
    std::cout << std::endl;
 
-   index1::query<any,any,any,any>::range r = ind.find(any(), any(), any(), any());
+   index1::query<Any,Any,Any,Any>::range r = ind.find(any, any, any, any);
    for(index1::const_iterator i = r.begin(), end = r.end(); i != end; ++i) {
       std::cout << *i << std::endl;
    }
    std::cout << std::endl;
 
-   BOOST_FOREACH(Triple const& t, ind.find(any(), any(), any(), any())) {
+   BOOST_FOREACH(Triple const& t, ind.find(any, any, any, any)) {
       std::cout << t << std::endl;
    }
 }
@@ -212,7 +161,7 @@ BOOST_AUTO_TEST_CASE( case05 ) {
    BOOST_CHECK( ! ind.empty() );
    BOOST_CHECK_EQUAL(ind.size(), 3U);
    BOOST_CHECK_EQUAL(
-            ind.find(any(), any(), Node_id(0), any()).size(),
+            ind.find(any, any, Node_id(0), any).size(),
             2
    );
 
@@ -225,22 +174,22 @@ BOOST_AUTO_TEST_CASE( case05 ) {
 /** Test optimality
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( case06 ) {
-   int e = index2::query<any,any,Node_id,any>::efficiency;
+   int e = index2::query<Any,Any,Node_id,Any>::efficiency;
    BOOST_CHECK_EQUAL( e, 100 + 3 );
 
-   e = index5::query<any,Node_id,Node_id,any>::efficiency;
+   e = index5::query<Any,Node_id,Node_id,Any>::efficiency;
    BOOST_CHECK_EQUAL( e, 10 - 4 );
 
-   e = index5::query<any,any,Node_id,Doc_id>::efficiency;
+   e = index5::query<Any,Any,Node_id,Doc_id>::efficiency;
    BOOST_CHECK_EQUAL( e, 15 - 4 );
 
-   e = index4::query<any,any,Node_id,Doc_id>::efficiency;
+   e = index4::query<Any,Any,Node_id,Doc_id>::efficiency;
    BOOST_CHECK_EQUAL( e, 15 - 2 );
 
-   e = index1::query<Node_id,any,Node_id,any>::efficiency;
+   e = index1::query<Node_id,Any,Node_id,Any>::efficiency;
    BOOST_CHECK_EQUAL( e, 100 + 4 );
 
-   e = index6::query<Node_id,any,Node_id,any>::efficiency;
+   e = index6::query<Node_id,Any,Node_id,Any>::efficiency;
    BOOST_CHECK_EQUAL( e, 100 + 3 + 10 );
 }
 
@@ -251,19 +200,19 @@ BOOST_AUTO_TEST_CASE( case07 ) {
 
    typedef m::Index_selector<
       indices,
-      any, any, Node_id, any
+      Any, Any, Node_id, Any
    > selector1;
    BOOST_MPL_ASSERT_RELATION( selector1::index::value, ==, 1 );
 
    typedef m::Index_selector<
       indices,
-      Node_id, any, Node_id, any
+      Node_id, Any, Node_id, Any
    > selector2;
    BOOST_MPL_ASSERT_RELATION( selector2::index::value, ==, 0 );
 
    typedef m::Index_selector<
       indices,
-      any, Node_id, any, Doc_id
+      Any, Node_id, Any, Doc_id
    > selector3;
    BOOST_MPL_ASSERT_RELATION( selector3::index::value, ==, 3 );
 

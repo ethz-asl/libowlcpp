@@ -16,6 +16,9 @@ import errors ;
 
 extension.declare raptor ;
 
+NL = "
+" ;
+
 ## make a list of source files and copy them to new location to isolate from headers
 ################################################################################
 rule copy-source ( version : location ) {
@@ -28,17 +31,15 @@ rule copy-source ( version : location ) {
       raptor_json_writer raptor_memstr raptor_concepts raptor_syntax_description 
       raptor_libxml raptor_rdfxml raptor_sax2 turtle_lexer turtle_parser 
       ntriples_parse raptor_guess raptor_librdfa raptor_serialize_ntriples 
-      strcasecmp parsedate
+      parsedate raptor_escaped raptor_ntriples 
+      raptor_serialize_turtle raptor_abbrev
+#      strcasecmp
    ;
    local src_rdfa = 
       curie iri language rdfa rdfa_utils subject triple
+      context lists namespace strtok_r
    ;
-   if $(version) <= "2.0.6" {
-      src += raptor_nfc_data raptor_nfc ;
-   }
-   if $(version) >= "2.0.8" {
-      src_rdfa += context lists namespace strtok_r ;
-   }
+
    local location_src = [ path.join $(location) src ] ;
    local location_rdfa = [ path.join $(location) librdfa ] ;
    
@@ -52,13 +53,13 @@ rule copy-source ( version : location ) {
    return $(files_out) ;
 }
 
-## Copy all headers except win32_raptor_config.h to new location.
-# Generate new raptor_config.h and win32_raptor_config.h
+## Copy all headers new location.
+# Generate new raptor_config.h
 ################################################################################
 rule copy-headers ( version : location : properties * ) {
    local src = [ path.join $(location) src ] ;
    local rdfa = [ path.join $(location) librdfa ] ;
-   local files_in = [ path.glob $(src) $(rdfa) : *.h : *win32_raptor_config.h ] ;
+   local files_in = [ path.glob $(src) $(rdfa) : *.h ] ;
    local files_out = ;
    local files_dest = [ path.join $(GENERATED_LIB) raptor ] ;
 
@@ -124,15 +125,15 @@ rule replace-version ( src : version ) {
 ## 
 ################################################################################
 rule define-as ( src : from : as ? ) {
+   as ?= 1 ;
+   local to = "#define $(from) $(as)"$(NL) ;
    local re = " *#undef +$(from) *[\n]" ;
    if ! [ MATCH "($(re))" : $(src) ] {
       errors.error "could not find " $(re) ;
+      src = $(src)$(NL)$(to) ;
+   } else {
+      src = [ regex.replace $(src) $(re) $(to) ] ;
    }
-   
-   as ?= 1 ;
-   local to = "#define $(from) $(as)
-" ;
-   src = [ regex.replace $(src) $(re) $(to) ] ;
    return $(src) ;
 }
 
@@ -169,7 +170,7 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
 
    local src = [ read_file $(sources:G=) ] ;
    local version = [ version_raptor $(properties) ] ;
-   src = [ define-version $(src) : $(version) ] ;   
+   src = [ define-version $(src) : $(version) ] ;
    
    local defs =
       HAVE_DLFCN_H HAVE_ERRNO_H HAVE_FCNTL_H HAVE_GETOPT
@@ -186,37 +187,57 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
       RAPTOR_LIBXML_XMLSAXHANDLER_INITIALIZED RAPTOR_LIBXML_XML_PARSE_NONET
       RAPTOR_PARSER_GUESS RAPTOR_PARSER_NTRIPLES
       RAPTOR_PARSER_RDFXML RAPTOR_PARSER_TURTLE RAPTOR_SERIALIZER_NTRIPLES
-      RAPTOR_WWW_NONE RAPTOR_XML_LIBXML STDC_HEADERS
+      RAPTOR_WWW_NONE RAPTOR_XML_LIBXML STDC_HEADERS HAVE_STDDEF_H
    ;
    
-   if $(version) >= "2.0.7" {
-      defs += HAVE_STAT ;
-   } else {
-      src = [ define-as $(src) : SIZEOF_UNSIGNED_CHAR : 1 ] ;
-      src = [ define-as $(src) : SIZEOF_UNSIGNED_SHORT : 2 ] ;
-   }
-   if $(version) >= "2.0.6" {
-      defs += HAVE_STDDEF_H ;
-   }
+   local add = 
+      "#ifdef WIN32"
+      "#  define WIN32_LEAN_AND_MEAN"
+      "#  define _CRT_NONSTDC_NO_DEPRECATE"
+      "#  define _CRT_SECURE_NO_DEPRECATE"
+      ""
+      "#define YY_NO_UNISTD_H 1"
+      ""
+      "#  define RAPTOR_INLINE __inline"
+      ""
+      "#  define S_ISTYPE(mode, mask)   (((mode) & _S_IFMT) == (mask))"
+      "#  define S_ISDIR(mode)    S_ISTYPE((mode), _S_IFDIR)"
+      "#  define S_ISREG(mode)    S_ISTYPE((mode), _S_IFREG)"
+      ""
+      "   /* Mode bits for access() */"
+      "#  define R_OK 04"
+      "#  define W_OK 02"
+      ""
+      "#  define access(p,m)    _access(p,m)"
+      "#  define strcasecmp(a,b) _stricmp(a,b)"
+      "#  define raptor_strcasecmp(a,b) _stricmp(a,b)"
+      "#  define raptor_strncasecmp(a,b,n) _strnicmp(a,b,n)"
+      "#  define snprintf    _snprintf"
+      ""
+      "#  if !defined(HAVE_SNPRINTF) && defined(HAVE__SNPRINTF)"
+      "#    define snprintf    _snprintf"
+      "#  endif"
+      "#  if !defined(HAVE_VSNPRINTF) && defined(HAVE__VSNPRINTF)"
+      "#    define vsnprintf      _vsnprintf"
+      "#  endif"
+      ""
+      "   /* These prevent parsedate.c from declaring malloc() and free() */"
+      "#  define YYMALLOC malloc"
+      "#  define YYFREE   free"
+      "#endif"
+   ;
+   
    switch [ property.select <target-os> : $(properties) ] {
       case *linux* :
          defs += 
             HAVE_GETOPT_H HAVE_STRCASECMP HAVE_SYS_TIME_H TIME_WITH_SYS_TIME
-            HAVE_UNISTD_H HAVE_STRINGS_H
+            HAVE_UNISTD_H HAVE_STRINGS_H HAVE_STAT HAVE_VASPRINTF HAVE_STRTOK_R
          ;
-         if $(version) >= "2.0.6" {
-            defs += HAVE_VASPRINTF ;
-         }
-         if $(version) >= "2.0.8" {
-            defs += HAVE_STRTOK_R ;
-         }
 
       case *windows* :
-      
+
       case *darwin* :
-         if $(version) >= "2.0.8" {
-            defs += HAVE_STRTOK_R ;
-         }
+         defs += HAVE_STRTOK_R HAVE_STAT ;
    }
    
    for local def in $(defs) {
@@ -232,52 +253,9 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
    src = [ define-as $(src) : PACKAGE_URL : "\"http://librdf.org/raptor/\"" ] ;
    src = [ define-as $(src) : RAPTOR_MIN_VERSION_DECIMAL : 20000 ] ;
    
-   STR on $(<) = $(src) ;
+   STR on $(<) = $(src)$(NL)$(add:J=$(NL)) ;
 }
 actions raptor_config_gen { @($(STDOUT):E=$(STR)) > "$(<)" }
-
-## 
-################################################################################
-rule win32_raptor_config_gen ( targets * : sources * : properties * ) {
-
-   local src = [ read_file $(sources:G=) ] ;
-   local version = [ version_raptor $(properties) ] ;
-   src = [ replace-version $(src) : $(version) ] ;
-   
-   src = [ comment-out $(src) : "#define vsnprintf _vsnprintf" ] ;
-   
-   local re = "#define snprintf _snprintf[\n]" ;
-   local to = 
-      "#define snprintf _snprintf" 
-      "#define strcasecmp _stricmp"
-      "#define S_ISREG(mode) (((mode) & S_IFMT) == S_IFREG)"
-      "" 
-      ;
-   to = $(to:J="
-") ;
-   src = [ regex.replace $(src) $(re) $(to) ] ;
-   
-   re = "#define RAPTOR_XML_LIBXML" ;
-   to = "#ifndef RAPTOR_XML_LIBXML
-#define RAPTOR_XML_LIBXML
-#endif" ;
-   src = [ regex.replace $(src) $(re) $(to) ] ;
-   
-   src = [ comment-out $(src) : "#define RAPTOR_PARSER_RSS 1" ] ;
-   src = [ comment-out $(src) : "#define RAPTOR_PARSER_GRDDL 1" ] ;
-   src = [ comment-out $(src) : "#define RAPTOR_PARSER_N3 1" ] ;
-   
-   src = [ comment-out $(src) : "#define RAPTOR_SERIALIZER_ATOM 1" ] ;
-   src = [ comment-out $(src) : "#define RAPTOR_SERIALIZER_RSS_1_0 1" ] ;
-   src = [ comment-out $(src) : "#define RAPTOR_SERIALIZER_RDFXML 1" ] ;
-   src = [ comment-out $(src) : "#define RAPTOR_SERIALIZER_RDFXML_ABBREV 1" ] ;
-
-   src = [ comment-out $(src) : "#define RAPTOR_WWW_LIBCURL 1" ] ;
-
-   STR on $(<) = $(src) ;
-}
-actions win32_raptor_config_gen { @($(STDOUT):E=$(STR)) > "$(<)" }
-
 
 ## 
 ################################################################################
@@ -292,8 +270,11 @@ rule raptor2_gen ( targets * : sources * : properties * ) {
       "#include \"boost/config.hpp\""
       "#ifndef BOOST_SYMBOL_EXPORT"
       "  #define BOOST_SYMBOL_EXPORT"
+      "#endif"
+      "#ifndef BOOST_SYMBOL_IMPORT"
       "  #define BOOST_SYMBOL_IMPORT"
       "#endif"
+      ""
       "#if defined(RAPTOR_DYN_LINK)"
       "#  if defined(RAPTOR_INTERNAL)"
       "#     define RAPTOR_API BOOST_SYMBOL_EXPORT"
@@ -327,12 +308,6 @@ rule init ( version : location : options * ) {
       : <raptor-version>$(version)
    ;
    
-   make win32_raptor_config.h 
-      : $(location)/src/win32_raptor_config.h.in 
-      : @win32_raptor_config_gen 
-      : <raptor-version>$(version)
-   ;
-   
    local headers = [ copy-headers  $(version) : $(location) ] ;
    
    local requirements = 
@@ -349,11 +324,7 @@ rule init ( version : location : options * ) {
          <define>LIBRDFA_IN_RAPTOR
          <define>RAPTOR_INTERNAL
          <link>shared:<define>RAPTOR_DYN_LINK
-         <toolset>msvc:<dependency>win32_raptor_config.h
-         <toolset>msvc:<implicit-dependency>win32_raptor_config.h
          <toolset>msvc:<define>WIN32
-         <toolset>msvc:<define>_CRT_SECURE_NO_DEPRECATE
-         <toolset>msvc:<define>_CRT_NONSTDC_NO_DEPRECATE
          <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden"
    ;
    

@@ -23,7 +23,6 @@ rule config_hpp ( targets * : sources * : properties * ) {
       "#include \"boost/config.hpp\""
       "#ifndef BOOST_SYMBOL_EXPORT"
       "  #define BOOST_SYMBOL_EXPORT"
-      "  #define BOOST_SYMBOL_IMPORT"
       "#endif"
       "#if defined(FACTPP_KERNEL_DYN_LINK)"
       "#  if defined(FACTPP_KERNEL_SOURCE)"
