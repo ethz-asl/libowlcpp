@@ -235,7 +235,7 @@ public:
       const pred1 p1(q1, q2, any);
       BOOST_ASSERT(boost::is_sorted(v, p1));
       range1 r = boost::equal_range(v, p1);
-      pred2 p2((any,any,q3));
+      pred2 p2(any,any,q3);
       return range(
                iterator(p2, r.begin(), r.end()),
                iterator(p2, r.end(),   r.end())
