@@ -26,7 +26,8 @@
       <rdf:type>
          <owl:Restriction>
             <owl:onProperty rdf:resource="#hasAge" />
-            <owl:hasValue rdf:datatype="&xsd;nonNegativeInteger">19</owl:hasValue>
+            <owl:hasValue rdf:datatype="&xsd;nonNegativeInteger">19
+            </owl:hasValue>
          </owl:Restriction>
       </rdf:type>
    </owl:NamedIndividual>
