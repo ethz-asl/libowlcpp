@@ -67,6 +67,18 @@ Expression_args::Expression_args(const Node_id h, Triple_store const& ts)
             cardinality = pred;
             num = value<unsigned>(obj, ts);
             break;
+
+         //ignore axiom generating predicates
+         case owl_disjointWith::index:
+         case owl_equivalentClass::index:
+         case owl_equivalentProperty::index:
+         case owl_propertyDisjointWith::index:
+         case rdfs_domain::index:
+         case rdfs_range::index:
+         case rdfs_subClassOf::index:
+         case rdfs_subPropertyOf::index:
+            break;
+
          default:
             BOOST_THROW_EXCEPTION(
                      Err()
