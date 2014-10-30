@@ -20,11 +20,11 @@
 
    <!-- adapted from http://ontogenesis.knowledgeblog.org/88 -->
    <owl:Class rdf:about="#Person" />
-   
+
    <owl:DatatypeProperty rdf:about="#hasAge">
       <rdf:type rdf:resource="&owl;FunctionalProperty" />
    </owl:DatatypeProperty>
-   
+
    <owl:Class rdf:about="#Teenager">
       <owl:equivalentClass>
          <owl:Class>
@@ -37,12 +37,12 @@
                         <owl:onDatatype rdf:resource="&xsd;integer" />
                         <owl:withRestrictions rdf:parseType="Collection">
                            <rdf:Description>
-                              <xsd:minExclusive rdf:datatype="&xsd;integer"
-                                 >12</xsd:minExclusive>
+                              <xsd:minExclusive rdf:datatype="&xsd;integer">12
+                              </xsd:minExclusive>
                            </rdf:Description>
                            <rdf:Description>
-                              <xsd:maxExclusive rdf:datatype="&xsd;integer"
-                                 >20</xsd:maxExclusive>
+                              <xsd:maxExclusive rdf:datatype="&xsd;integer">20
+                              </xsd:maxExclusive>
                            </rdf:Description>
                         </owl:withRestrictions>
                      </rdfs:Datatype>
@@ -52,9 +52,9 @@
          </owl:Class>
       </owl:equivalentClass>
    </owl:Class>
-   
+
    <Teenager rdf:about="#A" >
       <hasAge rdf:datatype="&xsd;integer">20</hasAge>
    </Teenager>
-   
+
 </rdf:RDF>

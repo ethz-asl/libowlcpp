@@ -195,6 +195,7 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
          e_m().addArg(Ot_complement(obj, ts_).get(k_));
          return k_.equalConcepts();
       }
+      return 0;
 
    case owl_intersectionOf::index:
    case owl_unionOf::index:

@@ -37,7 +37,8 @@
                         <rdf:first rdf:datatype="&xsd;double">3.0</rdf:first>
                         <rdf:rest>
                            <rdf:Description>
-                                 <rdf:first rdf:datatype="&xsd;int">3</rdf:first>
+                                 <rdf:first rdf:datatype="&xsd;int"> 3
+                                 </rdf:first>
                                  <rdf:rest rdf:resource="&rdf;nil" />
                            </rdf:Description>
                         </rdf:rest>

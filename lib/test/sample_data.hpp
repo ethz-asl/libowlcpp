@@ -134,6 +134,10 @@ inline std::vector<Sample_info> const& sample_files() {
             "data_property_restriction.owl",
             "http://owl-cpp.sf.net/test/owl/data_property_restriction.owl", ""
             )
+   /* 22 */(
+            "subclass_axiom.owl",
+            "http://owl-cpp.sf.net/test/owl/subclass_axiom.owl", ""
+            )
    ;
    return v;
 }

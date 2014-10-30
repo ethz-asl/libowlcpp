@@ -15,7 +15,9 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace test{
 
-/**
+TExpressionManager& em(ReasoningKernel& k) {return *k.getExpressionManager();}
+
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_data_property_assertion ) {
    Triple_store ts;
@@ -25,7 +27,7 @@ BOOST_AUTO_TEST_CASE( test_data_property_assertion ) {
    BOOST_CHECK( k.isKBConsistent() );
 }
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_datatype_restriction ) {
    Triple_store ts;
@@ -35,7 +37,7 @@ BOOST_AUTO_TEST_CASE( test_datatype_restriction ) {
    BOOST_CHECK( ! k.isKBConsistent() );
 }
 
-/**
+/**@test
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_dp_restriction ) {
    Triple_store ts;
@@ -43,6 +45,36 @@ BOOST_AUTO_TEST_CASE( test_dp_restriction ) {
    ReasoningKernel k;
    submit(ts, k, false);
    BOOST_CHECK( k.isKBConsistent() );
+}
+
+/**@test
+*******************************************************************************/
+BOOST_AUTO_TEST_CASE( test_subclass_axiom ) {
+   Triple_store ts;
+   load_file(sample_file_path("subclass_axiom.owl"), ts);
+
+   ReasoningKernel k;
+   submit(ts, k, true);
+   BOOST_CHECK( k.isKBConsistent() );
+
+   const Doc_id doc = *ts.map_doc().begin();
+   const Node_id nid = ts[doc].ontology_iri;
+   const std::string ns_iri = to_string_full(nid, ts);
+
+   const TDLIndividualExpression* b = em(k).Individual(ns_iri + "#b");
+   const TDLIndividualExpression* c = em(k).Individual(ns_iri + "#c");
+   const TDLIndividualExpression* bc = em(k).Individual(ns_iri + "#bc");
+   const TDLConceptName* A = em(k).Concept(ns_iri + "#A");
+   const TDLConceptName* B = em(k).Concept(ns_iri + "#B");
+   const TDLConceptName* C = em(k).Concept(ns_iri + "#C");
+
+   BOOST_CHECK( k.isInstance(b, B) );
+   BOOST_CHECK( k.isInstance(c, C) );
+   BOOST_CHECK( ! k.isInstance(b, A) );
+   BOOST_CHECK( ! k.isInstance(c, A) );
+   BOOST_CHECK( k.isInstance(bc, B) );
+   BOOST_CHECK( k.isInstance(bc, C) );
+   BOOST_CHECK( k.isInstance(bc, A) );
 }
 
 }//namespace test

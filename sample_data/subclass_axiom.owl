@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE rdf:RDF [
+   <!ENTITY w3 "http://www.w3.org/" >
+   <!ENTITY owl "&w3;2002/07/owl#" >
+   <!ENTITY xsd "&w3;2001/XMLSchema#" >
+   <!ENTITY rdfs "&w3;2000/01/rdf-schema#" >
+   <!ENTITY rdf "&w3;1999/02/22-rdf-syntax-ns#" >
+   <!ENTITY owlcpp "http://owl-cpp.sf.net/test/owl/" >
+   <!ENTITY base "&owlcpp;subclass_axiom.owl" >
+]>
+<rdf:RDF 
+   xmlns="&base;#"
+   xml:base="&base;"
+   xmlns:xsd="&xsd;"
+   xmlns:rdfs="&rdfs;"
+   xmlns:rdf="&rdf;"
+   xmlns:owl="&owl;"
+>
+   <owl:Ontology rdf:about="" />
+
+   <owl:Class rdf:about="#A" />
+   <owl:Class rdf:about="#B" />
+   <owl:Class rdf:about="#C" />
+   <B rdf:about="#b" />
+   <C rdf:about="#c" />
+   <B rdf:about="#bc" />
+   <C rdf:about="#bc" />
+
+   <owl:Class>
+      <rdfs:subClassOf rdf:resource="#A" />
+      <owl:intersectionOf rdf:parseType="Collection">
+         <rdf:Description rdf:about="#B" />
+         <rdf:Description rdf:about="#C" />
+      </owl:intersectionOf>
+   </owl:Class>
+   
+</rdf:RDF>
