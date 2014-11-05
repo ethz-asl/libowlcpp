@@ -20,7 +20,6 @@ namespace owlcpp{ namespace test{
 *******************************************************************************/
 BOOST_AUTO_TEST_CASE( test_pair_iter ) {
    typedef std::map<int, double> map_t;
-   typedef std::pair<int, double> pair_t;
 
    typedef Iterator_member_pair<map_t::const_iterator, const double, 2> iter_t;
    typedef boost::iterator_range<iter_t> range_t;
