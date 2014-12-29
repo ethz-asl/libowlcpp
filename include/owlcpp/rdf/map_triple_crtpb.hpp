@@ -9,6 +9,7 @@ part of owlcpp project.
 #include "boost/concept/assert.hpp"
 
 #include "owlcpp/detail/map_traits.hpp"
+#include "owlcpp/rdf/triple.hpp"
 
 namespace owlcpp{
 

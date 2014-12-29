@@ -30,6 +30,9 @@ template<class,class,class,class> class Triple_index_map_impl;
 typedef OWLCPP_TRIPLE_INDEX_CONFIG(OWLCPP_TRIPLE_INDICES)
 index_config_default;
 
+typedef OWLCPP_TRIPLE_INDEX_CONFIG()
+config_unindexed;
+
 /**@brief
 *******************************************************************************/
 template<class Tag0, class Tag1, class Tag2, class Tag3>

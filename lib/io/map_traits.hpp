@@ -33,7 +33,7 @@ template<> struct Map_traits<Triple_store_temp> {
    typedef Ns_id ns_id_type;
    typedef Node_id node_id_type;
    typedef Doc_id doc_id_type;
-   typedef Map_triple<> map_triple_type;
+   typedef Map_triple<OWLCPP_TRIPLE_INDEX_CONFIG()> map_triple_type;
 };
 
 }//namespace detail

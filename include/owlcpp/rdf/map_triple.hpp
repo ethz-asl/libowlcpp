@@ -8,24 +8,24 @@ part of owlcpp project.
 #include "boost/fusion/algorithm/iteration/for_each.hpp"
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/include/mpl.hpp"
-#include "boost/fusion/sequence/intrinsic/front.hpp"
 #include "boost/fusion/sequence/intrinsic/at.hpp"
+#include "boost/fusion/sequence/intrinsic/front.hpp"
 #include "boost/fusion/sequence/intrinsic/value_at.hpp"
 #include "boost/mpl/fold.hpp"
 #include "boost/mpl/front.hpp"
 #include "boost/mpl/push_back.hpp"
 
 #include "owlcpp/rdf/detail/triple_index_map_impl.hpp"
+#include "owlcpp/rdf/detail/triple_index_selector.hpp"
 #include "owlcpp/rdf/detail/triple_index_vector_impl.hpp"
 #include "owlcpp/rdf/detail/triple_index.hpp"
-#include "owlcpp/rdf/detail/triple_index_selector.hpp"
 #include "owlcpp/rdf/map_triple_fwd.hpp"
 
 namespace owlcpp{
 
 /**@brief Store, index, and search RDF triples
 *******************************************************************************/
-template<class Config> class Map_triple {
+template<class Config, bool> class Map_triple {
    typedef typename boost::mpl::fold<
             Config,
             boost::fusion::vector<>,
@@ -125,6 +125,30 @@ public:
 private:
    store store_;
    std::size_t size_;
+};
+
+/**@brief Store, index, and search RDF triples
+*******************************************************************************/
+template<class Config> class Map_triple<Config, true> {
+   typedef std::vector<Triple> store_t;
+public:
+   typedef store_t::const_iterator const_iterator;
+
+   std::size_t size() const {return v_.size();}
+   bool empty() const {return v_.empty();}
+   const_iterator begin() const {return v_.begin();}
+   const_iterator end() const {return v_.end();}
+
+   void insert(Triple const& t) {v_.push_back(t);}
+
+   void erase(Triple const& t) {
+      v_.erase(find(v_.begin(), v_.end(), t));
+   }
+
+   void clear() {v_.clear();}
+
+private:
+   store_t v_;
 };
 
 }//namespace owlcpp
