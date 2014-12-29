@@ -64,9 +64,14 @@ BOOST_AUTO_TEST_CASE( test_subclass_axiom ) {
    const TDLIndividualExpression* b = em(k).Individual(ns_iri + "#b");
    const TDLIndividualExpression* c = em(k).Individual(ns_iri + "#c");
    const TDLIndividualExpression* bc = em(k).Individual(ns_iri + "#bc");
-   const TDLConceptName* A = em(k).Concept(ns_iri + "#A");
-   const TDLConceptName* B = em(k).Concept(ns_iri + "#B");
-   const TDLConceptName* C = em(k).Concept(ns_iri + "#C");
+
+   /*
+   FaCT v1.6.2 returns TDLConceptExpression*,
+   FaCT v1.6.3 returns TDLConceptName*
+    */
+   const TDLConceptExpression* A = em(k).Concept(ns_iri + "#A");
+   const TDLConceptExpression* B = em(k).Concept(ns_iri + "#B");
+   const TDLConceptExpression* C = em(k).Concept(ns_iri + "#C");
 
    BOOST_CHECK( k.isInstance(b, B) );
    BOOST_CHECK( k.isInstance(c, C) );
