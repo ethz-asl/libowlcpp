@@ -1,7 +1,7 @@
-# owlcpp/binding/python/jamfile.jam
-# part of owlcpp project.
-# Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2011-3
+## owlcpp/binding/python/jamfile.jam
+## part of owlcpp project.
+## Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+## Copyright Mikhail K Levin 2011-4
 
 project owlcpp/binding/python
     : build-dir $(PYTHON_OUT)
@@ -10,52 +10,198 @@ project owlcpp/binding/python
       <library>/owlcpp//rdf
 ;
 
-import python ;
+import python modules path common regex ;
 
+author = "Mikhail K. Levin" ;
+email = "mlevin@svarnetics.org" ;
+proj_url = "http://owl-cpp.sf.net/" ;
+version = [ process_version_string $(OWLCPP_VERSION) ] ;
+lib_stage = $(PYTHON_OUT)/owlcpp ;
+doc_src_stage = $(PYTHON_OUT)/doc/_sources ;
+doc_dest = $(PYTHON_OUT)/doc ;
+
+## 
+################################################################################
 python-extension _rdf 
    : 
       [ glob rdf*.cpp ]
-   : 
+      /boost/python//boost_python
+      /owlcpp//rdf
+   :
+      $(LIB_REQUIREMENTS)
+      #enable runtime linking from same directory
+      <toolset>gcc,<target-os>linux:<linkflags>"-Wl,-R'$ORIGIN/'"
+      <toolset>clang,<target-os>linux:<linkflags>"-Wl,-R'$ORIGIN/'"
+      <hardcode-dll-paths>true
 ;
 
+## 
+################################################################################
 python-extension terms
    : 
       terms.cpp
+      /boost/python//boost_python
    :
       <include>$(PROJ_ROOT)/lib
+      $(LIB_REQUIREMENTS)
+      #enable runtime linking from same directory
+      <toolset>gcc,<target-os>linux:<linkflags>"-Wl,-R'$ORIGIN/'"
+      <toolset>clang,<target-os>linux:<linkflags>"-Wl,-R'$ORIGIN/'"
+      <hardcode-dll-paths>true
 ;
 
+## 
+################################################################################
 python-extension _io 
    : 
       [ glob io*.cpp ] 
+      /boost/python//boost_python
+      /owlcpp//rdf
+      /owlcpp//io
    :
-      <library>/owlcpp//io
+      $(LIB_REQUIREMENTS)
+      #enable runtime linking from same directory
+      <toolset>gcc,<target-os>linux:<linkflags>"-Wl,-R'$ORIGIN/'"
+      <toolset>clang,<target-os>linux:<linkflags>"-Wl,-R'$ORIGIN/'"
+      <hardcode-dll-paths>true
 ;
 
+## 
+################################################################################
 python-extension _logic
    : 
-      [ glob logic*.cpp ] [ glob factpp*.cpp ]
+      [ glob logic*.cpp ] 
+      [ glob factpp*.cpp ]
+      /boost/python//boost_python
+      /owlcpp//rdf
+      /owlcpp//logic
    :
-      <library>/owlcpp//logic
+      $(LIB_REQUIREMENTS)
+      #enable runtime linking from same directory
+      <toolset>gcc,<target-os>linux:<linkflags>"-Wl,-R'$ORIGIN/'"
+      <toolset>clang,<target-os>linux:<linkflags>"-Wl,-R'$ORIGIN/'"
+      <hardcode-dll-paths>true
 ;
 
-install install
+## 
+################################################################################
+make __init__.py : : @init_py : <location>$(lib_stage) ;
+actions init_py {
+    @($(STDOUT):E=#!/usr/bin/env python
+'''
+.. automodule:: owlcpp._rdf
+   :members:
+
+.. automodule:: owlcpp.terms
+   :members:
+
+.. automodule:: owlcpp._io
+   :members:
+
+.. automodule:: owlcpp._logic
+   :members:
+
+'''
+
+from _rdf import *
+from _io import *
+from _logic import *
+import terms
+__version__ = '$(version[1]).$(version[2]).$(version[3])'
+) > "$(<)"
+}
+
+## 
+################################################################################
+install _py_lib
    : 
       _rdf terms _io _logic
    : 
-      <location>$(PYTHON_OUT)/owlcpp
+      <location>$(lib_stage)
       <install-dependencies>on
       <install-type>LIB
       <dependency>__init__.py
 ;
 
-make __init__.py : : @init_py : <location>$(PYTHON_OUT)/owlcpp ;
-actions init_py {
-    @($(STDOUT):E=#!/usr/bin/env python
-from _rdf import *
-from _io import *
-from _logic import *
-import terms
-) > "$(<)"
-echo $(<)
+## 
+################################################################################
+make setup.py 
+   : stage_py 
+   : @setup_py 
+   : <location>$(PYTHON_OUT) 
+;
+rule setup_py ( targets * : sources * : properties * ) {
+    data_files = 
+      "       'owlcpp/"$(sources:G=)"'," 
+    ;
+    
+    local platform = [ modules.peek : OS ] ;
+    
+    local src = 
+        "#!/usr/bin/env python"
+        ""
+        "from distutils.core import setup"
+        "from distutils.command.install_data import install_data"
+        ""
+        "class smart_install_data(install_data):"
+        "    def run(self):"
+        "        install_cmd = self.get_finalized_command('install')"
+        "        self.install_dir = getattr(install_cmd, 'install_lib')"
+        "        return install_data.run(self)"
+        "" 
+        "setup("
+        "    name = 'owlcpp',"
+        "    version            = '$(version[1]).$(version[2]).$(version[3])',"
+        "    description        = '$(OWLCPP_DESCRIPTION)',"
+        "    long_description   = '$(OWLCPP_DESCRIPTION)',"
+        "    license            = '$(OWLCPP_LICENSE)',"
+        "    author             = [ '$(author)' ],"
+        "    author_email       = '$(email)',"
+        "    url                = '$(proj_url)',"
+        "    packages           = ['owlcpp'],"
+        "    cmdclass           = {'install_data' : smart_install_data},"
+        "    platforms          = ['$(platform)'],"
+        "    data_files         = [('owlcpp', [" $(data_files) "    ] )]"
+        ")"
+        ""
+    ;
+    src = $(src:J="
+") ;
+
+    STR on $(<) = $(src) ;
 }
+actions setup_py { @($(STDOUT):E=$(STR)) > "$(<)" }
+
+## 
+################################################################################
+alias stage_py 
+   : # sources
+      _py_lib
+   : # requirements
+   : # default-build
+   : # usage-requirements
+      <pythonpath>$(PYTHON_OUT)
+;
+
+## 
+################################################################################
+install _py_test
+   :
+      [ glob test/*.py ]
+   :
+      <location>$(PYTHON_OUT)/test
+;
+
+## 
+################################################################################
+make distro-bindings 
+   : setup.py 
+   : @release-py 
+   : 
+      <dependency>_py_test
+;
+actions release-py {
+    cd $(PYTHON_OUT)
+    python $(>) sdist -d $(OUT)
+}
+
