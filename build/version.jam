@@ -19,7 +19,7 @@ rule git_describe ( path : git_path ? ) {
    git_path ?= git ;
    # use '~' dirty marker, not '*', to be able to use version string as directory name
    local git_command = 
-      "cd $(path) ; \"$(git_path)\" describe --always --dirty=~" 
+      "cd $(path) && \"$(git_path)\" describe --always --dirty=~" 
    ;
    local res = [ SHELL $(git_command) : exit-status ] ;
    if $(res[2]) = "0" { return [ trim_whitespace $(res[1]) ] ; }
