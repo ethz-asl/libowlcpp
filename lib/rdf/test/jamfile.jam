@@ -11,7 +11,7 @@ project owlcpp/lib/rdf/test
    : requirements
       <include>../
       <library>/boost//unit_test_framework
-	  <toolset>msvc:<threading>multi
+      <toolset>msvc:<threading>multi
 ;
 
 import testing ;
@@ -33,6 +33,6 @@ test-suite simple_tests
 
 test-suite other_tests
    :
-     [ compile-fail object_id_01_cfail.cpp ]
+      [ compile-fail object_id_01_cfail.cpp ]
 ;
 

@@ -16,7 +16,7 @@ BOOST_AUTO_TEST_CASE( fail_obj_id ) {
    const Node_id id1(42);
    const Doc_id id2(42);
    if(id1 == id2) {
-	   //compilation error
+      //compilation error
    }
 }
 

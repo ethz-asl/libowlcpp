@@ -6,9 +6,9 @@
 project owlcpp/apps
    :  build-dir $(OUT)/apps
    :  requirements
-   	#fix linking with libboost_program_options-vc110-mt-XXX
-   	<toolset>msvc:<threading>multi 
-   	$(LIB_REQUIREMENTS)
+      #fix linking with libboost_program_options-vc110-mt-XXX
+      <toolset>msvc:<threading>multi
+      $(LIB_REQUIREMENTS)
 ;
 
 exe find_owl
