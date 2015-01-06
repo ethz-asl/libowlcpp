@@ -1,7 +1,7 @@
 # owlcpp/jamroot.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2010-3
+# Copyright Mikhail K Levin 2010-5
 
 import build/singleton-target ;
 import build/version ;
@@ -71,9 +71,9 @@ alias libxml2 : external//libxml2 ;
 alias raptor : external//raptor ;
 explicit factpp_kernel raptor ;
 
-alias owlcpp-py : binding/python//stage_py ;
-alias distro-owlcpp-py : binding/python//distro-bindings : <variant>release ;
-explicit owlcpp-py ;
+alias bindings-py : binding/python//stage_py ;
+alias distro-bindings-py : binding/python//distro-bindings : <variant>release ;
+explicit bindings-py distro-bindings-py ;
 
 alias docs : doc//docs ;
 explicit docs ;

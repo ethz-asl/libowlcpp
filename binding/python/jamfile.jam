@@ -1,13 +1,13 @@
 ## owlcpp/binding/python/jamfile.jam
 ## part of owlcpp project.
 ## Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-## Copyright Mikhail K Levin 2011-4
+## Copyright Mikhail K Levin 2011-5
 
 project owlcpp/binding/python
     : build-dir $(PYTHON_OUT)
     : requirements 
-      <library>/boost/python//boost_python 
-      <library>/owlcpp//rdf
+#      <library>/boost/python//boost_python 
+#      <library>/owlcpp//rdf
 ;
 
 import python modules path common regex ;
@@ -125,6 +125,46 @@ install _py_lib
 
 ## 
 ################################################################################
+alias stage_py 
+   : # sources
+      _py_lib
+   : # requirements
+   : # default-build
+   : # usage-requirements
+      <pythonpath>$(PYTHON_OUT)
+;
+
+## 
+################################################################################
+install _py_test
+   :
+      [ glob test/*.py ]
+      [ glob $(PROJ_ROOT)/python/test/*.py ]
+   :
+      <location>$(PYTHON_OUT)/test
+;
+
+## 
+################################################################################
+install _py_docs
+   :
+      $(PROJ_ROOT)/doc/license.txt
+   :
+      <location>$(doc_src_stage)
+;
+
+## 
+################################################################################
+install _manifest
+   :
+      $(PROJ_ROOT)/build/MANIFEST.in
+      $(PROJ_ROOT)/readme.txt
+   :
+      <location>$(PYTHON_OUT)
+;
+
+## 
+################################################################################
 make setup.py 
    : stage_py 
    : @setup_py 
@@ -174,31 +214,14 @@ actions setup_py { @($(STDOUT):E=$(STR)) > "$(<)" }
 
 ## 
 ################################################################################
-alias stage_py 
-   : # sources
-      _py_lib
-   : # requirements
-   : # default-build
-   : # usage-requirements
-      <pythonpath>$(PYTHON_OUT)
-;
-
-## 
-################################################################################
-install _py_test
-   :
-      [ glob test/*.py ]
-   :
-      <location>$(PYTHON_OUT)/test
-;
-
-## 
-################################################################################
 make distro-bindings 
    : setup.py 
    : @release-py 
    : 
+      <dependency>stage_py 
       <dependency>_py_test
+      <dependency>_py_docs
+      <dependency>_manifest 
 ;
 actions release-py {
     cd $(PYTHON_OUT)

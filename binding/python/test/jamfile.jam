@@ -1,21 +1,23 @@
 # owlcpp/binding/python/test/jamfile.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2011-3
+# Copyright Mikhail K Levin 2011-5
 
 project owlcpp/binding/python/test
     : requirements
       #path-constant does not expand correctly under WIN
       <pythonpath>../../../out/binding/python
-      <dependency>..//install
+      <dependency>/owlcpp//bindings-py
 ;
 
-import python ;
-import testing ;
+import python testing ;
 
-test-suite python :
-   [ bpl-test import : import.py ]
-   [ bpl-test rdf_1 : test_rdf_1.py ]
-   [ bpl-test io_1 : test_io_1.py ]
-   [ bpl-test logic_1 : test_logic_1.py ]
-;
+rule run-all ( sources * : requirements * )
+{
+   for local source in $(sources)
+   {
+       return [ bpl-test $(source:B) : $(source) ] ;
+   }
+}
+
+test-suite python : [ run-all [ glob *.py ] ] ;
