@@ -11,29 +11,27 @@ part of owlcpp project.
 #include "boost/preprocessor/seq/enum.hpp"
 #include "boost/preprocessor/seq/for_each_i.hpp"
 #include "boost/preprocessor/seq/size.hpp"
-#include "boost/preprocessor/tuple/to_seq.hpp"
 #include "boost/preprocessor/seq/transform.hpp"
 
-#define OWLCPP_TRIPLE_INDEX_ELEMENT_MACRO_(s, data, elem) \
-   ::owlcpp::BOOST_PP_CAT(elem, _tag) \
+#define OWLCPP_TRIPLE_INDEX_ELEMENT_MACRO_(s, data, elem)                     \
+   ::owlcpp::BOOST_PP_CAT(elem, _tag)                                         \
 /*
 */
 
-#define OWLCPP_TRIPLE_INDEX_CONFIG_MACRO_(r, data, i, elem) BOOST_PP_COMMA_IF(i) \
-   ::boost::mpl::vector4<BOOST_PP_SEQ_ENUM( \
-            BOOST_PP_SEQ_TRANSFORM( \
-                     OWLCPP_TRIPLE_INDEX_ELEMENT_MACRO_, \
-                     , \
-                     BOOST_PP_TUPLE_TO_SEQ(4, elem) \
-            ) \
-   )> \
+#define OWLCPP_TRIPLE_INDEX_CONFIG_MACRO_(r, data, i, elem)                   \
+   BOOST_PP_COMMA_IF(i)                                                       \
+   ::boost::mpl::vector4<BOOST_PP_SEQ_ENUM(                                   \
+            BOOST_PP_SEQ_TRANSFORM(                                           \
+                     OWLCPP_TRIPLE_INDEX_ELEMENT_MACRO_, , elem               \
+            )                                                                 \
+   )>                                                                         \
 /*
 */
 
-#define OWLCPP_TRIPLE_INDEX_CONFIG(tuple_seq) \
-   ::boost::mpl::BOOST_PP_CAT(vector, BOOST_PP_SEQ_SIZE(tuple_seq))< \
-   BOOST_PP_SEQ_FOR_EACH_I(OWLCPP_TRIPLE_INDEX_CONFIG_MACRO_, ,tuple_seq) \
-   >
+#define OWLCPP_TRIPLE_INDEX_CONFIG(tuple_seq)                                 \
+   ::boost::mpl::BOOST_PP_CAT(vector, BOOST_PP_SEQ_SIZE(tuple_seq))<          \
+       BOOST_PP_SEQ_FOR_EACH_I(OWLCPP_TRIPLE_INDEX_CONFIG_MACRO_, ,tuple_seq) \
+   >                                                                          \
 /*
 */
 

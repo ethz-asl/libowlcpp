@@ -33,8 +33,8 @@ inline Decl declaration(const Node_id nid, Triple_store const& ts) {
 
       BOOST_FOREACH(
                Triple const& t,
-               ts.find_triple(any, owl_annotatedSource::id(), nid, any)) {
-
+               ts.find_triple(any, owl_annotatedSource::id(), nid, any)
+      ) {
          const Node_id x = t.subj_;
          if( ts[x].ns_id() != blank::id() ) BOOST_THROW_EXCEPTION(
                   Logic_err()
@@ -43,7 +43,8 @@ inline Decl declaration(const Node_id nid, Triple_store const& ts) {
          );
          BOOST_FOREACH(
                   Triple const& t,
-                  ts.find_triple(x, owl_annotatedTarget::id(), any, any)) {
+                  ts.find_triple(x, owl_annotatedTarget::id(), any, any)
+         ) {
             d.set(t.obj_);
          }
       }

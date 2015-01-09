@@ -61,9 +61,7 @@ public:
    {}
 
    template<class Nodes_std> explicit Triple_store(Nodes_std const& nodes_std)
-   : map_std_(map_std_type::get(nodes_std)),
-     map_doc_(),
-     map_triple_()
+   : map_std_(map_std_type::get(nodes_std))
    {}
 
    map_std_type const& map_std() const {return map_std_;}

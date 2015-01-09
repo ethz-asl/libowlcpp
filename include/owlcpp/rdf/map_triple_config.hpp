@@ -14,8 +14,8 @@ part of owlcpp project.
 
 #ifndef OWLCPP_TRIPLE_INDICES
 #define OWLCPP_TRIPLE_INDICES \
-         ((Subj, Pred, Obj, Doc)) \
-         ((Obj, Pred, Subj, Doc))
+         ((Subj) (Pred) (Obj) (Doc)) \
+         ((Obj) (Pred) (Subj) (Doc)) \
 /*
 */
 #endif
