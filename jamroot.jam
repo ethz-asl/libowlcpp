@@ -50,6 +50,7 @@ alias test
       lib/rdf/test
       lib/io/test
       lib/logic/test
+      lib/test
       apps/test
    : #requirements
 ;

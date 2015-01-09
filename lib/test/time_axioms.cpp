@@ -1,7 +1,7 @@
-/** @file "/owlcpp/lib/test/triple_to_axiom_speed.cpp" 
+/** @file "/owlcpp/lib/test/time_axioms.cpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-@n Copyright Mikhail K Levin 2012
+@n Copyright Mikhail K Levin 2012-5
 *******************************************************************************/
 #include <iostream>
 #include <string>
@@ -16,7 +16,6 @@ part of owlcpp project.
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/logic/triple_to_fact.hpp"
-#include "owlcpp/logic/query_fact.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
 namespace bfs = boost::filesystem;
