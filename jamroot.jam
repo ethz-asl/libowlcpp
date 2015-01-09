@@ -1,7 +1,7 @@
 # owlcpp/jamroot.jam
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2010-3
+# Copyright Mikhail K Levin 2010-5
 
 import build/singleton-target ;
 import build/version ;
@@ -19,6 +19,7 @@ path-constant PYTHON_OUT : $(OUT)/binding/python ;
 constant OWLCPP_NAME : "owlcpp" ;
 constant OWLCPP_VERSION : [ git_describe $(PROJ_ROOT) : $(GIT_PATH) ] ;
 constant OWLCPP_DESCRIPTION : "C++ library for working with OWL ontologies" ;
+constant OWLCPP_LICENSE : "The Boost Software License, Version 1.0" ;
 
 constant LIB_REQUIREMENTS :
    <toolset>gcc,<target-os>linux:<cflags>"-fvisibility=hidden -fvisibility-inlines-hidden"
@@ -70,8 +71,9 @@ alias libxml2 : external//libxml2 ;
 alias raptor : external//raptor ;
 explicit factpp_kernel raptor ;
 
-alias owlcpp-py : binding/python//install ;
-explicit owlcpp-py ;
+alias bindings-py : binding/python//stage_py ;
+alias distro-bindings-py : binding/python//distro-bindings : <variant>release ;
+explicit bindings-py distro-bindings-py ;
 
 alias docs : doc//docs ;
 explicit docs ;

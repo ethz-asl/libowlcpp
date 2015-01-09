@@ -33,7 +33,7 @@ Libraries required by owlcpp are listed in file "owlcpp/doc/user-config.jam".
         b2 release
         b2 debug test
         b2 --toolset=msvc release
-        b2 release owlcpp-py
+        b2 release bindings-py
         b2 release test-py
         b2 doc
         b2 --clean debug release
