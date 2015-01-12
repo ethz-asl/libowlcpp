@@ -37,6 +37,16 @@ exe print_classes
       <library>/boost/program_options
 ;
 
+exe owlstats
+   : #sources
+      owlstats.cpp
+   : #requirements
+      <link>static
+      <library>/owlcpp//io
+      <library>/owlcpp//logic
+      <library>/boost/program_options
+;
+
 exe validate
    : #sources
       validate.cpp
