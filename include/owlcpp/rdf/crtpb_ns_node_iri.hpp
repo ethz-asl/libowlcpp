@@ -6,6 +6,9 @@ part of owlcpp project.
 #ifndef CRTPB_NS_NODE_IRI_HPP_
 #define CRTPB_NS_NODE_IRI_HPP_
 #include "owlcpp/detail/map_traits.hpp"
+#include "owlcpp/exception.hpp"
+#include "owlcpp/node_id.hpp"
+#include "owlcpp/rdf/ns_iri.hpp"
 #include "owlcpp/rdf/store_concepts.hpp"
 
 namespace owlcpp{
@@ -29,7 +32,7 @@ template<class Super> struct Crtpb_ns_node_iri {
       const Ns_id iid = super.insert(remove_fragment(iri, n));
       try{
          return super.insert_node_iri( iid, iri.substr(n) );
-      } catch(base_exception&) {
+      } catch(base_exception const&) {
          typedef typename Super::Err Err;
          BOOST_THROW_EXCEPTION(
                   Err()

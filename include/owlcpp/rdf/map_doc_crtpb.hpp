@@ -8,8 +8,10 @@ part of owlcpp project.
 #include "boost/assert.hpp"
 
 #include "owlcpp/detail/map_traits.hpp"
-#include "owlcpp/rdf/store_concepts.hpp"
+#include "owlcpp/doc_id.hpp"
 #include "owlcpp/exception.hpp"
+#include "owlcpp/rdf/store_concepts.hpp"
+#include "owlcpp/terms/node_tags_system.hpp"
 
 namespace owlcpp{
 
