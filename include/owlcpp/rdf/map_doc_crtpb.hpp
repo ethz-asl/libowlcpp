@@ -50,6 +50,25 @@ public:
       return _map_doc().find(did);
    }
 
+   doc_iri_range find_doc_iri(std::string const& iri) const {
+      BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
+      Super const& super = static_cast<Super const&>(*this);
+      Node_id const*const nid = super.find_node_iri(iri);
+      if( nid ) return _map_doc().find_iri(*nid);
+      return doc_iri_range(_map_doc().end_iri(), _map_doc().end_iri());
+   }
+
+   doc_version_range find_doc_version(std::string const& version) const {
+      BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
+      Super const& super = static_cast<Super const&>(*this);
+      Node_id const*const nid = super.find_node_iri(version);
+      if( nid ) return _map_doc().find_version(*nid);
+      return doc_version_range(
+               _map_doc().end_version(),
+               _map_doc().end_version()
+      );
+   }
+
    /**@brief Add document info: location, ontologyIRI, and versionIRI.
     @param iri_id ontologyIRI
     @param path document location
@@ -111,25 +130,6 @@ public:
                   << typename Err::nested_t(boost::current_exception())
          );
       }
-   }
-
-   doc_iri_range find_doc_iri(std::string const& iri) const {
-      BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
-      Super const& super = static_cast<Super const&>(*this);
-      Node_id const*const nid = super.find_node_iri(iri);
-      if( nid ) return _map_doc().find_iri(*nid);
-      return doc_iri_range(_map_doc().end_iri(), _map_doc().end_iri());
-   }
-
-   doc_version_range find_doc_version(std::string const& version) const {
-      BOOST_CONCEPT_ASSERT((Ns_iri_node_store<Super>));
-      Super const& super = static_cast<Super const&>(*this);
-      Node_id const*const nid = super.find_node_iri(version);
-      if( nid ) return _map_doc().find_version(*nid);
-      return doc_version_range(
-               _map_doc().end_version(),
-               _map_doc().end_version()
-      );
    }
 };
 

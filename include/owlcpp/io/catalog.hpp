@@ -103,15 +103,15 @@ private:
  and add them to the catalog
  @param cat catalog;
  @param path symbolic path pointing to local file or directory;
- any type implicitly convertible to boost::path can be used, e.g., std::string, const char*
+ any type implicitly convertible to boost::filesystem::path can be used,
+ e.g., std::string, const char*
  @param recurse if true add to catalog files located in sub-directories
  @param search_depth once ontologyIRI declaration is found, stop searching for
  versionIRI declaration after @b search_depth triples
  @return number of added files
  @details
- If path is a directory, an attempt will be made to parse and determine
- OntologyIRI and VersionIRI of every file located in it.
- The files that fail to parse will be ignored.
+ If path is a directory, an attempt is made to parse every file located in it.
+ Files that fail to parse are ignored.
 *******************************************************************************/
 OWLCPP_IO_DECL std::size_t add(
          Catalog& cat,

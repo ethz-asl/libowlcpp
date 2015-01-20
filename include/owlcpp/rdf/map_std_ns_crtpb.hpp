@@ -86,7 +86,7 @@ public:
    /**
     @param nsid namespace IRI ID
     @param pref namespace IRI prefix
-    @details Define or re-define the prefix for a user-defined namespace IRI.
+    @details Define or re-define prefix for a user-defined namespace IRI.
    */
    void insert_prefix(const Ns_id nsid, std::string const& pref) {
       typedef typename Super::Err Err;
