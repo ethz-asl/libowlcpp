@@ -1,7 +1,7 @@
-/** @file "/owlcpp/lib/test/triple_to_axiom_speed.cpp" 
+/** @file "/owlcpp/lib/test/time_axioms.cpp"
 part of owlcpp project.
 @n @n Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-@n Copyright Mikhail K Levin 2012
+@n Copyright Mikhail K Levin 2012-5
 *******************************************************************************/
 #include <iostream>
 #include <string>
@@ -16,7 +16,6 @@ part of owlcpp project.
 #include "owlcpp/io/input.hpp"
 #include "owlcpp/io/catalog.hpp"
 #include "owlcpp/logic/triple_to_fact.hpp"
-#include "owlcpp/logic/query_fact.hpp"
 #include "owlcpp/terms/node_tags_owl.hpp"
 
 namespace bfs = boost::filesystem;
@@ -32,13 +31,13 @@ int main(int argc, char* argv[]) {
    }
 
    try{
-      owlcpp::Catalog cat;
       const bfs::path in = argv[1];
       typedef boost::chrono::high_resolution_clock clock_t;
       typedef clock_t::time_point time_t;
       typedef boost::chrono::duration<double, boost::ratio<1,1> > dur_t;
 
       const time_t t0 = clock_t::now();
+      owlcpp::Catalog cat;
       add(cat, in.parent_path(), false, 100);
       const dur_t d0 = clock_t::now() - t0;
       std::cout
@@ -58,7 +57,7 @@ int main(int argc, char* argv[]) {
       << ts.map_ns().size() << " namespace IRIs" << '\n'
       ;
 
-        ReasoningKernel k;
+      ReasoningKernel k;
       const time_t t2 = clock_t::now();
       const std::size_t n = submit(ts, k);
       const dur_t d2 = clock_t::now() - t2;

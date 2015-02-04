@@ -25,8 +25,8 @@ class OWLCPP_IO_DECL Catalog;
 @param check reference to a polymorphic class that checks that the input ontology
 has the expected ontologyIRI and versionIRI.
 @throw Input_err if input ontology contains an error or an ontology with the same
-ID has already been loaded into the triple store.
-If an exception is thrown, the destination triple store SHOULD remain unchanged.
+ID is already in the triple store.
+If an exception is thrown, the destination triple store remains unchanged.
 *******************************************************************************/
 OWLCPP_IO_DECL
 void load(
@@ -44,8 +44,8 @@ void load(
 @param check reference to a polymorphic class that checks that the input ontology
 has the expected ontologyIRI and versionIRI.
 @throw Input_err if input ontology contains an error or an ontology with the same
-ID has already been loaded into the triple store.
-If an exception is thrown, the destination triple store SHOULD remain unchanged.
+ID is already in the triple store.
+If an exception is thrown, the destination triple store remains unchanged.
 *******************************************************************************/
 OWLCPP_IO_DECL
 void load(
@@ -63,7 +63,7 @@ void load(
 has the expected ontologyIRI and versionIRI.
 @throw Input_err if input ontology contains an error or an ontology with the same
 ID has already been loaded into the triple store.
-If an exception is thrown, the destination triple store SHOULD remain unchanged.
+If an exception is thrown, the destination triple store remains unchanged.
 *******************************************************************************/
 OWLCPP_IO_DECL
 void load_file(
@@ -80,7 +80,7 @@ void load_file(
 has the expected ontologyIRI and versionIRI.
 @throw Input_err if input ontology contains an error or an ontology with the same
 ID has already been loaded into the triple store.
-If an exception is thrown, the destination triple store SHOULD remain unchanged.
+If an exception is thrown, the destination triple store remains unchanged.
 *******************************************************************************/
 OWLCPP_IO_DECL
 void load_file(
@@ -100,7 +100,7 @@ void load_file(
 @param cat catalog of ontology documents used for locating imports
 @throw Input_err if input ontology contains an error or an ontology with the same
 ID has already been loaded into the triple store.
-If an exception is thrown, the destination triple store SHOULD remain unchanged.
+If an exception is thrown, the destination triple store remains unchanged.
 *******************************************************************************/
 OWLCPP_IO_DECL
 void load_iri(std::string const& iri, Triple_store& store, Catalog const& cat);

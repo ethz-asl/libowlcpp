@@ -2,7 +2,7 @@
 
 owlcpp is a C++ library for working with OWL2 ontologies.
 
-Copyright (C) 2010-3 Mikhail K Levin
+Copyright (C) 2010-5 Mikhail K Levin
 
 http://owl-cpp.sourceforge.net/
 

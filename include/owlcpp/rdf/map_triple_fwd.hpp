@@ -5,6 +5,7 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef MAP_TRIPLE_FWD_HPP_
 #define MAP_TRIPLE_FWD_HPP_
+#include "boost/mpl/empty.hpp"
 #include "owlcpp/rdf/map_triple_config.hpp"
 
 namespace owlcpp{
@@ -12,7 +13,8 @@ namespace owlcpp{
 /**@brief Store, index, and search RDF triples
 *******************************************************************************/
 template<
-   class Config = map_triple_detail::index_config_default
+   class Config = map_triple_detail::index_config_default,
+   bool Empty = boost::mpl::empty<Config>::value
 >class Map_triple;
 
 

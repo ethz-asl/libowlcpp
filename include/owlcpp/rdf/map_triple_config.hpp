@@ -14,8 +14,8 @@ part of owlcpp project.
 
 #ifndef OWLCPP_TRIPLE_INDICES
 #define OWLCPP_TRIPLE_INDICES \
-         ((Subj, Pred, Obj, Doc)) \
-         ((Obj, Pred, Subj, Doc))
+         ((Subj) (Pred) (Obj) (Doc)) \
+         ((Obj) (Pred) (Subj) (Doc)) \
 /*
 */
 #endif
@@ -29,6 +29,9 @@ template<class,class,class,class> class Triple_index_map_impl;
 
 typedef OWLCPP_TRIPLE_INDEX_CONFIG(OWLCPP_TRIPLE_INDICES)
 index_config_default;
+
+typedef OWLCPP_TRIPLE_INDEX_CONFIG()
+config_unindexed;
 
 /**@brief
 *******************************************************************************/

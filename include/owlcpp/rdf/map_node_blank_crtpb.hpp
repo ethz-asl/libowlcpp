@@ -29,6 +29,13 @@ template<class Super> class Map_node_blank_crtpb {
    }
 
 public:
+
+   Node_id const* find_blank(const unsigned n, const Doc_id did) const {
+      BOOST_CONCEPT_ASSERT((Doc_store<Super>));
+      BOOST_ASSERT(static_cast<Super const&>(*this).find(did));
+      return _map_node().find_blank(n, did);
+   }
+
    /**@brief Insert blank node
     @param n blank node index (MUST be unique within the document)
     @param did document ID
@@ -39,13 +46,6 @@ public:
       BOOST_ASSERT(static_cast<Super const&>(*this).find(did));
       return _map_node().insert_blank(n, did);
    }
-
-   Node_id const* find_blank(const unsigned n, const Doc_id did) const {
-      BOOST_CONCEPT_ASSERT((Doc_store<Super>));
-      BOOST_ASSERT(static_cast<Super const&>(*this).find(did));
-      return _map_node().find_blank(n, did);
-   }
-
 };
 
 }//namespace owlcpp

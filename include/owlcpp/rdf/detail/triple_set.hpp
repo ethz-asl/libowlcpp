@@ -5,9 +5,9 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_SET_HPP_
 #define TRIPLE_SET_HPP_
-#include <vector>
 #include <algorithm>
 #include <functional>
+#include <vector>
 #include "boost/assert.hpp"
 #include "boost/fusion/container/vector.hpp"
 #include "boost/fusion/sequence/intrinsic/at.hpp"

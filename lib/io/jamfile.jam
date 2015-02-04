@@ -17,7 +17,7 @@ lib owlcpp_io
       <library>/boost//filesystem
       <library>/owlcpp//raptor
       <link>shared:<define>OWLCPP_IO_DYN_LINK
-	  <toolset>msvc:<threading>multi #fix linking with libboost_filesystem-vc110-mt-XXX
+      <toolset>msvc:<threading>multi #fix linking with libboost_filesystem-vc110-mt-XXX
    :  #default build options
    :  #usage requirements
       <link>shared:<define>OWLCPP_IO_DYN_LINK

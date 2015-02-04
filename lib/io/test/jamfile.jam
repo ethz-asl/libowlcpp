@@ -18,7 +18,7 @@ project owlcpp/lib/io/test
       <library>/owlcpp//raptor
       <define>SAMPLE_DATA_DIR="\"$(smpl_dir:T)\""
       <define>TEMPORARY_DIR="\"$(tmp_dir:T)\""
-	  <toolset>msvc:<threading>multi
+      <toolset>msvc:<threading>multi
 ;
 
 import testing ;

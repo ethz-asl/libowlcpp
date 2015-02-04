@@ -6,9 +6,11 @@ part of owlcpp project.
 #ifndef STORE_CONCEPTS_HPP_
 #define STORE_CONCEPTS_HPP_
 #include <string>
+#include "boost/concept_check.hpp"
 #include "boost/concept/assert.hpp"
-#include "owlcpp/rdf/detail/map_traits.hpp"
 #include "boost/concept/detail/concept_def.hpp"
+#include "owlcpp/rdf/detail/map_traits.hpp"
+#include "owlcpp/rdf/ns_iri.hpp"
 
 namespace owlcpp{
 class Ns_iri;

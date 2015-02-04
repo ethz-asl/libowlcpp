@@ -40,7 +40,7 @@ Op_declared::generated_t Op_declared::get(ReasoningKernel& k ) const {
 *******************************************************************************/
 Op_inverse::Op_inverse(Expression_args const& ea, Triple_store const& ts)
 : op_(make_expression<Obj_prop>(ea.obj1, ts)) {
-   if( ! is_iri(ts[ea.handle].ns_id()) ) BOOST_THROW_EXCEPTION(
+   if( ! is_iri(ts[ea.obj1].ns_id()) ) BOOST_THROW_EXCEPTION(
             Err()
             << Err::msg_t("non-IRI object in _:x owl:inverseOf *:y")
             << Err::str1_t(to_string(ea.obj1, ts))

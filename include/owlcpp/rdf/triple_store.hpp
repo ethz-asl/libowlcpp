@@ -5,20 +5,20 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_STORE_HPP_
 #define TRIPLE_STORE_HPP_
-#include "owlcpp/rdf/detail/map_traits.hpp"
-#include "owlcpp/rdf/map_ns.hpp"
-#include "owlcpp/rdf/map_node.hpp"
-#include "owlcpp/rdf/map_doc.hpp"
-#include "owlcpp/rdf/map_doc_crtpb.hpp"
-#include "owlcpp/rdf/map_std.hpp"
-#include "owlcpp/rdf/map_std_ns_crtpb.hpp"
-#include "owlcpp/rdf/map_std_node_crtpb.hpp"
-#include "owlcpp/rdf/nodes_std.hpp"
-#include "owlcpp/rdf/map_node_literal_crtpb.hpp"
-#include "owlcpp/rdf/map_node_blank_crtpb.hpp"
-#include "owlcpp/rdf/map_triple.hpp"
-#include "owlcpp/rdf/map_triple_crtpb.hpp"
 #include "owlcpp/rdf/crtpb_ns_node_iri.hpp"
+#include "owlcpp/rdf/detail/map_traits.hpp"
+#include "owlcpp/rdf/map_doc_crtpb.hpp"
+#include "owlcpp/rdf/map_doc.hpp"
+#include "owlcpp/rdf/map_node_blank_crtpb.hpp"
+#include "owlcpp/rdf/map_node_literal_crtpb.hpp"
+#include "owlcpp/rdf/map_node.hpp"
+#include "owlcpp/rdf/map_ns.hpp"
+#include "owlcpp/rdf/map_std_node_crtpb.hpp"
+#include "owlcpp/rdf/map_std_ns_crtpb.hpp"
+#include "owlcpp/rdf/map_std.hpp"
+#include "owlcpp/rdf/map_triple_crtpb.hpp"
+#include "owlcpp/rdf/map_triple.hpp"
+#include "owlcpp/rdf/nodes_std.hpp"
 
 namespace owlcpp{
 
@@ -61,9 +61,7 @@ public:
    {}
 
    template<class Nodes_std> explicit Triple_store(Nodes_std const& nodes_std)
-   : map_std_(map_std_type::get(nodes_std)),
-     map_doc_(),
-     map_triple_()
+   : map_std_(map_std_type::get(nodes_std))
    {}
 
    map_std_type const& map_std() const {return map_std_;}

@@ -78,7 +78,8 @@ OWLCPP_LOGIC_DECL TDLAxiom* submit_check(
          const bool strict = true
 );
 
-/** Convert all stored RDF triples to axioms and submit them to reasoning kernel
+/** Convert RDF triples from the triple store to axioms and submit them to
+reasoning kernel
 @param ts triple store
 @param kernel FaCT++ reasoning kernel
 @param strict if true (default), all requirements specified in
@@ -102,7 +103,7 @@ Use this method to find which triple/axiom produces reasoning error.
 @param kernel FaCT++ reasoning kernel
 @param strict if true (default), all requirements specified in
 http://www.w3.org/TR/2009/REC-owl2-mapping-to-rdf-20091027/
-are enforced
+are enforced.  Currently, strict==false results in same behavior.
 @return number of axioms generated
 *******************************************************************************/
 OWLCPP_LOGIC_DECL std::size_t submit_check(

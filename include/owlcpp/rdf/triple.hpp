@@ -40,7 +40,7 @@ struct Triple {
       if( t.pred_ < pred_ ) return false;
       if( obj_ < t.obj_ ) return true;
       if( t.obj_ < obj_ ) return false;
-	  return doc_ < t.doc_;
+      return doc_ < t.doc_;
    }
 
    bool operator!=(Triple const& t) const {return !(*this == t);}

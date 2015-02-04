@@ -255,6 +255,7 @@ TDLAxiom* Adaptor_triple::axiom(Triple const& t) {
    case rdfs_comment::index:
    case rdfs_isDefinedBy::index:
    case rdfs_label::index:
+   case rdfs_seeAlso::index:
       return 0;
    default:
       return axiom_custom_predicate(t);

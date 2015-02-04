@@ -7,7 +7,6 @@ project owlcpp/lib/test
    : 
    : requirements
       <include>../
-      <library>/boost//unit_test_framework
       <library>/boost//filesystem
       <library>/boost//chrono
       <library>/owlcpp//io
@@ -16,14 +15,4 @@ project owlcpp/lib/test
       <library>/owlcpp//factpp_kernel
 ;
 
-import testing ;
-run 
-      triple_to_axiom_speed.cpp
-   : #args
-      $(TEST_ONTOLOGY)
-   : #input-files
-   : #requirements
-   : #target-name
-;
-
-explicit triple_to_axiom_speed ;
+exe time_axioms : time_axioms.cpp ;
