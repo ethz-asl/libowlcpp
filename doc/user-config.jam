@@ -54,11 +54,11 @@
 ## Libraries
 ## Uncomment "constant" statements and provide correct paths and versions. 
 
-local utils = "c:/utils" ;
+# local utils = "c:/utils" ;
 
 ## Boost library source
 ## http://www.boost.org/
-# constant BOOST : "$(utils)/boost_1_56_0/" 1.56.0 ;
+# constant BOOST : "$(utils)/boost_1_58_0/" 1.58.0 ;
 
 ## libxml2 library source
 ## http://xmlsoft.org/
@@ -74,7 +74,7 @@ local utils = "c:/utils" ;
 
 ## FaCT++ library source
 ## http://code.google.com/p/factplusplus/
-# constant FACTPP : "$(utils)/FaCT++-src-1.6.3" 1.6.3 ;
+# constant FACTPP : "$(utils)/FaCT++-src-v1.6.3" 1.6.3 ;
 
 ## owlcpp library source
 ## http://sourceforge.net/projects/owl-cpp/

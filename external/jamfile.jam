@@ -25,9 +25,11 @@ if ! $(FACTPP) {
    " ;
 }
 
+local FaCTpp_src = [ path.join $(FACTPP[1]) src Kernel ] ;
+
 if [ numbers.less 
       [ sequence.length 
-         [ path.glob [ path.join $(FACTPP[1]) src Kernel ] : *.h *.cpp  ] 
+         [ path.glob $(FaCTpp_src) : *.h *.cpp  ] 
       ]
       100
    ] {
@@ -35,6 +37,7 @@ if [ numbers.less
    WARNING:
    Some FaCT++ source files are missing.
    Please check variable FACTPP in user-config.jam.
+   $(FaCTpp_src)/src/Kernel
    " ;
 }
 
