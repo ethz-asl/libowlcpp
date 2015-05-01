@@ -1,7 +1,7 @@
 # @file "owlcpp/external/ext/raptor.jam"
 # part of owlcpp project.
 # Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
-# Copyright Mikhail K Levin 2010-2
+# Copyright Mikhail K Levin 2010-5
 
 # Boost.build script for building Raptor library <http://librdf.org/raptor/>
 
@@ -22,6 +22,7 @@ NL = "
 ## make a list of source files and copy them to new location to isolate from headers
 ################################################################################
 rule copy-source ( version : location ) {
+   local vc = [ version_calc $(version) ] ;
    local src = 
       raptor_parse raptor_serialize raptor_rfc2396 raptor_uri raptor_log 
       raptor_locator raptor_namespace raptor_qname raptor_option raptor_general 
@@ -33,8 +34,12 @@ rule copy-source ( version : location ) {
       ntriples_parse raptor_guess raptor_librdfa raptor_serialize_ntriples 
       parsedate raptor_escaped raptor_ntriples 
       raptor_serialize_turtle raptor_abbrev
-#      strcasecmp
    ;
+   
+   if $(vc[2]) >= 20015 {
+      src += sort_r ;
+   }
+   
    local src_rdfa = 
       curie iri language rdfa rdfa_utils subject triple
       context lists namespace strtok_r

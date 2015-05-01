@@ -70,7 +70,7 @@
 
 ## Raptor library source
 ## http://librdf.org/raptor/
-# constant RAPTOR : "$(utils)/raptor2-2.0.14" 2.0.14 ;
+# constant RAPTOR : "$(utils)/raptor2-2.0.15" 2.0.15 ;
 
 ## FaCT++ library source
 ## http://code.google.com/p/factplusplus/
