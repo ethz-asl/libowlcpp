@@ -5,9 +5,9 @@ part of owlcpp project.
 *******************************************************************************/
 #ifndef TRIPLE_INDEX_VECTOR_IMPL_HPP_
 #define TRIPLE_INDEX_VECTOR_IMPL_HPP_
-#include <vector>
-#include <utility>
 #include <functional>
+#include <utility>
+#include <vector>
 #include "boost/assert.hpp"
 #include "boost/foreach.hpp"
 #include "boost/fusion/sequence/intrinsic/at.hpp"
@@ -23,7 +23,7 @@ part of owlcpp project.
 
 namespace owlcpp{ namespace map_triple_detail{
 
-/**@brief 
+/**@brief Iterator for a vector of triple indices
 *******************************************************************************/
 template<class Id, class Iter> class Tiv_iterator
          : public boost::iterator_facade<
@@ -47,7 +47,10 @@ private:
    void increment() {++i_;}
 
    bool equal(Tiv_iterator const& i) const {
-      BOOST_ASSERT(begin_ == i.begin_ && "only compare iterators for same container");
+      BOOST_ASSERT(
+               begin_ == i.begin_ &&
+               "only compare iterators for same container"
+      );
       return  i_ == i.i_;
    }
 
@@ -80,7 +83,6 @@ class Tiv_query_dispatch {
 
    class Equal : public std::unary_function<value_type, bool> {
    public:
-//      Equal() {}
       explicit Equal(const Q0 q) : q_(q) {}
       bool operator()(value_type const& p) const {return p.first == q_;}
    private:

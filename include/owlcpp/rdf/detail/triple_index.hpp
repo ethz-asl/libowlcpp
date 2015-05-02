@@ -39,7 +39,8 @@ template<
               Triple const&
            > {
    typedef typename Id_set_iter::value_type value1;
-   typedef typename boost::remove_reference<typename value1::second_type>::type triple_set;
+   typedef typename boost::remove_reference<typename value1::second_type>::type
+            triple_set;
    typedef typename triple_set::template query<Q1,Q2,Q3> query;
    typedef typename query::range t_range;
 
@@ -121,7 +122,8 @@ public:
    typedef Triple_merge_iterator<fs_iter, Q1, Q2, Q3> iterator;
    typedef boost::iterator_range<iterator> range;
    static const int efficiency =
-            query2::efficiency - boost::mpl::at<Element_diversity, Tag0>::type::value;
+            query2::efficiency -
+            boost::mpl::at<Element_diversity, Tag0>::type::value;
 
    static range find(
             storage const& v,
@@ -204,11 +206,11 @@ template<
 public:
 
    template<class Subj, class Pred, class Obj, class Doc> class query {
-      typedef boost::fusion::vector4<Subj,Pred,Obj,Doc> vector;
-      typedef typename boost::mpl::at<vector, Tag0>::type qt0;
-      typedef typename boost::mpl::at<vector, Tag1>::type qt1;
-      typedef typename boost::mpl::at<vector, Tag2>::type qt2;
-      typedef typename boost::mpl::at<vector, Tag3>::type qt3;
+      typedef boost::fusion::vector4<Subj,Pred,Obj,Doc> bfvect_t;
+      typedef typename boost::mpl::at<bfvect_t, Tag0>::type qt0;
+      typedef typename boost::mpl::at<bfvect_t, Tag1>::type qt1;
+      typedef typename boost::mpl::at<bfvect_t, Tag2>::type qt2;
+      typedef typename boost::mpl::at<bfvect_t, Tag3>::type qt3;
    public:
       typedef Query_dispatch<
                   Map,Tag0,Tag1,Tag2,Tag3, qt0, qt1, qt2, qt3
@@ -226,7 +228,7 @@ public:
          BOOST_MPL_ASSERT((boost::has_equal_to<el1,qt1,bool>));
          BOOST_MPL_ASSERT((boost::has_equal_to<el2,qt2,bool>));
          BOOST_MPL_ASSERT((boost::has_equal_to<el3,qt3,bool>));
-         const vector q(subj, pred, obj, doc);
+         const bfvect_t q(subj, pred, obj, doc);
          return dispatch::find(
                   v,
                   boost::fusion::at<Tag0>(q),
@@ -279,7 +281,11 @@ private:
 class Insert {
 public:
    Insert(Triple const& t, bool& inserted) : t_(t), inserted_(inserted) {}
-   template<class Index> void operator()(Index& i) const {inserted_ = i.insert(t_);}
+
+   template<class Index> void operator()(Index& i) const {
+      inserted_ = i.insert(t_);
+   }
+
 private:
    Triple const& t_;
    bool& inserted_;

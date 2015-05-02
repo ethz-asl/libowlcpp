@@ -181,7 +181,7 @@ public:
 };
 
 /**@brief Find elements in a sorted range
-@details Find elements by sorted range search followed by sequential search
+@details Find elements by sorted range search
 *******************************************************************************/
 template<
    class Tag1, class Tag2, class Tag3
