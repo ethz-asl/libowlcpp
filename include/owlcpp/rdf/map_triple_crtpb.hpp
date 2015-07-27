@@ -60,7 +60,7 @@ public:
     @code template<bool Subj, bool Pred, bool Obj, bool Doc> class query_b;
     @endcode
     For example,
-    @code Triple_map<>::query_b<1,0,0,1>::type range =
+    @code Triple_map<>::query_b<1,0,0,1>::range range =
        triple_map.find(subj, any, any, doc);
     @endcode
    */
@@ -101,6 +101,10 @@ public:
             "invalid document ID"
       );
       _map_triple().insert(t);
+   }
+
+   void erase(Triple const& t) {
+      _map_triple().erase(t);
    }
 
 };
