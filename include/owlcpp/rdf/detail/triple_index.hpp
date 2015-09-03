@@ -88,7 +88,7 @@ private:
    }
 
    t_range get_fragment_range() {
-      if( begin_ == end_ ) return t_range();
+      if( begin_ == end_ ) return triple_set::empty_set().find(q1_,q2_,q3_);
       return begin_->second.find(q1_,q2_,q3_);
    }
 };
