@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
                      any, //subj
                      any //obj
             ).size(),
-            4
+            4U
    );
 
    BOOST_CHECK_EQUAL(
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
                               Node_id(0) //obj
                      )
             ),
-            2
+            2U
    );
 
    BOOST_CHECK_EQUAL(
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
                      Node_id(6), //subj
                      any //obj
             ).size(),
-            2
+            2U
    );
 }
 

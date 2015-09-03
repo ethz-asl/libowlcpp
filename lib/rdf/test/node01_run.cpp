@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE( test_hash ) {
    BOOST_FOREACH(Node const* n, v) {
       h.push_back(hash_value(*n));
    }
-   BOOST_CHECK_EQUAL(boost::unique(boost::sort(h)).size(), 8);
+   BOOST_CHECK_EQUAL(boost::unique(boost::sort(h)).size(), 8U);
 }
 
 }//namespace test

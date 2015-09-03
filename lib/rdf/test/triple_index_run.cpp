@@ -47,7 +47,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
                      any, //obj
                      any //pred
             ).size(),
-            3
+            3U
    );
 
    BOOST_CHECK_EQUAL(
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
                               Node_id(3) //pred
                      )
             ),
-            2
+            2U
    );
 
    BOOST_CHECK_EQUAL(
@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE( case01 ) {
                      Node_id(0), //obj
                      any
             ).size(),
-            2
+            2U
    );
 }
 
@@ -119,18 +119,18 @@ BOOST_AUTO_TEST_CASE( case04 ) {
    BOOST_CHECK_EQUAL(ind.size(), 20U);
    BOOST_CHECK_EQUAL(
             ind.find(Node_id(0), any, any, any).size(),
-            2
+            2U
    );
    BOOST_CHECK_EQUAL(
             ind.find(Node_id(1), Node_id(1), any, any).size(),
-            1
+            1U
    );
    BOOST_CHECK(
             boost::distance(ind.find(any, any, any, any)) == 20
    );
    BOOST_CHECK_EQUAL(
             boost::distance(ind.find(any, Node_id(1), any, any)),
-            3
+            3U
    );
 
    BOOST_FOREACH(Triple const& t, ind) {
@@ -162,7 +162,7 @@ BOOST_AUTO_TEST_CASE( case05 ) {
    BOOST_CHECK_EQUAL(ind.size(), 3U);
    BOOST_CHECK_EQUAL(
             ind.find(any, any, Node_id(0), any).size(),
-            2
+            2U
    );
 
    BOOST_FOREACH(Triple const& t, ind) {
