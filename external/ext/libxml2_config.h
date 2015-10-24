@@ -333,7 +333,9 @@
 #  include <math.h>
 #  include <float.h>
 #  define mkdir(p,m) _mkdir(p)
-#  define snprintf _snprintf
+#  if _MSC_VER < 1900
+#     define snprintf _snprintf
+#  endif
 #  if _MSC_VER < 1500
 #     define vsnprintf(b,c,f,a) _vsnprintf(b,c,f,a)
 #  endif

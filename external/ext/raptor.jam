@@ -217,7 +217,6 @@ rule raptor_config_gen ( targets * : sources * : properties * ) {
       "#  define strcasecmp(a,b) _stricmp(a,b)"
       "#  define raptor_strcasecmp(a,b) _stricmp(a,b)"
       "#  define raptor_strncasecmp(a,b,n) _strnicmp(a,b,n)"
-      "#  define snprintf    _snprintf"
       ""
       "#  if !defined(HAVE_SNPRINTF) && defined(HAVE__SNPRINTF)"
       "#    define snprintf    _snprintf"
