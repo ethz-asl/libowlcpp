@@ -1,6 +1,1 @@
-/.cproject
-/.project
-/out
-/.pydevproject
-/.settings
-*.pyc
+build*

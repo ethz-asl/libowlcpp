@@ -1,2 +1,0 @@
-include readme.txt
-include doc/*.html doc/*.js doc/_static/* doc/_images/* test/*
