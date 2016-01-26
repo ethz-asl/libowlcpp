@@ -1,3 +1,9 @@
+libowlcpp (0.3.3-683) unstable; urgency=low
+
+  * Reformatted README
+
+ -- Ralf Kaestner <ralf.kaestner@gmail.com>  Tue, 26 Jan 2016 14:04:00 +0100
+
 libowlcpp (0.3.3-682) unstable; urgency=low
 
   * ReMake build system port
