@@ -49,5 +49,5 @@ remake_distribute_deb(
   DEPENDS libboost-system-dev libboost-filesystem-dev
     libboost-program-options-dev libboost-test-dev libfact++-dev
     libraptor2-dev remake doxygen pkg-config
-  PASS CMAKE_BUILD_TYPE LIBOWLCPP_REVISION
+  PASS CMAKE_BUILD_TYPE LIBOWLCPP_GIT_REVISION
 )
